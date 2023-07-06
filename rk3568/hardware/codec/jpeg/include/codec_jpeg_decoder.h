@@ -14,31 +14,23 @@
  */
 #ifndef HDI_JPEG_DECODER_H
 #define HDI_JPEG_DECODER_H
-#include <atomic>
 #include <cinttypes>
 #include <codec_jpeg_vdi.h>
-#include <memory>
-#include <mutex>
-#include <thread>
-#include <vector>
 #include "hdi_mpp_mpi.h"
 namespace OHOS {
 namespace VDI {
 namespace JPEG {
 class CodecJpegDecoder {
 public:
-    explicit CodecJpegDecoder();
+    explicit CodecJpegDecoder(RKMppApi *mppApi);
 
     ~CodecJpegDecoder();
 
-    int32_t Init();
-
-    void DeInit();
-
-    int32_t DeCode(BufferHandle *buffer, BufferHandle *outBuffer, const struct CodecJpegDecInfo &decInfo,
-        CodecJpegCallbackHwi *callback);
+    int32_t DeCode(BufferHandle *buffer, BufferHandle *outBuffer, const struct CodecJpegDecInfo &decInfo);
 
 private:
+    void Destory();
+
     void ResetMppBuffer();
 
     bool PrePare(bool isDecoder = true);
@@ -48,17 +40,7 @@ private:
         return (val + align - 1) & (~(align - 1));
     }
 
-    inline void OnEvent(int32_t result)
-    {
-        std::lock_guard<std::mutex> lk(mutex_);
-        if (callback_ && callback_->OnEvent) {
-            callback_->OnEvent(result);
-        }
-    }
-
-    MPP_RET SendData(const struct CodecJpegDecInfo &decInfo, int32_t fd, BufferHandle *outHandle);
-
-    MPP_RET InitPacketBuffer(const struct CodecJpegDecInfo &decInfo, int32_t fd, MppBuffer &pktBuf);
+    MPP_RET SendData(const struct CodecJpegDecInfo &decInfo, BufferHandle* buffer, BufferHandle *outHandle);
 
     MPP_RET MppTaskProcess();
 
@@ -66,7 +48,7 @@ private:
 
     void DumpOutFile();
 
-    void DumpInFile(char *data, int32_t size);
+    void DumpInFile(MppBuffer pktBuf);
 
     bool SetFormat(int32_t format);
 
@@ -76,14 +58,10 @@ private:
     MppFrameFormat format_;
     MppCtx mppCtx_;
     MppApi *mpi_;
-    static RKMppApi *mppApi_;
+    RKMppApi *mppApi_;
     MppBufferGroup memGroup_;
     MppPacket packet_;
     MppFrame frame_;
-    CodecJpegCallbackHwi *callback_;
-    std::atomic<bool> running_;
-    std::mutex mutex_;
-    std::shared_ptr<std::thread> threadTask_;
 };
 }  // namespace JPEG
 }  // namespace VDI
