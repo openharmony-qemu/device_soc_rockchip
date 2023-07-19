@@ -57,9 +57,12 @@ ohos_shared_library("libcodec_oem_interface") {
 
   install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
-  part_name = "drivers_peripheral_codec"
+  part_name = "rockchip_products"
 }
 
 group("codec_oem_interface") {
-  deps = [ ":libcodec_oem_interface" ]
+  deps = [
+    ":libcodec_oem_interface",
+    "jpeg:libjpeg_vdi_interface",
+  ]
 }
