@@ -40,7 +40,6 @@ void HdiSession::Init()
     DISPLAY_LOGD();
     mHdiDevices = HdiDeviceInterface::DiscoveryDevice();
     DISPLAY_LOGD("devices size %{public}zd", mHdiDevices.size());
-    std::lock_guard<std::mutex> lock(mMutex);
     mHdiDisplays.clear();
     for (auto device : mHdiDevices) {
         auto displays = device->DiscoveryDisplay();
@@ -59,7 +58,6 @@ void HdiSession::Init()
 void HdiSession::HandleHotplug(bool plugIn)
 {
     for (auto device : mHdiDevices) {
-        std::lock_guard<std::mutex> lock(mMutex);
         for (auto displayMap : mHdiDisplays) {
             auto display = displayMap.second;
             auto isSuccess = device->HandleHotplug(display->GetId(), plugIn);
@@ -74,7 +72,6 @@ int32_t HdiSession::RegHotPlugCallback(HotPlugCallback callback, void *data)
 {
     DISPLAY_CHK_RETURN((callback == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("the callback is nullptr"));
     mHotPlugCallBacks.emplace(callback, data);
-    std::lock_guard<std::mutex> lock(mMutex);
     for (auto displayMap : mHdiDisplays) {
         auto display = displayMap.second;
         if (display->IsConnected()) {
