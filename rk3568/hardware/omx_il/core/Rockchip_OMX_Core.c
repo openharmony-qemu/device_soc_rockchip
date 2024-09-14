@@ -86,7 +86,7 @@ EXIT:
     return ret;
 }
 
-OMX_API OMX_ERRORTYPE OMX_APIENTRY OMX_DeInit(void)
+OMX_API OMX_ERRORTYPE OMX_APIENTRY OMX_Deinit(void)
 {
     OMX_ERRORTYPE ret = OMX_ErrorNone;
 
