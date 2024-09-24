@@ -40,6 +40,7 @@ ohos_prebuilt_etc("iqfil") {
   part_name = "rockchip_products"
   install_enable = true
 }
+
 #system_base_dir
 ohos_prebuilt_executable("ispserver") {
   if (target_cpu == "arm") {
