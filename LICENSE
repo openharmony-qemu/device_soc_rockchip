@@ -3,7 +3,11 @@
 
 (2) The directories below are licensed under GNU General Public License, version 2.
 ./common/kernel/
+./common/sdk_linux
+./common/vendor
 ./rk3588/kernel/
+./rk3566/sdk_linux
+./rk3566/vendor
 
 (3) The directories below are licensed under MIT
 ./common/kernel/
