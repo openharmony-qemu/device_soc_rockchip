@@ -1262,11 +1262,27 @@ OMX_ERRORTYPE omx_open_vpudec_context(RKVPU_OMX_VIDEODEC_COMPONENT *pVideoDec)
 OMX_ERRORTYPE Rkvpu_Dec_ComponentInit(OMX_COMPONENTTYPE *pOMXComponent)
 {
     OMX_ERRORTYPE                  ret               = OMX_ErrorNone;
+    if (pOMXComponent == NULL) {
+        ret = OMX_ErrorBadParameter;
+        goto EXIT;
+    }
     ROCKCHIP_OMX_BASECOMPONENT *pRockchipComponent = (ROCKCHIP_OMX_BASECOMPONENT *)pOMXComponent->pComponentPrivate;
+    if (pRockchipComponent == NULL) {
+        ret = OMX_ErrorBadParameter;
+        goto EXIT;
+    }
     RKVPU_OMX_VIDEODEC_COMPONENT *pVideoDec    =  (RKVPU_OMX_VIDEODEC_COMPONENT *)pRockchipComponent->hComponentHandle;
+    if (pVideoDec == NULL) {
+        ret = OMX_ErrorBadParameter;
+        goto EXIT;
+    }
     OMX_RK_VIDEO_CODINGTYPE codecId = OMX_RK_VIDEO_CodingUnused;
     ROCKCHIP_OMX_BASEPORT           *pRockchipInputPort  = &pRockchipComponent->pRockchipPort[INPUT_PORT_INDEX];
     VpuCodecContext_t *p_vpu_ctx = (VpuCodecContext_t *)Rockchip_OSAL_Malloc(sizeof(VpuCodecContext_t));
+    if (p_vpu_ctx == NULL) {
+        ret = OMX_ErrorBadParameter;
+        goto EXIT;
+    }
     OMX_U32          version_sdk = 0;
 
     if (pRockchipComponent->rkversion != NULL) {
