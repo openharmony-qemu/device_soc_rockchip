@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -75,7 +75,6 @@ int32_t HdiDisplay::SetLayerZorder(uint32_t layerId, uint32_t zorder)
     }
     // reset to sort
     auto zRange = mLayers.equal_range(layer);
-    DISPLAY_LOGD("zorder range : zRange.first %{public}p  zRange.second %{public}p", *zRange.first, *zRange.second);
     for (auto c = zRange.first; c != zRange.second; c++) {
         if (*c == layer) {
             mLayers.erase(c);
@@ -206,6 +205,10 @@ int32_t HdiDisplay::Commit(int32_t *fence)
 int32_t HdiDisplay::SetDisplayClientBuffer(const BufferHandle *buffer, int32_t fence)
 {
     mClientLayer->SetLayerBuffer(buffer, fence);
+    
+    IRect rect = {0, 0, buffer->width, buffer->height};
+    mClientLayer->SetLayerRegion(&rect);
+    
     return DISPLAY_SUCCESS;
 }
 
@@ -220,7 +223,6 @@ HdiLayer *HdiDisplay::GetHdiLayer(uint32_t id)
 VsyncCallBack::VsyncCallBack(VBlankCallback cb, void *data, uint32_t displayId) : mVBlankCb(cb),
     mData(data), mPipe(displayId)
 {
-    DISPLAY_LOGD("VsyncCallBack %{public}p", cb);
 }
 
 void VsyncCallBack::Vsync(unsigned int sequence, uint64_t ns)
