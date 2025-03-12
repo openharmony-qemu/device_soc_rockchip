@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,6 +48,7 @@ HdiNetLinkMonitor::~HdiNetLinkMonitor()
 static int ThreadInit()
 {
     int ret;
+    int fd = -1;
     const int32_t bufferSize = 1024;
     struct sockaddr_nl snl;
 
@@ -55,7 +56,7 @@ static int ThreadInit()
     snl.nl_family = AF_NETLINK;
     snl.nl_pid = getpid();
     snl.nl_groups = 1;
-    int fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);
+    fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);
     DISPLAY_CHK_RETURN(fd < 0, DISPLAY_FAILURE, DISPLAY_LOGE("socket fail"));
     ret = setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &bufferSize, sizeof(bufferSize));
     if (ret == -1) {
@@ -92,12 +93,15 @@ static void ParseUeventMessage(const char *buf, uint32_t len)
 void HdiNetLinkMonitor::MonitorThread()
 {
     constexpr int BUFFER_SIZE = 2048; /* buffer for the variables */
-    int fd = ThreadInit();
+    int len;
+    int fd = -1;
+
+    fd = ThreadInit();
     DISPLAY_CHK_RETURN_NOT_VALUE(fd < 0, DISPLAY_LOGE("socket fail"));
     mScoketFd = fd;
     while (mRunning) {
         char buf[BUFFER_SIZE] = { 0 };
-        int len = read(fd, &buf, sizeof(buf));
+        len = read(fd, &buf, sizeof(buf));
         if (len < 0) {
             DISPLAY_LOGE("read uevent message fail");
             break;
