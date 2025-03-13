@@ -19,6 +19,7 @@
 #include <cerrno>
 #include "display_log.h"
 #include "display_gfx.h"
+#include "hitrace_meter.h"
 #include "v1_0/display_composer_type.h"
 
 using namespace OHOS::HDI::Display::Composer::V1_0;
@@ -86,21 +87,41 @@ bool HdiGfxComposition::CanHandle(HdiLayer &hdiLayer)
     return true;
 }
 
+bool HdiGfxComposition::UseCompositionClient(std::vector<HdiLayer *> &layers)
+{
+    int32_t layerCount = 0;
+    bool hasCompositionClient = false;
+
+    for (auto &layer : layers) {
+        if (!CanHandle(*layer)) {
+            continue;
+        }
+        CompositionType type = layer->GetCompositionType();
+        layerCount += (type != COMPOSITION_VIDEO) && (type != COMPOSITION_CURSOR);
+        hasCompositionClient = hasCompositionClient || (type == COMPOSITION_CLIENT);
+    }
+    return hasCompositionClient || (layerCount > 4);
+}
+
 int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer)
 {
     DISPLAY_LOGD("layers size %{public}zd", layers.size());
+    CompositionType defaultCompType = UseCompositionClient(layers) ? COMPOSITION_CLIENT : COMPOSITION_DEVICE;
     mClientLayer = &clientLayer;
     mCompLayers.clear();
     for (auto &layer : layers) {
-        if (CanHandle(*layer)) {
-            if ((layer->GetCompositionType() != COMPOSITION_VIDEO) &&
-                (layer->GetCompositionType() != COMPOSITION_CURSOR)) {
-                layer->SetDeviceSelect(COMPOSITION_DEVICE);
-            } else {
-                layer->SetDeviceSelect(layer->GetCompositionType());
-            }
-            mCompLayers.push_back(layer);
+        if (!CanHandle(*layer)) {
+            continue;
         }
+
+        if ((layer->GetCompositionType() == COMPOSITION_VIDEO) ||
+            (layer->GetCompositionType() == COMPOSITION_CURSOR)) {
+            layer->SetDeviceSelect(layer->GetCompositionType());
+        } else {
+            layer->SetDeviceSelect(defaultCompType);
+        }
+
+        mCompLayers.push_back(layer);
     }
     DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
     return DISPLAY_SUCCESS;
@@ -129,7 +150,9 @@ int32_t HdiGfxComposition::BlitLayer(HdiLayer &src, HdiLayer &dst)
     ISurface srcSurface = { 0 };
     ISurface dstSurface = { 0 };
     GfxOpt opt = { 0 };
+    StartTrace(HITRACE_TAG_HDF, "HDI:DISP:WaitAcquireFence");
     src.WaitAcquireFence();
+    FinishTrace(HITRACE_TAG_HDF);
     DISPLAY_LOGD();
     HdiLayerBuffer *srcBuffer = src.GetCurrentBuffer();
     DISPLAY_CHK_RETURN((srcBuffer == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("the srcbuffer is null"));
@@ -177,8 +200,24 @@ int32_t HdiGfxComposition::ClearRect(HdiLayer &src, HdiLayer &dst)
 
 int32_t HdiGfxComposition::Apply(bool modeSet)
 {
+    StartTrace(HITRACE_TAG_HDF, "HDI:DISP:Apply");
     int32_t ret;
     DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
+	
+    bool needClear = false;
+    for (uint32_t i = 0; i < mCompLayers.size(); i++) {
+        HdiLayer *layer = mCompLayers[i];
+        CompositionType compType = layer->GetCompositionType();
+        if (compType == COMPOSITION_DEVICE) {
+            needClear = true;
+            break;
+        }
+    }
+
+    if (needClear) {
+        ClearRect(*mClientLayer, *mClientLayer);
+    }
+
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];
         CompositionType compType = layer->GetCompositionType();
@@ -198,6 +237,7 @@ int32_t HdiGfxComposition::Apply(bool modeSet)
                 break;
         }
     }
+    FinishTrace(HITRACE_TAG_HDF);
     return DISPLAY_SUCCESS;
 }
 } // namespace OHOS
