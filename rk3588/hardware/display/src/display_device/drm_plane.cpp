@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,6 +34,16 @@ struct PlaneTypeName planeTypeNames[] = {
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN1, "Esmart1-win1" },
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN2, "Esmart1-win2" },
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_WIN3, "Esmart1-win3" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN0, "Smart0-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN1, "Smart0-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN2, "Smart0-win2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_WIN3, "Smart0-win3" },
+
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN0, "Smart1-win0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN1, "Smart1-win1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN2, "Smart1-win2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_WIN3, "Smart1-win3" },
 
     { DrmPlaneType::DRM_PLANE_TYPE_Unknown, "unknown" },
 };
@@ -116,6 +126,7 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
 {
     DISPLAY_LOGD();
     int32_t ret;
+    uint32_t find_name = 0;
     DrmProperty prop;
     GetCrtcProp(drmDevice);
     GetSrcProp(drmDevice);
@@ -137,7 +148,7 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));
 
     for (int i = 0; i < static_cast<int>ARRAY_SIZE(planeTypeNames); i++) {
-        uint32_t find_name = 0;
+        find_name = 0;
 
         for (auto &drmEnum : prop.enums) {
             if (!strncmp(drmEnum.name.c_str(), (const char*)planeTypeNames[i].name,
