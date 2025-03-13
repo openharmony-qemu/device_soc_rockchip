@@ -59,7 +59,7 @@ ohos_shared_library("libdisplay_buffer_vdi_impl") {
 
   install_enable = true
   install_images = [ chipset_base_dir ]
-  innerapi_tags = [ "chipsetsdk" ]
+  innerapi_tags = [ "passthrough" ]
   subsystem_name = "hdf"
   part_name = "device_rk3588"
 }
@@ -97,7 +97,7 @@ ohos_shared_library("libdisplay_buffer_vendor") {
 
   install_enable = true
   install_images = [ chipset_base_dir ]
-  innerapi_tags = [ "chipsetsdk" ]
+  innerapi_tags = [ "passthrough" ]
   subsystem_name = "hdf"
   part_name = "device_rk3588"
 }
@@ -146,6 +146,7 @@ ohos_shared_library("libdisplay_composer_vdi_impl") {
   external_deps = [
     "c_utils:utils",
     "drivers_interface_display:display_composer_idl_headers",
+    "drivers_interface_display:libdisplay_composer_proxy_1.2",
     "graphic_surface:buffer_handle",
     "hilog:libhilog",
     "ipc:ipc_single",
@@ -216,7 +217,6 @@ ohos_shared_library("display_composer_vendor") {
 ohos_shared_library("display_gfx") {
   sources = [ "src/display_gfx/display_gfx.c" ]
   include_dirs = [
-    "./include",
     "${root_path}/base/hiviewdfx/interfaces/innerkits/libhilog/include",
     "${root_path}/commonlibrary/c_utils/base/include",
     "${root_path}/device/soc/rockchip/rk3588/hardware/rga/include/",
