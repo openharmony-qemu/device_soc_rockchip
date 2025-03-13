@@ -17,6 +17,7 @@
 #define _DISPLAY_COMPOSER_VDI_IMPL_H
 
 #include <vector>
+#include <mutex>
 #include "hdi_session.h"
 #include "idisplay_composer_vdi.h"
 #include "v1_0/display_composer_type.h"
@@ -29,6 +30,7 @@ using namespace OHOS::HDI::Display::Composer::V1_0;
 
 class DisplayComposerVdiImpl : public IDisplayComposerVdi {
 public:
+    static DisplayComposerVdiImpl& GetVdiInstance();
     DisplayComposerVdiImpl();
     virtual ~DisplayComposerVdiImpl();
     virtual int32_t RegHotPlugCallback(HotPlugCallback cb, void* data) override;
@@ -73,8 +75,11 @@ public:
     virtual int32_t SetLayerMaskInfo(uint32_t devId, uint32_t layerId, const MaskInfo maskInfo) override;
     virtual int32_t SetLayerColor(uint32_t devId, uint32_t layerId, const LayerColor& layerColor) override;
 private:
-    std::shared_ptr<HdiSession> composerModel_;
+    std::mutex mMutex;
 };
+
+extern "C" int32_t GetDumpInfo(std::string& result);
+extern "C" int32_t UpdateConfig(std::string& result);
 } // DISPLAY
 }  // HDI
 }  // OHOS
