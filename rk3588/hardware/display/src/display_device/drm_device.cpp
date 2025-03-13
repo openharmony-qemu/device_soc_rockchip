@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -276,8 +276,6 @@ std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t pipe, uin
 {
     std::vector<std::shared_ptr<DrmPlane>> planes;
     for (const auto &plane : mPlanes) {
-	if (plane->GetId() != 105)
-	    continue;
         if (plane->IsIdle() && ((1 << pipe) & plane->GetPossibleCrtcs()) && (type == plane->GetType())) {
             planes.push_back(plane);
         }
@@ -344,7 +342,6 @@ std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DrmDevice::DiscoveryDi
         }
         DISPLAY_LOGD();
         auto crtc = crtcIter->second;
-        DISPLAY_LOGD("crtc %{public}p", crtc.get());
         // create the display
         std::shared_ptr<HdiDisplay> display = std::make_shared<DrmDisplay>(connector, crtc, mInstance);
         DISPLAY_LOGD();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -196,20 +196,18 @@ std::unique_ptr<HdiLayer> DrmDisplay::CreateHdiLayer(LayerType type)
 
 int32_t DrmDisplay::WaitForVBlank(uint64_t *ns)
 {
-    //int ret;
-    //constexpr uint64_t nPerS = 1000000000;
-    //constexpr uint64_t nPerUS = 1000;
-    //drmVBlank vbl = {
-    //    .request.type = DRM_VBLANK_RELATIVE,
-    //    .request.sequence = 0,
-    //    .request.signal = 0,
-    //};
+    int ret;
+    constexpr uint64_t nPerS = 1000000000;
+    constexpr uint64_t nPerUS = 1000;
+    drmVBlank vbl = {
+        .request.type = DRM_VBLANK_RELATIVE,
+        .request.sequence = 0,
+        .request.signal = 0,
+    };
     DISPLAY_CHK_RETURN((ns == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("in ns is nullptr"));
-    //ret = drmWaitVBlank(mDrmDevice->GetDrmFd(), &vbl);
-    //DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE, DISPLAY_LOGE("wait vblank failed errno %{public}d", errno));
-    
-    usleep(1000*20);
-    *ns = 1000*1000*20;  //static_cast<uint64_t>(vbl.reply.tval_sec * nPerS + vbl.reply.tval_usec * nPerUS);
+    ret = drmWaitVBlank(mDrmDevice->GetDrmFd(), &vbl);
+    DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE, DISPLAY_LOGE("wait vblank failed errno %{public}d", errno));
+    *ns = static_cast<uint64_t>(vbl.reply.tval_sec * nPerS + vbl.reply.tval_usec * nPerUS);
     return DISPLAY_SUCCESS;
 }
 
@@ -264,7 +262,6 @@ int32_t DrmDisplay::ChosePreferenceMode()
 
 int32_t DrmDisplay::RegDisplayVBlankCallback(VBlankCallback cb, void *data)
 {
-    DISPLAY_LOGD("the VBlankCallback %{public}p ", cb);
     (void)data;
     std::shared_ptr<VsyncCallBack> vsyncCb = std::make_shared<VsyncCallBack>(cb, data, mCrtc->GetPipe());
     DrmVsyncWorker::GetInstance().ReqesterVBlankCb(vsyncCb);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -78,7 +78,7 @@ int32_t DrmConnector::Init(DrmDevice &drmDevice)
     int32_t ret;
     DrmProperty prop;
     DISPLAY_LOGD();
-    DISPLAY_CHK_RETURN((mDrmFdPtr == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("the mDrmFdPtr is NULL"));
+    DISPLAY_CHK_RETURN((mDrmFdPtr == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("the mDrmFdPtr is nullptr"));
     DISPLAY_CHK_RETURN((mDrmFdPtr->GetFd() == -1), DISPLAY_FAILURE, DISPLAY_LOGE("the drm fd is -1"));
     // find dpms prop
     ret = drmDevice.GetConnectorProperty(*this, PROP_DPMS, prop);
@@ -114,7 +114,6 @@ int32_t DrmConnector::GetBrightness(uint32_t& level)
     return DISPLAY_SUCCESS;
 }
 
-const int BACKLIGHT_MIN = 10;
 int32_t DrmConnector::SetBrightness(uint32_t level)
 {
     static int32_t brFd = 0;
@@ -138,9 +137,6 @@ int32_t DrmConnector::SetBrightness(uint32_t level)
         DISPLAY_LOGE("memset_s failed\n");
         return DISPLAY_FAILURE;
     }
-    if (level < BACKLIGHT_MIN) {
-        level = BACKLIGHT_MIN;
-    }
     int bytes = sprintf_s(buffer, sizeof(buffer), "%d\n", level);
     if (bytes < 0) {
         DISPLAY_LOGE("change failed\n");
@@ -156,12 +152,7 @@ void DrmConnector::GetDisplayCap(DisplayCapability &cap)
     cap.phyHeight = mPhyHeight;
     cap.phyWidth = mPhyWidth;
     cap.type = mType;
-    memcpy_s(const_cast<char*>(cap.name.c_str()), cap.name.size(), mName.c_str(), mName.size());
-    if (mName.size() >= sizeof(cap.name)) {
-        cap.name[sizeof(cap.name) - 1] = 0;
-    } else {
-        cap.name[mName.size()] = 0;
-    }
+    cap.name = mName;
     cap.supportLayers = mSupportLayers;
     cap.virtualDispCount = mVirtualDispCount;
     cap.supportWriteBack = mSupportWriteBack;
@@ -293,6 +284,7 @@ bool DrmConnector::HandleHotplug(IdMapPtr<DrmEncoder> &encoders,
 {
     DISPLAY_LOGD("plug %{public}d", plugIn);
     int drmFd = mDrmFdPtr->GetFd();
+    int ret;
     int crtc_id = 0;
     std::shared_ptr<DrmCrtc> crtc;
     uint32_t blob_id;
@@ -315,7 +307,7 @@ bool DrmConnector::HandleHotplug(IdMapPtr<DrmEncoder> &encoders,
         DrmVsyncWorker::GetInstance().EnableVsync(plugIn);
         drmModeCreatePropertyBlob(drmFd, &c->modes[0],
             sizeof(c->modes[0]), &blob_id);
-        int ret = drmModeAtomicAddProperty(pset, crtc->GetId(), crtc->GetActivePropId(), (int)plugIn);
+        ret = drmModeAtomicAddProperty(pset, crtc->GetId(), crtc->GetActivePropId(), (int)plugIn);
         ret |= drmModeAtomicAddProperty(pset, crtc->GetId(), crtc->GetModePropId(), blob_id);
         ret |= drmModeAtomicAddProperty(pset, GetId(), GetPropCrtcId(), crtc_id);
         DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE,

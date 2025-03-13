@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,12 +23,10 @@ namespace DISPLAY {
 struct PlaneMaskName planeMaskNames[] = {
     { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER0_MASK, "Cluster0" },
     { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER1_MASK, "Cluster1" },
-    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER2_MASK, "Cluster2" },
-    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER3_MASK, "Cluster3" },
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_MASK, "Esmart0" },
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_MASK, "Esmart1" },
-    { DrmPlaneType::DRM_PLANE_TYPE_ESMART2_MASK, "Esmart2" },
-    { DrmPlaneType::DRM_PLANE_TYPE_ESMART3_MASK, "Esmart3" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART0_MASK, "Smart0" },
+    { DrmPlaneType::DRM_PLANE_TYPE_SMART1_MASK, "Smart1" },
     { DrmPlaneType::DRM_PLANE_TYPE_Unknown, "unknown" },
 };
 
@@ -99,8 +97,8 @@ bool DrmCrtc::CanBind()
 
 int32_t DrmCrtc::SetActivieMode(int32_t id)
 {
-    DISPLAY_LOGE("set activie modeid to %{public}d", id);
-    DISPLAY_CHK_RETURN((id > 0), DISPLAY_PARAM_ERR, DISPLAY_LOGE("id %{public}d is invalid ", id));
+    DISPLAY_LOGD("set activie modeid to %{public}d", id);
+    DISPLAY_CHK_RETURN((id != 0), DISPLAY_PARAM_ERR, DISPLAY_LOGE("id %{public}d is invalid ", id));
     if (mActiveModeId != id) {
         mNeedModeSet = true;
     }
