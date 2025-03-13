@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,22 +61,22 @@ int32_t HdiDrmComposition::SetCrtcProperty(DrmPlane &drmPlane,
     int ret;
 
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropCrtc_xId(), 0);
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropCrtc_xId %{public}d, crop.x %{public}d", drmPlane.GetId(),
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropCrtc_xId %{public}d, crop.x %{public}d", drmPlane.GetId(),
         drmPlane.GetPropCrtc_xId(), 0);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropCrtc_yId(), 0);
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropCrtc_yId %{public}d, crop.y %{public}d", drmPlane.GetId(),
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropCrtc_yId %{public}d, crop.y %{public}d", drmPlane.GetId(),
         drmPlane.GetPropCrtc_yId(), 0);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropCrtc_wId(), bufferW);
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropCrtc_wId %{public}d, crop.w %{public}d", drmPlane.GetId(),
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropCrtc_wId %{public}d, crop.w %{public}d", drmPlane.GetId(),
         drmPlane.GetPropCrtc_wId(), bufferW);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropCrtc_hId(), bufferH);
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropCrtc_hId %{public}d, crop.h %{public}d", drmPlane.GetId(),
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropCrtc_hId %{public}d, crop.h %{public}d", drmPlane.GetId(),
         drmPlane.GetPropCrtc_xId(), bufferH);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
@@ -90,26 +90,26 @@ int32_t HdiDrmComposition::SetSrcProperty(DrmPlane &drmPlane,
 {
     int ret;
 
-    ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropSrc_xId(), 0<<16); // 16:shift left 16 bits
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropSrc_xId %{public}d, displayRect.x %{public}d", drmPlane.GetId(),
-        drmPlane.GetPropSrc_xId(), 0);
+    ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropSrc_xId(), 0 << 16); // 16:shift left 16 bits
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropSrc_xId %{public}d, displayRect.x %{public}d",
+        drmPlane.GetId(), drmPlane.GetPropSrc_xId(), 0);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
-    ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropSrc_yId(), 0<<16); // 16:shift left 16 bits
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropSrc_yId %{public}d, displayRect.y %{public}d", drmPlane.GetId(),
-        drmPlane.GetPropSrc_yId(), 0);
+    ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropSrc_yId(), 0 << 16); // 16:shift left 16 bits
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropSrc_yId %{public}d, displayRect.y %{public}d",
+        drmPlane.GetId(), drmPlane.GetPropSrc_yId(), 0);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropSrc_wId(),
-                                   bufferW<<16); // 16:shift left 16 bits
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropCrtc_wId %{public}d, displayRect.w %{public}d",
+                                   bufferW << 16); // 16:shift left 16 bits
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropCrtc_wId %{public}d, displayRect.w %{public}d",
         drmPlane.GetId(), drmPlane.GetPropSrc_wId(), bufferW);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropSrc_hId(),
-        bufferH<<16); // 16:shift left 16 bits
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropSrc_hId %{public}d, displayRect.h %{public}d", drmPlane.GetId(),
-        drmPlane.GetPropSrc_hId(), bufferH);
+        bufferH << 16); // 16:shift left 16 bits
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropSrc_hId %{public}d, displayRect.h %{public}d",
+        drmPlane.GetId(), drmPlane.GetPropSrc_hId(), bufferH);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the fb planeid fialed errno : %{public}d", errno));
 
     return DISPLAY_SUCCESS;
@@ -129,7 +129,7 @@ int32_t HdiDrmComposition::ApplyPlane(HdiDrmLayer &layer,
 
     DISPLAY_LOGD();
     if (propId != 0) {
-        DISPLAY_LOGI("set the fence in prop");
+        DISPLAY_LOGD("set the fence in prop");
         if (fenceFd >= 0) {
             ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), propId, fenceFd);
             DISPLAY_LOGD("set the IfenceProp plane id %{public}d, propId %{public}d, fenceFd %{public}d",
@@ -144,9 +144,9 @@ int32_t HdiDrmComposition::ApplyPlane(HdiDrmLayer &layer,
     ret = SetSrcProperty(drmPlane, pset, bufferW, bufferH);
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set Src fialed errno : %{public}d", errno));
 
-    ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropZposId(), 0);//layer.GetZorder());
-    DISPLAY_LOGI("set the fb planeid %{public}d, GetPropZposId %{public}d, zpos %{public}d", drmPlane.GetId(),
-        drmPlane.GetPropZposId(), 0);//layer.GetZorder());
+    ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropZposId(), layer.GetZorder());
+    DISPLAY_LOGD("set the fb planeid %{public}d, GetPropZposId %{public}d, zpos %{public}d",
+        drmPlane.GetId(), drmPlane.GetPropZposId(), layer.GetZorder());
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set the zpos fialed errno : %{public}d", errno));
 
     // set fb id
@@ -154,14 +154,14 @@ int32_t HdiDrmComposition::ApplyPlane(HdiDrmLayer &layer,
     DISPLAY_CHK_RETURN((gemBuffer == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("current gemBuffer is nullptr"));
     DISPLAY_CHK_RETURN((!gemBuffer->IsValid()), DISPLAY_FAILURE, DISPLAY_LOGE("the DrmGemBuffer is invalid"));
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropFbId(), gemBuffer->GetFbId());
-    DISPLAY_LOGD("set the fb planeid %{public}d, propId %{public}d, fbId %{public}d", drmPlane.GetId(),
-        drmPlane.GetPropFbId(), gemBuffer->GetFbId());
+    DISPLAY_LOGD("set the fb planeid %{public}d, propId %{public}d, fbId %{public}d",
+        drmPlane.GetId(), drmPlane.GetPropFbId(), gemBuffer->GetFbId());
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set fb id fialed errno : %{public}d", errno));
 
     // set crtc id
     ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), drmPlane.GetPropCrtcId(), mCrtc->GetId());
-    DISPLAY_LOGD("set the crtc planeId %{public}d, propId %{public}d, crtcId %{public}d", drmPlane.GetId(),
-        drmPlane.GetPropCrtcId(), mCrtc->GetId());
+    DISPLAY_LOGD("set the crtc planeId %{public}d, propId %{public}d, crtcId %{public}d",
+        drmPlane.GetId(), drmPlane.GetPropCrtcId(), mCrtc->GetId());
     DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set crtc id fialed errno : %{public}d", errno));
     return DISPLAY_SUCCESS;
 }
@@ -229,7 +229,7 @@ int32_t HdiDrmComposition::FindPlaneAndApply(drmModeAtomicReqPtr pset)
         for (uint32_t j = 0; j < mPlanes.size(); j++) {
             auto &drmPlane = mPlanes[j];
             if (drmPlane->GetPipe() != 0 && drmPlane->GetPipe() != (1 << mCrtc->GetPipe())) {
-                DISPLAY_LOGI("plane %{public}d used pipe %{public}d crtc pipe %{public}d", drmPlane->GetId(),
+                DISPLAY_LOGD("plane %{public}d used pipe %{public}d crtc pipe %{public}d", drmPlane->GetId(),
                     drmPlane->GetPipe(), mCrtc->GetPipe());
                 continue;
             }
