@@ -26,7 +26,11 @@ HdiComposer::HdiComposer(std::unique_ptr<HdiComposition> pre, std::unique_ptr<Hd
 
 int32_t HdiComposer::Prepare(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer)
 {
-    int ret = mPreComp->SetLayers(layers, clientLayer);
+    if (mPreComp == null) {
+        DISPLAY_LOGD("HdiComposer::Prepare mPreComp is null");			
+	    return DISPLAY_FAILURE;
+	} 
+	int ret = mPreComp->SetLayers(layers, clientLayer);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("pre composition prepare failed"));
     ret = mPostComp->SetLayers(layers, clientLayer);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("post composition prepare failed"));
@@ -35,7 +39,11 @@ int32_t HdiComposer::Prepare(std::vector<HdiLayer *> &layers, HdiLayer &clientLa
 
 int32_t HdiComposer::Commit(bool modeSet)
 {
-    int ret = mPreComp->Apply(modeSet);
+	if (mPreComp == null) {
+        DISPLAY_LOGD("HdiComposer::Commit mPreComp is null");			
+	    return DISPLAY_FAILURE;
+	}    
+	int ret = mPreComp->Apply(modeSet);
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("pre composition apply failed"));
     DISPLAY_LOGD("commit modSet=%{public}d", modeSet);
     ret = mPostComp->Apply(modeSet);

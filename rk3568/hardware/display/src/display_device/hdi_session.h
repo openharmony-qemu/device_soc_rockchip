@@ -44,6 +44,10 @@ public:
         DISPLAY_CHK_RETURN((iter == mHdiDisplays.end()), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find display %{public}d", devId));
         auto display = iter->second.get();
+		if (display == null) {
+            DISPLAY_LOGD("CallDisplayFunction display is null");
+			return DISPLAY_FAILURE;
+		}
         return (display->*member)(std::forward<Args>(args)...);
     }
 
@@ -57,6 +61,10 @@ public:
         DISPLAY_CHK_RETURN((iter == mHdiDisplays.end()), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find display %{public}d", devId));
         auto display = iter->second.get();
+		if (display == null) {
+            DISPLAY_LOGD("CallLayerFunction display is null");
+			return DISPLAY_FAILURE;
+		}		
         auto layer = display->GetHdiLayer(layerId);
         DISPLAY_CHK_RETURN((layer == nullptr), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find the layer %{public}d", layerId));
