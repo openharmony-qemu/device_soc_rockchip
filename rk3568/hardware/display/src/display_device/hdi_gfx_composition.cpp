@@ -207,6 +207,10 @@ int32_t HdiGfxComposition::Apply(bool modeSet)
     bool needClear = false;
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];
+		if (layer == nullptr) {
+            DISPLAY_LOGD("HdiGfxComposition::Apply layer1 is null");			
+		    return DISPLAY_FAILURE;
+		}
         CompositionType compType = layer->GetCompositionType();
         if (compType == COMPOSITION_DEVICE) {
             needClear = true;
@@ -220,6 +224,10 @@ int32_t HdiGfxComposition::Apply(bool modeSet)
 
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];
+		if (layer == nullptr) {
+            DISPLAY_LOGD("HdiGfxComposition::Apply layer2 is null");			
+		    return DISPLAY_FAILURE;
+		}		
         CompositionType compType = layer->GetCompositionType();
         switch (compType) {
             case COMPOSITION_VIDEO:
