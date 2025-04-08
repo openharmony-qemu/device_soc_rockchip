@@ -44,7 +44,7 @@ public:
         DISPLAY_CHK_RETURN((iter == mHdiDisplays.end()), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find display %{public}d", devId));
         auto display = iter->second.get();
-		if (display == null) {
+		if (display == nullptr) {
             DISPLAY_LOGD("CallDisplayFunction display is null");
 			return DISPLAY_FAILURE;
 		}
@@ -61,7 +61,7 @@ public:
         DISPLAY_CHK_RETURN((iter == mHdiDisplays.end()), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find display %{public}d", devId));
         auto display = iter->second.get();
-		if (display == null) {
+		if (display == nullptr) {
             DISPLAY_LOGD("CallLayerFunction display is null");
 			return DISPLAY_FAILURE;
 		}		
