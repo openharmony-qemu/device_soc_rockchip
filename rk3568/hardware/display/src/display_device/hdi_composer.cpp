@@ -26,7 +26,7 @@ HdiComposer::HdiComposer(std::unique_ptr<HdiComposition> pre, std::unique_ptr<Hd
 
 int32_t HdiComposer::Prepare(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer)
 {
-    if (mPreComp == null) {
+    if (mPreComp == nullptr) {
         DISPLAY_LOGD("HdiComposer::Prepare mPreComp is null");			
 	    return DISPLAY_FAILURE;
 	} 
@@ -39,7 +39,7 @@ int32_t HdiComposer::Prepare(std::vector<HdiLayer *> &layers, HdiLayer &clientLa
 
 int32_t HdiComposer::Commit(bool modeSet)
 {
-	if (mPreComp == null) {
+	if (mPreComp == nullptr) {
         DISPLAY_LOGD("HdiComposer::Commit mPreComp is null");			
 	    return DISPLAY_FAILURE;
 	}    
