@@ -207,7 +207,7 @@ int32_t HdiGfxComposition::Apply(bool modeSet)
     bool needClear = false;
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];
-		if (layer == null) {
+		if (layer == nullptr) {
             DISPLAY_LOGD("HdiGfxComposition::Apply layer1 is null");			
 		    return DISPLAY_FAILURE;
 		}
@@ -224,7 +224,7 @@ int32_t HdiGfxComposition::Apply(bool modeSet)
 
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];
-		if (layer == null) {
+		if (layer == nullptr) {
             DISPLAY_LOGD("HdiGfxComposition::Apply layer2 is null");			
 		    return DISPLAY_FAILURE;
 		}		
