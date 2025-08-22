@@ -17,6 +17,7 @@
 #define HDI_GFX_COMPOSITION_H
 #include "display_gfx.h"
 #include "hdi_composer.h"
+#include <mutex>
 namespace OHOS {
 namespace HDI {
 namespace DISPLAY {
