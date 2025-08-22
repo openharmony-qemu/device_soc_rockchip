@@ -105,6 +105,7 @@ bool HdiGfxComposition::UseCompositionClient(std::vector<HdiLayer *> &layers)
 
 int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &clientLayer)
 {
+    std::lock_guard<std::mutex> lock(mCompLayersMutex);
     DISPLAY_LOGD("layers size %{public}zd", layers.size());
     CompositionType defaultCompType = UseCompositionClient(layers) ? COMPOSITION_CLIENT : COMPOSITION_DEVICE;
     mClientLayer = &clientLayer;
@@ -201,6 +202,7 @@ int32_t HdiGfxComposition::ClearRect(HdiLayer &src, HdiLayer &dst)
 int32_t HdiGfxComposition::Apply(bool modeSet)
 {
     StartTrace(HITRACE_TAG_HDF, "HDI:DISP:Apply");
+    std::lock_guard<std::mutex> lock(mCompLayersMutex);
     int32_t ret;
     DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
 	

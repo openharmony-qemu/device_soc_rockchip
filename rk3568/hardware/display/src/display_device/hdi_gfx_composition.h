@@ -41,6 +41,7 @@ private:
     void *mGfxModule = nullptr;
     GfxFuncs *mGfxFuncs = nullptr;
     HdiLayer *mClientLayer;
+    std::mutex mCompLayersMutex;
 };
 } // namespace OHOS
 } // namespace HDI
