@@ -344,6 +344,11 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     srcRgaBuffer = wrapbuffer_handle(src_handle, srcSurface->width, srcSurface->height, src_param.format);
     dstRgaBuffer = wrapbuffer_handle(dst_handle, dstSurface->width, dstSurface->height, dst_param.format);
 
+    srcRgaBuffer.wstride = ALIGN_UP(srcSurface->width, 16);
+    srcRgaBuffer.hstride = ALIGN_UP(srcSurface->height, 2);
+    dstRgaBuffer.wstride = ALIGN_UP(dstSurface->width, 16);
+    dstRgaBuffer.hstride = ALIGN_UP(dstSurface->height, 2);
+
     srect.x = srcRect->x;
     srect.x = (srect.x % 2 == 1) ? (srect.x - 1) : srect.x; // 2: Is it odd?
     srect.y = srcRect->y;
