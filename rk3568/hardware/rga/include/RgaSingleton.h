@@ -19,6 +19,7 @@
 #ifndef _LIBS_RGA_SINGLETON_H
 #define _LIBS_RGA_SINGLETON_H
 
+#ifndef ANDROID
 #include "RgaMutex.h"
 
 #if defined(__clang__)
@@ -27,10 +28,9 @@
 #endif
 
 template <typename TYPE>
-class RgaSingleton {
-public:
-    static TYPE& getInstance()
-    {
+class Singleton {
+  public:
+    static TYPE& getInstance() {
         Mutex::Autolock _l(sLock);
         TYPE* instance = sInstance;
         if (instance == nullptr) {
@@ -39,19 +39,19 @@ public:
         }
         return *instance;
     }
-    static bool hasInstance()
-    {
+
+    static bool hasInstance() {
         Mutex::Autolock _l(sLock);
         return sInstance != nullptr;
     }
 
-protected:
-    ~RgaSingleton() { }
-    RgaSingleton() { }
+  protected:
+    ~Singleton() { }
+    Singleton() { }
 
-private:
-    RgaSingleton(const RgaSingleton&);
-    RgaSingleton& operator = (const RgaSingleton&);
+  private:
+    Singleton(const Singleton&);
+    Singleton& operator = (const Singleton&);
     static Mutex sLock;
     static TYPE* sInstance;
 };
@@ -60,11 +60,11 @@ private:
 #pragma clang diagnostic pop
 #endif
 
-#define RGA_SINGLETON_STATIC_INSTANCE(TYPE) do { \
-    template<> ::RgaMutex  \
-        (::RgaSingleton< TYPE >::sLock)(::RgaMutex::PRIVATE);  \
-    template<> TYPE* ::RgaSingleton< TYPE >::sInstance(nullptr);  /* NOLINT */ \
-    template class ::RgaSingleton< TYPE >; \
-} while (0)
+#define RGA_SINGLETON_STATIC_INSTANCE(TYPE)                 \
+    template<> ::Mutex  \
+        (::Singleton< TYPE >::sLock)(::Mutex::PRIVATE);  \
+    template<> TYPE* ::Singleton< TYPE >::sInstance(nullptr);  /* NOLINT */ \
+    template class ::Singleton< TYPE >;
 
-#endif // _LIBS_RGA_SINGLETON_H
+#endif //ANDROID
+#endif //_LIBS_RGA_SINGLETON_H
