@@ -32,7 +32,6 @@
 #include "vpu_global.h"
 #include "Rockchip_OSAL_Log.h"
 #include "Rockchip_OSAL_Memory.h"
-#include "rga_ioctl.h"
 #include "rga.h"
 #include "Rockchip_OSAL_RGA_Process.h"
 
