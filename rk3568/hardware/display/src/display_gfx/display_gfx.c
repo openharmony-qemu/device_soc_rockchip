@@ -17,6 +17,7 @@
 #include <string.h>
 #include "im2d.h"
 #include "rga.h"
+#include "RgaUtils.h"
 #include "display_log.h"
 #include "securec.h"
 #include "display_gfx.h"
@@ -150,14 +151,18 @@ RgaSURF_FORMAT colorSpaceModeChange(PixelFormat color, uint8_t *isYuv)
 int32_t rkFillRect(ISurface *iSurface, IRect *rect, uint32_t color, GfxOpt *opt)
 {
     rga_buffer_t dst;
+    rga_buffer_handle_t dst_handle = 0;
+    im_handle_param_t dst_param;
     im_rect imRect;
     IM_STATUS ret;
     uint8_t isYuv;
+    int32_t ret_val = DISPLAY_SUCCESS;
 
     errno_t eok = memset_s((void *)&imRect, sizeof(imRect), 0, sizeof(imRect));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
     imRect.x = rect->x;
     imRect.y = rect->y;
@@ -167,30 +172,33 @@ int32_t rkFillRect(ISurface *iSurface, IRect *rect, uint32_t color, GfxOpt *opt)
     eok = memset_s((void *)&dst, sizeof(dst), 0, sizeof(dst));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
-    dst.phy_addr = 0; // (void*)iSurface->phyAddr;
-    dst.vir_addr = 0; // iSurface->virAddr;
-    dst.fd = (int32_t)iSurface->phyAddr;
-    if (dst.fd == 0) {
-        DISPLAY_LOGE("source fd is invalid");
-        return DISPLAY_PARAM_ERR;
+
+    dst_param.width = (uint32_t)iSurface->width;
+    dst_param.height = (uint32_t)iSurface->height;
+    dst_param.format = (uint32_t)colorSpaceModeChange(iSurface->enColorFmt, &isYuv);
+
+    dst_handle = importbuffer_fd(iSurface->phyAddr, &dst_param);
+    if (dst_handle == 0) {
+        DISPLAY_LOGE("import dst_handle error!");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
     }
-    DISPLAY_LOGD("fd %{public}d", dst.fd);
-    dst.width = iSurface->width;
-    dst.height = iSurface->height;
-    dst.wstride = ALIGN_UP(iSurface->width, 16);
-    dst.hstride = ALIGN_UP(iSurface->height, 2);
-    dst.format = colorSpaceModeChange(iSurface->enColorFmt, &isYuv);
-    dst.color_space_mode = IM_COLOR_SPACE_DEFAULT;
-    dst.color = color;
-    if (opt->enGlobalAlpha)
-        dst.global_alpha = opt->globalAlpha;
+    dst = wrapbuffer_handle(dst_handle, iSurface->width, iSurface->height, dst_param.format);
+
     ret = imfill(dst, imRect, color);
-    if (ret != IM_STATUS_SUCCESS)
-        return DISPLAY_FAILURE;
-    else
-        return DISPLAY_SUCCESS;
+    if (ret != IM_STATUS_SUCCESS) {
+        DISPLAY_LOGE("gfx imfill %{public}s", imStrError(ret));
+        ret_val = DISPLAY_FAILURE;
+    }
+
+EXIT:
+    if (dst_handle) {
+        releasebuffer_handle(dst_handle);
+    }
+    return ret_val;
 }
 
 int32_t blendTypeChange(BlendType blendType)
@@ -268,74 +276,51 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     int32_t usage = 0;
     uint8_t isYuv = 0;
     rga_buffer_t dstRgaBuffer, srcRgaBuffer, bRgbBuffer;
+    rga_buffer_handle_t src_handle = 0, dst_handle = 0, brgb_handle = 0;
+    im_handle_param_t src_param, dst_param, brgb_param;
     IM_STATUS ret = 0;
     im_rect srect;
     im_rect drect;
     im_rect prect;
     int32_t rkBlendType = 0;
     int32_t rkTransformType = 0;
+    int32_t ret_val = DISPLAY_SUCCESS;
 
     errno_t eok = memset_s(&dstRgaBuffer, sizeof(dstRgaBuffer), 0, sizeof(dstRgaBuffer));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
     eok = memset_s(&srcRgaBuffer, sizeof(srcRgaBuffer), 0, sizeof(srcRgaBuffer));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
     eok = memset_s(&bRgbBuffer, sizeof(bRgbBuffer), 0, sizeof(bRgbBuffer));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
     eok = memset_s(&srect, sizeof(srect), 0, sizeof(srect));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
     eok = memset_s(&drect, sizeof(drect), 0, sizeof(drect));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
+        ret_val = false;
+        goto EXIT;
     }
     eok = memset_s(&prect, sizeof(prect), 0, sizeof(prect));
     if (eok != EOK) {
         DISPLAY_LOGE("memset_s failed");
-        return false;
-    }
-    if (opt->enGlobalAlpha) {
-        dstRgaBuffer.global_alpha = opt->globalAlpha;
-        srcRgaBuffer.global_alpha = opt->globalAlpha;
-    }
-    dstRgaBuffer.width = dstSurface->width;
-    dstRgaBuffer.height = dstSurface->height;
-    dstRgaBuffer.wstride = ALIGN_UP(dstSurface->width, 16);
-    dstRgaBuffer.hstride = ALIGN_UP(dstSurface->height, 2);
-    dstRgaBuffer.format = colorSpaceModeChange(dstSurface->enColorFmt, &isYuv);
-    dstRgaBuffer.phy_addr = 0; // (void *)dstSurface->phyAddr;
-    dstRgaBuffer.vir_addr = 0; // dstSurface->virAddr;
-    dstRgaBuffer.color_space_mode = IM_COLOR_SPACE_DEFAULT;
-    dstRgaBuffer.fd = (int32_t)dstSurface->phyAddr;
-    if (isYuv == 1) {
-        DISPLAY_LOGE("rk gfx do not support dst buffer is yuv format");
-        return DISPLAY_PARAM_ERR;
-    }
-
-    srcRgaBuffer.width = srcSurface->width;
-    srcRgaBuffer.height = srcSurface->height;
-    srcRgaBuffer.wstride = ALIGN_UP(srcSurface->width, 16);
-    srcRgaBuffer.hstride = ALIGN_UP(srcSurface->height, 2);
-    srcRgaBuffer.phy_addr = 0; // (void *)srcSurface->phyAddr;
-    srcRgaBuffer.vir_addr = 0; // srcSurface->virAddr;
-    srcRgaBuffer.format = colorSpaceModeChange(srcSurface->enColorFmt, &isYuv);
-    srcRgaBuffer.color_space_mode = IM_COLOR_SPACE_DEFAULT;
-    srcRgaBuffer.fd = (int32_t)srcSurface->phyAddr;
-
-    if (srcRgaBuffer.fd == 0) {
-        DISPLAY_LOGE("source fd is invalid");
-        return DISPLAY_PARAM_ERR;
+        ret_val = false;
+        goto EXIT;
     }
 
     DISPLAY_LOGD("gfx src fd %{public}d, w %{public}d, h %{publuc}d, sw %{public}d sh %{public}d",
@@ -344,6 +329,45 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     DISPLAY_LOGD("gfx dst fd %{public}d, w %{public}d, h %{public}d, sw %{public}d sh %{public}d",
         (int32_t)dstSurface->phyAddr, dstSurface->width, dstSurface->height, ALIGN_UP(dstSurface->width, 16),
         ALIGN_UP(dstSurface->height, 2));
+
+    dst_param.width = (uint32_t)dstSurface->width;
+    dst_param.height = (uint32_t)dstSurface->height;
+    dst_param.format = (uint32_t)colorSpaceModeChange(dstSurface->enColorFmt, &isYuv);
+    if (isYuv == 1) {
+        DISPLAY_LOGE("rk gfx do not support dst buffer is yuv format");
+        ret_val = DISPLAY_PARAM_ERR;
+        goto EXIT;
+    }
+
+    src_param.width = (uint32_t)srcSurface->width;
+    src_param.height = (uint32_t)srcSurface->height;
+    src_param.format = (uint32_t)colorSpaceModeChange(srcSurface->enColorFmt, &isYuv);
+
+    dst_handle = importbuffer_fd(dstSurface->phyAddr, &dst_param);
+    if (dst_handle == 0) {
+        DISPLAY_LOGE("import dst_handle error!");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
+    }
+    if (srcSurface->phyAddr == 0) {
+        DISPLAY_LOGE("source fd is invalid");
+        ret_val = DISPLAY_PARAM_ERR;
+        goto EXIT;
+    }
+
+    src_handle = importbuffer_fd(srcSurface->phyAddr, &src_param);
+    if (src_handle == 0) {
+        DISPLAY_LOGE("import src_handle error!");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
+    }
+    srcRgaBuffer = wrapbuffer_handle(src_handle, srcSurface->width, srcSurface->height, src_param.format);
+    dstRgaBuffer = wrapbuffer_handle(dst_handle, dstSurface->width, dstSurface->height, dst_param.format);
+
+    srcRgaBuffer.wstride = ALIGN_UP(srcSurface->width, 16);
+    srcRgaBuffer.hstride = ALIGN_UP(srcSurface->height, 2);
+    dstRgaBuffer.wstride = ALIGN_UP(dstSurface->width, 16);
+    dstRgaBuffer.hstride = ALIGN_UP(dstSurface->height, 2);
 
     srect.x = srcRect->x;
     srect.x = (srect.x % 2 == 1) ? (srect.x - 1) : srect.x; // 2: Is it odd?
@@ -367,7 +391,8 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
         if (rkBlendType > 0) {
             usage |= rkBlendType;
         } else if (rkBlendType == IM_STATUS_NOT_SUPPORTED) {
-            return DISPLAY_NOT_SUPPORT;
+            ret_val = DISPLAY_NOT_SUPPORT;
+            goto EXIT;
         }
     }
     if (opt->rotateType) {
@@ -387,7 +412,8 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
                 eok = memset_s(&srect, sizeof(srect), 0, sizeof(srect));
                 if (eok != EOK) {
                     DISPLAY_LOGE("memset_s failed");
-                    return false;
+                    ret_val = false;
+                    goto EXIT;
                 }
                 srect.width = srcRgaBuffer.width;
                 srect.height = srcRgaBuffer.height;
@@ -395,7 +421,8 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
                 eok = memset_s(&drect, sizeof(drect), 0, sizeof(drect));
                 if (eok != EOK) {
                     DISPLAY_LOGE("memset_s failed");
-                    return false;
+                    ret_val = false;
+                    goto EXIT;
                 }
                 drect.x = dstRgaBuffer.width - srcRgaBuffer.width;
                 drect.y = dstRgaBuffer.height - srcRgaBuffer.height;
@@ -403,21 +430,25 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
                 drect.height = srcRgaBuffer.height;
             }
             srcRgaBuffer.wstride = srcSurface->stride;
-            usage = rkTransformType | IM_SYNC;
+            usage = rkTransformType | IM_SYNC | IM_ALPHA_BLEND_PRE_MUL;
+            srcRgaBuffer.color_space_mode = IM_YUV_TO_RGB_BT601_LIMIT;
             ret = improcess(srcRgaBuffer, dstRgaBuffer, bRgbBuffer, srect, drect, prect, usage);
             if (ret != IM_STATUS_SUCCESS) {
                 DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
+                ret_val = DISPLAY_FAILURE;
             }
         } else if (rkBlendType == IM_ALPHA_BLEND_DST_OVER) {
-            bRgbBuffer.width = dstRgaBuffer.width;
-            bRgbBuffer.height = dstRgaBuffer.height;
-            bRgbBuffer.wstride = dstRgaBuffer.wstride;
-            bRgbBuffer.hstride = dstRgaBuffer.hstride;
-            bRgbBuffer.format = RK_FORMAT_RGBA_8888; // srcRgaBuffer.format;
-            bRgbBuffer.phy_addr = 0; // (void *) buffer->phyAddr;
-            bRgbBuffer.vir_addr = 0; // buffer->virAddr;
-            bRgbBuffer.color_space_mode = dstRgaBuffer.color_space_mode;
-            bRgbBuffer.fd = -1;
+            brgb_param.width = dstRgaBuffer.width;
+            brgb_param.height = dstRgaBuffer.height;
+            brgb_param.format = RK_FORMAT_RGBA_8888;
+
+            brgb_handle = importbuffer_fd(-1, &brgb_param);
+            if (dst_handle == 0) {
+                DISPLAY_LOGE("import dst_handle error!");
+                ret_val = DISPLAY_FAILURE;
+                goto EXIT;
+            }
+            bRgbBuffer = wrapbuffer_handle(brgb_handle, dstRgaBuffer.width, dstRgaBuffer.height, RK_FORMAT_RGBA_8888);
             int ret = memcpy_s(&prect, sizeof(drect), &drect, sizeof(drect));
             if (!ret) {
                 printf("memcpy_s failed!\n");
@@ -425,10 +456,12 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
             ret = improcess(srcRgaBuffer, bRgbBuffer, dstRgaBuffer, srect, prect, drect, usage);
             if (ret != IM_STATUS_SUCCESS) {
                 DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
+                ret_val = DISPLAY_FAILURE;
             } else {
                 ret = imcopy(bRgbBuffer, dstRgaBuffer);
                 if (ret != IM_STATUS_SUCCESS) {
-                    DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
+                    DISPLAY_LOGE("gfx imcopy %{public}s", imStrError(ret));
+                    ret_val = DISPLAY_FAILURE;
                 }
             }
         }
@@ -436,12 +469,21 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
         ret = improcess(srcRgaBuffer, dstRgaBuffer, bRgbBuffer, srect, drect, prect, usage);
         if (ret != IM_STATUS_SUCCESS) {
             DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
+            ret_val = DISPLAY_FAILURE;
         }
     }
-    if (ret != IM_STATUS_SUCCESS)
-        return DISPLAY_FAILURE;
-    else
-        return DISPLAY_SUCCESS;
+
+EXIT:
+    if (brgb_handle) {
+        releasebuffer_handle(brgb_handle);
+    }
+    if (src_handle) {
+        releasebuffer_handle(src_handle);
+    }
+    if (dst_handle) {
+        releasebuffer_handle(dst_handle);
+    }
+    return ret_val;
 }
 
 int32_t rkBlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect *dstRect, GfxOpt *opt)
