@@ -23,6 +23,9 @@ ohos_prebuilt_shared_library("librga") {
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
   subsystem_name = "rockchip_products"
+  symlink_target_name = [
+    "librga.so.2",
+  ]
   part_name = "rockchip_products"
   install_enable = true
 }
