@@ -40,7 +40,11 @@
 #define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
+#define MPP_ALIGN_DOWN(x, a)    ((x)&~((a)-1))
+#define MPP_ALIGN_GEN(x, a)     (((x)+(a)-1)/(a)*(a))
 #define MPP_VSWAP(a, b)         { a ^= b; b ^= a; a ^= b; }
+
+#define MPP_GENMASK(h, l) (((1ULL << ((h) + 1)) - 1) & ~((1ULL << (l)) - 1))
 
 #define MPP_RB16(x)  ((((const RK_U8*)(x))[0] << 8) | ((const RK_U8*)(x))[1])
 #define MPP_WB16(p, d) do { \
@@ -127,6 +131,34 @@
         ((RK_U8*)(p))[2] = (d)>>16; } while(0)
 
 #include <stdio.h>
+#if defined(_WIN32) && !defined(__MINGW32CE__)
+#define snprintf                _snprintf
+#define fseeko                  _fseeki64
+
+#include <direct.h>
+#include <io.h>
+#include <sys/stat.h>
+
+#define chdir                   _chdir
+#define mkdir                   _mkdir
+#define access                  _access
+#define off_t                   _off_t
+
+#define R_OK                    4 /* Test for read permission. */
+#define W_OK                    2 /* Test for write permission. */
+#define X_OK                    1 /* Test for execute permission. */
+#define F_OK                    0 /* Test for existence. */
+
+#elif defined(__MINGW32CE__)
+#define fseeko                  fseeko64
+#else
+#include <unistd.h>
+#include <stddef.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#define mkdir(x)                mkdir(x, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
+#endif
 
 #define container_of(ptr, type, member) \
     ((type *)((char *)(ptr) - offsetof(type, member)))
@@ -183,9 +215,31 @@ static __inline RK_U32 mpp_is_32bit()
     return ((sizeof(void *) == 4) ? (1) : (0));
 }
 
+static __inline RK_S32 mpp_dup(RK_S32 fd)
+{
+    /* avoid stdin / stdout / stderr so start from 3 */
+#ifdef F_DUPFD_CLOEXEC
+    return fcntl(fd, F_DUPFD_CLOEXEC, 3);
+#else
+    RK_S32 new_fd = -1;
+
+    new_fd = fcntl(fd, F_DUPFD, 3);
+    if (new_fd == -1)
+        return -1;
+
+    if (fcntl(new_fd, F_SETFD, FD_CLOEXEC) == -1)
+        return -1;
+
+    return new_fd;
+#endif
+}
+
 RK_S32 axb_div_c(RK_S32 a, RK_S32 b, RK_S32 c);
 RK_U32 mpp_align_16(RK_U32 val);
 RK_U32 mpp_align_64(RK_U32 val);
+RK_U32 mpp_align_128(RK_U32 val);
+RK_U32 mpp_align_256_odd(RK_U32 val);
+RK_U32 mpp_align_128_odd_plus_64(RK_U32 val);
 
 #ifdef __cplusplus
 }

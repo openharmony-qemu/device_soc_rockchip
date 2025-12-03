@@ -48,6 +48,6 @@ ohos_shared_library("libjpeg_vdi_impl") {
   }
   defines = [ "LOG_TAG_IMAGE" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "device_rk3588"
-  part_name = "device_rk3588"
+  subsystem_name = "rockchip_products"
+  part_name = "rockchip_products"
 }

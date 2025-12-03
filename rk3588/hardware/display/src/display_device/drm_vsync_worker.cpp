@@ -73,6 +73,8 @@ bool DrmVsyncWorker::WaitSignalAndCheckRuning()
 uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
 {
     constexpr uint64_t SEC_TO_NSEC = 1000 * 1000 * 1000;
+// #define DRM_VBLANK
+#ifdef DRM_VBLANK
     constexpr uint64_t USEC_TO_NSEC = 1000;
     drmVBlank vblank = {
         .request =
@@ -87,9 +89,17 @@ uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
         vblank.request.type = drmVBlankSeqType((int)(vblank.request.type) | (int)DRM_VBLANK_SECONDARY);
     int ret = drmWaitVBlank(mDrmFd, &vblank);
     DISPLAY_CHK_RETURN((ret < 0), 0,
-        DISPLAY_LOGE("wait vblank failed ret :　%{public}d　errno %{public}d", ret, errno));
+        DISPLAY_LOGE("wait vblank failed ret : %{public}d errno %{public}d", ret, errno));
     sq = vblank.reply.sequence;
     return (uint64_t)(vblank.reply.tval_sec * SEC_TO_NSEC + vblank.reply.tval_usec * USEC_TO_NSEC);
+#else
+    struct timespec current;
+
+    usleep(20 * 1000);
+    sq = 1;
+    clock_gettime(CLOCK_MONOTONIC, &current);
+    return (uint64_t)(current.tv_sec * SEC_TO_NSEC + current.tv_nsec);
+#endif
 }
 
 

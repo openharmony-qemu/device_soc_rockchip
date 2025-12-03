@@ -213,8 +213,8 @@ typedef enum MppEncRcCfgChange_e {
     MPP_ENC_RC_CFG_CHANGE_RC_MODE       = (1 << 0),
     MPP_ENC_RC_CFG_CHANGE_QUALITY       = (1 << 1),
     MPP_ENC_RC_CFG_CHANGE_BPS           = (1 << 2),     /* change on bps target / max / min */
-    MPP_ENC_RC_CFG_CHANGE_FPS_IN        = (1 << 5),     /* change on fps in  flex / numerator / denorminator */
-    MPP_ENC_RC_CFG_CHANGE_FPS_OUT       = (1 << 6),     /* change on fps out flex / numerator / denorminator */
+    MPP_ENC_RC_CFG_CHANGE_FPS_IN        = (1 << 5),     /* change on fps in  flex / numerator / denominator */
+    MPP_ENC_RC_CFG_CHANGE_FPS_OUT       = (1 << 6),     /* change on fps out flex / numerator / denominator */
     MPP_ENC_RC_CFG_CHANGE_GOP           = (1 << 7),
     MPP_ENC_RC_CFG_CHANGE_SKIP_CNT      = (1 << 8),
     MPP_ENC_RC_CFG_CHANGE_MAX_REENC     = (1 << 9),
@@ -236,6 +236,10 @@ typedef enum MppEncRcCfgChange_e {
     MPP_ENC_RC_CFG_CHANGE_DEBREATH      = (1 << 24),
     MPP_ENC_RC_CFG_CHANGE_HIER_QP       = (1 << 25),
     MPP_ENC_RC_CFG_CHANGE_ST_TIME       = (1 << 26),
+    MPP_ENC_RC_CFG_CHANGE_REFRESH       = (1 << 27),
+    MPP_ENC_RC_CFG_CHANGE_GOP_REF_CFG   = (1 << 28),
+    MPP_ENC_RC_CFG_CHANGE_FQP           = (1 << 29),
+    MPP_ENC_RC_CFG_CHANGE_QPDD          = (1 << 30),
     MPP_ENC_RC_CFG_CHANGE_ALL           = (0xFFFFFFFF),
 } MppEncRcCfgChange;
 
@@ -309,8 +313,8 @@ typedef struct MppEncRcCfg_t {
      * fps_in_num
      * input frame rate numerator, if 0 then default 30
      *
-     * fps_in_denorm
-     * input frame rate denorminator, if 0 then default 1
+     * fps_in_denom
+     * input frame rate denominator, if 0 then default 1
      *
      * fps_out_flex
      * 0 - fix output frame rate
@@ -319,15 +323,15 @@ typedef struct MppEncRcCfg_t {
      * fps_out_num
      * output frame rate numerator, if 0 then default 30
      *
-     * fps_out_denorm
-     * output frame rate denorminator, if 0 then default 1
+     * fps_out_denom
+     * output frame rate denominator, if 0 then default 1
      */
     RK_S32  fps_in_flex;
     RK_S32  fps_in_num;
-    RK_S32  fps_in_denorm;
+    RK_S32  fps_in_denom;
     RK_S32  fps_out_flex;
     RK_S32  fps_out_num;
-    RK_S32  fps_out_denorm;
+    RK_S32  fps_out_denom;
 
     /*
      * gop - group of picture, gap between Intra frame
@@ -338,6 +342,7 @@ typedef struct MppEncRcCfg_t {
      * etc...
      */
     RK_S32  gop;
+    void    *ref_cfg;
 
     /*
      * skip_cnt - max continuous frame skip count
@@ -402,10 +407,20 @@ typedef struct MppEncRcCfg_t {
     RK_S32                  qp_max_step;                /* delta qp between each two P frame */
     RK_S32                  qp_delta_ip;                /* delta qp between I and P */
     RK_S32                  qp_delta_vi;                /* delta qp between vi and P */
+    RK_S32                  fqp_min_i;
+    RK_S32                  fqp_min_p;
+    RK_S32                  fqp_max_i;
+    RK_S32                  fqp_max_p;
+    RK_S32                  cu_qp_delta_depth;
 
     RK_S32                  hier_qp_en;
     RK_S32                  hier_qp_delta[4];
     RK_S32                  hier_frame_num[4];
+
+    RK_U32                  refresh_en;
+    MppEncRcRefreshMode     refresh_mode;
+    RK_U32                  refresh_num;
+    RK_S32                  refresh_length;
 } MppEncRcCfg;
 
 
@@ -420,6 +435,9 @@ typedef enum MppEncHwCfgChange_e {
     MPP_ENC_HW_CFG_CHANGE_MB_RC         = (1 << 6),
     MPP_ENC_HW_CFG_CHANGE_CU_MODE_BIAS  = (1 << 8),
     MPP_ENC_HW_CFG_CHANGE_CU_SKIP_BIAS  = (1 << 9),
+    MPP_ENC_HW_CFG_CHANGE_QBIAS_I       = (1 << 10),
+    MPP_ENC_HW_CFG_CHANGE_QBIAS_P       = (1 << 11),
+    MPP_ENC_HW_CFG_CHANGE_QBIAS_EN      = (1 << 12),
     MPP_ENC_HW_CFG_CHANGE_ALL           = (0xFFFFFFFF),
 } MppEncHwCfgChange;
 
@@ -435,6 +453,9 @@ typedef struct MppEncHwCfg_t {
     /* vepu541/vepu540 */
     RK_S32                  qp_delta_row;               /* delta qp between two row in P frame */
     RK_S32                  qp_delta_row_i;             /* delta qp between two row in I frame */
+    RK_S32                  qbias_i;
+    RK_S32                  qbias_p;
+    RK_S32                  qbias_en;
     RK_U32                  aq_thrd_i[16];
     RK_U32                  aq_thrd_p[16];
     RK_S32                  aq_step_i[16];
@@ -480,8 +501,9 @@ typedef enum MppEncPrepCfgChange_e {
     MPP_ENC_PREP_CFG_CHANGE_INPUT       = (1 << 0),     /* change on input config */
     MPP_ENC_PREP_CFG_CHANGE_FORMAT      = (1 << 2),     /* change on format */
     /* transform parameter */
-    MPP_ENC_PREP_CFG_CHANGE_ROTATION    = (1 << 4),     /* change on ration */
+    MPP_ENC_PREP_CFG_CHANGE_ROTATION    = (1 << 4),     /* change on rotation */
     MPP_ENC_PREP_CFG_CHANGE_MIRRORING   = (1 << 5),     /* change on mirroring */
+    MPP_ENC_PREP_CFG_CHANGE_FLIP        = (1 << 6),     /* change on flip */
     /* enhancement parameter */
     MPP_ENC_PREP_CFG_CHANGE_DENOISE     = (1 << 8),     /* change on denoise */
     MPP_ENC_PREP_CFG_CHANGE_SHARPEN     = (1 << 9),     /* change on denoise */
@@ -542,23 +564,38 @@ typedef struct MppEncPrepCfg_t {
     RK_S32              ver_stride;
 
     /*
-     * Mpp encoder input data format config
+     * Mpp encoder input/output color config
      */
     MppFrameFormat      format;
     MppFrameColorSpace  color;
     MppFrameColorPrimaries colorprim;
     MppFrameColorTransferCharacteristic colortrc;
     MppFrameColorRange  range;
+    MppFrameChromaFormat format_out;
+    MppFrameChromaDownSampleMode chroma_ds_mode;
+    MppFrameColorRange  range_out;
+    RK_S32              fix_chroma_en;
+    RK_S32              fix_chroma_u;
+    RK_S32              fix_chroma_v;
 
+    /* suffix ext means the user set config externally */
     MppEncRotationCfg   rotation;
+    MppEncRotationCfg   rotation_ext;
 
     /*
      * input frame mirroring parameter
      * 0 - disable mirroring
      * 1 - horizontal mirroring
-     * 2 - vertical mirroring
      */
     RK_S32              mirroring;
+    RK_S32              mirroring_ext;
+
+    /*
+     * input frame flip parameter
+     * 0 - disable flip
+     * 1 - flip, vertical mirror transformation
+     */
+    RK_S32              flip;
 
     /*
      * TODO:
@@ -667,8 +704,28 @@ typedef enum MppEncH264CfgChange_e {
 
     /* change on vui */
     MPP_ENC_H264_CFG_CHANGE_VUI             = (1 << 28),
+
+    /* change on constraint */
+    MPP_ENC_H264_CFG_CHANGE_CONSTRAINT_SET  = (1 << 29),
+
     MPP_ENC_H264_CFG_CHANGE_ALL             = (0xFFFFFFFF),
 } MppEncH264CfgChange;
+
+/* default H.264 hardware config */
+typedef struct MppEncH264HwCfg_t {
+    /*
+     * VEPU 1/2 : 2
+     * others   : 0
+     */
+    RK_U32 hw_poc_type;
+    /*
+     * VEPU 1/2 : fixed to 12
+     * others   : changeable, default 12
+     */
+    RK_U32 hw_log2_max_frame_num_minus4;
+    /* default 0, only RKVENC2 support split out */
+    RK_U32 hw_split_out;
+} MppEncH264HwCfg;
 
 typedef struct MppEncH264Cfg_t {
     RK_U32              change;
@@ -690,8 +747,10 @@ typedef struct MppEncH264Cfg_t {
      */
     RK_U32              poc_type;
     RK_U32              log2_max_poc_lsb;
-    RK_U32              log2_max_frame_num;
+    RK_U32              log2_max_frame_num; /* actually log2_max_frame_num_minus4 */
     RK_U32              gaps_not_allowed;
+
+    MppEncH264HwCfg     hw_cfg;
 
     /*
      * H.264 profile_idc parameter
@@ -718,7 +777,9 @@ typedef struct MppEncH264Cfg_t {
      * When CABAC is select cabac_init_idc can be range 0~2
      */
     RK_S32              entropy_coding_mode;
+    RK_S32              entropy_coding_mode_ex;
     RK_S32              cabac_init_idc;
+    RK_S32              cabac_init_idc_ex;
 
     /*
      * 8x8 intra prediction and 8x8 transform enable flag
@@ -727,6 +788,7 @@ typedef struct MppEncH264Cfg_t {
      * 1 : enable  (HP)
      */
     RK_S32              transform8x8_mode;
+    RK_S32              transform8x8_mode_ex;
 
     /*
      * 0 : disable
@@ -806,6 +868,17 @@ typedef struct MppEncH264Cfg_t {
     RK_S32              max_tid;
     RK_S32              prefix_mode;
     RK_S32              base_layer_pid;
+    /*
+     * Mpp encoder constraint_set parameter
+     * Mpp encoder constraint_set controls constraint_setx_flag in AVC.
+     * Mpp encoder constraint_set uses type RK_U32 to store force_flag and constraint_force as followed.
+     * | 00 | force_flag | 00 | constraint_force |
+     * As for force_flag and constraint_force, only low 6 bits are valid,
+     * corresponding to constraint_setx_flag from 5 to 0.
+     * If force_flag bit is enabled, constraint_setx_flag will be set correspondingly.
+     * Otherwise, constraint_setx_flag will use default value.
+     */
+    RK_U32              constraint_set;
 } MppEncH264Cfg;
 
 #define H265E_MAX_ROI_NUMBER  64
@@ -915,6 +988,14 @@ typedef enum MppEncH265CfgChange_e {
     MPP_ENC_H265_CFG_RC_I_QP_CHANGE             = (1 << 19),
     MPP_ENC_H265_CFG_RC_MAX_QP_STEP_CHANGE      = (1 << 21),
     MPP_ENC_H265_CFG_RC_IP_DELTA_QP_CHANGE      = (1 << 20),
+    MPP_ENC_H265_CFG_TILE_CHANGE                = (1 << 22),
+    MPP_ENC_H265_CFG_SLICE_LPFACS_CHANGE        = (1 << 23),
+    MPP_ENC_H265_CFG_TILE_LPFACS_CHANGE         = (1 << 24),
+    MPP_ENC_H265_CFG_CHANGE_CONST_INTRA         = (1 << 25),
+    MPP_ENC_H265_CFG_CHANGE_LCU_SIZE            = (1 << 26),
+    MPP_ENC_H265_CFG_CHANGE_MAX_TID             = (1 << 27),
+    MPP_ENC_H265_CFG_CHANGE_MAX_LTR             = (1 << 28),
+    MPP_ENC_H265_CFG_CHANGE_BASE_LAYER_PID      = (1 << 29),
     MPP_ENC_H265_CFG_CHANGE_ALL                 = (0xFFFFFFFF),
 } MppEncH265CfgChange;
 
@@ -931,7 +1012,6 @@ typedef struct MppEncH265SliceCfg_t {
      */
     RK_U32  slice_size;
     RK_U32  slice_out;
-    RK_U32  loop_filter_across_slices_enabled_flag;
 } MppEncH265SliceCfg;
 
 typedef struct MppEncH265CuCfg_t {
@@ -1021,6 +1101,11 @@ typedef struct MppEncH265Cfg_t {
     RK_S32              intra_refresh_mode;
     RK_S32              intra_refresh_arg;
 
+    /* extra mode config */
+    RK_S32              max_ltr_frames;
+    RK_S32              max_tid;
+    RK_S32              base_layer_pid;
+
     /* slice mode config */
     RK_S32              independ_slice_mode;
     RK_S32              independ_slice_arg;
@@ -1035,6 +1120,9 @@ typedef struct MppEncH265Cfg_t {
     MppEncH265DblkCfg_t  dblk_cfg;
     MppEncH265RefCfg     ref_cfg;
     MppEncH265MergesCfg  merge_cfg;
+    RK_S32               auto_tile;
+    RK_U32               lpf_acs_sli_en;
+    RK_U32               lpf_acs_tile_disable;
 
     /* extra info */
     MppEncH265VuiCfg    vui;
@@ -1340,13 +1428,37 @@ typedef enum MppEncSceneMode_e {
 
 typedef enum MppEncFineTuneCfgChange_e {
     /* change on scene mode */
-    MPP_ENC_TUNE_CFG_CHANGE_SCENE_MODE      = (1 << 0),
+    MPP_ENC_TUNE_CFG_CHANGE_SCENE_MODE          = (1 << 0),
+    MPP_ENC_TUNE_CFG_CHANGE_DEBLUR_EN           = (1 << 1),
+    MPP_ENC_TUNE_CFG_CHANGE_DEBLUR_STR          = (1 << 2),
+    MPP_ENC_TUNE_CFG_CHANGE_ANTI_FLICKER_STR    = (1 << 3),
+    MPP_ENC_TUNE_CFG_CHANGE_LAMBDA_IDX_I        = (1 << 5),
+    MPP_ENC_TUNE_CFG_CHANGE_LAMBDA_IDX_P        = (1 << 6),
+    MPP_ENC_TUNE_CFG_CHANGE_ATR_STR_I           = (1 << 7),
+    MPP_ENC_TUNE_CFG_CHANGE_ATR_STR_P           = (1 << 8),
+    MPP_ENC_TUNE_CFG_CHANGE_ATL_STR             = (1 << 9),
+    MPP_ENC_TUNE_CFG_CHANGE_SAO_STR_I           = (1 << 10),
+    MPP_ENC_TUNE_CFG_CHANGE_SAO_STR_P           = (1 << 11),
+    MPP_ENC_TUNE_CFG_CHANGE_RC_CONTAINER        = (1 << 13),
+    MPP_ENC_TUNE_CFG_CHANGE_VMAF_OPT            = (1 << 14)
 } MppEncFineTuneCfgChange;
 
 typedef struct MppEncFineTuneCfg_t {
     RK_U32              change;
 
     MppEncSceneMode     scene_mode;
+    RK_S32              deblur_en; /* qpmap_en */
+    RK_S32              deblur_str; /* deblur strength */
+    RK_S32              anti_flicker_str;
+    RK_S32              lambda_idx_i;
+    RK_S32              lambda_idx_p;
+    RK_S32              atr_str_i; /* line_en */
+    RK_S32              atr_str_p; /* line_en */
+    RK_S32              atl_str; /* anti_stripe */
+    RK_S32              sao_str_i; /* anti blur */
+    RK_S32              sao_str_p; /* anti blur */
+    RK_S32              rc_container;
+    RK_S32              vmaf_opt;
 } MppEncFineTuneCfg;
 
 #endif /*__RK_VENC_CMD_H__*/

@@ -38,8 +38,6 @@ extern "C" {
 #error __SIZEOF_POINTER__ not 4 or 8
 #endif
 
-#define typeof  __typeof__
-
 struct hlist_node {
     struct hlist_node *next, **pprev;
 };
@@ -56,9 +54,9 @@ struct hlist_head {
 #define LIST_POISON2  ((void *) 0x200)
 
 #define WRITE_ONCE(var, val) \
-    (*((volatile typeof(val) *)(&(var))) = (val))
+    (*((volatile __typeof__(val) *)(&(var))) = (val))
 
-#define READ_ONCE(var) (*((volatile typeof(var) *)(&(var))))
+#define READ_ONCE(var) (*((volatile __typeof__(var) *)(&(var))))
 
 static inline void INIT_HLIST_NODE(struct hlist_node *h)
 {
@@ -73,8 +71,7 @@ static inline int hlist_unhashed(const struct hlist_node *h)
 
 static inline int hlist_empty(const struct hlist_head *h)
 {
-    // return !READ_ONCE(h->first);
-    return !h->first;
+    return !READ_ONCE(h->first);
 }
 
 static inline void __hlist_del(struct hlist_node *n)
@@ -165,28 +162,28 @@ static inline void hlist_move_list(struct hlist_head *old,
          pos = n)
 
 #define hlist_entry_safe(ptr, type, member) \
-    ({ typeof(ptr) ____ptr = (ptr); \
+    ({ __typeof__(ptr) ____ptr = (ptr); \
        ____ptr ? hlist_entry(____ptr, type, member) : NULL; \
     })
 
 #define hlist_for_each_entry(pos, head, member)             \
-    for (pos = hlist_entry_safe((head)->first, typeof(*(pos)), member);\
+    for (pos = hlist_entry_safe((head)->first, __typeof__(*(pos)), member);\
          pos;                           \
-         pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+         pos = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), member))
 
 #define hlist_for_each_entry_continue(pos, member)          \
-    for (pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member);\
+    for (pos = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), member);\
          pos;                           \
-         pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+         pos = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), member))
 
 #define hlist_for_each_entry_from(pos, member)              \
     for (; pos;                         \
-         pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
+         pos = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), member))
 
 #define hlist_for_each_entry_safe(pos, n, head, member)         \
-    for (pos = hlist_entry_safe((head)->first, typeof(*pos), member);\
+    for (pos = hlist_entry_safe((head)->first, __typeof__(*pos), member);\
          pos && ({ n = pos->member.next; 1; });         \
-         pos = hlist_entry_safe(n, typeof(*pos), member))
+         pos = hlist_entry_safe(n, __typeof__(*pos), member))
 
 #define DEFINE_HASHTABLE(name, bits) \
     struct hlist_head name[1 << (bits)] = \

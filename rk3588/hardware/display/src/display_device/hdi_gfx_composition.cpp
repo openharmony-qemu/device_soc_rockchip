@@ -122,8 +122,9 @@ int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &
         }
 
         mCompLayers.push_back(layer);
+		DISPLAY_LOGE("the layer type %{public}d", layer->GetCompositionType());
     }
-    DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
+    DISPLAY_LOGE("composer layers size %{public}zd", mCompLayers.size());
     return DISPLAY_SUCCESS;
 }
 
