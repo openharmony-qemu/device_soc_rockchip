@@ -1,3 +1,20 @@
+/*
+ *
+ * Copyright 2015 Rockchip Electronics Co., LTD.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 #define ALOG_TAG "rk_list"
 
 #include <errno.h>
@@ -7,7 +24,6 @@
 #include "rk_list.h"
 #include "mpp_log.h"
 
-//#define _RK_LIST_DEUBG
 #define _RK_LIST_ERROR
 
 #ifdef _RK_LIST_DEUBG
@@ -227,8 +243,8 @@ RK_S32 rk_list::flush()
 }
 
 rk_list::rk_list(node_destructor func)
-    : destroy(NULL),
-      head(NULL),
+    : destroy(nullptr),
+      head(nullptr),
       count(0)
 {
     pthread_mutexattr_t attr;
@@ -238,7 +254,7 @@ rk_list::rk_list(node_destructor func)
     pthread_mutexattr_destroy(&attr);
     destroy = func;
     head = (rk_list_node*)malloc(sizeof(rk_list_node));
-    if (NULL == head) {
+    if (nullptr == head) {
         LIST_ERROR("failed to allocate list header");
     } else {
         list_node_init_with_key_and_size(head, 0, 0);
@@ -249,8 +265,8 @@ rk_list::~rk_list()
 {
     flush();
     if (head) free(head);
-    head = NULL;
-    destroy = NULL;
+    head = nullptr;
+    destroy = nullptr;
     pthread_mutex_destroy(&mutex);
 }
 
@@ -351,7 +367,7 @@ void *rk_list_test_loop_0(void *pdata)
     } else {
         printf("thread: test done and found no err\n");
     }
-    return NULL;
+    return nullptr;
 }
 
 int rk_list_test_0()

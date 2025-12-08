@@ -99,14 +99,6 @@ int main()
     }
 
     {
-#if 0
-        int i,  j;
-        char *tmp = (char *)src.vir_addr;
-        for (i = 0; i < SRC_HEIGHT; i++) {
-            memset(tmp, (i & 0xff), SRC_WIDTH);
-            tmp += SRC_WIDTH;
-        }
-#endif
 
 #if 1
         char *tmp = (char *)src.vir_addr;
@@ -126,7 +118,6 @@ int main()
             }
         }
         memcpy(&tmp[src_vir_width * src_vir_height], tmpbuf, src_vir_width * src_vir_height / 2);
-        //memset(&tmp[SRC_WIDTH*SRC_HEIGHT], 0x80, SRC_WIDTH*SRC_HEIGHT/2);
 #endif
         VPUMemClean(&src);
     }
@@ -175,7 +166,7 @@ int main()
         ret |= android::ppOpInit(&hnd, &opt);
         if (ret) {
             ALOGE("ppOpInit failed");
-            hnd = NULL;
+            hnd = nullptr;
             goto end;
         }
         ret = android::ppOpPerform(hnd);
@@ -193,36 +184,8 @@ int main()
 
         VPUMemInvalidate(&dst);
         {
-#if 0
-            int i,  j, ret = 0;
-            char *tmp = (char *)dst.vir_addr;
-            /*for(i=0; i<3; i++)
-            {
-                printf("col out_pos=%d, 0x%x\n", i*DST_WIDTH, tmp[i*DST_WIDTH]);
-            }
-            for(i=0; i<3; i++)
-            {
-                printf("las out_pos=%d, 0x%x\n", (DST_HEIGHT-1-i)*DST_WIDTH, tmp[(DST_HEIGHT-1-i)*DST_WIDTH]);
-            }*/
-            for (i = 0; i < DST_HEIGHT; i++) {
-                for (j = 0; j < DST_WIDTH; j++) {
-                    if ( tmp[i * DST_WIDTH + j] != (i & 0xff))
-                        ret = 1;
-                }
-            }
-            if ( ret)
-                printf("framecount=%d pp operation is failed!\n", (framecnt - 1));
-            else
-                printf("framecount=%d pp operation is suceess!\n", (framecnt - 1));
-
-            memset(dst.vir_addr, 0xff, DST_SIZE);
-            VPUMemClean(&dst);
-#endif
-
 #if 1
             char *tmp = (char *)dst.vir_addr;
-            //memset(&tmp[DST_WIDTH*DST_HEIGHT], 0x80, DST_WIDTH*DST_HEIGHT/2);
-            //VPUMemClean(&dst);
             fpw = fopen("/data/testout.yuv", "wb+");
 
             if (fpw)fwrite((char *)(dst.vir_addr), 1, dst_vir_width * dst_vir_height * 3 / 2, fpw);

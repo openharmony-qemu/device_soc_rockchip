@@ -42,15 +42,15 @@ typedef struct VpuApiMlvecImpl_t {
 
 MPP_RET vpu_api_mlvec_init(VpuApiMlvec *ctx)
 {
-    if (NULL == ctx) {
-        mpp_err_f("invalid NULL input\n");
+    if (nullptr == ctx) {
+        mpp_err_f("invalid nullptr input\n");
         return MPP_ERR_NULL_PTR;
     }
 
     mlvec_dbg_func("enter %p\n", ctx);
 
     VpuApiMlvecImpl *impl = mpp_calloc(VpuApiMlvecImpl, 1);
-    if (NULL == impl)
+    if (nullptr == impl)
         mpp_err_f("failed to create MLVEC context\n");
 
     mpp_assert(sizeof(VpuApiMlvecStaticCfg) == sizeof(EncParameter_t));
@@ -73,8 +73,8 @@ MPP_RET vpu_api_mlvec_deinit(VpuApiMlvec ctx)
 
 MPP_RET vpu_api_mlvec_setup(VpuApiMlvec ctx, MppCtx mpp, MppApi *mpi, MppEncCfg enc_cfg)
 {
-    if (NULL == ctx || NULL == mpp || NULL == mpi || NULL == enc_cfg) {
-        mpp_err_f("invalid NULL input ctx %p mpp %p mpi %p cfg %p\n",
+    if (nullptr == ctx || nullptr == mpp || nullptr == mpi || nullptr == enc_cfg) {
+        mpp_err_f("invalid nullptr input ctx %p mpp %p mpi %p cfg %p\n",
                   ctx, mpp, mpi, enc_cfg);
         return MPP_ERR_NULL_PTR;
     }
@@ -93,8 +93,8 @@ MPP_RET vpu_api_mlvec_setup(VpuApiMlvec ctx, MppCtx mpp, MppApi *mpi, MppEncCfg 
 
 MPP_RET vpu_api_mlvec_check_cfg(void *p)
 {
-    if (NULL == p) {
-        mpp_err_f("invalid NULL input\n");
+    if (nullptr == p) {
+        mpp_err_f("invalid nullptr input\n");
         return MPP_ERR_NULL_PTR;
     }
 
@@ -114,8 +114,8 @@ MPP_RET vpu_api_mlvec_check_cfg(void *p)
 
 MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
 {
-    if (NULL == ctx || NULL == cfg) {
-        mpp_err_f("invalid NULL input ctx %p cfg %p\n");
+    if (nullptr == ctx || nullptr == cfg) {
+        mpp_err_f("invalid nullptr input ctx %p cfg %p\n");
         return MPP_ERR_NULL_PTR;
     }
 
@@ -171,8 +171,8 @@ MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
 
 MPP_RET vpu_api_mlvec_set_dy_cfg(VpuApiMlvec ctx, VpuApiMlvecDynamicCfg *cfg, MppMeta meta)
 {
-    if (NULL == ctx || NULL == cfg || NULL == meta) {
-        mpp_err_f("invalid NULL input ctx %p cfg %p meta %p\n",
+    if (nullptr == ctx || nullptr == cfg || nullptr == meta) {
+        mpp_err_f("invalid nullptr input ctx %p cfg %p meta %p\n",
                   ctx, cfg, meta);
         return MPP_ERR_NULL_PTR;
     }
@@ -229,8 +229,8 @@ MPP_RET vpu_api_mlvec_set_dy_cfg(VpuApiMlvec ctx, VpuApiMlvecDynamicCfg *cfg, Mp
 
 MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
 {
-    if (NULL == ctx) {
-        mpp_err_f("invalid NULL input\n");
+    if (nullptr == ctx) {
+        mpp_err_f("invalid nullptr input\n");
         return MPP_ERR_NULL_PTR;
     }
 
@@ -418,7 +418,7 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
 
     mlvec_dbg_flow("lt_cfg_cnt %d st_cfg_cnt %d\n", lt_cfg_cnt, st_cfg_cnt);
     if (lt_cfg_cnt || st_cfg_cnt) {
-        MppEncRefCfg ref = NULL;
+        MppEncRefCfg ref = nullptr;
 
         mpp_enc_ref_cfg_init(&ref);
 
@@ -434,7 +434,7 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
 
         mpp_enc_ref_cfg_deinit(&ref);
     } else {
-        ret = mpi->control(mpp_ctx, MPP_ENC_SET_REF_CFG, NULL);
+        ret = mpi->control(mpp_ctx, MPP_ENC_SET_REF_CFG, nullptr);
         if (ret)
             mpp_err("mpi control enc set ref cfg failed ret %d\n", ret);
     }

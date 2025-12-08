@@ -213,7 +213,6 @@ RK_S32 VPUMemJudgeIommu()
     int ret = 0;
 
     if (VPUClientGetIOMMUStatus() > 0) {
-        //mpp_err("media.used.iommu");
         ret = 1;
     }
 

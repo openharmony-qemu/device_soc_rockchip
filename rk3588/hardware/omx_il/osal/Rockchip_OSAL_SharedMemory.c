@@ -673,7 +673,6 @@ OMX_PTR Rockchip_OSAL_SharedMemory_Alloc(OMX_HANDLETYPE handle, OMX_U32 size, ME
         default:
             pBuffer = NULL;
             goto EXIT;
-            break;
     }
 
     Rockchip_OSAL_MutexLock(pHandle->hSMMutex);

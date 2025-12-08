@@ -196,7 +196,6 @@ std::unique_ptr<HdiLayer> DrmDisplay::CreateHdiLayer(LayerType type)
 
 int32_t DrmDisplay::WaitForVBlank(uint64_t *ns)
 {
-// #define DRM_VBLANK
 #ifdef DRM_VBLANK
     int ret;
     constexpr uint64_t nPerS = 1000000000;

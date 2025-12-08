@@ -73,7 +73,6 @@ bool DrmVsyncWorker::WaitSignalAndCheckRuning()
 uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
 {
     constexpr uint64_t SEC_TO_NSEC = 1000 * 1000 * 1000;
-// #define DRM_VBLANK
 #ifdef DRM_VBLANK
     constexpr uint64_t USEC_TO_NSEC = 1000;
     drmVBlank vblank = {
@@ -118,7 +117,6 @@ void DrmVsyncWorker::WorkThread()
     DISPLAY_LOGD();
     unsigned int seq = 0;
     while (WaitSignalAndCheckRuning()) {
-        // wait the vblank
         uint64_t time = WaitNextVBlank(seq);
         if (mCallBack != nullptr) {
             mCallBack->Vsync(seq, time);

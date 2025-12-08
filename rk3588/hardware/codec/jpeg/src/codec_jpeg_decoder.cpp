@@ -178,7 +178,7 @@ MPP_RET CodecJpegDecoder::GetFrame()
         return ret;
     }
 
-    MppFrame frameOut = NULL;
+    MppFrame frameOut = nullptr;
     mppApi_->HdiMppTaskMetaGetFrame(task, KEY_OUTPUT_FRAME, &frameOut);
     if (frameOut != frame_) {
         CODEC_LOGE("frameOut is not match with frame_ %{public}d", ret);

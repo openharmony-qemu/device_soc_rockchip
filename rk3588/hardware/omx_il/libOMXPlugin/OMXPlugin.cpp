@@ -69,7 +69,7 @@ OMX_ERRORTYPE OMXPlugin::AddCore(const char* coreName)
             (*(core->mInit))();
         }
 
-        if (core->mComponentNameEnum != NULL) {
+        if (core->mComponentNameEnum != nullptr) {
             // calculating number of components registered inside given OMX core
             char tmpComponentName[OMX_MAX_STRINGNAME_SIZE] = { 0 };
             OMX_U32 tmpIndex = 0;
@@ -93,7 +93,7 @@ OMX_ERRORTYPE OMXPlugin::AddCore(const char* coreName)
 OMXPlugin::~OMXPlugin()
 {
     for (OMX_U32 i = 0; i < mCores.size(); i++) {
-        if (mCores[i] != NULL && mCores[i]->mLibHandle != NULL) {
+        if (mCores[i] != nullptr && mCores[i]->mLibHandle != nullptr) {
             (*(mCores[i]->mDeinit))();
 
             dlclose(mCores[i]->mLibHandle);
@@ -109,8 +109,8 @@ OMX_ERRORTYPE OMXPlugin::CreateComponentInstance(
     OMX_COMPONENTTYPE **component)
 {
     for (OMX_U32 i = 0; i < mCores.size(); i++) {
-        if (mCores[i] != NULL) {
-            if (mCores[i]->mLibHandle == NULL) {
+        if (mCores[i] != nullptr) {
+            if (mCores[i]->mLibHandle == nullptr) {
                 continue;
             }
 
@@ -141,7 +141,7 @@ OMX_ERRORTYPE OMXPlugin::DeleteComponentInstance(
     unique_lock<mutex> lock(mMutex);
     for (OMX_U32 i = 0; i < mComponents.size(); i++) {
         if (mComponents[i].mComponent == component) {
-            if (mComponents[i].mCore == NULL || mComponents[i].mCore->mLibHandle == NULL) {
+            if (mComponents[i].mCore == nullptr || mComponents[i].mCore->mLibHandle == nullptr) {
                 return OMX_ErrorUndefined;
             }
             OMX_ERRORTYPE omx_res =
@@ -161,7 +161,7 @@ OMX_ERRORTYPE OMXPlugin::EnumerateComponentsByIndex(
     // returning components
     OMX_U32 relativeIndex = index;
     for (OMX_U32 i = 0; i < mCores.size(); i++) {
-        if (mCores[i]->mLibHandle == NULL) {
+        if (mCores[i]->mLibHandle == nullptr) {
             continue;
         }
         if (relativeIndex < mCores[i]->mNumComponents) {
@@ -179,13 +179,13 @@ OMX_ERRORTYPE OMXPlugin::GetRolesForComponent(
 {
     roles->clear();
     for (OMX_U32 j = 0; j < mCores.size(); j++) {
-        if (mCores[j]->mLibHandle == NULL) {
+        if (mCores[j]->mLibHandle == nullptr) {
             continue;
         }
 
         OMX_U32 numRoles;
         OMX_ERRORTYPE err = (*(mCores[j]->mGetRolesOfComponentHandle))(
-                const_cast<OMX_STRING>(name), &numRoles, NULL);
+                const_cast<OMX_STRING>(name), &numRoles, nullptr);
 
         if (err != OMX_ErrorNone) {
             continue;
@@ -209,11 +209,11 @@ OMX_ERRORTYPE OMXPlugin::GetRolesForComponent(
                 roles->push_back(s);
 
                 delete[] array[i];
-                array[i] = NULL;
+                array[i] = nullptr;
             }
 
             delete[] array;
-            array = NULL;
+            array = nullptr;
         }
         return OMX_ErrorNone;
     }

@@ -374,7 +374,7 @@ OMX_COLOR_FORMATTYPE Rochip_OSAL_CodecFormat2OmxColorFormat(OMX_U32 codecFormat)
 }
 OMX_COLOR_FORMATTYPE Rockchip_OSAL_GetBufferHandleColorFormat(BufferHandle* bufferHandle)
 {
-    if (bufferHandle == NULL) {
+    if (bufferHandle == nullptr) {
         omx_err_f("bufferHandle is null");
         return OMX_COLOR_FormatUnused;
     }
