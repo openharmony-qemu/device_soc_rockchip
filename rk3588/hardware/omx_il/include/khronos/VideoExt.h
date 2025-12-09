@@ -18,14 +18,14 @@
 
 #include <OMX_IVCommon.h>
 #include <codec_omx_ext.h>
-typedef enum OMX_RANGE {
+typedef enum OmxRange {
     RangeUnspecified,
     RangeFull,
     RangeLimited,
     RangeOther = 0xff,
-} OMX_RANGE;
+} OmxRange;
 
-typedef enum OMX_PRIMARIES {
+typedef enum OmxPrimes {
     PrimariesUnspecified,
     PrimariesBT709_5,       // Rec.ITU-R BT.709-5 or equivalent
     PrimariesBT470_6M,      // Rec.ITU-R BT.470-6 System M or equivalent
@@ -34,9 +34,9 @@ typedef enum OMX_PRIMARIES {
     PrimariesGenericFilm,   // Generic Film
     PrimariesBT2020,        // Rec.ITU-R BT.2020 or equivalent
     PrimariesOther = 0xff,
-} OMX_PRIMARIES;
+} OmxPrimes;
 
-typedef enum OMX_TRANSFER {
+typedef enum OmxTransfer {
     TransferUnspecified,
     TransferLinear,         // Linear transfer characteristics
     TransferSRGB,           // sRGB or equivalent
@@ -50,9 +50,9 @@ typedef enum OMX_TRANSFER {
     TransferBT1361,         // Rec.ITU-R BT.1361 extended gamut
     TransferST428,          // SMPTE ST 428-1
     TransferOther = 0xff,
-} OMX_TRANSFER;
+} OmxTransfer;
 
-typedef enum OMX_MATRIXCOEFFS {
+typedef enum OmxMatrixcoeffs {
     MatrixUnspecified,
     MatrixBT709_5,          // Rec.ITU-R BT.709-5 or equivalent
     MatrixBT470_6M,         // KR=0.30, KB=0.11 or equivalent
@@ -61,23 +61,23 @@ typedef enum OMX_MATRIXCOEFFS {
     MatrixBT2020,           // Rec.ITU-R BT.2020 non-constant luminance
     MatrixBT2020Constant,   // Rec.ITU-R BT.2020 constant luminance
     MatrixOther = 0xff,
-} OMX_MATRIXCOEFFS;
+} OmxMatrixcoeffs;
 
-typedef struct OMX_COLORASPECTS {
-    OMX_RANGE mRange;                // IN/OUT
-    OMX_PRIMARIES mPrimaries;        // IN/OUT
-    OMX_TRANSFER mTransfer;          // IN/OUT
-    OMX_MATRIXCOEFFS mMatrixCoeffs;  // IN/OUT
-} OMX_COLORASPECTS;
+typedef struct OmxColoraspects {
+    OmxRange mRange;                // IN/OUT
+    OmxPrimes mPrimaries;        // IN/OUT
+    OmxTransfer mTransfer;          // IN/OUT
+    OmxMatrixcoeffs mMatrixCoeffs;  // IN/OUT
+} OmxColoraspects;
 
-typedef struct ISO_COLORASPECTS {
+typedef struct IsoColoraspects {
     OMX_U32 mRange;                 // IN/OUT
     OMX_U32 mPrimaries;             // IN/OUT
     OMX_U32 mTransfer;              // IN/OUT
     OMX_U32 mMatrixCoeffs;          // IN/OUT
-} ISO_COLORASPECTS;
+} IsoColoraspects;
 
-typedef struct OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS {
+typedef struct OmxConfigDescribeColorAspectSparams {
     OMX_U32  nSize;                // IN
     OMX_VERSIONTYPE nVersion;      // IN
     OMX_U32  nPortIndex;           // IN
@@ -85,15 +85,15 @@ typedef struct OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS {
     OMX_BOOL bDataSpaceChanged;    // IN
     OMX_U32  nPixelFormat;         // IN
     OMX_U32  nDataSpace;           // OUT
-    OMX_COLORASPECTS sAspects;  // IN/OUT
-} OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS;
+    OmxColoraspects sAspects;  // IN/OUT
+} OmxConfigDescribeColorAspectSparams;
 
-typedef enum OMX_VIDEO_CODINGTYPEEXT {
+typedef enum OmxVideoCodingTypeExt {
     OMX_VIDEO_CodingVP8EXT = 9,
     OMX_VIDEO_AVCLevel52  = 0x10000,
-}OMX_VIDEO_CODINGTYPEEXT;
+}OmxVideoCodingTypeExt;
 
-typedef enum OMX_VIDEO_VP9PROFILETYPE {
+typedef enum OmxVideoVp9proFileType {
     OMX_VIDEO_VP9Profile0       = 0x1,
     OMX_VIDEO_VP9Profile1       = 0x2,
     OMX_VIDEO_VP9Profile2       = 0x4,
@@ -103,10 +103,10 @@ typedef enum OMX_VIDEO_VP9PROFILETYPE {
     OMX_VIDEO_VP9Profile3HDR    = 0x2000,
     OMX_VIDEO_VP9ProfileUnknown = 0x6EFFFFFF,
     OMX_VIDEO_VP9ProfileMax     = 0x7FFFFFFF
-} OMX_VIDEO_VP9PROFILETYPE;
+} OmxVideoVp9proFileType;
 
 /** VP9 levels */
-typedef enum OMX_VIDEO_VP9LEVELTYPE {
+typedef enum OmxVideoVp9LevelType {
     OMX_VIDEO_VP9Level1       = 0x1,
     OMX_VIDEO_VP9Level11      = 0x2,
     OMX_VIDEO_VP9Level2       = 0x4,
@@ -123,14 +123,14 @@ typedef enum OMX_VIDEO_VP9LEVELTYPE {
     OMX_VIDEO_VP9Level62      = 0x2000,
     OMX_VIDEO_VP9LevelUnknown = 0x6EFFFFFF,
     OMX_VIDEO_VP9LevelMax     = 0x7FFFFFFF
-} OMX_VIDEO_VP9LEVELTYPE;
+} OmxVideoVp9LevelType;
 
 /** Structure to define if dependent slice segments should be used */
-typedef struct OMX_VIDEO_SLICESEGMENTSTYPE {
+typedef struct OmxVideoSlicesegmentsType {
     OMX_U32 nSize;
     OMX_VERSIONTYPE nVersion;
     OMX_U32 nPortIndex;
     OMX_BOOL bDepedentSegments;
     OMX_BOOL bEnableLoopFilterAcrossSlices;
-} OMX_VIDEO_SLICESEGMENTSTYPE;
+} OmxVideoSlicesegmentsType;
 #endif

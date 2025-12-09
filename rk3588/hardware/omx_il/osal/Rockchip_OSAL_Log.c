@@ -34,7 +34,7 @@
 
 #include <hdf_log.h>
 #define MPP_LOG_MAX_LEN 256
-void _Rockchip_OSAL_Log(ROCKCHIP_LOG_LEVEL logLevel, OMX_U32 flag, const char *tag, const char *msg, ...)
+void Rockchip_OSAL_Log(ROCKCHIP_LOG_LEVEL logLevel, OMX_U32 flag, const char *tag, const char *msg, ...)
 {
 #ifdef LOG_FILE
     static FILE *fp = NULL;

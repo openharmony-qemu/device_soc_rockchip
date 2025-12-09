@@ -62,7 +62,7 @@
 #define CHECK_PORT_BEING_DISABLED(port) \
     (((port)->bIsPortDisabled) == OMX_TRUE)
 #define CHECK_PORT_BEING_FLUSHED_OR_DISABLED(port)  \
-    (((port)->bIsPortFlushed == OMX_TRUE) || (port->bIsPortDisabled == OMX_TRUE))
+    (((port)->bIsPortFlushed == OMX_TRUE) || ((port)->bIsPortDisabled == OMX_TRUE))
 #define CHECK_PORT_ENABLED(port) \
     (((port)->portDefinition.bEnabled) == OMX_TRUE)
 #define CHECK_PORT_POPULATED(port) \

@@ -216,24 +216,24 @@ typedef enum {
 
 #define MPP_FRAME_FMT_LE_MASK       (0x01000000)
 
-#define MPP_FRAME_FMT_IS_YUV(fmt)   (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) && \
-                                     ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT))
-#define MPP_FRAME_FMT_IS_YUV_10BIT(fmt) ((fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV420SP_10BIT || \
-                                        (fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV422SP_10BIT)
-#define MPP_FRAME_FMT_IS_RGB(fmt)   (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) && \
-                                     ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT))
+#define MPP_FRAME_FMT_IS_YUV(fmt)   ((((fmt) & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) && \
+                                     (((fmt) & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT))
+#define MPP_FRAME_FMT_IS_YUV_10BIT(fmt) (((fmt) & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV420SP_10BIT || \
+                                        ((fmt) & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV422SP_10BIT)
+#define MPP_FRAME_FMT_IS_RGB(fmt)   ((((fmt) & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) && \
+                                     (((fmt) & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT))
 
 /*
  * For MPP_FRAME_FBC_AFBC_V1 the 16byte aligned stride is used.
  */
-#define MPP_FRAME_FMT_IS_FBC(fmt)   (fmt & MPP_FRAME_FBC_MASK)
+#define MPP_FRAME_FMT_IS_FBC(fmt)   ((fmt) & MPP_FRAME_FBC_MASK)
 
-#define MPP_FRAME_FMT_IS_HDR(fmt)   (fmt & MPP_FRAME_HDR_MASK)
+#define MPP_FRAME_FMT_IS_HDR(fmt)   ((fmt) & MPP_FRAME_HDR_MASK)
 
-#define MPP_FRAME_FMT_IS_LE(fmt)    ((fmt & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK)
-#define MPP_FRAME_FMT_IS_BE(fmt)    ((fmt & MPP_FRAME_FMT_LE_MASK) == 0)
+#define MPP_FRAME_FMT_IS_LE(fmt)    (((fmt) & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK)
+#define MPP_FRAME_FMT_IS_BE(fmt)    (((fmt) & MPP_FRAME_FMT_LE_MASK) == 0)
 
-#define MPP_FRAME_FMT_IS_TILE(fmt)  (fmt & MPP_FRAME_TILE_FLAG)
+#define MPP_FRAME_FMT_IS_TILE(fmt)  ((fmt) & MPP_FRAME_TILE_FLAG)
 
 /* mpp color format index definition */
 typedef enum {

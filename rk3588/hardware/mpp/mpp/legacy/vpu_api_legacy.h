@@ -17,7 +17,7 @@
 #ifndef __VPU_API_LEGACY_H__
 #define __VPU_API_LEGACY_H__
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "vpu_api.h"
 #include "rk_mpi.h"

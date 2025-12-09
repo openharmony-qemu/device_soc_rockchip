@@ -559,10 +559,10 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
     })
 
 #define impyramid(src, dst, direction) \
-        imresize_t(src, \
-                   dst, \
-                   direction == IM_UP_SCALE ? 0.5 : 2, \
-                   direction == IM_UP_SCALE ? 0.5 : 2, \
+        imresize_t((src), \
+                   (dst), \
+                   ((direction == IM_UP_SCALE) ? 0.5 : 2), \
+                   ((direction == IM_UP_SCALE) ? 0.5 : 2), \
                    INTER_LINEAR, 1)
 
 /**

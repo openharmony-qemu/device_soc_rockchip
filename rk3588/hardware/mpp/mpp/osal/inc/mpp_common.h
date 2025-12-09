@@ -24,11 +24,11 @@
 #define MPP_ABS(x)              ((x) < (0) ? -(x) : (x))
 
 #define MPP_MAX(a, b)           ((a) > (b) ? (a) : (b))
-#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a,b),c)
+#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX((a),(b)),(c))
 #define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
 
 #define MPP_MIN(a,b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN(a,b),c)
+#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN((a),(b)),(c))
 #define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
 
 #define MPP_DIV(a, b)           ((b) ? (a) / (b) : (a))
@@ -37,12 +37,12 @@
 #define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
 #define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
 
-#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
+#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = (b); (b) = (a); (a) = SWAP_tmp;} while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
 #define MPP_ALIGN_DOWN(x, a)    ((x)&~((a)-1))
 #define MPP_ALIGN_GEN(x, a)     (((x)+(a)-1)/(a)*(a))
-#define MPP_VSWAP(a, b)         { a ^= b; b ^= a; a ^= b; }
+#define MPP_VSWAP(a, b)         { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
 
 #define MPP_GENMASK(h, l) (((1ULL << ((h) + 1)) - 1) & ~((1ULL << (l)) - 1))
 
@@ -163,8 +163,8 @@
 #define container_of(ptr, type, member) \
     ((type *)((char *)(ptr) - offsetof(type, member)))
 
-#define __RETURN                __Return
-#define __FAILED                __failed
+#define RETURN                Return
+#define FAILED                failed
 
 #define ARG_T(t)                t
 #define ARG_N(a,b,c,d,N,...)    N
@@ -198,24 +198,24 @@ extern "C" {
 RK_S32 mpp_log2(RK_U32 v);
 RK_S32 mpp_log2_16bit(RK_U32 v);
 
-static __inline RK_S32 mpp_ceil_log2(RK_S32 x)
+static inline RK_S32 mpp_ceil_log2(RK_S32 x)
 {
     return mpp_log2((x - 1) << 1);
 }
 
-static __inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
+static inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
 {
     if      (a < amin) return amin;
     else if (a > amax) return amax;
     else               return a;
 }
 
-static __inline RK_U32 mpp_is_32bit()
+static inline RK_U32 mpp_is_32bit()
 {
     return ((sizeof(void *) == 4) ? (1) : (0));
 }
 
-static __inline RK_S32 mpp_dup(RK_S32 fd)
+static inline RK_S32 mpp_dup(RK_S32 fd)
 {
     /* avoid stdin / stdout / stderr so start from 3 */
 #ifdef F_DUPFD_CLOEXEC

@@ -18,6 +18,7 @@
 #ifndef __RK_LIST_H__
 #define __RK_LIST_H__
 
+#include <cstdint> 
 #include <pthread.h>
 #include "rk_type.h"
 // desctructor of list node

@@ -1700,8 +1700,8 @@ static OMX_ERRORTYPE Rkvpu_OMX_GetExConfig(RKVPU_OMX_VIDEOENC_COMPONENT *pVideoE
     switch (nIndex) {
 #ifdef AVS80
         case OMX_IndexParamRkDescribeColorAspects: {
-            OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS *pParam =
-                (OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS *)pComponentConfigStructure;
+            OmxConfigDescribeColorAspectSparams *pParam =
+                (OmxConfigDescribeColorAspectSparams *)pComponentConfigStructure;
             if (pParam->bRequestingDataSpace) {
                 pParam->sAspects.mPrimaries = PrimariesUnspecified;
                 pParam->sAspects.mRange = RangeUnspecified;
@@ -1714,18 +1714,18 @@ static OMX_ERRORTYPE Rkvpu_OMX_GetExConfig(RKVPU_OMX_VIDEOENC_COMPONENT *pVideoE
                 // since that is the destination colorspace that C2D or Venus will convert to.
                 if (pParam->nPixelFormat == HAL_PIXEL_FORMAT_RGBA_8888) {
                     Rockchip_OSAL_Memcpy(pParam, &pVideoEnc->ConfigColorAspects,
-                        sizeof(OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS));
+                        sizeof(OmxConfigDescribeColorAspectSparams));
                     pParam->sAspects.mPrimaries = PrimariesUnspecified;
                     pParam->sAspects.mRange = RangeUnspecified;
                     pParam->sAspects.mTransfer = TransferUnspecified;
                     pParam->sAspects.mMatrixCoeffs = MatrixUnspecified;
                 } else {
                     Rockchip_OSAL_Memcpy(pParam,
-                        &pVideoEnc->ConfigColorAspects, sizeof(OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS));
+                        &pVideoEnc->ConfigColorAspects, sizeof(OmxConfigDescribeColorAspectSparams));
                 }
             } else {
                 Rockchip_OSAL_Memcpy(pParam,
-                    &pVideoEnc->ConfigColorAspects, sizeof(OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS));
+                    &pVideoEnc->ConfigColorAspects, sizeof(OmxConfigDescribeColorAspectSparams));
             }
             break;
         }
@@ -1999,7 +1999,7 @@ OMX_ERRORTYPE Rkvpu_OMX_SetConfig(OMX_HANDLETYPE hComponent, OMX_INDEXTYPE nInde
 #ifdef AVS80
         case OMX_IndexParamRkDescribeColorAspects: {
             Rockchip_OSAL_Memcpy(&pVideoEnc->ConfigColorAspects,
-                pComponentConfigStructure, sizeof(OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS));
+                pComponentConfigStructure, sizeof(OmxConfigDescribeColorAspectSparams));
             pVideoEnc->bIsCfgColorAsp = OMX_TRUE;
         }
             break;

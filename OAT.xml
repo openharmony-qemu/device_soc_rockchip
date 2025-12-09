@@ -187,6 +187,8 @@
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/lib64/librkaiq.so" desc="isp lib 64bit files"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin/ispserver" desc="isp bin files"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin64/ispserver" desc="isp bin files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp/bin/ispserver" desc="isp bin files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp/bin64/ispserver" desc="isp bin files"/>
                 <filteritem type="filepath" name="rk3588/hardware/mpp/lib64/*" desc="mpp 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/mpp/lib/librockchip_mpp.z.so" desc="lib files"/>
                 <filteritem type="filepath" name="rk3588/hardware/mpp/lib64/librockchip_mpp.z.so" desc="lib files"/>

@@ -254,8 +254,8 @@ typedef struct _RockchipVideoPlane {
     OMX_U32   stride;
 } RockchipVideoPlane;
 
-#ifndef __OMX_EXPORTS
-#define __OMX_EXPORTS
+#ifndef OMX_EXPORTS
+#define OMX_EXPORTS
 #define ROCKCHIP_EXPORT_REF __attribute__((visibility("default")))
 #define ROCKCHIP_IMPORT_REF __attribute__((visibility("default")))
 #endif

@@ -90,14 +90,14 @@ uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
     DISPLAY_CHK_RETURN((ret < 0), 0,
         DISPLAY_LOGE("wait vblank failed ret : %{public}d errno %{public}d", ret, errno));
     sq = vblank.reply.sequence;
-    return (uint64_t)(vblank.reply.tval_sec * SEC_TO_NSEC + vblank.reply.tval_usec * USEC_TO_NSEC);
+    return static_cast<uint64_t>(vblank.reply.tval_sec * SEC_TO_NSEC + vblank.reply.tval_usec * USEC_TO_NSEC);
 #else
     struct timespec current;
 
     usleep(20 * 1000);
     sq = 1;
     clock_gettime(CLOCK_MONOTONIC, &current);
-    return (uint64_t)(current.tv_sec * SEC_TO_NSEC + current.tv_nsec);
+    return static_cast<uint64_t>(current.tv_sec * SEC_TO_NSEC + current.tv_nsec);
 #endif
 }
 

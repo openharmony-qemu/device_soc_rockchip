@@ -255,16 +255,16 @@ OMX_ERRORTYPE Rkvpu_OMX_DebugSwitchfromPropget(
     }
 
     if (omx_vdec_debug & VDEC_DBG_RECORD_OUT) {
-        char file_name_out[128]; // 128:array length
-        int pid_out = getpid();
-        int tid_out = syscall(224); // 128:syscall incoming parameters
-        Rockchip_OSAL_Memset(file_name_out, 0, 128);
-        sprintf_s(file_name_out, sizeof(file_name_out), "/data/video/dec_out_%d_%d.bin", pid_out, tid_out);
-        omx_info("Start recording stream to %s", file_name_out);
+        char fileNameOut[128]; // 128:array length
+        int pidOut = getpid();
+        int tidOut = syscall(224); // 128:syscall incoming parameters
+        Rockchip_OSAL_Memset(fileNameOut, 0, 128);
+        sprintf_s(fileNameOut, sizeof(fileNameOut), "/data/video/dec_out_%d_%d.bin", pidOut, tidOut);
+        omx_info("Start recording stream to %s", fileNameOut);
         if (pVideoDec->fp_out != NULL) {
             fclose(pVideoDec->fp_out);
         }
-        pVideoDec->fp_out = fopen(file_name_out, "wb");
+        pVideoDec->fp_out = fopen(fileNameOut, "wb");
         if (pVideoDec->fp_out == NULL) {
             omx_err("record in file fopen failed, err: %s", strerror(errno));
         }
@@ -564,8 +564,8 @@ OMX_BOOL Rkvpu_Post_OutputFrame(OMX_COMPONENTTYPE *pOMXComponent)
     OMX_U32 primaries = 0;
     OMX_U32 transfer  = 0;
     OMX_U32 coeffs    = 0;
-    OMX_COLORASPECTS Aspects = { 0, 0, 0, 0 };
-    OMX_COLORASPECTS *colorAspects = NULL;
+    OmxColoraspects Aspects = { 0, 0, 0, 0 };
+    OmxColoraspects *colorAspects = NULL;
 
     FunctionIn();
     if (p_vpu_ctx == NULL ||

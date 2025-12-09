@@ -26,8 +26,6 @@
 #ifndef ROCKCHIP_OSAL_COLORUTILS
 #define ROCKCHIP_OSAL_COLORUTILS
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "OMX_Types.h"
 #include "OMX_Video.h"
 #include "VideoExt.h"
@@ -42,24 +40,24 @@ enum {
     kPreferContainer,
 };
 
-OMX_BOOL colorAspectsDiffer(const OMX_COLORASPECTS *a, const OMX_COLORASPECTS *b);
+OMX_BOOL colorAspectsDiffer(const OmxColoraspects *a, const OmxColoraspects *b);
 
 void     convertIsoColorAspectsToCodecAspects(OMX_U32 primaries,
                                               OMX_U32 transfer,
                                               OMX_U32 coeffs,
                                               OMX_U32 fullRange,
-                                              OMX_COLORASPECTS *aspects);
+                                              OmxColoraspects *aspects);
 
-void    convertCodecAspectsToIsoColorAspects(OMX_COLORASPECTS *codecAspect, ISO_COLORASPECTS *colorAspect);
+void    convertCodecAspectsToIsoColorAspects(OmxColoraspects *codecAspect, IsoColoraspects *colorAspect);
 
-OMX_U32  handleColorAspectsChange(const OMX_COLORASPECTS *a /* mDefaultColorAspects */,
-                                  const OMX_COLORASPECTS *b /* mBitstreamColorAspects */,
-                                  OMX_COLORASPECTS *c /* mFinalColorAspects */,
+OMX_U32  handleColorAspectsChange(const OmxColoraspects *a /* mDefaultColorAspects */,
+                                  const OmxColoraspects *b /* mBitstreamColorAspects */,
+                                  OmxColoraspects *c /* mFinalColorAspects */,
                                   OMX_U32 perference);
 
-void    updateFinalColorAspects(const OMX_COLORASPECTS *otherAspects,
-                                const OMX_COLORASPECTS *preferredAspects,
-                                OMX_COLORASPECTS *mFinalColorAspects);
+void    updateFinalColorAspects(const OmxColoraspects *otherAspects,
+                                const OmxColoraspects *preferredAspects,
+                                OmxColoraspects *mFinalColorAspects);
 #ifdef __cplusplus
 }
 #endif

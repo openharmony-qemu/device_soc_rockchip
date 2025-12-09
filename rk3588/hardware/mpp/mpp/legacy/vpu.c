@@ -52,7 +52,7 @@ typedef struct VpuExtraInfo_t {
 typedef struct VPUReq {
     RK_U32 *req;
     RK_U32  size;
-} VPUReq_t;
+} VpuReq;
 
 static RK_U32 vpu_debug = 0;
 
@@ -190,7 +190,7 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
 {
     int fd = socket;
     RK_S32 ret;
-    VPUReq_t req;
+    VpuReq req;
 
     if (vpu_debug) {
         RK_U32 i;
@@ -271,7 +271,7 @@ RK_S32 VPUClientWaitResult(int socket, RK_U32 *regs, RK_U32 nregs, VPU_CMD_TYPE 
 {
     int fd = socket;
     RK_S32 ret;
-    VPUReq_t req;
+    VpuReq req;
     (void)len;
 
     if (ioctl_version > 0) {
@@ -320,7 +320,7 @@ RK_S32 VPUClientGetHwCfg(int socket, RK_U32 *cfg, RK_U32 cfg_size)
 {
     int fd = socket;
     RK_S32 ret;
-    VPUReq_t req;
+    VpuReq req;
     req.req     = cfg;
     req.size    = cfg_size;
     ret = (RK_S32)ioctl(fd, VPU_IOC_GET_HW_FUSE_STATUS, &req);

@@ -25,14 +25,6 @@ ohos_prebuilt_shared_library("librkaiq") {
   install_enable = true
 }
 
-ohos_prebuilt_etc("gc8034_RK-CMK-8M-2-v1_CK8401") {
-  source = "$ISP_DIR/etc/iqfiles/gc8034_RK-CMK-8M-2-v1_CK8401.json"
-  relative_install_dir = "iqfiles"
-  install_images = [ chipset_base_dir ]
-  part_name = "rockchip_products"
-  install_enable = true
-}
-
 ohos_prebuilt_etc("ov13855_CMK-OT2016-FV1_default") {
   source = "$ISP_DIR/etc/iqfiles/ov13855_CMK-OT2016-FV1_default.json"
   relative_install_dir = "iqfiles"
@@ -53,34 +45,9 @@ ohos_prebuilt_executable("ispserver") {
   install_enable = true
 }
 
-ohos_prebuilt_executable("media-ctl") {
-  if (target_cpu == "arm") {
-    source = "bin/media-ctl"
-  } else {
-    source = "bin64/media-ctl"
-  }
-  install_images = [ system_base_dir ]
-  part_name = "rockchip_products"
-  install_enable = true
-}
-
-ohos_prebuilt_executable("v4l2-ctl") {
-  if (target_cpu == "arm") {
-    source = "bin/v4l2-ctl"
-  } else {
-    source = "bin64/v4l2-ctl"
-  }
-  install_images = [ system_base_dir ]
-  part_name = "rockchip_products"
-  install_enable = true
-}
-
 group("isp") {
   deps = [
-    #":gc8034_RK-CMK-8M-2-v1_CK8401",
     ":ov13855_CMK-OT2016-FV1_default",
-    ":media-ctl",
-    ":v4l2-ctl",
     ":ispserver",
     ":librkaiq",
   ]

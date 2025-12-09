@@ -29,13 +29,14 @@
 #ifndef __VPU_MEM_H__
 #define __VPU_MEM_H__
 
+#include "vpu_type.h"
+#include "vpu_api.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include "vpu_type.h"
-#include "vpu_api.h"
 /* Linear memory area descriptor */
 
 #define VPU_MEM_IS_NULL(p)          ((p)->offset < 0)

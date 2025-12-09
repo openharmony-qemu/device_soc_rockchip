@@ -1416,8 +1416,8 @@ OMX_ERRORTYPE Rkvpu_Enc_ComponentInit(OMX_COMPONENTTYPE *pOMXComponent)
         }
 #ifdef AVS80
         if (pVideoEnc->bIsCfgColorAsp) {
-            OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS *colorAspectsParams = &pVideoEnc->ConfigColorAspects;
-            OMX_COLORASPECTS *colorAspect = &(colorAspectsParams->sAspects);
+            OmxConfigDescribeColorAspectSparams *colorAspectsParams = &pVideoEnc->ConfigColorAspects;
+            OmxColoraspects *colorAspect = &(colorAspectsParams->sAspects);
             convertCodecAspectsToIsoColorAspects(colorAspect, pVideoEnc->colorAspects);
             if (p_vpu_ctx !=  NULL) {
                 EncParameter_t vpug;
@@ -1793,7 +1793,7 @@ OMX_ERRORTYPE Rockchip_OMX_ComponentConstructor(OMX_HANDLETYPE hComponent, OMX_S
     pVideoEnc->bOhosDynamicBuffer = OMX_FALSE;
 #ifdef AVS80
     pVideoEnc->bIsCfgColorAsp = OMX_FALSE;
-    pVideoEnc->colorAspects = Rockchip_OSAL_Malloc(sizeof(OMX_COLORASPECTS));
+    pVideoEnc->colorAspects = Rockchip_OSAL_Malloc(sizeof(OmxColoraspects));
 #endif
     Rockchip_OSAL_MutexCreate(&pVideoEnc->bScale_Mutex);
     Rockchip_OSAL_MutexCreate(&pVideoEnc->bRecofig_Mutex);

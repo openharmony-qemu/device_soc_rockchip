@@ -2132,11 +2132,11 @@ OMX_ERRORTYPE Rkvpu_OMX_GetConfig(OMX_HANDLETYPE hComponent,
         default:
             switch (nIndexExt) {
                 case OMX_IndexParamRkDescribeColorAspects: {
-                    OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS *colorAspectsParams =
-                        (OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS *)pComponentConfigStructure;
+                    OmxConfigDescribeColorAspectSparams *colorAspectsParams =
+                        (OmxConfigDescribeColorAspectSparams *)pComponentConfigStructure;
 
                     ret = Rockchip_OMX_Check_SizeVersion((void *)colorAspectsParams,
-                        sizeof(OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS));
+                        sizeof(OmxConfigDescribeColorAspectSparams));
                     if (ret != OMX_ErrorNone) {
                         omx_err_f("check version ret err");
                         goto EXIT;
@@ -2212,11 +2212,11 @@ OMX_ERRORTYPE Rkvpu_OMX_SetConfig(OMX_HANDLETYPE hComponent,
     OMX_INDEXEXEXTTYPE nIndexExt = (OMX_INDEXEXEXTTYPE)nIndex;
     switch (nIndexExt) {
         case OMX_IndexParamRkDescribeColorAspects: {
-            const OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS* colorAspectsParams =
-                (const OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS *)pComponentConfigStructure;
+            const OmxConfigDescribeColorAspectSparams* colorAspectsParams =
+                (const OmxConfigDescribeColorAspectSparams *)pComponentConfigStructure;
 
             ret = Rockchip_OMX_Check_SizeVersion((void *)colorAspectsParams,
-                sizeof(OMX_CONFIG_DESCRIBECOLORASPECTSPARAMS));
+                sizeof(OmxConfigDescribeColorAspectSparams));
             if (ret != OMX_ErrorNone) {
                 omx_err_f("check version ret err");
                 goto EXIT;

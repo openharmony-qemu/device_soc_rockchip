@@ -103,11 +103,11 @@ typedef struct _RKVPU_OMX_VIDEODEC_COMPONENT {
     OMX_U32 nVdecDebug;
 
     // color aspects passed from the framework.
-    OMX_COLORASPECTS mDefaultColorAspects;
+    OmxColoraspects mDefaultColorAspects;
     // color aspects parsed from the bitstream.
-    OMX_COLORASPECTS mBitstreamColorAspects;
+    OmxColoraspects mBitstreamColorAspects;
     // final color aspects after combining the above two aspects.
-    OMX_COLORASPECTS mFinalColorAspects;
+    OmxColoraspects mFinalColorAspects;
 
     /* For vpuapi */
     void *rkapi_hdl;

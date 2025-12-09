@@ -136,7 +136,7 @@ void convertIsoColorAspectsToCodecAspects(OMX_U32 primaries,
                                           OMX_U32 transfer,
                                           OMX_U32 coeffs,
                                           OMX_U32 fullRange,
-                                          OMX_COLORASPECTS * aspects)
+                                          OmxColoraspects * aspects)
 {
     if (!findCodecAspects(primaries, (OMX_U32 *)&aspects->mPrimaries, sIsoPrimaries, ARRAY_SIZE(sIsoPrimaries))) {
         aspects->mPrimaries = PrimariesUnspecified;
@@ -152,7 +152,7 @@ void convertIsoColorAspectsToCodecAspects(OMX_U32 primaries,
 }
 
 // static
-void convertCodecAspectsToIsoColorAspects(OMX_COLORASPECTS *codecAspect, ISO_COLORASPECTS *colorAspect)
+void convertCodecAspectsToIsoColorAspects(OmxColoraspects *codecAspect, IsoColoraspects *colorAspect)
 {
     if (!findColorAspects((OMX_U32)codecAspect->mPrimaries, &colorAspect->mPrimaries,
         sIsoPrimaries, ARRAY_SIZE(sIsoPrimaries))) {
@@ -169,7 +169,7 @@ void convertCodecAspectsToIsoColorAspects(OMX_COLORASPECTS *codecAspect, ISO_COL
     (colorAspect->mRange) = codecAspect->mRange == RangeFull ? 2 : 0; // 2:value
 }
 
-OMX_BOOL colorAspectsDiffer(const OMX_COLORASPECTS *a, const OMX_COLORASPECTS *b)
+OMX_BOOL colorAspectsDiffer(const OmxColoraspects *a, const OmxColoraspects *b)
 {
     if (a->mRange != b->mRange
         || a->mPrimaries != b->mPrimaries
@@ -181,9 +181,9 @@ OMX_BOOL colorAspectsDiffer(const OMX_COLORASPECTS *a, const OMX_COLORASPECTS *b
 }
 
 OMX_U32 handleColorAspectsChange(
-    const OMX_COLORASPECTS *a /* mDefaultColorAspects */,
-    const OMX_COLORASPECTS *b /* mBitstreamColorAspects */,
-    OMX_COLORASPECTS *c /* mFinalColorAspects */,
+    const OmxColoraspects *a /* mDefaultColorAspects */,
+    const OmxColoraspects *b /* mBitstreamColorAspects */,
+    OmxColoraspects *c /* mFinalColorAspects */,
     OMX_U32 perference)
 {
     if (perference == kPreferBitstream) {
@@ -197,12 +197,12 @@ OMX_U32 handleColorAspectsChange(
 }
 
 void updateFinalColorAspects(
-    const OMX_COLORASPECTS *otherAspects,
-    const OMX_COLORASPECTS *preferredAspects,
-    OMX_COLORASPECTS *mFinalColorAspects)
+    const OmxColoraspects *otherAspects,
+    const OmxColoraspects *preferredAspects,
+    OmxColoraspects *mFinalColorAspects)
 {
-    OMX_COLORASPECTS newAspects;
-    OMX_COLORASPECTS *pnewAspects = &newAspects;
+    OmxColoraspects newAspects;
+    OmxColoraspects *pnewAspects = &newAspects;
     newAspects.mRange        = preferredAspects->mRange != RangeUnspecified ?
                                preferredAspects->mRange : otherAspects->mRange;
     newAspects.mPrimaries    = preferredAspects->mPrimaries != PrimariesUnspecified ?

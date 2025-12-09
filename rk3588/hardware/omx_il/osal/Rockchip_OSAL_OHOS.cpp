@@ -24,8 +24,8 @@
 #undef  ROCKCHIP_LOG_TAG
 #define ROCKCHIP_LOG_TAG    "omx_osal_OHOS"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <memory>
 #include <unistd.h>
 #include <fcntl.h>

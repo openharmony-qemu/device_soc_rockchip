@@ -16,7 +16,7 @@
 
 #define MODULE_TAG "vpu_api"
 
-#include <string.h>
+#include <cstring>
 #include <dlfcn.h>
 #include <unistd.h>
 
@@ -184,7 +184,7 @@ vpu_api_control(VpuCodecContext *ctx, VPU_API_CMD cmdType, void *param)
         vpu_display_mem_pool_impl *p_mempool =
             (vpu_display_mem_pool_impl *)param;
 
-        param = (void*)p_mempool->group;
+        param = static_cast<void *>(p_mempool->group);
         break;
     }
     default: {

@@ -16,7 +16,7 @@
 
 #define MODULE_TAG "vpu_api_mlvec"
 
-#include "string.h"
+#include <cstring>
 
 #include "mpp_mem.h"
 #include "mpp_debug.h"
@@ -81,7 +81,7 @@ MPP_RET vpu_api_mlvec_setup(VpuApiMlvec ctx, MppCtx mpp, MppApi *mpi, MppEncCfg 
 
     mlvec_dbg_func("enter %p\n", ctx);
 
-    VpuApiMlvecImpl *impl = (VpuApiMlvecImpl *)ctx;
+    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
     impl->mpp = mpp;
     impl->mpi = mpi;
     impl->enc_cfg = enc_cfg;
@@ -98,7 +98,7 @@ MPP_RET vpu_api_mlvec_check_cfg(void *p)
         return MPP_ERR_NULL_PTR;
     }
 
-    VpuApiMlvecStaticCfg *cfg = (VpuApiMlvecStaticCfg *)p;
+    VpuApiMlvecStaticCfg *cfg = static_cast<VpuApiMlvecStaticCfg *>(p);
     RK_U32 magic = cfg->magic;
     MPP_RET ret = MPP_OK;
 
@@ -127,7 +127,7 @@ MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
 
     MPP_RET ret = MPP_OK;
     /* update static configure */
-    VpuApiMlvecImpl *impl = (VpuApiMlvecImpl *)ctx;
+    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
 
     memcpy(&impl->st_cfg, cfg, sizeof(impl->st_cfg));
     cfg = &impl->st_cfg;
@@ -180,7 +180,7 @@ MPP_RET vpu_api_mlvec_set_dy_cfg(VpuApiMlvec ctx, VpuApiMlvecDynamicCfg *cfg, Mp
     mlvec_dbg_func("enter ctx %p cfg %p meta %p\n", ctx, cfg, meta);
 
     MPP_RET ret = MPP_OK;
-    VpuApiMlvecImpl *impl = (VpuApiMlvecImpl *)ctx;
+    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
     VpuApiMlvecDynamicCfg *dst = &impl->dy_cfg;
 
     /* clear non-sticky flag first */
@@ -237,7 +237,7 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     mlvec_dbg_func("enter ctx %p max_tid %d\n", ctx, max_tid);
 
     MPP_RET ret = MPP_OK;
-    VpuApiMlvecImpl *impl = (VpuApiMlvecImpl *)ctx;
+    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
     MppCtx mpp_ctx = impl->mpp;
     MppApi *mpi = impl->mpi;
     MppEncCfg enc_cfg = impl->enc_cfg;

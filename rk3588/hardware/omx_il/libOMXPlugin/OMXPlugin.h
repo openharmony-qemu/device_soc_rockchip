@@ -58,7 +58,7 @@ struct OMXComponent {
 
 struct OMXPlugin : public IOMXComponentMgr {
     OMXPlugin();
-    virtual ~OMXPlugin() override;
+    ~OMXPlugin() override;
 
     virtual OMX_ERRORTYPE CreateComponentInstance(
             const OMX_STRING name,

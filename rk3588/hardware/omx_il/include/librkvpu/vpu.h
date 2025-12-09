@@ -18,12 +18,15 @@
 #ifndef __VPU_H__
 #define __VPU_H__
 
+
+#include "vpu_type.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include "vpu_type.h"
+
 
 #define VPU_SUCCESS                     (0)
 #define VPU_FAILURE                     (-1)

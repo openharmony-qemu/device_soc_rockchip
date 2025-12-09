@@ -17,22 +17,22 @@
  
 #define ALOG_TAG "rk_list"
 
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
 
 #include "rk_list.h"
 #include "mpp_log.h"
 
-#define _RK_LIST_ERROR
+#define RK_LIST_ERROR
 
-#ifdef _RK_LIST_DEUBG
+#ifdef RK_LIST_DEUBG
 #define LIST_DEBUG(fmt, ...) mpp_log(fmt, ## __VA_ARGS__)
 #else
 #define LIST_DEBUG(fmt, ...) /* not debugging: nothing */
 #endif
 
-#ifdef _RK_LIST_ERROR
+#ifdef RK_LIST_ERROR
 #define LIST_ERROR(fmt, ...) mpp_err(fmt, ## __VA_ARGS__)
 #else
 #define LIST_ERROR(fmt, ...)
@@ -59,9 +59,18 @@ static inline void list_node_init_with_key_and_size(rk_list_node *node, RK_U32 k
 
 static rk_list_node* create_list(void *data, RK_S32 size, RK_U32 key)
 {
-    rk_list_node *node = (rk_list_node*)malloc(sizeof(rk_list_node) + size);
+    if (size <= 0) {
+        LIST_ERROR("invalid size parameter: %d", size);
+        return NULL;
+    }
+
+    if (data == NULL) {
+        LIST_ERROR("data pointer is NULL");
+        return NULL;
+    }
+    rk_list_node *node = static_cast<rk_list_node*>(malloc(sizeof(rk_list_node) + size));
     if (node) {
-        void *dst = (void*)(node + 1);
+        void *dst = reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(node) + sizeof(rk_list_node));
         list_node_init_with_key_and_size(node, key, size);
         memcpy(dst, data, size);
     } else {
@@ -70,22 +79,22 @@ static rk_list_node* create_list(void *data, RK_S32 size, RK_U32 key)
     return node;
 }
 
-static inline void _rk_list_add(rk_list_node * _new, rk_list_node * prev, rk_list_node * next)
+static inline void rk_list_add(rk_list_node * new_entry, rk_list_node * prev, rk_list_node * next)
 {
-    next->prev = _new;
-    _new->next = next;
-    _new->prev = prev;
-    prev->next = _new;
+    next->prev = new_entry;
+    new_entry->next = next;
+    new_entry->prev = prev;
+    prev->next = new_entry;
 }
 
-static inline void rk_list_add(rk_list_node *_new, rk_list_node *head)
+static inline void rk_list_add(rk_list_node *new_entry, rk_list_node *head)
 {
-    _rk_list_add(_new, head, head->next);
+    rk_list_add(new_entry, head, head->next);
 }
 
-static inline void rk_list_add_tail(rk_list_node *_new, rk_list_node *head)
+static inline void rk_list_add_tail(rk_list_node *new_entry, rk_list_node *head)
 {
-    _rk_list_add(_new, head->prev, head);
+    rk_list_add(new_entry, head->prev, head);
 }
 
 RK_S32 rk_list::add_at_head(void *data, RK_S32 size)
@@ -126,7 +135,7 @@ RK_S32 rk_list::add_at_tail(void *data, RK_S32 size)
 
 static void release_list(rk_list_node*node, void *data, RK_S32 size)
 {
-    void *src = (void*)(node + 1);
+    void *src = reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(node) + sizeof(rk_list_node));
     if (node->size == size) {
         memcpy(data, src, size);
     } else {
@@ -232,7 +241,8 @@ RK_S32 rk_list::flush()
             rk_list_node* node = head->next;
             rk_list_del_init(node);
             if (destroy) {
-                destroy((void*)(node + 1));
+                void* data_ptr = static_cast<void *>(static_cast<char *>(static_cast<void *>(node)) + sizeof(rk_list_node));
+                destroy(data_ptr);
             }
             free(node);
             count--;
@@ -274,7 +284,7 @@ rk_list::~rk_list()
 #include "vpu_mem.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <cstring>
 
 #define LOOP_RK_LIST    600
 

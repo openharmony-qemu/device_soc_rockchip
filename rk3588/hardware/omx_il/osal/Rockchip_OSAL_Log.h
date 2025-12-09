@@ -54,36 +54,36 @@ typedef enum _LOG_LEVEL {
 #define OMX_DBG_MALLOC                  0x40000000
 #define OMX_DBG_CAPACITYS               0x00000001
 
-void _Rockchip_OSAL_Log(ROCKCHIP_LOG_LEVEL logLevel, OMX_U32 flag, const char *tag, const char *msg, ...);
+void Rockchip_OSAL_Log(ROCKCHIP_LOG_LEVEL logLevel, OMX_U32 flag, const char *tag, const char *msg, ...);
 
 #define omx_info(format, ...) \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_INFO, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_INFO, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
 #define omx_trace(format, ...) \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_TRACE, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_TRACE, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
 #define omx_err(format, ...)   \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_ERROR, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_ERROR, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
 #define omx_warn(format, ...)  \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_WARNING, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_WARNING, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, format "\n", ##__VA_ARGS__)
 
 #define omx_info_f(format, ...) \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_INFO, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, \
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_INFO, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, \
         "%s(%d): " format "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define omx_trace_f(format, ...) \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_TRACE, OMX_DBG_UNKNOWN, \
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_TRACE, OMX_DBG_UNKNOWN, \
       ROCKCHIP_LOG_TAG, "%s(%d): " format "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define omx_err_f(format, ...)  \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_ERROR, OMX_DBG_UNKNOWN, \
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_ERROR, OMX_DBG_UNKNOWN, \
      ROCKCHIP_LOG_TAG, "%s(%d): " format "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define omx_warn_f(format, ...)  \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_WARNING, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, \
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_WARNING, OMX_DBG_UNKNOWN, ROCKCHIP_LOG_TAG, \
         "%s(%d): " format "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define _omx_dbg(fmt, ...)  \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_INFO, OMX_DBG_UNKNOWN, \
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_INFO, OMX_DBG_UNKNOWN, \
         ROCKCHIP_LOG_TAG, "%s(%d): " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define omx_dbg_f(flags, fmt, ...) \
-    _Rockchip_OSAL_Log(ROCKCHIP_LOG_DEBUG, flags, ROCKCHIP_LOG_TAG, \
+    Rockchip_OSAL_Log(ROCKCHIP_LOG_DEBUG, flags, ROCKCHIP_LOG_TAG, \
          "%s(%d): " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define omx_dbg(debug, flag, fmt, ...) \
