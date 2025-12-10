@@ -55,6 +55,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
     RK_S32 lt_cnt = 0;
     RK_S32 st_cnt = 0;
     MPP_RET ret = 0;
+    const int REF_COUNT_9 = 9;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
     if (eok != EOK) {
@@ -86,7 +87,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             lt_ref[REF_NUM_0].lt_gap        = 8; // 8:set 8 frame
             lt_ref[REF_NUM_0].lt_delay      = 0;
 
-            st_cnt = 9;
+            st_cnt = REF_COUNT_9;
             /* set tsvc4 st-ref struct */
             /* st 0 layer 0 - ref */
             st_ref[REF_NUM_0].is_non_ref    = 0;
@@ -97,19 +98,19 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             /* st 1 layer 3 - non-ref */
             st_ref[REF_NUM_1].is_non_ref    = 1;
             st_ref[REF_NUM_1].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_1].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_1].ref_arg       = 0;
             st_ref[REF_NUM_1].repeat        = 0;
             /* st 2 layer 2 - ref */
             st_ref[REF_NUM_2].is_non_ref    = 0;
             st_ref[REF_NUM_2].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_2].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_2].ref_arg       = 0;
             st_ref[REF_NUM_2].repeat        = 0;
             /* st 3 layer 3 - non-ref */
             st_ref[REF_NUM_3].is_non_ref    = 1;
             st_ref[REF_NUM_3].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_3].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_3].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_3].ref_arg       = 0;
             st_ref[REF_NUM_3].repeat        = 0;
             /* st 4 layer 1 - ref */
@@ -121,19 +122,19 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             /* st 5 layer 3 - non-ref */
             st_ref[REF_NUM_5].is_non_ref    = 1;
             st_ref[REF_NUM_5].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_5].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_5].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_5].ref_arg       = 0;
             st_ref[REF_NUM_5].repeat        = 0;
             /* st 6 layer 2 - ref */
             st_ref[REF_NUM_6].is_non_ref    = 0;
             st_ref[REF_NUM_6].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_6].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_6].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_6].ref_arg       = 0;
             st_ref[REF_NUM_6].repeat        = 0;
             /* st 7 layer 3 - non-ref */
             st_ref[REF_NUM_7].is_non_ref    = 1;
             st_ref[REF_NUM_7].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_7].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_7].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_7].ref_arg       = 0;
             st_ref[REF_NUM_7].repeat        = 0;
             /* st 8 layer 0 - ref */
@@ -164,19 +165,19 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             /* st 1 layer 2 - non-ref */
             st_ref[REF_NUM_1].is_non_ref    = 1;
             st_ref[REF_NUM_1].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_1].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_1].ref_arg       = 0;
             st_ref[REF_NUM_1].repeat        = 0;
             /* st 2 layer 1 - ref */
             st_ref[REF_NUM_2].is_non_ref    = 0;
             st_ref[REF_NUM_2].temporal_id   = TEMPORAL_ID_1;
-            st_ref[REF_NUM_2].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_2].ref_arg       = 0;
             st_ref[REF_NUM_2].repeat        = 0;
             /* st 3 layer 2 - non-ref */
             st_ref[REF_NUM_3].is_non_ref    = 1;
             st_ref[REF_NUM_3].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_3].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_3].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_3].ref_arg       = 0;
             st_ref[REF_NUM_3].repeat        = 0;
             /* st 4 layer 0 - ref */
@@ -205,13 +206,13 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             /* st 1 layer 2 - non-ref */
             st_ref[REF_NUM_1].is_non_ref    = 1;
             st_ref[REF_NUM_1].temporal_id   = TEMPORAL_ID_1;
-            st_ref[REF_NUM_1].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_1].ref_arg       = 0;
             st_ref[REF_NUM_1].repeat        = 0;
             /* st 2 layer 1 - ref */
             st_ref[REF_NUM_2].is_non_ref    = 0;
             st_ref[REF_NUM_2].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_2].ref_mode      = REF_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_2].ref_arg       = 0;
             st_ref[REF_NUM_2].repeat        = 0;
         }
@@ -246,6 +247,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     RK_S32 st_cnt = 8;
     RK_S32 pos = 0;
     MPP_RET ret = 0;
+    const int MIN_REPEAT = 2;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
     if (eok != EOK) {
@@ -281,9 +283,9 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     if (vi_len > 1) {
         st_ref[pos].is_non_ref  = 0;
         st_ref[pos].temporal_id = 1;
-        st_ref[pos].ref_mode    = REF_TO_PREV_REF_FRM;
+        st_ref[pos].ref_mode    = REF_MODE_TO_PREV_REF_FRM;
         st_ref[pos].ref_arg     = 0;
-        st_ref[pos].repeat      = vi_len - 2;
+        st_ref[pos].repeat      = vi_len - MIN_REPEAT;
         pos++;
     }
 
@@ -309,7 +311,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
 {
     MpiEncTestData *p = NULL;
     MPP_RET ret = 0;
-
+    const int YUV420_CHANNEL_RATIO = 3 / 2;
     if (!data || !cmd) {
         mpp_err_f("invalid input data %p cmd %p\n", data, cmd);
         return MPP_ERR_NULL_PTR;
@@ -335,7 +337,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     switch (p->fmt & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420P: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 3 / 2;
+            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * YUV420_CHANNEL_RATIO;
         }
             break;
 

@@ -288,6 +288,8 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     const int MIN_THRESHOLD = 2;
     const int MAX_THRESHOLD = 4;
     const int FORCED_VALUE = 2;
+    const int MIN_WIDTH = 2;
+    const int MAX_HEIGHT = 64;
 
     errno_t eok = memset_s(&dstRgaBuffer, sizeof(dstRgaBuffer), 0, sizeof(dstRgaBuffer));
     if (eok != EOK) {
@@ -385,7 +387,7 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     drect.width = dstRect->w;
     drect.width = (drect.width % 2 == 1) ? (drect.width + 1) : drect.width; // 2: Is it odd?
 
-    if (srect.width <= 2 && srect.height <= 64) {
+    if (srect.width <= MIN_WIDTH && srect.height <= MAX_HEIGHT) {
         // When move mouse (pointer window, or other tiny window?) to right edge of the screen,
         // in the mirror screen, the content in srect(srcRgaBuffer) will be copyied to drect(dstRgaBuffer)
         // with scale or rotate (for example, srect [0, 0, 2, 64] --> drect [1916, 68, 4, 96]).

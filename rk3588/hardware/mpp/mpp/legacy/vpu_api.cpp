@@ -30,6 +30,9 @@
 #include "vpu_api_legacy.h"
 #include "vpu_mem_legacy.h"
 
+#define MAX_WIDTH      1920
+#define MAX_HEIGHT     1088
+
 static RK_S32
 vpu_api_init(VpuCodecContext *ctx, RK_U8 *extraData, RK_U32 extra_size)
 {
@@ -317,8 +320,8 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
         use_mpp = 0;
     } else {
         if (s->videoCoding == OMX_RK_VIDEO_CodingAVC
-            && s->codecType == CODEC_DECODER && s->width <= 1920
-            && s->height <= 1088 && !s->extra_cfg.mpp_mode
+            && s->codecType == CODEC_DECODER && s->width <= MAX_WIDTH
+            && s->height <= MAX_HEIGHT && !s->extra_cfg.mpp_mode
             && mpp_get_soc_type() != ROCKCHIP_SOC_RK3399) {
             /* H.264 smaller than 1080p use original vpuapi library for better error process */
             // NOTE: rk3399 need better performance

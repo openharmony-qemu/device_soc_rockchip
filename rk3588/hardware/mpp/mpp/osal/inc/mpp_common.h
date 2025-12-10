@@ -212,8 +212,8 @@
 #define TEMPORAL_ID_LAYER_2     2
 #define TEMPORAL_ID_LAYER_3     3
 
-#define NO_REPEAT               0
-#define REF_DEFAULT_VALUE       0
+#define NO_REPETITION               0
+#define DEFAULT_REF_VALUE       0
 #define REF_ARG_VALUE_1         1
 
 #define STRIDE_MULTIPLIER_RGB565    2

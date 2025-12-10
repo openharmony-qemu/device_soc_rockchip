@@ -111,9 +111,14 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
     RK_S32 cabac_en = cfg->enableCabac;
     RK_S32 rc_mode  = cfg->rc_mode;
     RK_U32 is_fix_qp = (rc_mode == MPP_ENC_RC_MODE_FIXQP) ? 1 : 0;
+    int ver_stride_alignment = 8;
     const int BPS_MIN_CBR = 15 / 16;
     const int BPS_MIN_VBR = 1 / 16;
+    const int BPS_MAX_MULTIPLIER = 17 / 16;
     const int HORIZONTAL_ALIGNMENT = 16;
+    const int BPP_BGR555 = 2;
+    const int BPP_RGB888_BGR888 = 3;
+    const int BPP_ARGB8888_ABGR8888_BGRA8888_RGBA8888 = 4;
 
     mpp_log("setup encoder rate control config:\n");
     mpp_log("width %4d height %4d format %d:%x\n", width, height, cfg->format, fmt);
@@ -138,29 +143,29 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
     case MPP_FMT_BGR565:
     case MPP_FMT_RGB555:
     case MPP_FMT_BGR555: {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 2 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", BPP_BGR555 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     case MPP_FMT_RGB888 :
     case MPP_FMT_BGR888 : {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 3 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", BPP_RGB888_BGR888 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     case MPP_FMT_ARGB8888 :
     case MPP_FMT_ABGR8888 :
     case MPP_FMT_BGRA8888 :
     case MPP_FMT_RGBA8888 : {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 4 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", BPP_ARGB8888_ABGR8888_BGRA8888_RGBA8888 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     default: {
         mpp_err("unsupport format 0x%x\n", fmt & MPP_FRAME_FMT_MASK);
     } break;
     }
-    mpp_enc_cfg_set_s32(enc_cfg, "prep:ver_stride", MPP_ALIGN(height, 8));
+    mpp_enc_cfg_set_s32(enc_cfg, "prep:ver_stride", MPP_ALIGN(height, ver_stride_alignment));
     mpp_enc_cfg_set_s32(enc_cfg, "prep:format", fmt);
 
     mpp_enc_cfg_set_s32(enc_cfg, "rc:mode", is_fix_qp ? MPP_ENC_RC_MODE_FIXQP :
                         (rc_mode ? MPP_ENC_RC_MODE_CBR : MPP_ENC_RC_MODE_VBR));
     mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_target", bps);
-    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_max", bps * 17 / 16);
+    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_max", bps * BPS_MAX_MULTIPLIER);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_min", rc_mode ? bps * BPS_MIN_CBR : bps * BPS_MIN_VBR);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_flex", 0);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_num", fps_in);
@@ -356,13 +361,14 @@ static RK_S32 init_frame_info(VpuCodecContext *ctx,
     RK_S32 ret = -1;
     MppFrame frame = nullptr;
     RK_U32 fbcOutFmt = 0;
+    const int BIT_DEPTH_10 = 10;
 
     if (ctx->private_data)
         fbcOutFmt = *(RK_U32 *)ctx->private_data;
 
     if (ctx->extra_cfg.bit_depth
         || ctx->extra_cfg.yuv_format) {
-        if (ctx->extra_cfg.bit_depth == 10)
+        if (ctx->extra_cfg.bit_depth == BIT_DEPTH_10)
             p->CodecType = (ctx->extra_cfg.yuv_format == 1)
                            ? MPP_FMT_YUV422SP_10BIT : MPP_FMT_YUV420SP_10BIT;
         else
@@ -541,6 +547,10 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
     RK_U32 mode = mpp_frame_get_mode(mframe);
     const int YUV420_BYTES_NUM = 3;
     const int YUV420_BYTES_DEN = 2;
+    const RK_U32 FIELD_TYPE_FRAME = 0;
+    const RK_U32 FIELD_TYPE_TOP_FIRST = 1;
+    const RK_U32 FIELD_TYPE_BOTTOM_FIRST = 2;
+    const RK_U32 FIELD_TYPE_DEINTERLACED = 4;
     MppFrameColorRange colorRan = mpp_frame_get_color_range(mframe);
     MppFrameColorTransferCharacteristic colorTrc = mpp_frame_get_color_trc(mframe);
     MppFrameColorPrimaries colorPri = mpp_frame_get_color_primaries(mframe);
@@ -561,18 +571,18 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
     vframe->ColorCoeffs = colorSpa;
 
     if (mode == MPP_FRAME_FLAG_FRAME)
-        vframe->FrameType = 0;
+        vframe->FrameType = FIELD_TYPE_FRAME;
     else {
         RK_U32 field_order = mode & MPP_FRAME_FLAG_FIELD_ORDER_MASK;
         if (field_order == MPP_FRAME_FLAG_TOP_FIRST)
-            vframe->FrameType = 1;
+            vframe->FrameType = FIELD_TYPE_TOP_FIRST;
         else if (field_order == MPP_FRAME_FLAG_BOT_FIRST)
-            vframe->FrameType = 2;
+            vframe->FrameType = FIELD_TYPE_BOTTOM_FIRST;
         else if (field_order == MPP_FRAME_FLAG_DEINTERLACED)
-            vframe->FrameType = 4;
+            vframe->FrameType = FIELD_TYPE_DEINTERLACED;
     }
     vframe->ErrorInfo = mpp_frame_get_errinfo(mframe) | mpp_frame_get_discard(mframe);
-    vframe->ShowTime.TimeHigh = (RK_U32)(pts >> 32);
+    vframe->ShowTime.TimeHigh = (RK_U32)(pts >> 32);/* 将 pts 的高 32 位转换为无符号 32 位整 */
     vframe->ShowTime.TimeLow = (RK_U32)pts;
     switch (mpp_frame_get_fmt(mframe) & MPP_FRAME_FMT_MASK) {
     case MPP_FMT_YUV420SP: {
@@ -679,6 +689,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
     MPP_RET ret = MPP_OK;
     MppFrame mframe = nullptr;
     MppPacket packet = nullptr;
+    const int YUV420P_PIXEL_SIZE = 3 / 2;
 
     vpu_api_dbg_func("enter\n");
 
@@ -760,7 +771,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
             /* in order to avoid interface change use space in output to transmit information */
             outputCommit.type = MPP_BUFFER_TYPE_ION;
             outputCommit.fd = fd;
-            outputCommit.size = width * height * 3 / 2;
+            outputCommit.size = width * height * YUV420P_PIXEL_SIZE;
             outputCommit.ptr = (void*)aDecOut->data;
 
             ret = mpp_buffer_import(&pic_buf, &outputCommit);
@@ -769,7 +780,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
                 goto DECODE_OUT;
             }
         } else {
-            ret = mpp_buffer_get(memGroup, &pic_buf, hor_stride * ver_stride * 3 / 2);
+            ret = mpp_buffer_get(memGroup, &pic_buf, hor_stride * ver_stride * YUV420P_PIXEL_SIZE);
             if (ret) {
                 mpp_err_f("allocate output stream buffer failed\n");
                 goto DECODE_OUT;
@@ -1343,7 +1354,7 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     RK_S64 pts          = aEncInStrm->timeUs;
     RK_S32 fd           = aEncInStrm->bufPhyAddr;
     RK_U32 size         = aEncInStrm->size;
-
+    const int YUV420_PIXEL_SIZE_RATIO = YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_RATIO_DENOMINATOR;
     /* try import input buffer and output buffer */
     MppFrame frame = nullptr;
 
@@ -1425,13 +1436,13 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
             goto FUNC_RET;
         }
         if (format >= MPP_FMT_YUV420SP && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_SIZE_RATIO_DENOMINATOR;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO;
         } else  if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_SIZE_RATIO_DENOMINATOR;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB888_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 3;
         } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB101010_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 4;
         } else {
             mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;
@@ -1481,7 +1492,7 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
     RK_S32 ret = 0;
     MppPacket packet = nullptr;
     vpu_api_dbg_func("enter\n");
-
+    const int ALIGNMENT_OFFSET = 16;
     ret = mpi->encode_get_packet(mpp_ctx, &packet);
     if (ret) {
         mpp_err_f("encode_get_packet failed ret %d\n", ret);
@@ -1496,13 +1507,14 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
         RK_S32 is_intra = 0;
 
         RK_U32 offset = 0;
+        const RK_U32 AVC_OFFSET = 4;
         if (ctx->videoCoding == OMX_RK_VIDEO_CodingAVC) {
-            offset = 4;
+            offset = AVC_OFFSET;
             length = (length > offset) ? (length - offset) : 0;
         }
         aEncOut->data = nullptr;
         if (length > 0) {
-            aEncOut->data = mpp_calloc(RK_U8, MPP_ALIGN(length + 16, SZ_4K));
+            aEncOut->data = mpp_calloc(RK_U8, MPP_ALIGN(length + ALIGNMENT_OFFSET, SZ_4K));
             if (aEncOut->data)
                 memcpy(aEncOut->data, src + offset, length);
         }

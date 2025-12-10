@@ -128,6 +128,7 @@ int VPUClientInit(VPU_CLIENT_TYPE type)
     const char *path;
     MppCtxType ctx_type;
     MppCodingType coding = MPP_VIDEO_CodingAutoDetect;
+    const int ERROR_CLIENT_TYPE = -2;
 
     switch (type) {
     case VPU_DEC_HEVC:
@@ -173,7 +174,7 @@ int VPUClientInit(VPU_CLIENT_TYPE type)
 
     ret = vpu_api_set_client_type(fd, type);
     if (ret) {
-        return -2;
+        return ERROR_CLIENT_TYPE;
     }
 
     return fd;
@@ -194,7 +195,6 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
     RK_S32 ret;
     VpuReq req;
     const size_t NUM_REQS = 2;
-
     if (vpu_debug) {
         RK_U32 i;
 
@@ -209,14 +209,14 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
         VpuExtraInfo *extra_info = (VpuExtraInfo*)(regs + (nregs - VPU_EXTRA_INFO_SIZE));
 
         reqs[0].cmd = MPP_CMD_SET_REG_WRITE;
-        reqs[0].flag = 0;
+        reqs[0].flag = VPU_FLAG_DEFAULT;
         reqs[0].offset = VPU_DEFAULT_OFFSET;
         reqs[0].size =  reg_size * sizeof(RK_U32);
         reqs[0].data_ptr = REQ_DATA_PTR((void*)regs);
         reqs[0].flag |= VPU_MPP_FLAGS_MULTI_MSG;
 
         reqs[1].cmd = MPP_CMD_SET_REG_READ;
-        reqs[1].flag = 0;
+        reqs[1].flag = VPU_FLAG_DEFAULT;
         reqs[1].offset = VPU_DEFAULT_OFFSET;
         reqs[1].size =  reg_size * sizeof(RK_U32);
         reqs[1].data_ptr = REQ_DATA_PTR((void*)regs);
@@ -224,10 +224,11 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
         if (extra_info && extra_info->magic == VPU_EXTRA_INFO_MAGIC) {
             reg_size = nregs - VPU_EXTRA_INFO_SIZE;
             reqs[2].cmd = MPP_CMD_SET_REG_ADDR_OFFSET;
-            reqs[2].flag = 0;
+            reqs[2].flag = VPU_FLAG_DEFAULT;
             reqs[2].offset = VPU_DEFAULT_OFFSET;
-            reqs[2].size = extra_info->count * sizeof(extra_info->patchs[0]);
-            reqs[2].data_ptr = REQ_DATA_PTR((void *)&extra_info->patchs[0]);
+            const size_t PATCH = sizeof(extra_info->patchs[0]);
+            reqs[2].size = extra_info->count * PATCH;
+            reqs[2].data_ptr = REQ_DATA_PTR((void *)extra_info->patchs);
 
             reqs[0].size =  reg_size * sizeof(RK_U32);
             reqs[1].size =  reg_size * sizeof(RK_U32);

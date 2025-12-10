@@ -93,8 +93,9 @@ uint64_t DrmVsyncWorker::WaitNextVBlank(unsigned int &sq)
     return static_cast<uint64_t>(vblank.reply.tval_sec * SEC_TO_NSEC + vblank.reply.tval_usec * USEC_TO_NSEC);
 #else
     struct timespec current;
+    constexpr int SLEEP_TIME_US = 20 * 1000;
 
-    usleep(20 * 1000);
+    usleep(SLEEP_TIME_US);
     sq = 1;
     clock_gettime(CLOCK_MONOTONIC, &current);
     return static_cast<uint64_t>(current.tv_sec * SEC_TO_NSEC + current.tv_nsec);

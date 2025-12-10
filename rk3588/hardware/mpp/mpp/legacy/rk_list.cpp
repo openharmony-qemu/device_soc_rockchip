@@ -297,8 +297,9 @@ static int rk_list_fifo_test(rk_list *list_0)
 {
     int count;
     VPUMemLinear_t m;
+    const MEMORY_SIZE = 100;
     for (count = 0; count < COUNT_ADD; count++) {
-        err |= VPUMallocLinear(&m, 100);
+        err |= VPUMallocLinear(&m, MEMORY_SIZE);
         if (err) {
             printf("VPUMallocLinear in rk_list_fifo_test\n");
             break;
@@ -331,6 +332,7 @@ static int rk_list_filo_test(rk_list *list_0)
 {
     int count;
     VPUMemLinear_t m;
+    const int BUFFER_SIZE = 100;
     for (count = 0; count < COUNT_ADD + COUNT_DEL; count++) {
         if (count & 1) {
             err |= list_0->del_at_head(&m, sizeof(m));
@@ -344,7 +346,7 @@ static int rk_list_filo_test(rk_list *list_0)
                 break;
             }
         } else {
-            err |= VPUMallocLinear(&m, 100);
+            err |= VPUMallocLinear(&m, BUFFER_SIZE);
             if (err) {
                 printf("VPUMallocLinear in rk_list_filo_test\n");
                 break;
