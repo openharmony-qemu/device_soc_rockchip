@@ -313,9 +313,10 @@ static inline RK_U32 hash_32(RK_U32 val, unsigned int bits)
 {
     /* On some cpus multiply is faster, on others gcc will do shifts */
     RK_U32 hash = val * GOLDEN_RATIO_32;
+    const RK_U32 BIT_MASK_SHIFT = 32;
 
     /* High bits are more random, so use them. */
-    return hash >> (32 - bits);
+    return hash >> (BIT_MASK_SHIFT - bits);
 }
 
 static inline RK_U32 hash_32(RK_U32 val)
@@ -343,9 +344,9 @@ static inline RK_U32 hash_ptr(const void *ptr, unsigned int bits)
 static inline RK_U32 hash32_ptr(const void *ptr)
 {
     unsigned long val = (unsigned long)ptr;
-
+    const RK_U32 BIT_MASK_SHIFT = 32;
 #if __SIZEOF_POINTER__ == 8
-    val ^= (val >> 32);
+    val ^= (val >> BIT_MASK_SHIFT);
 #endif
     return (RK_U32)val;
 }

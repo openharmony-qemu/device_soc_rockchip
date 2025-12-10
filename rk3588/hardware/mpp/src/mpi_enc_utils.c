@@ -393,19 +393,59 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     ctx = p->ctx;
     cfg = p->cfg;
 
+    const RK_S32 DEFAULT_FPS_DEN = 1;
+    const RK_S32 DEFAULT_FPS_NUM = 30;
+    const RK_S32 DEFAULT_BPS_CALC_FACTOR = 8;
+    const RK_S32 DEFAULT_GOP_LEN_MULTIPLIER = 2;
+    const RK_S32 RC_DROP_THRESHOLD_PERCENT = 20;
+    const RK_S32 RC_DROP_GAP = 1;
+
+    const RK_S32 BPS_MAX_FACTOR_NUMERATOR = 17;
+    const RK_S32 BPS_MAX_FACTOR_DENOMINATOR = 16;
+    const RK_S32 BPS_MIN_CBR_FACTOR_NUMERATOR = 15;
+    const RK_S32 BPS_MIN_CBR_FACTOR_DENOMINATOR = 16;
+    const RK_S32 BPS_MIN_VBR_FACTOR_NUMERATOR = 1;
+    const RK_S32 BPS_MIN_VBR_FACTOR_DENOMINATOR = 16;
+
+    const RK_S32 FIX_QP_VALUE = 20;
+    const RK_S32 RC_QP_INIT = 26;
+    const RK_S32 RC_QP_MAX = 51;
+    const RK_S32 RC_QP_MIN = 10;
+    const RK_S32 RC_QP_MAX_I = 51;
+    const RK_S32 RC_QP_MIN_I = 10;
+    const RK_S32 RC_QP_IP = 2;
+
+    const RK_S32 VP8_QP_INIT = 40;
+    const RK_S32 VP8_QP_MAX = 127;
+    const RK_S32 VP8_QP_MIN = 0;
+    const RK_S32 VP8_QP_MAX_I = 127;
+    const RK_S32 VP8_QP_MIN_I = 0;
+    const RK_S32 VP8_QP_IP = 6;
+
+    const RK_S32 JPEG_Q_FACTOR = 80;
+    const RK_S32 JPEG_QF_MAX = 99;
+    const RK_S32 JPEG_QF_MIN = 1;
+
+    const RK_S32 H264_PROFILE_HIGH = 100;
+    const RK_S32 H264_LEVEL_40 = 40;
+    const RK_S32 H264_CABAC_ENABLED = 1;
+    const RK_S32 H264_CABAC_IDC = 0;
+    const RK_S32 H264_TRANS8x8_ENABLED = 1;
+
+    const RK_U32 GOP_MODE_THRESHOLD = 4;
+
     /* setup default parameter */
     if (p->fps_in_den == 0)
-        p->fps_in_den = 1;
+        p->fps_in_den = DEFAULT_FPS_DEN;
     if (p->fps_in_num == 0)
-        p->fps_in_num = 30;
+        p->fps_in_num = DEFAULT_FPS_NUM;
     if (p->fps_out_den == 0)
-        p->fps_out_den = 1;
+        p->fps_out_den = DEFAULT_FPS_DEN;
     if (p->fps_out_num == 0)
-        p->fps_out_num = 30;
+        p->fps_out_num = DEFAULT_FPS_NUM;
 
-    /* ����Ĭ��bps */
     if (!p->bps)
-        p->bps = p->width * p->height / 8 * (p->fps_out_num / p->fps_out_den);
+        p->bps = p->width * p->height / DEFAULT_BPS_CALC_FACTOR * (p->fps_out_num / p->fps_out_den);
 
     mpp_enc_cfg_set_s32(cfg, "prep:width", p->width);
     mpp_enc_cfg_set_s32(cfg, "prep:height", p->height);
@@ -422,12 +462,12 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     mpp_enc_cfg_set_s32(cfg, "rc:fps_out_flex", p->fps_out_flex);
     mpp_enc_cfg_set_s32(cfg, "rc:fps_out_num", p->fps_out_num);
     mpp_enc_cfg_set_s32(cfg, "rc:fps_out_denorm", p->fps_out_den);
-    mpp_enc_cfg_set_s32(cfg, "rc:gop", p->gop_len ? p->gop_len : p->fps_out_num * 2);
+    mpp_enc_cfg_set_s32(cfg, "rc:gop", p->gop_len ? p->gop_len : p->fps_out_num * DEFAULT_GOP_LEN_MULTIPLIER);
 
     /* drop frame or not when bitrate overflow */
     mpp_enc_cfg_set_u32(cfg, "rc:drop_mode", MPP_ENC_RC_DROP_FRM_DISABLED);
-    mpp_enc_cfg_set_u32(cfg, "rc:drop_thd", 20);        /* 20% of max bps */
-    mpp_enc_cfg_set_u32(cfg, "rc:drop_gap", 1);         /* Do not continuous drop frame */
+    mpp_enc_cfg_set_u32(cfg, "rc:drop_thd", RC_DROP_THRESHOLD_PERCENT);        /* 20% of max bps */
+    mpp_enc_cfg_set_u32(cfg, "rc:drop_gap", RC_DROP_GAP);         /* Do not continuous drop frame */
 
     /* setup bitrate for different rc_mode */
     mpp_enc_cfg_set_s32(cfg, "rc:bps_target", p->bps);
@@ -438,21 +478,27 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             break;
         case MPP_ENC_RC_MODE_CBR : {
             /* CBR mode has narrow bound */
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : p->bps * 17 / 16);
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : p->bps * 15 / 16);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : 
+                               p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : 
+                               p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
         }
             break;
         case MPP_ENC_RC_MODE_VBR :
         case MPP_ENC_RC_MODE_AVBR : {
             /* VBR mode has wide bound */
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : p->bps * 17 / 16);
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : p->bps * 1 / 16);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : 
+                               p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : 
+                               p->bps * BPS_MIN_VBR_FACTOR_NUMERATOR / BPS_MIN_VBR_FACTOR_DENOMINATOR);
         }
             break;
         default : {
             /* default use CBR mode */
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : p->bps * 17 / 16);
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : p->bps * 15 / 16);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : 
+                               p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : 
+                               p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
         }
             break;
     }
@@ -463,23 +509,23 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
         case MPP_VIDEO_CodingHEVC : {
             switch (p->rc_mode) {
                 case MPP_ENC_RC_MODE_FIXQP : {
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 20); // 20:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", 20); // 20:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", 20); // 20:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 20); // 20:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 20); // 20:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 2);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", FIX_QP_VALUE);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", FIX_QP_VALUE);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", FIX_QP_VALUE);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", FIX_QP_VALUE);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", FIX_QP_VALUE);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", RC_QP_IP);
                 }
                     break;
                 case MPP_ENC_RC_MODE_CBR :
                 case MPP_ENC_RC_MODE_VBR :
                 case MPP_ENC_RC_MODE_AVBR : {
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 26); // 26:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", 51); // 51:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", 10); // 10:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 51); // 51:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 10); // 10:mpp cfg value
-                    mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 2);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_init", RC_QP_INIT);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max", RC_QP_MAX);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min", RC_QP_MIN);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", RC_QP_MAX_I);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", RC_QP_MIN_I);
+                    mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", RC_QP_IP);
                 }
                     break;
                 default : {
@@ -491,19 +537,19 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             break;
         case MPP_VIDEO_CodingVP8 : {
             /* vp8 only setup base qp range */
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_init", 40); // 40:mpp cfg value
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_max",  127); // 127:mpp cfg value
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_min",  0);
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", 127); // 127:mpp cfg value
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", 0);
-            mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", 6); // 6:mpp cfg value
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_init", VP8_QP_INIT);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_max", VP8_QP_MAX);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_min", VP8_QP_MIN);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", VP8_QP_MAX_I);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", VP8_QP_MIN_I);
+            mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", VP8_QP_IP);
         }
             break;
         case MPP_VIDEO_CodingMJPEG : {
             /* jpeg use special codec config to control qtable */
-            mpp_enc_cfg_set_s32(cfg, "jpeg:q_factor", 80); // 80:mpp cfg value
-            mpp_enc_cfg_set_s32(cfg, "jpeg:qf_max", 99); // 99:mpp cfg value
-            mpp_enc_cfg_set_s32(cfg, "jpeg:qf_min", 1);
+            mpp_enc_cfg_set_s32(cfg, "jpeg:q_factor", JPEG_Q_FACTOR);
+            mpp_enc_cfg_set_s32(cfg, "jpeg:qf_max", JPEG_QF_MAX);
+            mpp_enc_cfg_set_s32(cfg, "jpeg:qf_min", JPEG_QF_MIN);
         }
             break;
         default : {
@@ -521,7 +567,7 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             * 77  - Main profile
             * 100 - High profile
             */
-            mpp_enc_cfg_set_s32(cfg, "h264:profile", 100);
+            mpp_enc_cfg_set_s32(cfg, "h264:profile", H264_PROFILE_HIGH);
             /*
             * H.264 level_idc parameter
             * 10 / 11 / 12 / 13    - qcif@15fps / cif@7.5fps / cif@15fps / cif@30fps
@@ -530,10 +576,10 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             * 40 / 41 / 42         - 1080p@30fps / 1080p@30fps / 1080p@60fps
             * 50 / 51 / 52         - 4K@30fps
             */
-            mpp_enc_cfg_set_s32(cfg, "h264:level", 40);
-            mpp_enc_cfg_set_s32(cfg, "h264:cabac_en", 1);
-            mpp_enc_cfg_set_s32(cfg, "h264:cabac_idc", 0);
-            mpp_enc_cfg_set_s32(cfg, "h264:trans8x8", 1);
+            mpp_enc_cfg_set_s32(cfg, "h264:level", H264_LEVEL_40);
+            mpp_enc_cfg_set_s32(cfg, "h264:cabac_en", H264_CABAC_ENABLED);
+            mpp_enc_cfg_set_s32(cfg, "h264:cabac_idc", H264_CABAC_IDC);
+            mpp_enc_cfg_set_s32(cfg, "h264:trans8x8", H264_TRANS8x8_ENABLED);
         }
             break;
         case MPP_VIDEO_CodingHEVC :
@@ -590,7 +636,7 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
 
         mpp_enc_ref_cfg_init(&ref);
 
-        if (p->gop_mode < 4) {
+        if (p->gop_mode < GOP_MODE_THRESHOLD) {
             mpi_enc_gen_ref_cfg(ref, gop_mode);
         } else {
             mpi_enc_gen_smart_gop_ref_cfg(ref, p->gop_len, p->vi_len);
@@ -604,7 +650,6 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     }
     return ret;
 }
-
 static void test_mpp_frame_set_param(MppFrame frame, MpiEncTestData *p)
 {
     mpp_frame_set_width(frame, p->width);
@@ -725,6 +770,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
     RK_U32 packet_num = 0;
     MppBuffer cam_buf = NULL;
     MppBufferInfo info;
+    const int INDEX_SHIFT = 27;
 
     errno_t eok = memset_s(&info, sizeof(MppBufferInfo), 0, sizeof(MppBufferInfo));
     if (eok != EOK) {
@@ -734,7 +780,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
     info.type = MPP_BUFFER_TYPE_EXT_DMA;
     info.fd = dma_fd;
     info.size = p->frame_size & 0x07ffffff;
-    info.index = (p->frame_size & 0xf8000000) >> 27;
+    info.index = (p->frame_size & 0xf8000000) >> INDEX_SHIFT;
 
     ret = mpp_buffer_import(&cam_buf, &info);
     if (ret != MPP_SUCCESS) {

@@ -285,6 +285,9 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     int32_t rkBlendType = 0;
     int32_t rkTransformType = 0;
     int32_t ret_val = DISPLAY_SUCCESS;
+    const int MIN_THRESHOLD = 2;
+    const int MAX_THRESHOLD = 4;
+    const int FORCED_VALUE = 2;
 
     errno_t eok = memset_s(&dstRgaBuffer, sizeof(dstRgaBuffer), 0, sizeof(dstRgaBuffer));
     if (eok != EOK) {
@@ -391,14 +394,14 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
             opt->rotateType == ROTATE_270 ||
             opt->rotateType == MIRROR_H_ROTATE_90 ||
             opt->rotateType == MIRROR_V_ROTATE_90) {
-            if (drect.height > 2 && drect.height <= 4) {
+            if (drect.height > MIN_THRESHOLD && drect.height <= MAX_THRESHOLD) {
                 DISPLAY_LOGD("force drect.height to 2");
-                drect.height = 2;
+                drect.height = FORCED_VALUE;
             }
         } else {
-            if (drect.width > 2 && drect.width <= 4) {
+            if (drect.width > MIN_THRESHOLD && drect.width <= MAX_THRESHOLD) {
                 DISPLAY_LOGD("force drect.width to 2");
-                drect.width = 2;
+                drect.width = FORCED_VALUE;
             }
         }
     }

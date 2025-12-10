@@ -61,12 +61,12 @@ static rk_list_node* create_list(void *data, RK_S32 size, RK_U32 key)
 {
     if (size <= 0) {
         LIST_ERROR("invalid size parameter: %d", size);
-        return NULL;
+        return nullptr;
     }
 
-    if (data == NULL) {
+    if (data == nullptr) {
         LIST_ERROR("data pointer is NULL");
-        return NULL;
+        return nullptr;
     }
     rk_list_node *node = static_cast<rk_list_node*>(malloc(sizeof(rk_list_node) + size));
     if (node) {
@@ -414,6 +414,8 @@ int rk_list_test_0()
 }
 
 #define TOTAL_RK_LIST_TEST_COUNT    1
+#define ARGC_NUMBER_2    2
+#define ARGC_NUMBER_3    3
 
 typedef int (*RK_LIST_TEST_FUNC)(void);
 RK_LIST_TEST_FUNC test_func[TOTAL_RK_LIST_TEST_COUNT] = {
@@ -423,12 +425,13 @@ RK_LIST_TEST_FUNC test_func[TOTAL_RK_LIST_TEST_COUNT] = {
 int main(int argc, char *argv[])
 {
     int i, start = 0, end = 0;
-    if (argc < 2) {
+    const int DEFAULT_INCREMENT = 1;
+    if (argc < ARGC_NUMBER_2) {
         end = TOTAL_RK_LIST_TEST_COUNT;
-    } else if (argc == 2) {
+    } else if (argc == ARGC_NUMBER_2) {
         start = atoi(argv[1]);
-        end   = start + 1;
-    } else if (argc == 3) {
+        end   = start + DEFAULT_INCREMENT;
+    } else if (argc == ARGC_NUMBER_3) {
         start = atoi(argv[1]);
         end   = atoi(argv[2]);
     } else {

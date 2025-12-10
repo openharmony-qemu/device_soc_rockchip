@@ -101,16 +101,19 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
     RK_S32 fps_in   = cfg->framerate;
     RK_S32 fps_out  = (cfg->framerateout) ? (cfg->framerateout) : (fps_in);
     RK_S32 gop      = (cfg->intraPicRate) ? (cfg->intraPicRate) : (fps_out);
-    RK_S32 qp_init  = (coding == MPP_VIDEO_CodingAVC) ? (26) :
-                      (coding == MPP_VIDEO_CodingMJPEG) ? (10) :
-                      (coding == MPP_VIDEO_CodingVP8) ? (56) :
-                      (coding == MPP_VIDEO_CodingHEVC) ? (26) : (0);
+    RK_S32 qp_init  = (coding == MPP_VIDEO_CodingAVC) ? (H264_DEFAULT_QP) :
+                      (coding == MPP_VIDEO_CodingMJPEG) ? (MJPEG_DEFAULT_QP) :
+                      (coding == MPP_VIDEO_CodingVP8) ? (VP8_DEFAULT_QP) :
+                      (coding == MPP_VIDEO_CodingHEVC) ? (H264_DEFAULT_QP) : (0);
     RK_S32 qp       = (cfg->qp) ? (cfg->qp) : (qp_init);
     RK_S32 profile  = cfg->profileIdc;
     RK_S32 level    = cfg->levelIdc;
     RK_S32 cabac_en = cfg->enableCabac;
     RK_S32 rc_mode  = cfg->rc_mode;
     RK_U32 is_fix_qp = (rc_mode == MPP_ENC_RC_MODE_FIXQP) ? 1 : 0;
+    const int BPS_MIN_CBR = 15 / 16;
+    const int BPS_MIN_VBR = 1 / 16;
+    const int HORIZONTAL_ALIGNMENT = 16;
 
     mpp_log("setup encoder rate control config:\n");
     mpp_log("width %4d height %4d format %d:%x\n", width, height, cfg->format, fmt);
@@ -129,23 +132,23 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
     case MPP_FMT_YUV420P:
     case MPP_FMT_YUV420SP :
     case MPP_FMT_YUV420SP_VU : {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", MPP_ALIGN(width, 16));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     case MPP_FMT_RGB565:
     case MPP_FMT_BGR565:
     case MPP_FMT_RGB555:
     case MPP_FMT_BGR555: {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 2 * MPP_ALIGN(width, 16));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 2 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     case MPP_FMT_RGB888 :
     case MPP_FMT_BGR888 : {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 3 * MPP_ALIGN(width, 16));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 3 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     case MPP_FMT_ARGB8888 :
     case MPP_FMT_ABGR8888 :
     case MPP_FMT_BGRA8888 :
     case MPP_FMT_RGBA8888 : {
-        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 4 * MPP_ALIGN(width, 16));
+        mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", 4 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
     } break;
     default: {
         mpp_err("unsupport format 0x%x\n", fmt & MPP_FRAME_FMT_MASK);
@@ -158,7 +161,7 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
                         (rc_mode ? MPP_ENC_RC_MODE_CBR : MPP_ENC_RC_MODE_VBR));
     mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_target", bps);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_max", bps * 17 / 16);
-    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_min", rc_mode ? bps * 15 / 16 : bps * 1 / 16);
+    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_min", rc_mode ? bps * BPS_MIN_CBR : bps * BPS_MIN_VBR);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_flex", 0);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_num", fps_in);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_denom", 1);
@@ -175,19 +178,19 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
         mpp_enc_cfg_set_s32(enc_cfg, "h264:cabac_en", cabac_en);
         mpp_enc_cfg_set_s32(enc_cfg, "h264:cabac_idc", 0);
         mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_init", is_fix_qp ? qp : -1);
-        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_min", is_fix_qp  ? qp : 10);
-        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_max", is_fix_qp ? qp : 51);
-        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_min_i", 10);
-        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_max_i", 51);
-        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_step", 4);
-        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_delta_ip", 3);
+        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_min", is_fix_qp  ? qp : H264_MIN_QP);
+        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_max", is_fix_qp ? qp : H264_MAX_QP);
+        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_min_i", H264_MIN_QP_I);
+        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_max_i", H264_MAX_QP_I);
+        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_step", H264_QP_STEP);
+        mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_delta_ip", H264_QP_DELTA_IP);
     } break;
     case MPP_VIDEO_CodingVP8 : {
         mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_init", -1);
         mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_min", 0);
-        mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_max", 127);
+        mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_max", VP8_MAX_QP);
         mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_min_i", 0);
-        mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_max_i", 127);
+        mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_max_i", VP8_MAX_QP);
     } break;
     case MPP_VIDEO_CodingMJPEG : {
         mpp_enc_cfg_set_s32(enc_cfg, "jpeg:quant", qp);
@@ -232,6 +235,10 @@ static int copy_align_raw_buffer_to_dest(RK_U8 *dst, RK_U8 *src, RK_U32 width,
     RK_U32 ver_stride = MPP_ALIGN(height, 8);
     RK_U8 *dst_u = dst_buf + hor_stride * ver_stride;
     RK_U8 *dst_v = dst_u + hor_stride * ver_stride / 4;
+    const RK_U32 YUV_CHROMA_HEIGHT_DIVISOR = 2;
+    const RK_U32 YUV_CHROMA_WIDTH_DIVISOR = 2;
+    const RK_U32 RGB888_PIXEL_COMPONENTS = 3;
+    const RK_U32 RGBA8888_PIXEL_COMPONENTS = 4;
 
     switch (fmt) {
     case MPP_FMT_YUV420SP :
@@ -240,7 +247,7 @@ static int copy_align_raw_buffer_to_dest(RK_U8 *dst, RK_U8 *src, RK_U32 width,
             memcpy(dst_buf + row * hor_stride, src_buf + index, width);
             index += width;
         }
-        for (row = 0; row < height / 2; row++) {
+        for (row = 0; row < height / YUV_CHROMA_HEIGHT_DIVISOR; row++) {
             memcpy(dst_u + row * hor_stride, src_buf + index, width);
             index += width;
         }
@@ -250,19 +257,19 @@ static int copy_align_raw_buffer_to_dest(RK_U8 *dst, RK_U8 *src, RK_U32 width,
             memcpy(dst_buf + row * hor_stride, src_buf + index, width);
             index += width;
         }
-        for (row = 0; row < height / 2; row++) {
-            memcpy(dst_u + row * hor_stride / 2, src_buf + index, width / 2);
-            index += width / 2;
+        for (row = 0; row < height / YUV_CHROMA_HEIGHT_DIVISOR; row++) {
+            memcpy(dst_u + row * hor_stride / YUV_CHROMA_WIDTH_DIVISOR , src_buf + index, width / YUV_CHROMA_WIDTH_DIVISOR );
+            index += width / YUV_CHROMA_WIDTH_DIVISOR ;
         }
-        for (row = 0; row < height / 2; row++) {
-            memcpy(dst_v + row * hor_stride / 2, src_buf + index, width / 2);
-            index += width / 2;
+        for (row = 0; row < height / YUV_CHROMA_HEIGHT_DIVISOR; row++) {
+            memcpy(dst_v + row * hor_stride / YUV_CHROMA_WIDTH_DIVISOR , src_buf + index, width / YUV_CHROMA_WIDTH_DIVISOR );
+            index += width / YUV_CHROMA_WIDTH_DIVISOR ;
         }
     } break;
     case MPP_FMT_RGB888 :
     case MPP_FMT_BGR888 : {
         for (row = 0; row < height; row++) {
-            memcpy(dst_buf + row * hor_stride * 3, src_buf + row * width * 3, width * 3);
+            memcpy(dst_buf + row * hor_stride * RGB888_PIXEL_COMPONENTS, src_buf + row * width * RGB888_PIXEL_COMPONENTS, width * RGB888_PIXEL_COMPONENTS);
         }
     } break;
     case MPP_FMT_ABGR8888 :
@@ -270,7 +277,7 @@ static int copy_align_raw_buffer_to_dest(RK_U8 *dst, RK_U8 *src, RK_U32 width,
     case MPP_FMT_BGRA8888 :
     case MPP_FMT_RGBA8888 : {
         for (row = 0; row < height; row++) {
-            memcpy(dst_buf + row * hor_stride * 4, src_buf + row * width * 4, width * 4);
+            memcpy(dst_buf + row * hor_stride * RGBA8888_PIXEL_COMPONENTS , src_buf + row * width * RGBA8888_PIXEL_COMPONENTS , width * RGBA8888_PIXEL_COMPONENTS );
         }
     } break;
     default : {
@@ -532,7 +539,8 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
     MppBuffer buf = mpp_frame_get_buffer(mframe);
     RK_U64 pts  = mpp_frame_get_pts(mframe);
     RK_U32 mode = mpp_frame_get_mode(mframe);
-
+    const int YUV420_BYTES_NUM = 3;
+    const int YUV420_BYTES_DEN = 2;
     MppFrameColorRange colorRan = mpp_frame_get_color_range(mframe);
     MppFrameColorTransferCharacteristic colorTrc = mpp_frame_get_color_trc(mframe);
     MppFrameColorPrimaries colorPri = mpp_frame_get_color_primaries(mframe);
@@ -626,7 +634,7 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
         vframe->vpumem.vir_addr = (RK_U32*)ptr;
         vframe->vpumem.phy_addr = fd;
 
-        vframe->vpumem.size = vframe->FrameWidth * vframe->FrameHeight * 3 / 2;
+        vframe->vpumem.size = vframe->FrameWidth * vframe->FrameHeight * YUV420_BYTES_NUM / YUV420_BYTES_DEN;
         vframe->vpumem.offset = (RK_U32*)buf;
     }
 }
@@ -1049,6 +1057,8 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
     MPP_RET ret = MPP_OK;
     MppTask task = nullptr;
     vpu_api_dbg_func("enter\n");
+    const int START_OFFSET = 4;
+    const int AVC_HEADER_SIZE = 4;
 
     if (!init_ok)
         return VPU_API_ERR_VPU_CODEC_INIT;
@@ -1094,17 +1104,17 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
     case MPP_FMT_BGR565:
     case MPP_FMT_RGB555:
     case MPP_FMT_BGR555: {
-        mpp_frame_set_hor_stride(frame, hor_stride * 2);
+        mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGB565);
     } break;
     case MPP_FMT_RGB888 :
     case MPP_FMT_BGR888 : {
-        mpp_frame_set_hor_stride(frame, hor_stride * 3);
+        mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_BGR888);
     } break;
     case MPP_FMT_ARGB8888 :
     case MPP_FMT_ABGR8888 :
     case MPP_FMT_BGRA8888 :
     case MPP_FMT_RGBA8888 : {
-        mpp_frame_set_hor_stride(frame, hor_stride * 4);
+        mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGBA8888);
     } break;
     default: {
         mpp_err("unsupport format 0x%x\n", format & MPP_FRAME_FMT_MASK);
@@ -1279,8 +1289,8 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
 
             if (ctx->videoCoding == OMX_RK_VIDEO_CodingAVC) {
                 // remove first 00 00 00 01
-                length -= 4;
-                memcpy(aEncOut->data, src + 4, length);
+                length -= AVC_HEADER_SIZE;
+                memcpy(aEncOut->data, src + START_OFFSET, length);
             } else {
                 memcpy(aEncOut->data, src, length);
             }
@@ -1326,7 +1336,6 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
 {
     RK_S32 ret = 0;
     vpu_api_dbg_func("enter\n");
-
     RK_U32 width        = ctx->width;
     RK_U32 height       = ctx->height;
     RK_U32 hor_stride   = MPP_ALIGN(width,  16);
@@ -1358,17 +1367,17 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     case MPP_FMT_BGR565:
     case MPP_FMT_RGB555:
     case MPP_FMT_BGR555: {
-        mpp_frame_set_hor_stride(frame, hor_stride * 2);
+        mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGB565);
     } break;
     case MPP_FMT_RGB888 :
     case MPP_FMT_BGR888 : {
-        mpp_frame_set_hor_stride(frame, hor_stride * 3);
+        mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_BGR888);
     } break;
     case MPP_FMT_ARGB8888 :
     case MPP_FMT_ABGR8888 :
     case MPP_FMT_BGRA8888 :
     case MPP_FMT_RGBA8888 : {
-        mpp_frame_set_hor_stride(frame, hor_stride * 4);
+        mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGBA8888);
     } break;
     default: {
         mpp_err("unsupport format 0x%x\n", format & MPP_FRAME_FMT_MASK);
@@ -1416,13 +1425,13 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
             goto FUNC_RET;
         }
         if (format >= MPP_FMT_YUV420SP && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 3 / 2;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_SIZE_RATIO_DENOMINATOR;
         } else  if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 3 / 2;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_SIZE_RATIO_DENOMINATOR;
         } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 3;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB888_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 4;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB101010_PIXEL_SIZE_RATIO;
         } else {
             mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;

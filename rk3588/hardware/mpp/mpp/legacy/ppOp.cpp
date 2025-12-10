@@ -65,6 +65,7 @@ status_t ppOpRelease(PP_OP_HANDLE hnd)
 #define DST_WIDTH           (720)//(720)
 #define DST_HEIGHT          (1280)
 #define DST_SIZE            (DST_WIDTH*DST_HEIGHT*2)
+#define ALIGN_16            15
 
 #include "vpu_mem.h"
 #include "vpu.h"
@@ -72,23 +73,35 @@ status_t ppOpRelease(PP_OP_HANDLE hnd)
 
 int main()
 {
+    const int BIT_MASK_ALIGN_16 = 0xf;
+    const int ALIGN_16_VALUE = 15;
+
+    const int YUV420_CHROMA_SIZE_DIVISOR = 2;
+    const int YUV420_TOTAL_SIZE_MULTIPLIER = 3;
+    const int YUV420_TOTAL_SIZE_DIVISOR = 2;
+    const int MEMORY_ALLOCATION_MULTIPLIER = 2;
+
+    const int SRC_VIR_WIDTH = 1920;
+    const int SRC_VIR_HEIGHT = 1088;
+    const int DST_VIR_WIDTH = 800;
+    const int DST_VIR_HEIGHT = 1280;
     FILE *fpr, *fpw;
-    int   wid_alig16 = ((SRC_WIDTH + 15) & (~0xf));
-    int   hei_alig16 = ((SRC_HEIGHT + 15) & (~0xf));
-    int   src_vir_width = 1920;//2048;
-    int   src_vir_height = 1088;//1088;
-    int   dst_vir_width = 800;//800;
-    int   dst_vir_height = 1280;//1280;
+    int   wid_alig16 = ((SRC_WIDTH + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
+    int   hei_alig16 = ((SRC_HEIGHT + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
+    int   src_vir_width = SRC_VIR_WIDTH;//2048;
+    int   src_vir_height = SRC_VIR_HEIGHT;//1088;
+    int   dst_vir_width = DST_VIR_WIDTH;//800;
+    int   dst_vir_height = DST_VIR_HEIGHT;//1280;
     int   framecnt = 0;
-    char *tmpbuf = (char *)malloc(src_vir_width * src_vir_height / 2);
+    char *tmpbuf = (char *)malloc(src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);
     RK_S32 ret = 0, i,  j;
 
     ALOGI("ppOp test start\n");
     VPUMemLinear_t src, dst;
     android::PP_OP_HANDLE hnd;
     int vpuFd = VPUClientInit(VPU_PP);
-    ret |= VPUMallocLinear(&src, src_vir_width * src_vir_height * 2); //SRC_SIZE);
-    ret |= VPUMallocLinear(&dst, dst_vir_width * dst_vir_height * 2); //DST_SIZE);
+    ret |= VPUMallocLinear(&src, src_vir_width * src_vir_height * MEMORY_ALLOCATION_MULTIPLIER); //SRC_SIZE);
+    ret |= VPUMallocLinear(&dst, dst_vir_width * dst_vir_height * MEMORY_ALLOCATION_MULTIPLIER); //DST_SIZE);
     if (ret) {
         ALOGE("failed to malloc vpu_mem");
         goto end;
@@ -108,16 +121,16 @@ int main()
             tmp += src_vir_width;
         }
         tmp = (char *)src.vir_addr;
-        if (fpr)fread(&tmp[src_vir_width * src_vir_height], 1, SRC_WIDTH * SRC_HEIGHT / 2, fpr);
+        if (fpr)fread(&tmp[src_vir_width * src_vir_height], 1, SRC_WIDTH * SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR , fpr);
         if (fpr)fclose(fpr);
 
-        for (i = 0; i < SRC_HEIGHT / 2; i++) { //planar to semi planar
-            for (j = 0; j < SRC_WIDTH / 2; j++) { //planar to semi planar
-                tmpbuf[i * src_vir_width + j * 2 + 0] = tmp[src_vir_width * src_vir_height + i * SRC_WIDTH / 2 + j];
-                tmpbuf[i * src_vir_width + j * 2 + 1] = tmp[src_vir_width * src_vir_height + SRC_WIDTH * SRC_HEIGHT / 4 + i * SRC_WIDTH / 2 + j];
+        for (i = 0; i < SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR; i++) { //planar to semi planar
+            for (j = 0; j < SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR; j++) { //planar to semi planar
+                tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 0] = tmp[src_vir_width * src_vir_height + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
+                tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 1] = tmp[src_vir_width * src_vir_height + SRC_WIDTH * SRC_HEIGHT / 4 + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
             }
         }
-        memcpy(&tmp[src_vir_width * src_vir_height], tmpbuf, src_vir_width * src_vir_height / 2);
+        memcpy(&tmp[src_vir_width * src_vir_height], tmpbuf, src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);
 #endif
         VPUMemClean(&src);
     }
@@ -128,8 +141,8 @@ int main()
         if (framecnt++ >= 1)
             break;
 
-        wid_alig16 = ((SRC_WIDTH + 15) & (~0xf));
-        hei_alig16 = ((SRC_HEIGHT + 15) & (~0xf));
+        wid_alig16 = ((SRC_WIDTH + ALIGN_16) & (~BIT_MASK_ALIGN_16));
+        hei_alig16 = ((SRC_HEIGHT + ALIGN_16) & (~BIT_MASK_ALIGN_16));
 
         android::PP_OPERATION opt;
         memset(&opt, 0, sizeof(opt));
@@ -146,8 +159,8 @@ int main()
         if (hei_alig16 != SRC_HEIGHT)
             opt.srcCrop8D = 1;
 
-        wid_alig16 = ((DST_WIDTH + 15) & (~0xf));
-        hei_alig16 = ((DST_HEIGHT + 15) & (~0xf));
+        wid_alig16 = ((DST_WIDTH + ALIGN_16) & (~BIT_MASK_ALIGN_16));
+        hei_alig16 = ((DST_HEIGHT + ALIGN_16) & (~BIT_MASK_ALIGN_16));
 
         opt.dstAddr     = dst.phy_addr;
         opt.dstFormat   = PP_OUT_FORMAT_YUV420INTERLAVE;
@@ -188,7 +201,7 @@ int main()
             char *tmp = (char *)dst.vir_addr;
             fpw = fopen("/data/testout.yuv", "wb+");
 
-            if (fpw)fwrite((char *)(dst.vir_addr), 1, dst_vir_width * dst_vir_height * 3 / 2, fpw);
+            if (fpw)fwrite((char *)(dst.vir_addr), 1, dst_vir_width * dst_vir_height * YUV420_TOTAL_SIZE_MULTIPLIER / YUV420_TOTAL_SIZE_DIVISOR, fpw);
             if (fpw)fclose(fpw);
 #endif
         }

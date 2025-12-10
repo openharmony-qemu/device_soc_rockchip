@@ -191,6 +191,35 @@
 #define SZ_80M                  (SZ_1M*80)
 #define SZ_128M                 (SZ_1M*128)
 
+#define TSVC_MAX_TID_LEVEL_1    0
+#define TSVC_MAX_TID_LEVEL_2    1
+#define TSVC_MAX_TID_LEVEL_3    2
+#define TSVC_MAX_TID_LEVEL_4    3
+
+#define MJPEG_DEFAULT_QP        10
+#define H264_MIN_QP             10
+#define H264_MIN_QP_I           10
+#define H264_MAX_QP             51
+#define H264_MAX_QP_I           51
+#define H264_QP_STEP            4
+#define H264_QP_DELTA_IP        3
+#define VP8_DEFAULT_QP          56
+#define H264_DEFAULT_QP         26
+#define VP8_MAX_QP              127
+
+#define TEMPORAL_ID_LAYER_0     0
+#define TEMPORAL_ID_LAYER_1     1
+#define TEMPORAL_ID_LAYER_2     2
+#define TEMPORAL_ID_LAYER_3     3
+
+#define NO_REPEAT               0
+#define REF_DEFAULT_VALUE       0
+#define REF_ARG_VALUE_1         1
+
+#define STRIDE_MULTIPLIER_RGB565    2
+#define STRIDE_MULTIPLIER_BGR888    3
+#define STRIDE_MULTIPLIER_RGBA8888  4
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -212,18 +241,21 @@ static inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
 
 static inline RK_U32 mpp_is_32bit()
 {
-    return ((sizeof(void *) == 4) ? (1) : (0));
+    const int IS32BIT = 1;
+    const int IS_NOT_32BIT = 0;
+    return ((sizeof(void *) == 4) ? (IS32BIT) : (IS_NOT_32BIT));
 }
 
 static inline RK_S32 mpp_dup(RK_S32 fd)
 {
     /* avoid stdin / stdout / stderr so start from 3 */
+    const int MINIMUM_SAFE_FD = 3;
 #ifdef F_DUPFD_CLOEXEC
-    return fcntl(fd, F_DUPFD_CLOEXEC, 3);
+    return fcntl(fd, F_DUPFD_CLOEXEC, MINIMUM_SAFE_FD);
 #else
     RK_S32 new_fd = -1;
 
-    new_fd = fcntl(fd, F_DUPFD, 3);
+    new_fd = fcntl(fd, F_DUPFD, MINIMUM_SAFE_FD);
     if (new_fd == -1)
         return -1;
 

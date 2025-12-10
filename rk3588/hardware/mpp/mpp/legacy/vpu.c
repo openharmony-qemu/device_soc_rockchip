@@ -32,9 +32,11 @@
 #include "vcodec_service.h"
 
 #define VPU_EXTRA_INFO_SIZE                 12
+#define VPU_EXTRA_INFO_MAGIC_FIELD_SIZE     2
 #define VPU_EXTRA_INFO_MAGIC                (0x4C4A46)
 #define VPU_MPP_FLAGS_MULTI_MSG             (0x00000001)
 #define VPU_MPP_FLAGS_LAST_MSG              (0x00000002)
+#define VPU_DEFAULT_OFFSET                  0
 
 #define MPX_PATCH_NUM       16
 
@@ -191,6 +193,7 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
     int fd = socket;
     RK_S32 ret;
     VpuReq req;
+    const size_t NUM_REQS = 2;
 
     if (vpu_debug) {
         RK_U32 i;
@@ -207,14 +210,14 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
 
         reqs[0].cmd = MPP_CMD_SET_REG_WRITE;
         reqs[0].flag = 0;
-        reqs[0].offset = 0;
+        reqs[0].offset = VPU_DEFAULT_OFFSET;
         reqs[0].size =  reg_size * sizeof(RK_U32);
         reqs[0].data_ptr = REQ_DATA_PTR((void*)regs);
         reqs[0].flag |= VPU_MPP_FLAGS_MULTI_MSG;
 
         reqs[1].cmd = MPP_CMD_SET_REG_READ;
         reqs[1].flag = 0;
-        reqs[1].offset = 0;
+        reqs[1].offset = VPU_DEFAULT_OFFSET;
         reqs[1].size =  reg_size * sizeof(RK_U32);
         reqs[1].data_ptr = REQ_DATA_PTR((void*)regs);
 
@@ -222,7 +225,7 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
             reg_size = nregs - VPU_EXTRA_INFO_SIZE;
             reqs[2].cmd = MPP_CMD_SET_REG_ADDR_OFFSET;
             reqs[2].flag = 0;
-            reqs[2].offset = 0;
+            reqs[2].offset = VPU_DEFAULT_OFFSET;
             reqs[2].size = extra_info->count * sizeof(extra_info->patchs[0]);
             reqs[2].data_ptr = REQ_DATA_PTR((void *)&extra_info->patchs[0]);
 
@@ -234,7 +237,7 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
         } else {
             MppReqV1 reqs_tmp[2];
             reqs[1].flag |= VPU_MPP_FLAGS_LAST_MSG;
-            memcpy(reqs_tmp, reqs, sizeof(MppReqV1) * 2);
+            memcpy(reqs_tmp, reqs, sizeof(MppReqV1) * NUM_REQS);
             ret = (RK_S32)ioctl(fd, MPP_IOC_CFG_V1, &reqs_tmp);
         }
 
@@ -280,7 +283,7 @@ RK_S32 VPUClientWaitResult(int socket, RK_U32 *regs, RK_U32 nregs, VPU_CMD_TYPE 
         VpuExtraInfo *extra_info = (VpuExtraInfo*)(regs + (nregs - VPU_EXTRA_INFO_SIZE));
 
         if (extra_info && extra_info->magic == VPU_EXTRA_INFO_MAGIC) {
-            reg_size -= 2;
+            reg_size -= VPU_EXTRA_INFO_MAGIC_FIELD_SIZE;
         } else {
             reg_size -= VPU_EXTRA_INFO_SIZE;
         }

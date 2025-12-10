@@ -24,11 +24,11 @@
 #define MPP_ABS(x)              ((x) < (0) ? -(x) : (x))
 
 #define MPP_MAX(a, b)           ((a) > (b) ? (a) : (b))
-#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a,b),c)
+#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX((a),(b)),(c))
 #define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
 
 #define MPP_MIN(a,b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN(a,b),c)
+#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN((a),(b)),(c))
 #define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
 
 #define MPP_DIV(a, b)           ((b) ? (a) / (b) : (a))
@@ -37,12 +37,12 @@
 #define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
 #define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
 
-#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
+#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = (b); (b) = (a); (a) = SWAP_tmp;} while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
 #define MPP_ALIGN_DOWN(x, a)    ((x)&~((a)-1))
 #define MPP_ALIGN_GEN(x, a)     (((x)+(a)-1)/(a)*(a))
-#define MPP_VSWAP(a, b)         { a ^= b; b ^= a; a ^= b; }
+#define MPP_VSWAP(a, b)         { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
 
 #define MPP_GENMASK(h, l) (((1ULL << ((h) + 1)) - 1) & ~((1ULL << (l)) - 1))
 
@@ -163,8 +163,8 @@
 #define container_of(ptr, type, member) \
     ((type *)((char *)(ptr) - offsetof(type, member)))
 
-#define __RETURN                __Return
-#define __FAILED                __failed
+#define RETURN                Return
+#define FAILED                failed
 
 #define ARG_T(t)                t
 #define ARG_N(a,b,c,d,N,...)    N
@@ -191,6 +191,39 @@
 #define SZ_80M                  (SZ_1M*80)
 #define SZ_128M                 (SZ_1M*128)
 
+#define TSVC_MAX_TID_LEVEL_1    0
+#define TSVC_MAX_TID_LEVEL_2    1
+#define TSVC_MAX_TID_LEVEL_3    2
+#define TSVC_MAX_TID_LEVEL_4    3
+
+#define MJPEG_DEFAULT_QP        10
+#define H264_MIN_QP             10
+#define H264_MIN_QP_I           10
+#define H264_MAX_QP             51
+#define H264_MAX_QP_I           51
+#define H264_QP_STEP            4
+#define H264_QP_DELTA_IP        3
+#define VP8_DEFAULT_QP          56
+#define H264_DEFAULT_QP         26
+#define VP8_MAX_QP              127
+
+#define TEMPORAL_ID_LAYER_0     0
+#define TEMPORAL_ID_LAYER_1     1
+#define TEMPORAL_ID_LAYER_2     2
+#define TEMPORAL_ID_LAYER_3     3
+
+#define NO_REPEAT               0
+#define REF_DEFAULT_VALUE       0
+#define REF_ARG_VALUE_1         1
+
+#define STRIDE_MULTIPLIER_RGB565    2
+#define STRIDE_MULTIPLIER_BGR888    3
+#define STRIDE_MULTIPLIER_RGBA8888  4
+
+#define YUV420_PIXEL_SIZE_RATIO_NUMERATOR 3
+#define YUV420_PIXEL_SIZE_RATIO_DENOMINATOR 2
+#define RGB888_PIXEL_SIZE_RATIO 3
+#define RGB101010_PIXEL_SIZE_RATIO 4
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -212,18 +245,21 @@ static inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
 
 static inline RK_U32 mpp_is_32bit()
 {
-    return ((sizeof(void *) == 4) ? (1) : (0));
+    const int IS32BIT = 1;
+    const int IS_NOT_32BIT = 0;
+    return ((sizeof(void *) == 4) ? (IS32BIT) : (IS_NOT_32BIT));
 }
 
 static inline RK_S32 mpp_dup(RK_S32 fd)
 {
     /* avoid stdin / stdout / stderr so start from 3 */
+    const int MINIMUM_SAFE_FD = 3;
 #ifdef F_DUPFD_CLOEXEC
-    return fcntl(fd, F_DUPFD_CLOEXEC, 3);
+    return fcntl(fd, F_DUPFD_CLOEXEC, MINIMUM_SAFE_FD);
 #else
     RK_S32 new_fd = -1;
 
-    new_fd = fcntl(fd, F_DUPFD, 3);
+    new_fd = fcntl(fd, F_DUPFD, MINIMUM_SAFE_FD);
     if (new_fd == -1)
         return -1;
 

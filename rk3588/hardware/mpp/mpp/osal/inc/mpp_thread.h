@@ -182,14 +182,16 @@ inline RK_S32 Condition::timedwait(Mutex& mutex, RK_S64 timeout)
 inline RK_S32 Condition::timedwait(Mutex* mutex, RK_S64 timeout)
 {
     struct timespec ts;
-
+    const int SECONDS_IN_MILLISECOND = 1000;
+    const int NANOSECONDS_IN_MILLISECOND = 1000000;
+    const int NANOSECONDS_IN_SECOND = 1000000000;
     clock_gettime(CLOCK_REALTIME_COARSE, &ts);
 
-    ts.tv_sec += timeout / 1000;
-    ts.tv_nsec += (timeout % 1000) * 1000000;
+    ts.tv_sec += timeout / SECONDS_IN_MILLISECOND;
+    ts.tv_nsec += (timeout % SECONDS_IN_MILLISECOND) * NANOSECONDS_IN_MILLISECOND;
     /* Prevent the out of range at nanoseconds field */
-    ts.tv_sec += ts.tv_nsec / 1000000000;
-    ts.tv_nsec %= 1000000000;
+    ts.tv_sec += ts.tv_nsec / NANOSECONDS_IN_SECOND;
+    ts.tv_nsec %= NANOSECONDS_IN_SECOND;
 
     return pthread_cond_timedwait(&mCond, &mutex->mMutex, &ts);
 }
