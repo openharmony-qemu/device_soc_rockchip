@@ -68,15 +68,45 @@ void Rockchip_OSAL_Free_With_Caller(
 
 OMX_S32 Rockchip_OSAL_Memset(OMX_PTR dest, OMX_S32 c, OMX_S32 n)
 {
-    return memset_s(dest, n, c, n);
+    if (dest == NULL || n < 0) {
+        return -1;
+    }
+
+    if (n > 0) {
+        memset(dest, c, (size_t)n);
+    }
+    return 0;
 }
 
 OMX_S32 Rockchip_OSAL_Memcpy(OMX_PTR dest, OMX_PTR src, OMX_S32 n)
 {
-    return memcpy_s(dest, n, src, n);
+    if (dest == NULL || src == NULL || n < 0) {
+        return -1;
+    }
+
+    if (n == 0) {
+        return 0;
+    }
+
+    if ((dest > src && dest < (OMX_U8*)src + n) ||
+        (src > dest && src < (OMX_U8*)dest + n)) {
+        return -1;
+    }
+
+    memcpy(dest, src, (size_t)n);
+    return 0;
 }
 
 OMX_S32 Rockchip_OSAL_Memmove(OMX_PTR dest, OMX_PTR src, OMX_S32 n)
 {
-    return memmove_s(dest, n, src, n);
+    if (dest == NULL || src == NULL || n < 0) {
+        return -1;
+    }
+
+    if (n == 0) {
+        return 0;
+    }
+
+    memmove(dest, src, (size_t)n);
+    return 0;
 }

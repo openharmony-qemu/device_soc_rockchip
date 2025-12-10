@@ -42,10 +42,11 @@ static unsigned int perfFrameCount[PERF_ID_MAX + 1], perfOver30ms[PERF_ID_MAX + 
 ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
 {
     char *pCurrentPointer = NULL;
+    char *newBuffer = NULL;
     size_t const chunk = 512;
-
     size_t defaultBufferSize = chunk + 1;
     size_t retSize = 0;
+    size_t newSize = 0;
 
     if (*ppLine == NULL) {
         *ppLine = (char *)malloc(defaultBufferSize);
@@ -56,11 +57,19 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
         *pLen = defaultBufferSize;
     } else {
         if (*pLen < defaultBufferSize) {
-            *ppLine = (char *)realloc(*ppLine, defaultBufferSize);
-            if (*ppLine == NULL) {
+            newBuffer = (char *)malloc(defaultBufferSize);
+            if (newBuffer == NULL) {
                 retSize = -1;
                 goto EXIT;
             }
+
+            size_t copySize = (*pLen < defaultBufferSize) ? *pLen : defaultBufferSize;
+            if (copySize > 0) {
+                memcpy(newBuffer, *ppLine, copySize);
+            }
+
+            free(*ppLine);
+            *ppLine = newBuffer;
             *pLen = defaultBufferSize;
         }
     }
@@ -109,11 +118,18 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
 
         i = ((readByte + (chunk * 2)) / chunk) * chunk; // 2:byte alignment
         if (i != *pLen) {
-            *ppLine = (char *)realloc(*ppLine, i);
-            if (*ppLine == NULL) {
+            newBuffer = (char *)malloc(i);
+            if (newBuffer == NULL) {
                 retSize = -1;
                 goto EXIT;
             }
+
+            if (readByte > 0) {
+                memcpy(newBuffer, *ppLine, readByte);
+            }
+
+            free(*ppLine);
+            *ppLine = newBuffer;
             *pLen = i;
         }
     }
