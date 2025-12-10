@@ -292,14 +292,14 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
         st_ref[0].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[0].repeat        = NO_REPETITION;
         /* st 1 layer 1 - non-ref */
-        st_ref[1].is_non_ref    = 1;
+        st_ref[1].is_non_ref    = IS_NON_REF_TRUE;
         st_ref[1].temporal_id   = TEMPORAL_ID_LAYER_1;
         st_ref[1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[1].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[1].repeat        = NO_REPETITION;
         /* st 2 layer 0 - ref */
         st_ref[2].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[2].temporal_id   = 0;
+        st_ref[2].temporal_id   = TEMPORAL_ID_LAYER_0;
         st_ref[2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[2].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[2].repeat        = NO_REPETITION;
@@ -331,12 +331,12 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
         /* st 3 layer 2 - non-ref */
         st_ref[3].is_non_ref    = IS_NON_REF_FALSE;
         st_ref[3].temporal_id   = TEMPORAL_ID_LAYER_2;
-        st_ref[3].ref_mode      = REF_TO_TEMPORAL_LAYER;
+        st_ref[3].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
         st_ref[3].ref_arg       = REF_ARG_VALUE_1;
         st_ref[3].repeat        = NO_REPETITION;
         /* st 4 layer 0 - ref */
         st_ref[4].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[4].temporal_id   = 0;
+        st_ref[4].temporal_id   = TEMPORAL_ID_LAYER_0;
         st_ref[4].ref_mode      = REF_TO_TEMPORAL_LAYER;
         st_ref[4].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[4].repeat        = NO_REPETITION;
@@ -354,50 +354,50 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
         st_ref[0].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[0].repeat        = NO_REPETITION;
         /* st 1 layer 3 - non-ref */
-        st_ref[1].is_non_ref    = 1;
+        st_ref[1].is_non_ref    = IS_NON_REF_TRUE;
         st_ref[1].temporal_id   = TEMPORAL_ID_LAYER_3;
         st_ref[1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[1].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[1].repeat        = NO_REPETITION;
         /* st 2 layer 2 - ref */
         st_ref[2].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[2].temporal_id   = 2;
+        st_ref[2].temporal_id   = TEMPORAL_ID_LAYER_2;
         st_ref[2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[2].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[2].repeat        = NO_REPETITION;
         /* st 3 layer 3 - non-ref */
-        st_ref[3].is_non_ref    = 1;
-        st_ref[3].temporal_id   = 3;
+        st_ref[3].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[3].temporal_id   = TEMPORAL_ID_LAYER_3;
         st_ref[3].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[3].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[3].repeat        = NO_REPETITION;
+        st_ref[3].repeat        = NO_REPETITION;// 表示不重复
         /* st 4 layer 1 - ref */
         st_ref[4].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[4].temporal_id   = 1;
+        st_ref[4].temporal_id   = TEMPORAL_ID_LAYER_1;
         st_ref[4].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
         st_ref[4].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[4].repeat        = NO_REPETITION;
         /* st 5 layer 3 - non-ref */
-        st_ref[5].is_non_ref    = 1;
-        st_ref[5].temporal_id   = 3;
+        st_ref[5].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[5].temporal_id   = TEMPORAL_ID_LAYER_3;
         st_ref[5].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[5].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[5].repeat        = NO_REPETITION;
         /* st 6 layer 2 - ref */
         st_ref[6].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[6].temporal_id   = 2;
+        st_ref[6].temporal_id   = TEMPORAL_ID_LAYER_2;
         st_ref[6].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[6].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[6].repeat        = NO_REPETITION;
         /* st 7 layer 3 - non-ref */
-        st_ref[7].is_non_ref    = 1;
-        st_ref[7].temporal_id   = 3;
+        st_ref[7].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[7].temporal_id   = TEMPORAL_ID_LAYER_3;
         st_ref[7].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[7].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[7].repeat        = NO_REPETITION;
         /* st 8 layer 0 - ref */
         st_ref[8].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[8].temporal_id   = 0;
+        st_ref[8].temporal_id   = TEMPORAL_ID_LAYER_0;
         st_ref[8].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
         st_ref[8].ref_arg       = DEFAULT_REF_VALUE;
         st_ref[8].repeat        = NO_REPETITION;

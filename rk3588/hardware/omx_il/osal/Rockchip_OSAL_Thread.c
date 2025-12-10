@@ -148,6 +148,7 @@ OMX_ERRORTYPE Rockchip_OSAL_ThreadCancel(OMX_HANDLETYPE threadHandle)
 
 void Rockchip_OSAL_ThreadExit(void *value_ptr)
 {
+    pthread_exit(value_ptr);
     return;
 }
 

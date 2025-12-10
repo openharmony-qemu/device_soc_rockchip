@@ -353,11 +353,11 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_BGR555 :
         case MPP_FMT_RGB565 :
         case MPP_FMT_BGR565 : {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 2;
+            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * BPP_RGB_16BIT_FORMATS;
         }
             break;
         default: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * 4;
+            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * BPP_DEFAULT_FORMATS;
         }
             break;
     }

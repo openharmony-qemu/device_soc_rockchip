@@ -1355,6 +1355,7 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     RK_S32 fd           = aEncInStrm->bufPhyAddr;
     RK_U32 size         = aEncInStrm->size;
     const int YUV420_PIXEL_SIZE_RATIO = YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_RATIO_DENOMINATOR;
+
     /* try import input buffer and output buffer */
     MppFrame frame = nullptr;
 
@@ -1440,9 +1441,9 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
         } else  if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
             align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 3;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB565_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * 4;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB101010_PIXEL_SIZE_RATIO;
         } else {
             mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;
