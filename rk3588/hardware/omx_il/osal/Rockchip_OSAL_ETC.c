@@ -46,7 +46,6 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
     size_t const chunk = 512;
     size_t defaultBufferSize = chunk + 1;
     size_t retSize = 0;
-    size_t newSize = 0;
 
     if (*ppLine == NULL) {
         *ppLine = (char *)malloc(defaultBufferSize);

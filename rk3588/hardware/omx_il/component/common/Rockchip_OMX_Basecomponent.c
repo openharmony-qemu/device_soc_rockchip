@@ -680,8 +680,6 @@ static OMX_ERRORTYPE Rockchip_OMX_MessageHandlerThread(OMX_PTR threadData)
         }
     }
 
-    Rockchip_OSAL_ThreadExit(NULL);
-
 EXIT:
     FunctionOut();
 

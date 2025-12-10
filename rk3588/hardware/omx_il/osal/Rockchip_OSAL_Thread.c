@@ -139,17 +139,10 @@ OMX_ERRORTYPE Rockchip_OSAL_ThreadCancel(OMX_HANDLETYPE threadHandle)
     if (!thread)
         return OMX_ErrorBadParameter;
 
-    pthread_exit(&thread->pthread);
     pthread_join(thread->pthread, NULL);
 
     Rockchip_OSAL_Free(thread);
     return OMX_ErrorNone;
-}
-
-void Rockchip_OSAL_ThreadExit(void *value_ptr)
-{
-    pthread_exit(value_ptr);
-    return;
 }
 
 void Rockchip_OSAL_SleepMillisec(OMX_U32 ms)

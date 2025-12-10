@@ -1027,8 +1027,6 @@ static OMX_ERRORTYPE Rkvpu_OMX_InputProcessThread(OMX_PTR threadData)
     pRockchipComponent = (ROCKCHIP_OMX_BASECOMPONENT *)pOMXComponent->pComponentPrivate;
     Rkvpu_OMX_InputBufferProcess(pOMXComponent);
 
-    Rockchip_OSAL_ThreadExit(NULL);
-
 EXIT:
     FunctionOut();
 
@@ -1056,8 +1054,6 @@ static OMX_ERRORTYPE Rkvpu_OMX_OutputProcessThread(OMX_PTR threadData)
     }
     pRockchipComponent = (ROCKCHIP_OMX_BASECOMPONENT *)pOMXComponent->pComponentPrivate;
     Rkvpu_OMX_OutputBufferProcess(pOMXComponent);
-
-    Rockchip_OSAL_ThreadExit(NULL);
 
 EXIT:
     FunctionOut();

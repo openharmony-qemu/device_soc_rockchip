@@ -41,7 +41,6 @@ OMX_ERRORTYPE Rockchip_OSAL_ThreadCreate(
     OMX_PTR thread_name);
 OMX_ERRORTYPE Rockchip_OSAL_ThreadTerminate(OMX_HANDLETYPE threadHandle);
 OMX_ERRORTYPE Rockchip_OSAL_ThreadCancel(OMX_HANDLETYPE threadHandle);
-void          Rockchip_OSAL_ThreadExit(void *value_ptr);
 void          Rockchip_OSAL_SleepMillisec(OMX_U32 ms);
 
 #ifdef __cplusplus

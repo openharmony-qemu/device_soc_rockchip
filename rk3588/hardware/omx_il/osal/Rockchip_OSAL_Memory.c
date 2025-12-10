@@ -88,8 +88,11 @@ OMX_S32 Rockchip_OSAL_Memcpy(OMX_PTR dest, OMX_PTR src, OMX_S32 n)
         return 0;
     }
 
-    if ((dest > src && dest < (OMX_U8*)src + n) ||
-        (src > dest && src < (OMX_U8*)dest + n)) {
+    uintptr_t dest_addr = (uintptr_t)dest;
+    uintptr_t src_addr = (uintptr_t)src;
+
+    if (((dest_addr > src_addr) && (dest_addr < src_addr + n)) ||
+        ((src_addr > dest_addr) && (src_addr < dest_addr + n))) {
         return -1;
     }
 
