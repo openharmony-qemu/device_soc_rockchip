@@ -854,7 +854,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
             if (fd_output) {
                 mpp_log_f("fd for output is invalid!\n");
                 // TODO: check frame format and allocate correct buffer
-                aDecOut->data = mpp_malloc(RK_U8, width * height * 3 / 2);
+                aDecOut->data = mpp_malloc(RK_U8, width * height * YUV420P_PIXEL_SIZE);
                 memcpy(aDecOut->data, (RK_U8*) mpp_buffer_get_ptr(pic_buf), aDecOut->size);
             }
 
@@ -1355,7 +1355,7 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     RK_S32 fd           = aEncInStrm->bufPhyAddr;
     RK_U32 size         = aEncInStrm->size;
     const int YUV420_PIXEL_SIZE_RATIO = YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_RATIO_DENOMINATOR;
-
+    const int VERTICAL_ALIGNMENT_VALUE = 16; 
     /* try import input buffer and output buffer */
     MppFrame frame = nullptr;
 
@@ -1437,13 +1437,13 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
             goto FUNC_RET;
         }
         if (format >= MPP_FMT_YUV420SP && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
         } else  if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * YUV420_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB565_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * RGB565_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 16) * RGB101010_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
         } else {
             mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;

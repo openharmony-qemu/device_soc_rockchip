@@ -273,11 +273,11 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
 
     switch (max_tid) {
     case TSVC_MAX_TID_LEVEL_1 : {
-        st_ref[0].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[0].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[0].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[0].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[0].repeat        = NO_REPETITION;
+        st_ref[TSVC0_ST_0_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC0_ST_0_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC0_ST_0_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC0_ST_0_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC0_ST_0_INDEX].repeat        = NO_REPETITION;
 
         st_cfg_cnt = NO_TSVC_ST_CFG_CNT;
         tid0_loop = NO_TSVC_TID0_LOOP;
@@ -286,23 +286,23 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     case TSVC_MAX_TID_LEVEL_2 : {
         /* set tsvc2 st-ref struct */
         /* st 0 layer 0 - ref */
-        st_ref[0].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[0].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[0].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[0].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[0].repeat        = NO_REPETITION;
+        st_ref[TSVC2_ST_0_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC2_ST_0_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC2_ST_0_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC2_ST_0_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC2_ST_0_INDEX].repeat        = NO_REPETITION;
         /* st 1 layer 1 - non-ref */
-        st_ref[1].is_non_ref    = IS_NON_REF_TRUE;
-        st_ref[1].temporal_id   = TEMPORAL_ID_LAYER_1;
-        st_ref[1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[1].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[1].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_1_INDEX].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[TSVC3_ST_1_INDEX].temporal_id   = TEMPORAL_ID_LAYER_1;
+        st_ref[TSVC3_ST_1_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC3_ST_1_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC3_ST_1_INDEX].repeat        = NO_REPETITION;
         /* st 2 layer 0 - ref */
-        st_ref[2].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[2].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[2].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[2].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_2_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC3_ST_2_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC3_ST_2_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC3_ST_2_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC3_ST_2_INDEX].repeat        = NO_REPETITION;
 
         st_cfg_cnt = TSVC2_ST_CFG_CNT;
         tid0_loop = TSVC2_TID0_LOOP;
@@ -311,35 +311,35 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     case TSVC_MAX_TID_LEVEL_3 : {
         /* set tsvc3 st-ref struct */
         /* st 0 layer 0 - ref */
-        st_ref[0].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[0].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[0].ref_mode      = REF_TO_TEMPORAL_LAYER;
-        st_ref[0].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[0].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_0_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC3_ST_0_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC3_ST_0_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;
+        st_ref[TSVC3_ST_0_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC3_ST_0_INDEX].repeat        = NO_REPETITION;
         /* st 1 layer 2 - non-ref */
-        st_ref[1].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[1].temporal_id   = TEMPORAL_ID_LAYER_2;
-        st_ref[1].ref_mode      = REF_TO_TEMPORAL_LAYER;
-        st_ref[1].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[1].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_1_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC3_ST_1_INDEX].temporal_id   = TEMPORAL_ID_LAYER_2;
+        st_ref[TSVC3_ST_1_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;
+        st_ref[TSVC3_ST_1_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC3_ST_1_INDEX].repeat        = NO_REPETITION;
         /* st 2 layer 1 - ref */
-        st_ref[2].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[2].temporal_id   = TEMPORAL_ID_LAYER_1;
-        st_ref[2].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
-        st_ref[2].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[2].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_2_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC3_ST_2_INDEX].temporal_id   = TEMPORAL_ID_LAYER_1;
+        st_ref[TSVC3_ST_2_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
+        st_ref[TSVC3_ST_2_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC3_ST_2_INDEX].repeat        = NO_REPETITION;
         /* st 3 layer 2 - non-ref */
-        st_ref[3].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[3].temporal_id   = TEMPORAL_ID_LAYER_2;
-        st_ref[3].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
-        st_ref[3].ref_arg       = REF_ARG_VALUE_1;
-        st_ref[3].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_3_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC3_ST_3_INDEX].temporal_id   = TEMPORAL_ID_LAYER_2;
+        st_ref[TSVC3_ST_3_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
+        st_ref[TSVC3_ST_3_INDEX].ref_arg       = REF_ARG_VALUE_1;
+        st_ref[TSVC3_ST_3_INDEX].repeat        = NO_REPETITION;
         /* st 4 layer 0 - ref */
-        st_ref[4].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[4].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[4].ref_mode      = REF_TO_TEMPORAL_LAYER;
-        st_ref[4].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[4].repeat        = NO_REPETITION;
+        st_ref[TSVC3_ST_4_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC3_ST_4_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC3_ST_4_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;
+        st_ref[TSVC3_ST_4_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC3_ST_4_INDEX].repeat        = NO_REPETITION;
 
         st_cfg_cnt = TSVC3_ST_CFG_CNT;
         tid0_loop = TSVC3_TID0_LOOP;
@@ -348,59 +348,59 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     case TSVC_MAX_TID_LEVEL_4 : {
         /* set tsvc3 st-ref struct */
         /* st 0 layer 0 - ref */
-        st_ref[0].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[0].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[0].ref_mode      = REF_TO_TEMPORAL_LAYER;
-        st_ref[0].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[0].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_0_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC4_ST_0_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC4_ST_0_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;
+        st_ref[TSVC4_ST_0_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_0_INDEX].repeat        = NO_REPETITION;
         /* st 1 layer 3 - non-ref */
-        st_ref[1].is_non_ref    = IS_NON_REF_TRUE;
-        st_ref[1].temporal_id   = TEMPORAL_ID_LAYER_3;
-        st_ref[1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[1].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[1].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_1_INDEX].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[TSVC4_ST_1_INDEX].temporal_id   = TEMPORAL_ID_LAYER_3;
+        st_ref[TSVC4_ST_1_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_1_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_1_INDEX].repeat        = NO_REPETITION;
         /* st 2 layer 2 - ref */
-        st_ref[2].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[2].temporal_id   = TEMPORAL_ID_LAYER_2;
-        st_ref[2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[2].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[2].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_2_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC4_ST_2_INDEX].temporal_id   = TEMPORAL_ID_LAYER_2;
+        st_ref[TSVC4_ST_2_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_2_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_2_INDEX].repeat        = NO_REPETITION;
         /* st 3 layer 3 - non-ref */
-        st_ref[3].is_non_ref    = IS_NON_REF_TRUE;
-        st_ref[3].temporal_id   = TEMPORAL_ID_LAYER_3;
-        st_ref[3].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[3].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[3].repeat        = NO_REPETITION;// 表示不重复
+        st_ref[TSVC4_ST_3_INDEX].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[TSVC4_ST_3_INDEX].temporal_id   = TEMPORAL_ID_LAYER_3;
+        st_ref[TSVC4_ST_3_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_3_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_3_INDEX].repeat        = NO_REPETITION;// 表示不重复
         /* st 4 layer 1 - ref */
-        st_ref[4].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[4].temporal_id   = TEMPORAL_ID_LAYER_1;
-        st_ref[4].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
-        st_ref[4].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[4].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_4_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC4_ST_4_INDEX].temporal_id   = TEMPORAL_ID_LAYER_1;
+        st_ref[TSVC4_ST_4_INDEX].ref_mode      = REF_TO_TEMPORAL_LAYER;// 表示引用模式为时间层引用
+        st_ref[TSVC4_ST_4_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_4_INDEX].repeat        = NO_REPETITION;
         /* st 5 layer 3 - non-ref */
-        st_ref[5].is_non_ref    = IS_NON_REF_TRUE;
-        st_ref[5].temporal_id   = TEMPORAL_ID_LAYER_3;
-        st_ref[5].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[5].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[5].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_5_INDEX].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[TSVC4_ST_5_INDEX].temporal_id   = TEMPORAL_ID_LAYER_3;
+        st_ref[TSVC4_ST_5_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_5_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_5_INDEX].repeat        = NO_REPETITION;
         /* st 6 layer 2 - ref */
-        st_ref[6].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[6].temporal_id   = TEMPORAL_ID_LAYER_2;
-        st_ref[6].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[6].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[6].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_6_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC4_ST_6_INDEX].temporal_id   = TEMPORAL_ID_LAYER_2;
+        st_ref[TSVC4_ST_6_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_6_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_6_INDEX].repeat        = NO_REPETITION;
         /* st 7 layer 3 - non-ref */
-        st_ref[7].is_non_ref    = IS_NON_REF_TRUE;
-        st_ref[7].temporal_id   = TEMPORAL_ID_LAYER_3;
-        st_ref[7].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[7].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[7].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_7_INDEX].is_non_ref    = IS_NON_REF_TRUE;
+        st_ref[TSVC4_ST_7_INDEX].temporal_id   = TEMPORAL_ID_LAYER_3;
+        st_ref[TSVC4_ST_7_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_7_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_7_INDEX].repeat        = NO_REPETITION;
         /* st 8 layer 0 - ref */
-        st_ref[8].is_non_ref    = IS_NON_REF_FALSE;
-        st_ref[8].temporal_id   = TEMPORAL_ID_LAYER_0;
-        st_ref[8].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[8].ref_arg       = DEFAULT_REF_VALUE;
-        st_ref[8].repeat        = NO_REPETITION;
+        st_ref[TSVC4_ST_8_INDEX].is_non_ref    = IS_NON_REF_FALSE;
+        st_ref[TSVC4_ST_8_INDEX].temporal_id   = TEMPORAL_ID_LAYER_0;
+        st_ref[TSVC4_ST_8_INDEX].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[TSVC4_ST_8_INDEX].ref_arg       = DEFAULT_REF_VALUE;
+        st_ref[TSVC4_ST_8_INDEX].repeat        = NO_REPETITION;
 
         st_cfg_cnt = TSVC4_ST_CFG_CNT;
         tid0_loop = TSVC4_TID0_LOOP;

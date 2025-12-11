@@ -232,6 +232,49 @@
 #define BPP_RGB_16BIT_FORMATS 2  // For RGB444/555/565 formats
 #define BPP_DEFAULT_FORMATS   4  // For other formats
 
+typedef enum {
+    TSVC0_ST_0_INDEX = 0,
+    TSVC0_ST_COUNT = 1
+} Tsvc0ConfigIndex;
+
+/* TSVC2 配置索引 */
+typedef enum {
+    TSVC2_ST_0_INDEX = 0,
+    TSVC2_ST_1_INDEX,
+    TSVC2_ST_2_INDEX,
+    TSVC2_ST_COUNT = 3
+} Tsvc2ConfigIndex;
+
+/* TSVC3 配置索引 */
+typedef enum {
+    TSVC3_ST_0_INDEX = 0,
+    TSVC3_ST_1_INDEX,
+    TSVC3_ST_2_INDEX,
+    TSVC3_ST_3_INDEX,
+    TSVC3_ST_4_INDEX,
+    TSVC3_ST_COUNT = 5
+} Tsvc3ConfigIndex;
+
+/* TSVC4 配置索引 */
+typedef enum {
+    TSVC4_ST_0_INDEX = 0,
+    TSVC4_ST_1_INDEX,
+    TSVC4_ST_2_INDEX,
+    TSVC4_ST_3_INDEX,
+    TSVC4_ST_4_INDEX,
+    TSVC4_ST_5_INDEX,
+    TSVC4_ST_6_INDEX,
+    TSVC4_ST_7_INDEX,
+    TSVC4_ST_8_INDEX,
+    TSVC4_ST_COUNT = 9
+} Tsvc4ConfigIndex;
+
+#define MPP_REQ_WRITE_INDEX     0
+#define MPP_REQ_READ_INDEX      1
+#define MPP_REQ_PATCH_INDEX     2
+#define MPP_BASIC_REQ_COUNT     2
+#define MPP_FULL_REQ_COUNT      3
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -255,7 +298,8 @@ static inline RK_U32 mpp_is_32bit()
 {
     const int IS_32BIT = 1;
     const int IS_NOT_32BIT = 0;
-    return ((sizeof(void *) == 4) ? (IS_32BIT) : (IS_NOT_32BIT));
+    const size_t SIZE_OF_UINT32 = sizeof(uint32_t);
+    return ((sizeof(void *) == SIZE_OF_UINT32) ? (IS_32BIT) : (IS_NOT_32BIT));
 }
 
 static inline RK_S32 mpp_dup(RK_S32 fd)

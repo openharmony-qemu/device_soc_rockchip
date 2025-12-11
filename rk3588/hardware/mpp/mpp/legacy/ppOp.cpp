@@ -80,6 +80,7 @@ int main()
     const int YUV420_TOTAL_SIZE_MULTIPLIER = 3;
     const int YUV420_TOTAL_SIZE_DIVISOR = 2;
     const int MEMORY_ALLOCATION_MULTIPLIER = 2;
+    const int QUARTER_DIVISOR = 4;
 
     const int SRC_VIR_WIDTH = 1920;
     const int SRC_VIR_HEIGHT = 1088;
@@ -127,7 +128,7 @@ int main()
         for (i = 0; i < SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR; i++) { //planar to semi planar
             for (j = 0; j < SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR; j++) { //planar to semi planar
                 tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 0] = tmp[src_vir_width * src_vir_height + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
-                tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 1] = tmp[src_vir_width * src_vir_height + SRC_WIDTH * SRC_HEIGHT / 4 + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
+                tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 1] = tmp[src_vir_width * src_vir_height + SRC_WIDTH * SRC_HEIGHT / QUARTER_DIVISOR + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
             }
         }
         memcpy(&tmp[src_vir_width * src_vir_height], tmpbuf, src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);

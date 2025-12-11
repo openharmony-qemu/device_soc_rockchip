@@ -428,14 +428,16 @@ int main(int argc, char *argv[])
 {
     int i, start = 0, end = 0;
     const int DEFAULT_INCREMENT = 1;
+    const int START_ARG_INDEX = 1;
+    const int END_ARG_INDEX = 2;
     if (argc < ARGC_NUMBER_2) {
         end = TOTAL_RK_LIST_TEST_COUNT;
     } else if (argc == ARGC_NUMBER_2) {
-        start = atoi(argv[1]);
+        start = atoi(argv[START_ARG_INDEX]);
         end   = start + DEFAULT_INCREMENT;
     } else if (argc == ARGC_NUMBER_3) {
-        start = atoi(argv[1]);
-        end   = atoi(argv[2]);
+        start = atoi(argv[START_ARG_INDEX]);
+        end   = atoi(argv[END_ARG_INDEX]);
     } else {
         printf("too many argc %d\n", argc);
         return -1;

@@ -312,6 +312,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     MpiEncTestData *p = NULL;
     MPP_RET ret = 0;
     const int YUV420_CHANNEL_RATIO = 3 / 2;
+    #define MPP_ALIGNMENT_SIZE          64
     if (!data || !cmd) {
         mpp_err_f("invalid input data %p cmd %p\n", data, cmd);
         return MPP_ERR_NULL_PTR;
@@ -337,7 +338,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     switch (p->fmt & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420P: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * YUV420_CHANNEL_RATIO;
+            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) * MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
         }
             break;
 
@@ -353,11 +354,11 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_BGR555 :
         case MPP_FMT_RGB565 :
         case MPP_FMT_BGR565 : {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * BPP_RGB_16BIT_FORMATS;
+            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) * MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
         }
             break;
         default: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, 64) * MPP_ALIGN(p->ver_stride, 64) * BPP_DEFAULT_FORMATS;
+            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) * MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
         }
             break;
     }
