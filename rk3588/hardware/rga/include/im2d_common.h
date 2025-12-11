@@ -92,8 +92,8 @@ IM_API IM_STATUS imcheckHeader(im_api_version_t header_version = RGA_CURRENT_API
         IM_STATUS __ret = IM_STATUS_NOERROR; \
         rga_buffer_t __pat; \
         im_rect __pat_rect; \
-        memset(&__pat, 0, sizeof(rga_buffer_t)); \
-        memset(&__pat_rect, 0, sizeof(im_rect)); \
+        memset_s(&__pat, sizeof(rga_buffer_t), 0, sizeof(rga_buffer_t)); \
+        memset_s(&__pat_rect, sizeof(im_rect), 0, sizeof(im_rect)); \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
         if (__argc == 0) { \
@@ -122,7 +122,8 @@ IM_API IM_STATUS imcheckHeader(im_api_version_t header_version = RGA_CURRENT_API
         __ret; \
     })
 IM_C_API IM_STATUS imcheck_t(const rga_buffer_t src, const rga_buffer_t dst, const rga_buffer_t pat,
-                             const im_rect src_rect, const im_rect dst_rect, const im_rect pat_rect, const int mode_usage);
+                             const im_rect src_rect, const im_rect dst_rect, const im_rect pat_rect,
+                             const int mode_usage);
 /* Compatible with the legacy symbol */
 IM_C_API void rga_check_perpare(rga_buffer_t *src, rga_buffer_t *dst, rga_buffer_t *pat,
                                 im_rect *src_rect, im_rect *dst_rect, im_rect *pat_rect, int mode_usage);

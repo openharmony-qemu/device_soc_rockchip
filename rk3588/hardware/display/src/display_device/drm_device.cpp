@@ -179,7 +179,8 @@ void DrmDevice::FindAllCrtc(const drmModeResPtr &res)
             continue;
         }
         uint32_t crtc_id = crtc->crtc_id;
-		DISPLAY_LOGD("res->count_crtcs %{public}d, res->count_connectors %{public}d crtc id %{public}d", res->count_crtcs, res->count_connectors, crtc_id);
+        DISPLAY_LOGD("res->count_crtcs %{public}d, res->count_connectors %{public}d crtc id %{public}d",
+            res->count_crtcs, res->count_connectors, crtc_id);
         std::shared_ptr<DrmCrtc> drmCrtc = std::make_shared<DrmCrtc>(crtc, i);
         int ret = drmCrtc->Init(*this);
         drmModeFreeCrtc(crtc);
@@ -279,8 +280,6 @@ std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t plane_mas
     for (const auto &plane : mPlanes) {
         if (plane->IsIdle() && ((int)plane->GetPlaneValue() & plane_mask) && (type == plane->GetType())) {
             planes.push_back(plane);
-			DISPLAY_LOGD("plane_mask 0x%{public}x plane value %{public}x plane->GetPossibleCrtcs() 0x%{public}x, type 0x%{public}x  plane->GetType() 0x%{public}x\n",
-			plane_mask, (int)plane->GetPlaneValue(), plane->GetPossibleCrtcs(), type, plane->GetType());
         }
     }
     DISPLAY_LOGD("the planes count %{public}zd", planes.size());

@@ -275,9 +275,15 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
 {
     int32_t usage = 0;
     uint8_t isYuv = 0;
-    rga_buffer_t dstRgaBuffer, srcRgaBuffer, bRgbBuffer;
-    rga_buffer_handle_t src_handle = 0, dst_handle = 0, brgb_handle = 0;
-    im_handle_param_t src_param, dst_param, brgb_param;
+    rga_buffer_t dstRgaBuffer;
+    rga_buffer_t srcRgaBuffer;
+    rga_buffer_t bRgbBuffer;
+    rga_buffer_handle_t src_handle = 0;
+    rga_buffer_handle_t dst_handle = 0;
+    rga_buffer_handle_t brgb_handle = 0;
+    im_handle_param_t src_param;
+    im_handle_param_t dst_param;
+    im_handle_param_t brgb_param;
     IM_STATUS ret = 0;
     im_rect srect;
     im_rect drect;

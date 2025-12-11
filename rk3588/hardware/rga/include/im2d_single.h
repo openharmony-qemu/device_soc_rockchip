@@ -58,7 +58,8 @@ IM_API IM_STATUS imcopy(const rga_buffer_t src, rga_buffer_t dst, int sync = 1, 
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imresize(const rga_buffer_t src, rga_buffer_t dst, double fx = 0, double fy = 0, int interpolation = 0, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imresize(const rga_buffer_t src, rga_buffer_t dst, double fx = 0,
+                          double fy = 0, int interpolation = 0, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * Crop
@@ -76,7 +77,8 @@ IM_API IM_STATUS imresize(const rga_buffer_t src, rga_buffer_t dst, double fx = 
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imcrop(const rga_buffer_t src, rga_buffer_t dst, im_rect rect, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imcrop(const rga_buffer_t src, rga_buffer_t dst, im_rect rect,
+                        int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * translate
@@ -96,7 +98,8 @@ IM_API IM_STATUS imcrop(const rga_buffer_t src, rga_buffer_t dst, im_rect rect, 
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imtranslate(const rga_buffer_t src, rga_buffer_t dst, int x, int y, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imtranslate(const rga_buffer_t src, rga_buffer_t dst,
+                             sint x, int y, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * format convert
@@ -124,7 +127,8 @@ IM_API IM_STATUS imtranslate(const rga_buffer_t src, rga_buffer_t dst, int x, in
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imcvtcolor(rga_buffer_t src, rga_buffer_t dst, int sfmt, int dfmt, int mode = IM_COLOR_SPACE_DEFAULT, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imcvtcolor(rga_buffer_t src, rga_buffer_t dst, int sfmt, int dfmt,
+                            int mode = IM_COLOR_SPACE_DEFAULT, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * rotation
@@ -144,7 +148,8 @@ IM_API IM_STATUS imcvtcolor(rga_buffer_t src, rga_buffer_t dst, int sfmt, int df
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imrotate(const rga_buffer_t src, rga_buffer_t dst, int rotation, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imrotate(const rga_buffer_t src, rga_buffer_t dst,
+                          int rotation, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * flip
@@ -163,7 +168,8 @@ IM_API IM_STATUS imrotate(const rga_buffer_t src, rga_buffer_t dst, int rotation
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imflip(const rga_buffer_t src, rga_buffer_t dst, int mode, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imflip(const rga_buffer_t src, rga_buffer_t dst,
+                        int mode, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * 2-channel blend (SRC + DST -> DST or SRCA + SRCB -> DST)
@@ -185,7 +191,8 @@ IM_API IM_STATUS imflip(const rga_buffer_t src, rga_buffer_t dst, int mode, int 
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imblend(const rga_buffer_t fd_image, rga_buffer_t bg_image, int mode = IM_ALPHA_BLEND_SRC_OVER, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imblend(const rga_buffer_t fd_image, rga_buffer_t bg_image,
+                         int mode = IM_ALPHA_BLEND_SRC_OVER, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * 3-channel blend (SRC + DST -> DST or SRCA + SRCB -> DST)
@@ -209,7 +216,10 @@ IM_API IM_STATUS imblend(const rga_buffer_t fd_image, rga_buffer_t bg_image, int
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imcomposite(const rga_buffer_t srcA, const rga_buffer_t srcB, rga_buffer_t dst, int mode = IM_ALPHA_BLEND_SRC_OVER, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imcomposite(const rga_buffer_t srcA, const rga_buffer_t srcB, rga_buffer_t dst,
+                             int mode = IM_ALPHA_BLEND_SRC_OVER,
+                             int sync = 1,
+                             int *release_fence_fd = NULL);
 
 /**
  * color key
@@ -225,7 +235,10 @@ IM_API IM_STATUS imcomposite(const rga_buffer_t srcA, const rga_buffer_t srcB, r
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imcolorkey(const rga_buffer_t src, rga_buffer_t dst, im_colorkey_range range, int mode = IM_ALPHA_COLORKEY_NORMAL, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imcolorkey(const rga_buffer_t src, rga_buffer_t dst, im_colorkey_range range,
+                            int mode = IM_ALPHA_COLORKEY_NORMAL,
+                            int sync = 1,
+                            int *release_fence_fd = NULL);
 
 /**
  * OSD
@@ -243,9 +256,10 @@ IM_API IM_STATUS imcolorkey(const rga_buffer_t src, rga_buffer_t dst, im_colorke
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imosd(const rga_buffer_t osd,const rga_buffer_t dst,
+IM_API IM_STATUS imosd(const rga_buffer_t osd, const rga_buffer_t dst,
                        const im_rect osd_rect, im_osd_t *osd_config,
-                       int sync = 1, int *release_fence_fd = NULL);
+                       int sync = 1,
+                       int *release_fence_fd = NULL);
 
 /**
  * nn quantize
@@ -261,7 +275,9 @@ IM_API IM_STATUS imosd(const rga_buffer_t osd,const rga_buffer_t dst,
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imquantize(const rga_buffer_t src, rga_buffer_t dst, im_nn_t nn_info, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imquantize(const rga_buffer_t src, rga_buffer_t dst, im_nn_t nn_info,
+                            int sync = 1,
+                            int *release_fence_fd = NULL);
 
 /**
  * ROP
@@ -277,7 +293,9 @@ IM_API IM_STATUS imquantize(const rga_buffer_t src, rga_buffer_t dst, im_nn_t nn
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imrop(const rga_buffer_t src, rga_buffer_t dst, int rop_code, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imrop(const rga_buffer_t src, rga_buffer_t dst, int rop_code,
+                       int sync = 1,
+                       int *release_fence_fd = NULL);
 
 /**
  * fill/reset/draw
@@ -311,7 +329,8 @@ IM_API IM_STATUS imfill(rga_buffer_t dst, im_rect rect, int color, int sync = 1,
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imfillArray(rga_buffer_t dst, im_rect *rect_array, int array_size, uint32_t color, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imfillArray(rga_buffer_t dst, im_rect *rect_array, int array_size, uint32_t color,
+                             int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * fill rectangle
@@ -353,9 +372,10 @@ IM_API IM_STATUS imrectangle(rga_buffer_t dst, im_rect rect,
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS imrectangleArray(rga_buffer_t dst, im_rect *rect_array, int array_size,
-                                   uint32_t color, int thickness,
-                                   int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS imrectangleArray(rga_buffer_t dst, im_rect *rect_array,
+                                  int array_size, uint32_t color,
+                                  int thickness, int sync = 1,
+                                  int *release_fence_fd = NULL);
 
 /**
  * MOSAIC
@@ -376,7 +396,8 @@ IM_API IM_STATUS imrectangleArray(rga_buffer_t dst, im_rect *rect_array, int arr
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS immosaic(const rga_buffer_t image, im_rect rect, int mosaic_mode, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS immosaic(const rga_buffer_t image, im_rect rect, int mosaic_mode,
+                          int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * MOSAIC array
@@ -399,7 +420,8 @@ IM_API IM_STATUS immosaic(const rga_buffer_t image, im_rect rect, int mosaic_mod
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS immosaicArray(const rga_buffer_t image, im_rect *rect_array, int array_size, int mosaic_mode, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS immosaicArray(const rga_buffer_t image, im_rect *rect_array, int array_size,
+                               int mosaic_mode, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * palette
@@ -415,7 +437,8 @@ IM_API IM_STATUS immosaicArray(const rga_buffer_t image, im_rect *rect_array, in
  *
  * @returns success or else negative error code.
  */
-IM_API IM_STATUS impalette(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t lut, int sync = 1, int *release_fence_fd = NULL);
+IM_API IM_STATUS impalette(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t lut,
+                           int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * process for single task mode
@@ -474,14 +497,15 @@ IM_API IM_STATUS immakeBorder(rga_buffer_t src, rga_buffer_t dst,
 #endif /* #ifdef __cplusplus */
 
 IM_C_API IM_STATUS immosaic(const rga_buffer_t image, im_rect rect, int mosaic_mode, int sync);
-IM_C_API IM_STATUS imosd(const rga_buffer_t osd,const rga_buffer_t dst,
+IM_C_API IM_STATUS imosd(const rga_buffer_t osd, const rga_buffer_t dst,
                          const im_rect osd_rect, im_osd_t *osd_config, int sync);
 IM_C_API IM_STATUS improcess(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t pat,
                              im_rect srect, im_rect drect, im_rect prect, int usage);
 
 /* Start: Symbols reserved for compatibility with macro functions */
 IM_C_API IM_STATUS imcopy_t(const rga_buffer_t src, rga_buffer_t dst, int sync);
-IM_C_API IM_STATUS imresize_t(const rga_buffer_t src, rga_buffer_t dst, double fx, double fy, int interpolation, int sync);
+IM_C_API IM_STATUS imresize_t(const rga_buffer_t src, rga_buffer_t dst,
+                              double fx, double fy, int interpolation, int sync);
 IM_C_API IM_STATUS imcrop_t(const rga_buffer_t src, rga_buffer_t dst, im_rect rect, int sync);
 IM_C_API IM_STATUS imtranslate_t(const rga_buffer_t src, rga_buffer_t dst, int x, int y, int sync);
 IM_C_API IM_STATUS imcvtcolor_t(rga_buffer_t src, rga_buffer_t dst, int sfmt, int dfmt, int mode, int sync);
@@ -546,11 +570,14 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         if (__argc == 0) { \
             __ret = imresize_t(src, dst, 0, 0, INTER_LINEAR, 1); \
         } else if (__argc == 2){ \
-            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], __args[RGA_GET_MIN(__argc, 1)], INTER_LINEAR, 1); \
+            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], \
+                               __args[RGA_GET_MIN(__argc, 1)], INTER_LINEAR, 1); \
         } else if (__argc == 3){ \
-            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], __args[RGA_GET_MIN(__argc, 1)], (int)__args[RGA_GET_MIN(__argc, 2)], 1); \
+            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], \
+                               __args[RGA_GET_MIN(__argc, 1)], (int)__args[RGA_GET_MIN(__argc, 2)], 1); \
         } else if (__argc == 4){ \
-            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], __args[RGA_GET_MIN(__argc, 1)], (int)__args[RGA_GET_MIN(__argc, 2)], (int)__args[RGA_GET_MIN(__argc, 3)]); \
+            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], __args[RGA_GET_MIN(__argc, 1)], \
+                              (int)__args[RGA_GET_MIN(__argc, 2)], (int)__args[RGA_GET_MIN(__argc, 3)]); \
         } else { \
             __ret = IM_STATUS_INVALID_PARAM; \
             printf("invalid parameter\n"); \
@@ -589,7 +616,8 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         } else if (__argc == 1){ \
             __ret = imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
         } else if (__argc == 2){ \
-            __ret = imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], (int)__args[RGA_GET_MIN(__argc, 1)]); \
+            __ret = imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                                (int)__args[RGA_GET_MIN(__argc, 1)]); \
         } else { \
             __ret = IM_STATUS_INVALID_PARAM; \
             printf("invalid parameter\n"); \
@@ -729,7 +757,7 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
     ({ \
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         rga_buffer_t srcB; \
-        memset(&srcB, 0x00, sizeof(rga_buffer_t)); \
+        memset_s(&srcB, sizeof(rga_buffer_t), 0x00, sizeof(rga_buffer_t)); \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
         if (__argc == 0) { \
@@ -737,7 +765,8 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         } else if (__argc == 1){ \
             __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
         } else if (__argc == 2){ \
-            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], (int)__args[RGA_GET_MIN(__argc, 1)]); \
+            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                             (int)__args[RGA_GET_MIN(__argc, 1)]); \
         } else { \
             __ret = IM_STATUS_INVALID_PARAM; \
             printf("invalid parameter\n"); \
@@ -754,7 +783,8 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         } else if (__argc == 1){ \
             __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
         } else if (__argc == 2){ \
-            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], (int)__args[RGA_GET_MIN(__argc, 1)]); \
+            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                             (int)__args[RGA_GET_MIN(__argc, 1)]); \
         } else { \
             __ret = IM_STATUS_INVALID_PARAM; \
             printf("invalid parameter\n"); \
@@ -785,7 +815,8 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         } else if (__argc == 1){ \
             __ret = imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
         } else if (__argc == 2){ \
-            __ret = imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], (int)__args[RGA_GET_MIN(__argc, 1)]); \
+            __ret = imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                                (int)__args[RGA_GET_MIN(__argc, 1)]); \
         } else { \
             __ret = IM_STATUS_INVALID_PARAM; \
             printf("invalid parameter\n"); \

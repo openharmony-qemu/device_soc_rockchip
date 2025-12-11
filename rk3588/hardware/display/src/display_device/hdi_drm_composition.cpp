@@ -37,8 +37,8 @@ int32_t HdiDrmComposition::Init()
     DISPLAY_CHK_RETURN((mCrtc == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("crtc is null"));
     DISPLAY_CHK_RETURN((mConnector == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("connector is null"));
     DISPLAY_CHK_RETURN((mDrmDevice == nullptr), DISPLAY_FAILURE, DISPLAY_LOGE("drmDevice is null"));
-	mPrimPlanes = mDrmDevice->GetDrmPlane(mCrtc->GetPlaneMask(), DRM_PLANE_TYPE_PRIMARY);
-	mOverlayPlanes = mDrmDevice->GetDrmPlane(mCrtc->GetPlaneMask(), DRM_PLANE_TYPE_OVERLAY);
+    mPrimPlanes = mDrmDevice->GetDrmPlane(mCrtc->GetPlaneMask(), DRM_PLANE_TYPE_PRIMARY);
+    mOverlayPlanes = mDrmDevice->GetDrmPlane(mCrtc->GetPlaneMask(), DRM_PLANE_TYPE_OVERLAY);
 
     mPlanes.insert(mPlanes.end(), mPrimPlanes.begin(), mPrimPlanes.end());
     mPlanes.insert(mPlanes.end(), mOverlayPlanes.begin(), mOverlayPlanes.end());
@@ -133,8 +133,8 @@ int32_t HdiDrmComposition::ApplyPlane(HdiDrmLayer &layer,
         DISPLAY_LOGE("set the fence in prop");
         if (fenceFd >= 0) {
             ret = drmModeAtomicAddProperty(pset, drmPlane.GetId(), propId, fenceFd);
-			DISPLAY_LOGD("set the IfenceProp plane id %{public}d,	name %{public}s propId %{public}d, fenceFd %{public}d",
-						drmPlane.GetId(), drmPlane.GetName(), propId, fenceFd);
+            DISPLAY_LOGD("plane id %{public}d, name %{public}s propId %{public}d, fenceFd %{public}d",
+                drmPlane.GetId(), drmPlane.GetName(), propId, fenceFd);
             DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE, DISPLAY_LOGE("set IN_FENCE_FD failed"));
         }
     }
@@ -211,8 +211,8 @@ int32_t HdiDrmComposition::RemoveUnusePlane(drmModeAtomicReqPtr pset)
     /* Remove useless planes from the drm */
     for (uint32_t j = 0; j < mPlanes.size(); j++) {
         auto &drmPlane = mPlanes[j];
-		if ((static_cast<int>(drmPlane->GetPlaneValue()) & mCrtc->GetPlaneMask()) && drmPlane->GetPipe() == 0) {
-			DISPLAY_LOGE("no used plane %{public}s id %{public}d", drmPlane->GetName(), drmPlane->GetId());
+        if ((static_cast<int>(drmPlane->GetPlaneValue()) & mCrtc->GetPlaneMask()) && drmPlane->GetPipe() == 0) {
+            DISPLAY_LOGE("no used plane %{public}s id %{public}d", drmPlane->GetName(), drmPlane->GetId());
             ret = drmModeAtomicAddProperty(pset, drmPlane->GetId(), drmPlane->GetPropFbId(), 0);
             ret = drmModeAtomicAddProperty(pset, drmPlane->GetId(), drmPlane->GetPropFbId(), 0);
             drmPlane->UnBindPipe();
@@ -238,13 +238,6 @@ int32_t HdiDrmComposition::FindPlaneAndApply(drmModeAtomicReqPtr pset)
             if (!(static_cast<int>(drmPlane->GetPlaneValue()) & mCrtc->GetPlaneMask())) {
                 continue;
             }
-#if (defined(__aarch64__) || defined(__x86_64__))
-			DISPLAY_LOGD("use plane drmPlane->GetCrtcId() 0x%{public}x %{public}d WinType 0x%{public}lx crtc %{public}d PlaneMask 0x%{public}x",
-					drmPlane->GetCrtcId(), drmPlane->GetId(), drmPlane->GetPlaneValue(), mCrtc->GetId(), mCrtc->GetPlaneMask());
-#else
-			DISPLAY_LOGD("use plane drmPlane->GetCrtcId() 0x%{public}x %{public}d WinType 0x%{public}llx crtc %{public}d PlaneMask 0x%{public}x",
-					drmPlane->GetCrtcId(), drmPlane->GetId(), drmPlane->GetPlaneValue(), mCrtc->GetId(), mCrtc->GetPlaneMask());
-#endif
             if (drmPlane->GetCrtcId() == mCrtc->GetId() || drmPlane->GetCrtcId() == 0) {
                 ret = ApplyPlane(*layer, *hlayer, *drmPlane, pset);
                 if (ret != DISPLAY_SUCCESS) {

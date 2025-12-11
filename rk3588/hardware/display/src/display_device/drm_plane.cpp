@@ -132,12 +132,14 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
     DISPLAY_CHK_RETURN((ret != DISPLAY_SUCCESS), DISPLAY_FAILURE, DISPLAY_LOGE("cat not get pane crtc prop id"));
 
     for (auto &drmEnum : prop.enums) {
-        strcpy(mName, drmEnum.name.c_str());
+        if (strcpy_s(mName, sizeof(mName), drmEnum.name.c_str()) != EOK) {
+            DISPLAY_LOGE("Failed to copy plane name");
+        }
         mPlane_value = prop.value;
 #if (defined(__aarch64__) || defined(__x86_64__))
-		DISPLAY_LOGE("plane name %{public}s type 0x%{public}lx\n", mName, mPlane_value);
+        DISPLAY_LOGE("plane name %{public}s type 0x%{public}lx\n", mName, mPlane_value);
 #else
-		DISPLAY_LOGE("plane name %{public}s type 0x%{public}llx\n", mName, mPlane_value);
+        DISPLAY_LOGE("plane name %{public}s type 0x%{public}llx\n", mName, mPlane_value);
 #endif
         break;
     }

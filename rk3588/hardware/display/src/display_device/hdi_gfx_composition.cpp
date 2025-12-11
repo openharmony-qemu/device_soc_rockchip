@@ -122,7 +122,7 @@ int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &
         }
 
         mCompLayers.push_back(layer);
-		DISPLAY_LOGE("the layer type %{public}d", layer->GetCompositionType());
+        DISPLAY_LOGE("the layer type %{public}d", layer->GetCompositionType());
     }
     DISPLAY_LOGE("composer layers size %{public}zd", mCompLayers.size());
     return DISPLAY_SUCCESS;
@@ -204,7 +204,7 @@ int32_t HdiGfxComposition::Apply(bool modeSet)
     StartTrace(HITRACE_TAG_HDF, "HDI:DISP:Apply");
     int32_t ret;
     DISPLAY_LOGD("composer layers size %{public}zd", mCompLayers.size());
-	
+
     bool needClear = false;
     for (uint32_t i = 0; i < mCompLayers.size(); i++) {
         HdiLayer *layer = mCompLayers[i];

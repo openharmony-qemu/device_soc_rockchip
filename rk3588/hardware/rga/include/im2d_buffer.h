@@ -108,7 +108,7 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         } else if (__argc == 2){ \
             im2d_api_buffer = wrapbuffer_handle_t(handle, width, height, __args[0], __args[1], format); \
         } else { \
-            memset(&im2d_api_buffer, 0x0, sizeof(im2d_api_buffer)); \
+            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
             printf("invalid parameter\n"); \
         } \
         im2d_api_buffer; \
@@ -124,7 +124,7 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         } else if (__argc == 2){ \
             im2d_api_buffer = wrapbuffer_virtualaddr_t(vir_addr, width, height, __args[0], __args[1], format); \
         } else { \
-            memset(&im2d_api_buffer, 0x0, sizeof(im2d_api_buffer)); \
+            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
             printf("invalid parameter\n"); \
         } \
         im2d_api_buffer; \
@@ -140,7 +140,7 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         } else if (__argc == 2){ \
             im2d_api_buffer = wrapbuffer_physicaladdr_t(phy_addr, width, height, __args[0], __args[1], format); \
         } else { \
-            memset(&im2d_api_buffer, 0x0, sizeof(im2d_api_buffer)); \
+            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
             printf("invalid parameter\n"); \
         } \
         im2d_api_buffer; \
@@ -156,15 +156,18 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         } else if (__argc == 2){ \
             im2d_api_buffer = wrapbuffer_fd_t(fd, width, height, __args[0], __args[1], format); \
         } else { \
-            memset(&im2d_api_buffer, 0x0, sizeof(im2d_api_buffer)); \
+            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
             printf("invalid parameter\n"); \
         } \
         im2d_api_buffer; \
     })
 /* Symbols for define *_t functions */
-IM_C_API rga_buffer_t wrapbuffer_handle_t(rga_buffer_handle_t handle, int width, int height, int wstride, int hstride, int format);
-IM_C_API rga_buffer_t wrapbuffer_virtualaddr_t(void* vir_addr, int width, int height, int wstride, int hstride, int format);
-IM_C_API rga_buffer_t wrapbuffer_physicaladdr_t(void* phy_addr, int width, int height, int wstride, int hstride, int format);
+IM_C_API rga_buffer_t wrapbuffer_handle_t(rga_buffer_handle_t handle, int width, int height,
+                                          int wstride, int hstride, int format);
+IM_C_API rga_buffer_t wrapbuffer_virtualaddr_t(void* vir_addr, int width, int height,
+                                               int wstride, int hstride, int format);
+IM_C_API rga_buffer_t wrapbuffer_physicaladdr_t(void* phy_addr, int width, int height,
+                                                int wstride, int hstride, int format);
 IM_C_API rga_buffer_t wrapbuffer_fd_t(int fd, int width, int height, int wstride, int hstride, int format);
 
 #ifdef __cplusplus

@@ -62,15 +62,14 @@ int32_t DrmCrtc::Init(DrmDevice &drmDevice)
         DISPLAY_LOGE("Failed to get plane_mask property");
     } else {
         for (auto &drmEnum : prop.enums) {
-			for (auto &plane : drmDevice.GetPlanes()) {
-				if(!strncmp(drmEnum.name.c_str(), plane->GetName(), strlen(drmEnum.name.c_str()))
-					&& ((prop.value & 1LLU<<drmEnum.value) > 0)) {
-					mPlaneMask |= (1<<drmEnum.value);
-					plane->SetPlaneValue(1<<drmEnum.value);
-					DISPLAY_LOGD("CHENYF get plane %{public}s mPlaneMask 0x%{public}x\n", plane->GetName(), mPlaneMask);
-					break;
-				}
-
+            for (auto &plane : drmDevice.GetPlanes()) {
+                if (!strncmp(drmEnum.name.c_str(), plane->GetName(), strlen(drmEnum.name.c_str()))
+                    && ((prop.value & (1LLU << drmEnum.value)) > 0)) {
+                    mPlaneMask |= (1 << drmEnum.value);
+                    plane->SetPlaneValue(1 << drmEnum.value);
+                    DISPLAY_LOGD("CHENYF get plane %{public}s mPlaneMask 0x%{public}x\n", plane->GetName(), mPlaneMask);
+                    break;
+                }
             }
         }
     }

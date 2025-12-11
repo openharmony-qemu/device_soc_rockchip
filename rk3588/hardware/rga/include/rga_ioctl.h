@@ -133,19 +133,19 @@ enum {
 };
 
 enum rga_alpha_blend_mode {
-	RGA_ALPHA_NONE			= 0,
-	RGA_ALPHA_BLEND_SRC,
-	RGA_ALPHA_BLEND_DST,
-	RGA_ALPHA_BLEND_SRC_OVER,
-	RGA_ALPHA_BLEND_DST_OVER,
-	RGA_ALPHA_BLEND_SRC_IN,
-	RGA_ALPHA_BLEND_DST_IN,
-	RGA_ALPHA_BLEND_SRC_OUT,
-	RGA_ALPHA_BLEND_DST_OUT,
-	RGA_ALPHA_BLEND_SRC_ATOP,
-	RGA_ALPHA_BLEND_DST_ATOP,
-	RGA_ALPHA_BLEND_XOR,
-	RGA_ALPHA_BLEND_CLEAR,
+    RGA_ALPHA_NONE			= 0,
+    RGA_ALPHA_BLEND_SRC,
+    RGA_ALPHA_BLEND_DST,
+    RGA_ALPHA_BLEND_SRC_OVER,
+    RGA_ALPHA_BLEND_DST_OVER,
+    RGA_ALPHA_BLEND_SRC_IN,
+    RGA_ALPHA_BLEND_DST_IN,
+    RGA_ALPHA_BLEND_SRC_OUT,
+    RGA_ALPHA_BLEND_DST_OUT,
+    RGA_ALPHA_BLEND_SRC_ATOP,
+    RGA_ALPHA_BLEND_DST_ATOP,
+    RGA_ALPHA_BLEND_XOR,
+    RGA_ALPHA_BLEND_CLEAR,
 };
 
 typedef struct rga_img_info_t {
@@ -236,13 +236,13 @@ typedef struct full_csc_t {
 } full_csc_t;
 
 struct rga_csc_range {
-	uint16_t max;
-	uint16_t min;
+    uint16_t max;
+    uint16_t min;
 };
 
 struct rga_csc_clip {
-	struct rga_csc_range y;
-	struct rga_csc_range uv;
+    struct rga_csc_range y;
+    struct rga_csc_range uv;
 };
 
 typedef struct rga_mosaic_info_ioctl {
@@ -393,14 +393,14 @@ struct rga_buffer_pool {
 };
 
 struct rga_feature {
-    uint32_t global_alpha_en:1;
-    uint32_t full_csc_clip_en:1;
-    uint32_t user_close_fence:1;
+    uint32_t global_alpha_en : 1;
+    uint32_t full_csc_clip_en : 1;
+    uint32_t user_close_fence : 1;
 };
 
 struct rga_interp {
-    uint8_t horiz:4;
-    uint8_t verti:4;
+    uint8_t horiz : 4;
+    uint8_t verti : 4;
 };
 
 struct rga_rgba5551_alpha {

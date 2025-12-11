@@ -17,6 +17,7 @@
 #define DRM_PLANE_H
 #include <cinttypes>
 #include <string>
+#include "securec.h"
 #include <vector>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -176,17 +177,17 @@ public:
         return mPipe;
     }
 
-	char *GetName()
-	{
-		return mName;
-	}
-	uint64_t GetPlaneValue()
-	{
-		return mPlane_value;
-	}
-	void SetPlaneValue(uint64_t value)
+    char *GetName()
     {
-		mPlane_value = value;
+        return mName;
+    }
+    uint64_t GetPlaneValue()
+    {
+        return mPlane_value;
+    }
+    void SetPlaneValue(uint64_t value)
+    {
+        mPlane_value = value;
     }
 private:
     uint32_t mId = 0;
@@ -195,8 +196,8 @@ private:
     uint32_t mPropFbId = 0;
     uint32_t mPropFenceInId = 0;
     uint32_t mPropCrtcId = 0;
-	uint64_t mPlane_value;
-	char mName[100];
+    uint64_t mPlane_value;
+    char mName[100];
 
     uint32_t mPropCrtc_xId = 0;
     uint32_t mPropCrtc_yId = 0;

@@ -38,11 +38,11 @@
 #define RGA_API_FULL_VERSION "rga_api version " RGA_API_VERSION RGA_API_SUFFIX
 
 /* For header file version verification */
-#define RGA_CURRENT_API_VERSION (\
+#define RGA_CURRENT_API_VERSION ( \
     (RGA_API_MAJOR_VERSION & 0xff) << 24 | \
     (RGA_API_MINOR_VERSION & 0xff) << 16 | \
     (RGA_API_REVISION_VERSION & 0xff) << 8 | \
-    (RGA_API_BUILD_VERSION & 0xff)\
+    (RGA_API_BUILD_VERSION & 0xff) \
     )
 #define RGA_CURRENT_API_HEADER_VERSION RGA_CURRENT_API_VERSION
 

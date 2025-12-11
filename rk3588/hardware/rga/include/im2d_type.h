@@ -466,8 +466,8 @@ typedef struct im_handle_param {
     uint32_t format;
 } im_handle_param_t;
 
-#define IM_INTERP_HORIZ(x) ( ((x) & IM_INTERP_MASK) << IM_INTERP_HORIZ_SHIFT | IM_INTERP_HORIZ_FLAG )
-#define IM_INTERP_VERTI(x) ( ((x) & IM_INTERP_MASK) << IM_INTERP_VERTI_SHIFT | IM_INTERP_VERTI_FLAG )
-#define IM_INTERP(h,v) ( IM_INTERP_HORIZ(h) | IM_INTERP_VERTI(v) )
+#define IM_INTERP_HORIZ(x) (((x) & IM_INTERP_MASK) << IM_INTERP_HORIZ_SHIFT | IM_INTERP_HORIZ_FLAG)
+#define IM_INTERP_VERTI(x) (((x) & IM_INTERP_MASK) << IM_INTERP_VERTI_SHIFT | IM_INTERP_VERTI_FLAG)
+#define IM_INTERP(h, v) (IM_INTERP_HORIZ(h) | IM_INTERP_VERTI(v))
 
 #endif /* _RGA_IM2D_TYPE_H_ */
