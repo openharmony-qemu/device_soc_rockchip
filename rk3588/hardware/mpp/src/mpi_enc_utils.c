@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,15 +35,15 @@
 #define TEMPORAL_ID_2 2
 #define TEMPORAL_ID_3 3
 
-#define REF_NUM_0  0
-#define REF_NUM_1  1
-#define REF_NUM_2  2
-#define REF_NUM_3  3
-#define REF_NUM_4  4
-#define REF_NUM_5  5
-#define REF_NUM_6  6
-#define REF_NUM_7  7
-#define REF_NUM_8  8
+#define REF_NUM_0 0
+#define REF_NUM_1 1
+#define REF_NUM_2 2
+#define REF_NUM_3 3
+#define REF_NUM_4 4
+#define REF_NUM_5 5
+#define REF_NUM_6 6
+#define REF_NUM_7 7
+#define REF_NUM_8 8
 
 #define ST_COUNT_3 3
 #define ST_COUNT_5 5
@@ -69,7 +69,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
     }
 
     switch (gop_mode) {
-        case GOP_MODE_TSVC4 : {
+        case GOP_MODE_TSVC4: {
             // tsvc4
             //      /-> P1      /-> P3        /-> P5      /-> P7
             //     /           /             /           /
@@ -81,71 +81,70 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             lt_cnt = 1;
 
             /* set 8 frame lt-ref gap */
-            lt_ref[REF_NUM_0].lt_idx        = 0;
-            lt_ref[REF_NUM_0].temporal_id   = TEMPORAL_ID_0;
-            lt_ref[REF_NUM_0].ref_mode      = REF_TO_PREV_LT_REF;
-            lt_ref[REF_NUM_0].lt_gap        = 8; // 8:set 8 frame
-            lt_ref[REF_NUM_0].lt_delay      = 0;
+            lt_ref[REF_NUM_0].lt_idx = 0;
+            lt_ref[REF_NUM_0].temporal_id = TEMPORAL_ID_0;
+            lt_ref[REF_NUM_0].ref_mode = REF_TO_PREV_LT_REF;
+            lt_ref[REF_NUM_0].lt_gap = 8; // 8:set 8 frame
+            lt_ref[REF_NUM_0].lt_delay = 0;
 
             st_cnt = REF_COUNT_9;
             /* set tsvc4 st-ref struct */
             /* st 0 layer 0 - ref */
-            st_ref[REF_NUM_0].is_non_ref    = 0;
-            st_ref[REF_NUM_0].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_0].ref_mode      = REF_TO_TEMPORAL_LAYER;
-            st_ref[REF_NUM_0].ref_arg       = 0;
-            st_ref[REF_NUM_0].repeat        = 0;
+            st_ref[REF_NUM_0].is_non_ref = 0;
+            st_ref[REF_NUM_0].temporal_id = TEMPORAL_ID_0;
+            st_ref[REF_NUM_0].ref_mode = REF_TO_TEMPORAL_LAYER;
+            st_ref[REF_NUM_0].ref_arg = 0;
+            st_ref[REF_NUM_0].repeat = 0;
             /* st 1 layer 3 - non-ref */
-            st_ref[REF_NUM_1].is_non_ref    = 1;
-            st_ref[REF_NUM_1].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_1].ref_arg       = 0;
-            st_ref[REF_NUM_1].repeat        = 0;
+            st_ref[REF_NUM_1].is_non_ref = 1;
+            st_ref[REF_NUM_1].temporal_id = TEMPORAL_ID_3;
+            st_ref[REF_NUM_1].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_1].ref_arg = 0;
+            st_ref[REF_NUM_1].repeat = 0;
             /* st 2 layer 2 - ref */
-            st_ref[REF_NUM_2].is_non_ref    = 0;
-            st_ref[REF_NUM_2].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_2].ref_arg       = 0;
-            st_ref[REF_NUM_2].repeat        = 0;
+            st_ref[REF_NUM_2].is_non_ref = 0;
+            st_ref[REF_NUM_2].temporal_id = TEMPORAL_ID_2;
+            st_ref[REF_NUM_2].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_2].ref_arg = 0;
+            st_ref[REF_NUM_2].repeat = 0;
             /* st 3 layer 3 - non-ref */
-            st_ref[REF_NUM_3].is_non_ref    = 1;
-            st_ref[REF_NUM_3].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_3].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_3].ref_arg       = 0;
-            st_ref[REF_NUM_3].repeat        = 0;
+            st_ref[REF_NUM_3].is_non_ref = 1;
+            st_ref[REF_NUM_3].temporal_id = TEMPORAL_ID_3;
+            st_ref[REF_NUM_3].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_3].ref_arg = 0;
+            st_ref[REF_NUM_3].repeat = 0;
             /* st 4 layer 1 - ref */
-            st_ref[REF_NUM_4].is_non_ref    = 0;
-            st_ref[REF_NUM_4].temporal_id   = TEMPORAL_ID_1;
-            st_ref[REF_NUM_4].ref_mode      = REF_TO_PREV_LT_REF;
-            st_ref[REF_NUM_4].ref_arg       = 0;
-            st_ref[REF_NUM_4].repeat        = 0;
+            st_ref[REF_NUM_4].is_non_ref = 0;
+            st_ref[REF_NUM_4].temporal_id = TEMPORAL_ID_1;
+            st_ref[REF_NUM_4].ref_mode = REF_TO_PREV_LT_REF;
+            st_ref[REF_NUM_4].ref_arg = 0;
+            st_ref[REF_NUM_4].repeat = 0;
             /* st 5 layer 3 - non-ref */
-            st_ref[REF_NUM_5].is_non_ref    = 1;
-            st_ref[REF_NUM_5].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_5].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_5].ref_arg       = 0;
-            st_ref[REF_NUM_5].repeat        = 0;
+            st_ref[REF_NUM_5].is_non_ref = 1;
+            st_ref[REF_NUM_5].temporal_id = TEMPORAL_ID_3;
+            st_ref[REF_NUM_5].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_5].ref_arg = 0;
+            st_ref[REF_NUM_5].repeat = 0;
             /* st 6 layer 2 - ref */
-            st_ref[REF_NUM_6].is_non_ref    = 0;
-            st_ref[REF_NUM_6].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_6].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_6].ref_arg       = 0;
-            st_ref[REF_NUM_6].repeat        = 0;
+            st_ref[REF_NUM_6].is_non_ref = 0;
+            st_ref[REF_NUM_6].temporal_id = TEMPORAL_ID_2;
+            st_ref[REF_NUM_6].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_6].ref_arg = 0;
+            st_ref[REF_NUM_6].repeat = 0;
             /* st 7 layer 3 - non-ref */
-            st_ref[REF_NUM_7].is_non_ref    = 1;
-            st_ref[REF_NUM_7].temporal_id   = TEMPORAL_ID_3;
-            st_ref[REF_NUM_7].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_7].ref_arg       = 0;
-            st_ref[REF_NUM_7].repeat        = 0;
+            st_ref[REF_NUM_7].is_non_ref = 1;
+            st_ref[REF_NUM_7].temporal_id = TEMPORAL_ID_3;
+            st_ref[REF_NUM_7].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_7].ref_arg = 0;
+            st_ref[REF_NUM_7].repeat = 0;
             /* st 8 layer 0 - ref */
-            st_ref[REF_NUM_8].is_non_ref    = 0;
-            st_ref[REF_NUM_8].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_8].ref_mode      = REF_TO_TEMPORAL_LAYER;
-            st_ref[REF_NUM_8].ref_arg       = 0;
-            st_ref[REF_NUM_8].repeat        = 0;
-        }
-            break;
-        case GOP_MODE_TSVC3 : {
+            st_ref[REF_NUM_8].is_non_ref = 0;
+            st_ref[REF_NUM_8].temporal_id = TEMPORAL_ID_0;
+            st_ref[REF_NUM_8].ref_mode = REF_TO_TEMPORAL_LAYER;
+            st_ref[REF_NUM_8].ref_arg = 0;
+            st_ref[REF_NUM_8].repeat = 0;
+        } break;
+        case GOP_MODE_TSVC3: {
             // tsvc3
             //     /-> P1      /-> P3
             //    /           /
@@ -157,38 +156,37 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             st_cnt = ST_COUNT_5;
             /* set tsvc4 st-ref struct */
             /* st 0 layer 0 - ref */
-            st_ref[REF_NUM_0].is_non_ref    = 0;
-            st_ref[REF_NUM_0].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_0].ref_mode      = REF_TO_TEMPORAL_LAYER;
-            st_ref[REF_NUM_0].ref_arg       = 0;
-            st_ref[REF_NUM_0].repeat        = 0;
+            st_ref[REF_NUM_0].is_non_ref = 0;
+            st_ref[REF_NUM_0].temporal_id = TEMPORAL_ID_0;
+            st_ref[REF_NUM_0].ref_mode = REF_TO_TEMPORAL_LAYER;
+            st_ref[REF_NUM_0].ref_arg = 0;
+            st_ref[REF_NUM_0].repeat = 0;
             /* st 1 layer 2 - non-ref */
-            st_ref[REF_NUM_1].is_non_ref    = 1;
-            st_ref[REF_NUM_1].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_1].ref_arg       = 0;
-            st_ref[REF_NUM_1].repeat        = 0;
+            st_ref[REF_NUM_1].is_non_ref = 1;
+            st_ref[REF_NUM_1].temporal_id = TEMPORAL_ID_2;
+            st_ref[REF_NUM_1].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_1].ref_arg = 0;
+            st_ref[REF_NUM_1].repeat = 0;
             /* st 2 layer 1 - ref */
-            st_ref[REF_NUM_2].is_non_ref    = 0;
-            st_ref[REF_NUM_2].temporal_id   = TEMPORAL_ID_1;
-            st_ref[REF_NUM_2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_2].ref_arg       = 0;
-            st_ref[REF_NUM_2].repeat        = 0;
+            st_ref[REF_NUM_2].is_non_ref = 0;
+            st_ref[REF_NUM_2].temporal_id = TEMPORAL_ID_1;
+            st_ref[REF_NUM_2].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_2].ref_arg = 0;
+            st_ref[REF_NUM_2].repeat = 0;
             /* st 3 layer 2 - non-ref */
-            st_ref[REF_NUM_3].is_non_ref    = 1;
-            st_ref[REF_NUM_3].temporal_id   = TEMPORAL_ID_2;
-            st_ref[REF_NUM_3].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_3].ref_arg       = 0;
-            st_ref[REF_NUM_3].repeat        = 0;
+            st_ref[REF_NUM_3].is_non_ref = 1;
+            st_ref[REF_NUM_3].temporal_id = TEMPORAL_ID_2;
+            st_ref[REF_NUM_3].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_3].ref_arg = 0;
+            st_ref[REF_NUM_3].repeat = 0;
             /* st 4 layer 0 - ref */
-            st_ref[REF_NUM_4].is_non_ref    = 0;
-            st_ref[REF_NUM_4].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_4].ref_mode      = REF_TO_TEMPORAL_LAYER;
-            st_ref[REF_NUM_4].ref_arg       = 0;
-            st_ref[REF_NUM_4].repeat        = 0;
-        }
-            break;
-        case GOP_MODE_TSVC2 : {
+            st_ref[REF_NUM_4].is_non_ref = 0;
+            st_ref[REF_NUM_4].temporal_id = TEMPORAL_ID_0;
+            st_ref[REF_NUM_4].ref_mode = REF_TO_TEMPORAL_LAYER;
+            st_ref[REF_NUM_4].ref_arg = 0;
+            st_ref[REF_NUM_4].repeat = 0;
+        } break;
+        case GOP_MODE_TSVC2: {
             // tsvc2
             //   /-> P1
             //  /
@@ -198,40 +196,38 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             st_cnt = ST_COUNT_3;
             /* set tsvc4 st-ref struct */
             /* st 0 layer 0 - ref */
-            st_ref[REF_NUM_0].is_non_ref    = 0;
-            st_ref[REF_NUM_0].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_0].ref_mode      = REF_TO_TEMPORAL_LAYER;
-            st_ref[REF_NUM_0].ref_arg       = 0;
-            st_ref[REF_NUM_0].repeat        = 0;
+            st_ref[REF_NUM_0].is_non_ref = 0;
+            st_ref[REF_NUM_0].temporal_id = TEMPORAL_ID_0;
+            st_ref[REF_NUM_0].ref_mode = REF_TO_TEMPORAL_LAYER;
+            st_ref[REF_NUM_0].ref_arg = 0;
+            st_ref[REF_NUM_0].repeat = 0;
             /* st 1 layer 2 - non-ref */
-            st_ref[REF_NUM_1].is_non_ref    = 1;
-            st_ref[REF_NUM_1].temporal_id   = TEMPORAL_ID_1;
-            st_ref[REF_NUM_1].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_1].ref_arg       = 0;
-            st_ref[REF_NUM_1].repeat        = 0;
+            st_ref[REF_NUM_1].is_non_ref = 1;
+            st_ref[REF_NUM_1].temporal_id = TEMPORAL_ID_1;
+            st_ref[REF_NUM_1].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_1].ref_arg = 0;
+            st_ref[REF_NUM_1].repeat = 0;
             /* st 2 layer 1 - ref */
-            st_ref[REF_NUM_2].is_non_ref    = 0;
-            st_ref[REF_NUM_2].temporal_id   = TEMPORAL_ID_0;
-            st_ref[REF_NUM_2].ref_mode      = REF_MODE_TO_PREV_REF_FRM;
-            st_ref[REF_NUM_2].ref_arg       = 0;
-            st_ref[REF_NUM_2].repeat        = 0;
-        }
-            break;
-        default : {
+            st_ref[REF_NUM_2].is_non_ref = 0;
+            st_ref[REF_NUM_2].temporal_id = TEMPORAL_ID_0;
+            st_ref[REF_NUM_2].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+            st_ref[REF_NUM_2].ref_arg = 0;
+            st_ref[REF_NUM_2].repeat = 0;
+        } break;
+        default: {
             mpp_err_f("unsupport gop mode %d\n", gop_mode);
-        }
-            break;
+        } break;
     }
 
     if (lt_cnt || st_cnt) {
         ret = mpp_enc_ref_cfg_set_cfg_cnt(ref, lt_cnt, st_cnt);
 
-        if (lt_cnt)
+        if (lt_cnt) {
             ret = mpp_enc_ref_cfg_add_lt_cfg(ref, lt_cnt, lt_ref);
-
-        if (st_cnt)
+        }
+        if (st_cnt) {
             ret = mpp_enc_ref_cfg_add_st_cfg(ref, st_cnt, st_ref);
-
+        }
         /* check and get dpb size */
         ret = mpp_enc_ref_cfg_check(ref);
     }
@@ -263,37 +259,37 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     ret = mpp_enc_ref_cfg_set_cfg_cnt(ref, lt_cnt, st_cnt);
 
     /* set 8 frame lt-ref gap */
-    lt_ref[0].lt_idx        = 0;
-    lt_ref[0].temporal_id   = 0;
-    lt_ref[0].ref_mode      = REF_TO_PREV_LT_REF;
-    lt_ref[0].lt_gap        = gop_len;
-    lt_ref[0].lt_delay      = 0;
+    lt_ref[0].lt_idx = 0;
+    lt_ref[0].temporal_id = 0;
+    lt_ref[0].ref_mode = REF_TO_PREV_LT_REF;
+    lt_ref[0].lt_gap = gop_len;
+    lt_ref[0].lt_delay = 0;
 
     mpp_enc_ref_cfg_add_lt_cfg(ref, 1, lt_ref);
 
     /* st 0 layer 0 - ref */
-    st_ref[pos].is_non_ref  = 0;
+    st_ref[pos].is_non_ref = 0;
     st_ref[pos].temporal_id = 0;
-    st_ref[pos].ref_mode    = REF_TO_PREV_INTRA;
-    st_ref[pos].ref_arg     = 0;
-    st_ref[pos].repeat      = 0;
+    st_ref[pos].ref_mode = REF_TO_PREV_INTRA;
+    st_ref[pos].ref_arg = 0;
+    st_ref[pos].repeat = 0;
     pos++;
 
     /* st 1 layer 1 - non-ref */
     if (vi_len > 1) {
-        st_ref[pos].is_non_ref  = 0;
+        st_ref[pos].is_non_ref = 0;
         st_ref[pos].temporal_id = 1;
-        st_ref[pos].ref_mode    = REF_MODE_TO_PREV_REF_FRM;
-        st_ref[pos].ref_arg     = 0;
-        st_ref[pos].repeat      = vi_len - MIN_REPEAT;
+        st_ref[pos].ref_mode = REF_MODE_TO_PREV_REF_FRM;
+        st_ref[pos].ref_arg = 0;
+        st_ref[pos].repeat = vi_len - MIN_REPEAT;
         pos++;
     }
 
-    st_ref[pos].is_non_ref  = 0;
+    st_ref[pos].is_non_ref = 0;
     st_ref[pos].temporal_id = 0;
-    st_ref[pos].ref_mode    = REF_TO_PREV_INTRA;
-    st_ref[pos].ref_arg     = 0;
-    st_ref[pos].repeat      = 0;
+    st_ref[pos].ref_mode = REF_TO_PREV_INTRA;
+    st_ref[pos].ref_arg = 0;
+    st_ref[pos].repeat = 0;
     pos++;
 
     mpp_enc_ref_cfg_add_st_cfg(ref, pos, st_ref);
@@ -312,7 +308,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     MpiEncTestData *p = NULL;
     MPP_RET ret = 0;
     const int YUV420_CHANNEL_RATIO = 3 / 2;
-    #define MPP_ALIGNMENT_SIZE          64
+#define MPP_ALIGNMENT_SIZE 64
     if (!data || !cmd) {
         mpp_err_f("invalid input data %p cmd %p\n", data, cmd);
         return MPP_ERR_NULL_PTR;
@@ -327,40 +323,40 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     }
 
     // get paramter from cmd
-    p->width        = cmd->width;
-    p->height       = cmd->height;
-    p->hor_stride   = MPP_ALIGN(cmd->width, 16); // 16:hor_stride
-    p->ver_stride   = MPP_ALIGN(cmd->height, 16); // 16:ver_stride
-    p->fmt          = cmd->format;
-    p->type         = cmd->type;
+    p->width = cmd->width;
+    p->height = cmd->height;
+    p->hor_stride = MPP_ALIGN(cmd->width, 16);  // 16:hor_stride
+    p->ver_stride = MPP_ALIGN(cmd->height, 16); // 16:ver_stride
+    p->fmt = cmd->format;
+    p->type = cmd->type;
 
     // update resource parameter
     switch (p->fmt & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420P: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) * MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
-        }
-            break;
+            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) *
+                MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
+        } break;
 
-        case MPP_FMT_YUV422_YUYV :
-        case MPP_FMT_YUV422_YVYU :
-        case MPP_FMT_YUV422_UYVY :
-        case MPP_FMT_YUV422_VYUY :
-        case MPP_FMT_YUV422P :
-        case MPP_FMT_YUV422SP :
-        case MPP_FMT_RGB444 :
-        case MPP_FMT_BGR444 :
-        case MPP_FMT_RGB555 :
-        case MPP_FMT_BGR555 :
-        case MPP_FMT_RGB565 :
-        case MPP_FMT_BGR565 : {
-            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) * MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
-        }
-            break;
+        case MPP_FMT_YUV422_YUYV:
+        case MPP_FMT_YUV422_YVYU:
+        case MPP_FMT_YUV422_UYVY:
+        case MPP_FMT_YUV422_VYUY:
+        case MPP_FMT_YUV422P:
+        case MPP_FMT_YUV422SP:
+        case MPP_FMT_RGB444:
+        case MPP_FMT_BGR444:
+        case MPP_FMT_RGB555:
+        case MPP_FMT_BGR555:
+        case MPP_FMT_RGB565:
+        case MPP_FMT_BGR565: {
+            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) *
+                MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
+        } break;
         default: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) * MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
-        }
-            break;
+            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) *
+                MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
+        } break;
     }
     *data = p;
     return ret;
@@ -389,9 +385,9 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     MppCtx ctx;
     MppEncCfg cfg;
 
-    if (p == NULL)
+    if (p == NULL) {
         return MPP_ERR_NULL_PTR;
-
+    }
     mpi = p->mpi;
     ctx = p->ctx;
     cfg = p->cfg;
@@ -438,18 +434,22 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     const RK_U32 GOP_MODE_THRESHOLD = 4;
 
     /* setup default parameter */
-    if (p->fps_in_den == 0)
+    if (p->fps_in_den == 0) {
         p->fps_in_den = DEFAULT_FPS_DEN;
-    if (p->fps_in_num == 0)
+    }
+    if (p->fps_in_num == 0) {
         p->fps_in_num = DEFAULT_FPS_NUM;
-    if (p->fps_out_den == 0)
+    }
+    if (p->fps_out_den == 0) {
         p->fps_out_den = DEFAULT_FPS_DEN;
-    if (p->fps_out_num == 0)
+    }
+    if (p->fps_out_num == 0) {
         p->fps_out_num = DEFAULT_FPS_NUM;
+    }
 
-    if (!p->bps)
+    if (!p->bps) {
         p->bps = p->width * p->height / DEFAULT_BPS_CALC_FACTOR * (p->fps_out_num / p->fps_out_den);
-
+    }
     mpp_enc_cfg_set_s32(cfg, "prep:width", p->width);
     mpp_enc_cfg_set_s32(cfg, "prep:height", p->height);
     mpp_enc_cfg_set_s32(cfg, "prep:hor_stride", p->hor_stride);
@@ -469,76 +469,68 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
 
     /* drop frame or not when bitrate overflow */
     mpp_enc_cfg_set_u32(cfg, "rc:drop_mode", MPP_ENC_RC_DROP_FRM_DISABLED);
-    mpp_enc_cfg_set_u32(cfg, "rc:drop_thd", RC_DROP_THRESHOLD_PERCENT);        /* 20% of max bps */
-    mpp_enc_cfg_set_u32(cfg, "rc:drop_gap", RC_DROP_GAP);         /* Do not continuous drop frame */
+    mpp_enc_cfg_set_u32(cfg, "rc:drop_thd", RC_DROP_THRESHOLD_PERCENT); /* 20% of max bps */
+    mpp_enc_cfg_set_u32(cfg, "rc:drop_gap", RC_DROP_GAP);               /* Do not continuous drop frame */
 
     /* setup bitrate for different rc_mode */
     mpp_enc_cfg_set_s32(cfg, "rc:bps_target", p->bps);
     switch (p->rc_mode) {
-        case MPP_ENC_RC_MODE_FIXQP : {
+        case MPP_ENC_RC_MODE_FIXQP: {
             /* do not setup bitrate on FIXQP mode */
-        }
-            break;
-        case MPP_ENC_RC_MODE_CBR : {
+        } break;
+        case MPP_ENC_RC_MODE_CBR: {
             /* CBR mode has narrow bound */
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : 
-                               p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : 
-                               p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
-        }
-            break;
-        case MPP_ENC_RC_MODE_VBR :
-        case MPP_ENC_RC_MODE_AVBR : {
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_max",
+                p->bps_max ? p->bps_max : p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_min",
+                p->bps_min ? p->bps_min : p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
+        } break;
+        case MPP_ENC_RC_MODE_VBR:
+        case MPP_ENC_RC_MODE_AVBR: {
             /* VBR mode has wide bound */
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : 
-                               p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : 
-                               p->bps * BPS_MIN_VBR_FACTOR_NUMERATOR / BPS_MIN_VBR_FACTOR_DENOMINATOR);
-        }
-            break;
-        default : {
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_max",
+                p->bps_max ? p->bps_max : p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_min",
+                p->bps_min ? p->bps_min : p->bps * BPS_MIN_VBR_FACTOR_NUMERATOR / BPS_MIN_VBR_FACTOR_DENOMINATOR);
+        } break;
+        default: {
             /* default use CBR mode */
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_max", p->bps_max ? p->bps_max : 
-                               p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
-            mpp_enc_cfg_set_s32(cfg, "rc:bps_min", p->bps_min ? p->bps_min : 
-                               p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
-        }
-            break;
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_max",
+                p->bps_max ? p->bps_max : p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
+            mpp_enc_cfg_set_s32(cfg, "rc:bps_min",
+                p->bps_min ? p->bps_min : p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
+        } break;
     }
 
     /* setup qp for different codec and rc_mode */
     switch (p->type) {
-        case MPP_VIDEO_CodingAVC :
-        case MPP_VIDEO_CodingHEVC : {
+        case MPP_VIDEO_CodingAVC:
+        case MPP_VIDEO_CodingHEVC: {
             switch (p->rc_mode) {
-                case MPP_ENC_RC_MODE_FIXQP : {
+                case MPP_ENC_RC_MODE_FIXQP: {
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_init", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_max", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_min", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", RC_QP_IP);
-                }
-                    break;
-                case MPP_ENC_RC_MODE_CBR :
-                case MPP_ENC_RC_MODE_VBR :
-                case MPP_ENC_RC_MODE_AVBR : {
+                } break;
+                case MPP_ENC_RC_MODE_CBR:
+                case MPP_ENC_RC_MODE_VBR:
+                case MPP_ENC_RC_MODE_AVBR: {
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_init", RC_QP_INIT);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_max", RC_QP_MAX);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_min", RC_QP_MIN);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", RC_QP_MAX_I);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", RC_QP_MIN_I);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", RC_QP_IP);
-                }
-                    break;
-                default : {
+                } break;
+                default: {
                     mpp_err_f("unsupport encoder rc mode %d\n", p->rc_mode);
-                }
-                    break;
+                } break;
             }
-        }
-            break;
-        case MPP_VIDEO_CodingVP8 : {
+        } break;
+        case MPP_VIDEO_CodingVP8: {
             /* vp8 only setup base qp range */
             mpp_enc_cfg_set_s32(cfg, "rc:qp_init", VP8_QP_INIT);
             mpp_enc_cfg_set_s32(cfg, "rc:qp_max", VP8_QP_MAX);
@@ -546,54 +538,48 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", VP8_QP_MAX_I);
             mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", VP8_QP_MIN_I);
             mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", VP8_QP_IP);
-        }
-            break;
-        case MPP_VIDEO_CodingMJPEG : {
+        } break;
+        case MPP_VIDEO_CodingMJPEG: {
             /* jpeg use special codec config to control qtable */
             mpp_enc_cfg_set_s32(cfg, "jpeg:q_factor", JPEG_Q_FACTOR);
             mpp_enc_cfg_set_s32(cfg, "jpeg:qf_max", JPEG_QF_MAX);
             mpp_enc_cfg_set_s32(cfg, "jpeg:qf_min", JPEG_QF_MIN);
-        }
-            break;
-        default : {
-        }
-            break;
+        } break;
+        default: {
+        } break;
     }
 
     /* setup codec  */
     mpp_enc_cfg_set_s32(cfg, "codec:type", p->type);
     switch (p->type) {
-        case MPP_VIDEO_CodingAVC : {
+        case MPP_VIDEO_CodingAVC: {
             /*
-            * H.264 profile_idc parameter
-            * 66  - Baseline profile
-            * 77  - Main profile
-            * 100 - High profile
-            */
+             * H.264 profile_idc parameter
+             * 66  - Baseline profile
+             * 77  - Main profile
+             * 100 - High profile
+             */
             mpp_enc_cfg_set_s32(cfg, "h264:profile", H264_PROFILE_HIGH);
             /*
-            * H.264 level_idc parameter
-            * 10 / 11 / 12 / 13    - qcif@15fps / cif@7.5fps / cif@15fps / cif@30fps
-            * 20 / 21 / 22         - cif@30fps / half-D1@@25fps / D1@12.5fps
-            * 30 / 31 / 32         - D1@25fps / 720p@30fps / 720p@60fps
-            * 40 / 41 / 42         - 1080p@30fps / 1080p@30fps / 1080p@60fps
-            * 50 / 51 / 52         - 4K@30fps
-            */
+             * H.264 level_idc parameter
+             * 10 / 11 / 12 / 13    - qcif@15fps / cif@7.5fps / cif@15fps / cif@30fps
+             * 20 / 21 / 22         - cif@30fps / half-D1@@25fps / D1@12.5fps
+             * 30 / 31 / 32         - D1@25fps / 720p@30fps / 720p@60fps
+             * 40 / 41 / 42         - 1080p@30fps / 1080p@30fps / 1080p@60fps
+             * 50 / 51 / 52         - 4K@30fps
+             */
             mpp_enc_cfg_set_s32(cfg, "h264:level", H264_LEVEL_40);
             mpp_enc_cfg_set_s32(cfg, "h264:cabac_en", H264_CABAC_ENABLED);
             mpp_enc_cfg_set_s32(cfg, "h264:cabac_idc", H264_CABAC_IDC);
             mpp_enc_cfg_set_s32(cfg, "h264:trans8x8", H264_TRANS8x8_ENABLED);
-        }
-            break;
-        case MPP_VIDEO_CodingHEVC :
-        case MPP_VIDEO_CodingMJPEG :
-        case MPP_VIDEO_CodingVP8 : {
-        }
-            break;
-        default : {
+        } break;
+        case MPP_VIDEO_CodingHEVC:
+        case MPP_VIDEO_CodingMJPEG:
+        case MPP_VIDEO_CodingVP8: {
+        } break;
+        default: {
             mpp_err_f("unsupport encoder coding type %d\n", p->type);
-        }
-            break;
+        } break;
     }
 
     p->split_mode = 0;
@@ -889,9 +875,9 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
     *buf_size = len;
 
     ret = MPP_OK;
-    if (cam_buf)
+    if (cam_buf) {
         mpp_buffer_put(cam_buf);
-
+    }
     mpp_packet_deinit(&packet);
     return ret;
 }
@@ -933,8 +919,7 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
         return NULL;
     }
 
-    mpp_log("%p mpi_enc_test encoder test start w %d h %d type %d\n",
-            p->ctx, p->width, p->height, p->type);
+    mpp_log("%p mpi_enc_test encoder test start w %d h %d type %d\n", p->ctx, p->width, p->height, p->type);
 
     ret = p->mpi->control(p->ctx, MPP_SET_OUTPUT_TIMEOUT, &timeout);
     if (MPP_OK != ret) {

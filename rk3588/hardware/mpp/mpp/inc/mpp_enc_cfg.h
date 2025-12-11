@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,26 +29,26 @@
  * For normal user rc and prep config are enough.
  */
 typedef struct MppEncCfgSet_t {
-    MppEncBaseCfg       base;
+    MppEncBaseCfg base;
 
     // esential config
-    MppEncPrepCfg       prep;
-    MppEncRcCfg         rc;
+    MppEncPrepCfg prep;
+    MppEncRcCfg rc;
 
     // hardware related config
-    MppEncHwCfg         hw;
+    MppEncHwCfg hw;
 
     // codec detail config
-    MppEncCodecCfg      codec;
+    MppEncCodecCfg codec;
 
-    MppEncSliceSplit    split;
-    MppEncRefCfg        ref_cfg;
-    MppEncROICfg        roi;
-    MppEncOSDPltCfg     plt_cfg;
-    MppEncOSDPlt        plt_data;
+    MppEncSliceSplit split;
+    MppEncRefCfg ref_cfg;
+    MppEncROICfg roi;
+    MppEncOSDPltCfg plt_cfg;
+    MppEncOSDPlt plt_data;
 
     // quality fine tuning config
-    MppEncFineTuneCfg   tune;
+    MppEncFineTuneCfg tune;
 } MppEncCfgSet;
 
-#endif /*__MPP_ENC_CFG_H__*/
+#endif /* __MPP_ENC_CFG_H__ */

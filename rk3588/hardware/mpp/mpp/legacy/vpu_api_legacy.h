@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,20 +25,20 @@
 
 #include "vpu_api_mlvec.h"
 
-#define OMX_BUFFERFLAG_EOS              0x00000001
+#define OMX_BUFFERFLAG_EOS 0x00000001
 
-#define VPU_API_DBG_FUNCTION            (0x00000001)
-#define VPU_API_DBG_INPUT               (0x00000010)
-#define VPU_API_DBG_OUTPUT              (0x00000020)
-#define VPU_API_DBG_CONTROL             (0x00000040)
+#define VPU_API_DBG_FUNCTION (0x00000001)
+#define VPU_API_DBG_INPUT (0x00000010)
+#define VPU_API_DBG_OUTPUT (0x00000020)
+#define VPU_API_DBG_CONTROL (0x00000040)
 
-#define vpu_api_dbg(flag, fmt, ...)     _mpp_dbg(vpu_api_debug, flag, fmt, ## __VA_ARGS__)
-#define vpu_api_dbg_f(flag, fmt, ...)   _mpp_dbg_f(vpu_api_debug, flag, fmt, ## __VA_ARGS__)
+#define vpu_api_dbg(flag, fmt, ...) _mpp_dbg(vpu_api_debug, flag, fmt, ##__VA_ARGS__)
+#define vpu_api_dbg_f(flag, fmt, ...) _mpp_dbg_f(vpu_api_debug, flag, fmt, ##__VA_ARGS__)
 
-#define vpu_api_dbg_func(fmt, ...)      vpu_api_dbg_f(VPU_API_DBG_FUNCTION, fmt, ## __VA_ARGS__)
-#define vpu_api_dbg_input(fmt, ...)     vpu_api_dbg_f(VPU_API_DBG_INPUT, fmt, ## __VA_ARGS__)
-#define vpu_api_dbg_output(fmt, ...)    vpu_api_dbg_f(VPU_API_DBG_OUTPUT, fmt, ## __VA_ARGS__)
-#define vpu_api_dbg_ctrl(fmt, ...)      vpu_api_dbg_f(VPU_API_DBG_CONTROL, fmt, ## __VA_ARGS__)
+#define vpu_api_dbg_func(fmt, ...) vpu_api_dbg_f(VPU_API_DBG_FUNCTION, fmt, ##__VA_ARGS__)
+#define vpu_api_dbg_input(fmt, ...) vpu_api_dbg_f(VPU_API_DBG_INPUT, fmt, ##__VA_ARGS__)
+#define vpu_api_dbg_output(fmt, ...) vpu_api_dbg_f(VPU_API_DBG_OUTPUT, fmt, ##__VA_ARGS__)
+#define vpu_api_dbg_ctrl(fmt, ...) vpu_api_dbg_f(VPU_API_DBG_CONTROL, fmt, ##__VA_ARGS__)
 
 extern RK_U32 vpu_api_debug;
 
@@ -46,8 +46,7 @@ typedef enum {
     INPUT_FORMAT_MAP,
 } PerformCmd;
 
-class VpuApiLegacy
-{
+class VpuApiLegacy {
 public:
     VpuApiLegacy();
     ~VpuApiLegacy();
@@ -102,4 +101,4 @@ private:
     RK_S32 dec_out_frm_struct_type;
 };
 
-#endif /*__VPU_API_LEGACY_H__*/
+#endif /* __VPU_API_LEGACY_H__ */

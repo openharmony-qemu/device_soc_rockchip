@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,77 +25,99 @@
 #include "mpp_common.h"
 #include "mpp_err.h"
 
-#define   BITREAD_ERR   bitread_error
+#define BITREAD_ERR bitread_error
 
-#define READ_ONEBIT(bitctx, out) \
-    do { \
-        RK_S32 _out; \
+#define READ_ONEBIT(bitctx, out)                           \
+    do {                                                   \
+        RK_S32 _out;                                       \
         (bitctx)->ret = mpp_read_bits((bitctx), 1, &_out); \
-        if (!(bitctx)->ret) { \
-            *(out) = _out; \
-        } else { \
-            goto BITREAD_ERR; \
-        } \
+        if (!(bitctx)->ret) {                              \
+            *(out) = _out;                                 \
+        } else {                                           \
+            goto BITREAD_ERR;                              \
+        }                                                  \
     } while (0)
 
-#define READ_BITS(bitctx, num_bits, out) \
-    do { \
-        RK_S32 _out; \
+#define READ_BITS(bitctx, num_bits, out)                          \
+    do {                                                          \
+        RK_S32 _out;                                              \
         (bitctx)->ret = mpp_read_bits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) { *(out) = _out; } \
-        else { goto BITREAD_ERR; } \
+        if (!(bitctx)->ret) {                                     \
+            *(out) = _out;                                        \
+        } else {                                                  \
+            goto BITREAD_ERR;                                     \
+        }                                                         \
     } while (0)
 
-#define READ_BITS_LONG(bitctx, num_bits, out) \
-    do { \
-        RK_U32 _out; \
+#define READ_BITS_LONG(bitctx, num_bits, out)                         \
+    do {                                                              \
+        RK_U32 _out;                                                  \
         (bitctx)->ret = mpp_read_longbits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) { *(out) = _out; } \
-        else { goto BITREAD_ERR; } \
+        if (!(bitctx)->ret) {                                         \
+            *(out) = _out;                                            \
+        } else {                                                      \
+            goto BITREAD_ERR;                                         \
+        }                                                             \
     } while (0)
 
-#define SHOW_BITS(bitctx, num_bits, out) \
-    do { \
-        RK_S32 _out; \
+#define SHOW_BITS(bitctx, num_bits, out)                          \
+    do {                                                          \
+        RK_S32 _out;                                              \
         (bitctx)->ret = mpp_show_bits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) { *(out) = _out; } \
-        else { goto BITREAD_ERR; } \
+        if (!(bitctx)->ret) {                                     \
+            *(out) = _out;                                        \
+        } else {                                                  \
+            goto BITREAD_ERR;                                     \
+        }                                                         \
     } while (0)
 
-#define SHOW_BITS_LONG(bitctx, num_bits, out) \
-    do { \
-        RK_U32 _out; \
+#define SHOW_BITS_LONG(bitctx, num_bits, out)                         \
+    do {                                                              \
+        RK_U32 _out;                                                  \
         (bitctx)->ret = mpp_show_longbits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) { *(out) = _out; } \
-        else { goto BITREAD_ERR; } \
+        if (!(bitctx)->ret) {                                         \
+            *(out) = _out;                                            \
+        } else {                                                      \
+            goto BITREAD_ERR;                                         \
+        }                                                             \
     } while (0)
 
-#define SKIP_BITS(bitctx, num_bits) \
-    do { \
+#define SKIP_BITS(bitctx, num_bits)                        \
+    do {                                                   \
         (bitctx)->ret = mpp_skip_bits((bitctx), num_bits); \
-        if ((bitctx)->ret) { goto BITREAD_ERR; } \
+        if ((bitctx)->ret) {                               \
+            goto BITREAD_ERR;                              \
+        }                                                  \
     } while (0)
 
-#define SKIP_BITS_LONG(bitctx, num_bits) \
-    do { \
+#define SKIP_BITS_LONG(bitctx, num_bits)                       \
+    do {                                                       \
         (bitctx)->ret = mpp_skip_longbits((bitctx), num_bits); \
-        if ((bitctx)->ret) { goto BITREAD_ERR; } \
+        if ((bitctx)->ret) {                                   \
+            goto BITREAD_ERR;                                  \
+        }                                                      \
     } while (0)
 
-#define READ_UE(bitctx, out) \
-    do { \
-        RK_U32 _out; \
+#define READ_UE(bitctx, out)                          \
+    do {                                              \
+        RK_U32 _out;                                  \
         (bitctx)->ret = mpp_read_ue((bitctx), &_out); \
-        if (!(bitctx)->ret) { *(out) = _out; } \
-        else { goto BITREAD_ERR; } \
+        if (!(bitctx)->ret) {                         \
+            *(out) = _out;                            \
+        } else {                                      \
+            goto BITREAD_ERR;                         \
+        }                                             \
     } while (0)
 
-#define READ_SE(bitctx, out) \
-    do { \
-        RK_S32 _out; \
+#define READ_SE(bitctx, out)                          \
+    do {                                              \
+        RK_S32 _out;                                  \
         (bitctx)->ret = mpp_read_se((bitctx), &_out); \
-        if (!(bitctx)->ret) { *(out) = _out; } \
-        else { goto BITREAD_ERR; } \
+        if (!(bitctx)->ret) {                         \
+            *(out) = _out;                            \
+        } else {                                      \
+            goto BITREAD_ERR;                         \
+        }                                             \
     } while (0)
 
 typedef struct bitread_ctx_t {
@@ -115,59 +137,59 @@ typedef struct bitread_ctx_t {
     RK_S64 emulation_prevention_bytes_;
     // count PPS SPS SEI read bits
     RK_S32 used_bits;
-    RK_U8  *buf;
+    RK_U8 *buf;
     RK_S32 buf_len;
     // ctx
-    MPP_RET   ret;
-    RK_S32    need_prevention_detection;
+    MPP_RET ret;
+    RK_S32 need_prevention_detection;
 } BitReadCtx_t;
 
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-//!< set bit read context
-void    mpp_set_bitread_ctx(BitReadCtx_t *bitctx, RK_U8 *data, RK_S32 size);
+// !< set bit read context
+void mpp_set_bitread_ctx(BitReadCtx_t *bitctx, RK_U8 *data, RK_S32 size);
 
-//!< Read bits (1-31)
+// !< Read bits (1-31)
 MPP_RET mpp_read_bits(BitReadCtx_t *bitctx, RK_S32 num_bits, RK_S32 *out);
 
-//!< Read bits (1-32)
+// !< Read bits (1-32)
 MPP_RET mpp_read_longbits(BitReadCtx_t *bitctx, RK_S32 num_bits, RK_U32 *out);
 
-//!< Show bits (1-31)
+// !< Show bits (1-31)
 MPP_RET mpp_show_bits(BitReadCtx_t *bitctx, RK_S32 num_bits, RK_S32 *out);
 
-//!< Show bits (1-32)
+// !< Show bits (1-32)
 MPP_RET mpp_show_longbits(BitReadCtx_t *bitctx, RK_S32 num_bits, RK_U32 *out);
 
-//!< skip bits(1-31)
+// !< skip bits(1-31)
 MPP_RET mpp_skip_bits(BitReadCtx_t *bitctx, RK_S32 num_bits);
 
-//!< skip bits(1-32)
+// !< skip bits(1-32)
 MPP_RET mpp_skip_longbits(BitReadCtx_t *bitctx, RK_S32 num_bits);
 
-//!< read ue(1-32)
-MPP_RET mpp_read_ue(BitReadCtx_t *bitctx, RK_U32* val);
+// !< read ue(1-32)
+MPP_RET mpp_read_ue(BitReadCtx_t *bitctx, RK_U32 *val);
 
-//!< read se(1-31)
-MPP_RET mpp_read_se(BitReadCtx_t *bitctx, RK_S32* val);
+// !< read se(1-31)
+MPP_RET mpp_read_se(BitReadCtx_t *bitctx, RK_S32 *val);
 
-//!< set whether detect 0x03 (used in h264 and h265)
-void    mpp_set_pre_detection(BitReadCtx_t *bitctx);
+// !< set whether detect 0x03 (used in h264 and h265)
+void mpp_set_pre_detection(BitReadCtx_t *bitctx);
 
-//!< check whether has more rbsp data(used in h264)
-RK_U32  mpp_has_more_rbsp_data(BitReadCtx_t * bitctx);
+// !< check whether has more rbsp data(used in h264)
+RK_U32 mpp_has_more_rbsp_data(BitReadCtx_t *bitctx);
 
-//!< align bits and get current pointer
-RK_U8  *mpp_align_get_bits(BitReadCtx_t *bitctx);
+// !< align bits and get current pointer
+RK_U8 *mpp_align_get_bits(BitReadCtx_t *bitctx);
 
 RK_S32 mpp_get_bits_left(BitReadCtx_t *bitctx);
 
 RK_S32 mpp_get_bits_count(BitReadCtx_t *bitctx);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

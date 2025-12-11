@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #define ALOG_TAG "rk_list"
 
 #include <cerrno>
@@ -27,22 +27,22 @@
 #define RK_LIST_ERROR
 
 #ifdef RK_LIST_DEUBG
-#define LIST_DEBUG(fmt, ...) mpp_log(fmt, ## __VA_ARGS__)
+#define LIST_DEBUG(fmt, ...) mpp_log(fmt, ##__VA_ARGS__)
 #else
 #define LIST_DEBUG(fmt, ...) /* not debugging: nothing */
 #endif
 
 #ifdef RK_LIST_ERROR
-#define LIST_ERROR(fmt, ...) mpp_err(fmt, ## __VA_ARGS__)
+#define LIST_ERROR(fmt, ...) mpp_err(fmt, ##__VA_ARGS__)
 #else
 #define LIST_ERROR(fmt, ...)
 #endif
 
 typedef struct rk_list_node {
-    rk_list_node*   prev;
-    rk_list_node*   next;
-    RK_U32        key;
-    RK_S32         size;
+    rk_list_node *prev;
+    rk_list_node *next;
+    RK_U32 key;
+    RK_S32 size;
 } rk_list_node;
 
 static inline void list_node_init(rk_list_node *node)
@@ -53,11 +53,11 @@ static inline void list_node_init(rk_list_node *node)
 static inline void list_node_init_with_key_and_size(rk_list_node *node, RK_U32 key, RK_S32 size)
 {
     list_node_init(node);
-    node->key   = key;
-    node->size  = size;
+    node->key = key;
+    node->size = size;
 }
 
-static rk_list_node* create_list(void *data, RK_S32 size, RK_U32 key)
+static rk_list_node *create_list(void *data, RK_S32 size, RK_U32 key)
 {
     if (size <= 0) {
         LIST_ERROR("invalid size parameter: %d", size);
@@ -68,18 +68,18 @@ static rk_list_node* create_list(void *data, RK_S32 size, RK_U32 key)
         LIST_ERROR("data pointer is NULL");
         return nullptr;
     }
-    rk_list_node *node = static_cast<rk_list_node*>(malloc(sizeof(rk_list_node) + size));
+    rk_list_node *node = static_cast<rk_list_node *>(malloc(sizeof(rk_list_node) + size));
     if (node) {
         void *dst = reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(node) + sizeof(rk_list_node));
         list_node_init_with_key_and_size(node, key, size);
-        memcpy(dst, data, size);
+        memcpy_s(dst, size, data, size);
     } else {
         LIST_ERROR("failed to allocate list node");
     }
     return node;
 }
 
-static inline void rk_list_add(rk_list_node * new_entry, rk_list_node * prev, rk_list_node * next)
+static inline void rk_list_add(rk_list_node *new_entry, rk_list_node *prev, rk_list_node *next)
 {
     next->prev = new_entry;
     new_entry->next = next;
@@ -133,15 +133,15 @@ RK_S32 rk_list::add_at_tail(void *data, RK_S32 size)
     return ret;
 }
 
-static void release_list(rk_list_node*node, void *data, RK_S32 size)
+static void release_list(rk_list_node *node, void *data, RK_S32 size)
 {
     void *src = reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(node) + sizeof(rk_list_node));
     if (node->size == size) {
-        memcpy(data, src, size);
+        memcpy_s(data, node->size, src, size);
     } else {
         LIST_ERROR("node size check failed when release_list");
         size = (size < node->size) ? (size) : (node->size);
-        memcpy(data, src, size);
+        memcpy_s(data, node->size, src, size);
     }
     free(node);
 }
@@ -238,10 +238,11 @@ RK_S32 rk_list::flush()
     pthread_mutex_lock(&mutex);
     if (head) {
         while (count) {
-            rk_list_node* node = head->next;
+            rk_list_node *node = head->next;
             rk_list_del_init(node);
             if (destroy) {
-                void* data_ptr = static_cast<void *>(static_cast<char *>(static_cast<void *>(node)) + sizeof(rk_list_node));
+                void *data_ptr =
+                    static_cast<void *>(static_cast<char *>(static_cast<void *>(node)) + sizeof(rk_list_node));
                 destroy(data_ptr);
             }
             free(node);
@@ -252,10 +253,7 @@ RK_S32 rk_list::flush()
     return 0;
 }
 
-rk_list::rk_list(node_destructor func)
-    : destroy(nullptr),
-      head(nullptr),
-      count(0)
+rk_list::rk_list(node_destructor func) : destroy(nullptr), head(nullptr), count(0)
 {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
@@ -263,7 +261,7 @@ rk_list::rk_list(node_destructor func)
     pthread_mutex_init(&mutex, &attr);
     pthread_mutexattr_destroy(&attr);
     destroy = func;
-    head = (rk_list_node*)malloc(sizeof(rk_list_node));
+    head = (rk_list_node *)malloc(sizeof(rk_list_node));
     if (nullptr == head) {
         LIST_ERROR("failed to allocate list header");
     } else {
@@ -274,7 +272,9 @@ rk_list::rk_list(node_destructor func)
 rk_list::~rk_list()
 {
     flush();
-    if (head) free(head);
+    if (head) {
+        free(head);
+    }
     head = nullptr;
     destroy = nullptr;
     pthread_mutex_destroy(&mutex);
@@ -286,10 +286,10 @@ rk_list::~rk_list()
 #include <stdlib.h>
 #include <cstring>
 
-#define LOOP_RK_LIST    600
+#define LOOP_RK_LIST 600
 
-#define COUNT_ADD       100
-#define COUNT_DEL       99
+#define COUNT_ADD 100
+#define COUNT_DEL 99
 
 static volatile int err = 0;
 
@@ -371,7 +371,9 @@ void *rk_list_test_loop_0(void *pdata)
     printf("rk_list test 0 loop start\n");
     for (i = 0; i < LOOP_RK_LIST; i++) {
         err |= rk_list_filo_test(list_0);
-        if (err) break;
+        if (err) {
+            break;
+        }
     }
 
     if (err) {
@@ -394,12 +396,14 @@ int rk_list_test_0()
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
-    pthread_create(&mThread, &attr, rk_list_test_loop_0, (void*)list_0);
+    pthread_create(&mThread, &attr, rk_list_test_loop_0, (void *)list_0);
     pthread_attr_destroy(&attr);
 
     for (i = 0; i < LOOP_RK_LIST; i++) {
         err |= rk_list_fifo_test(list_0);
-        if (err) break;
+        if (err) {
+            break;
+        }
     }
     if (err) {
         printf("main  : found rk_list operation err %d\n", err);
@@ -415,9 +419,9 @@ int rk_list_test_0()
     return err;
 }
 
-#define TOTAL_RK_LIST_TEST_COUNT    1
-#define ARGC_NUMBER_2    2
-#define ARGC_NUMBER_3    3
+#define TOTAL_RK_LIST_TEST_COUNT 1
+#define ARGC_NUMBER_2 2
+#define ARGC_NUMBER_3 3
 
 typedef int (*RK_LIST_TEST_FUNC)(void);
 RK_LIST_TEST_FUNC test_func[TOTAL_RK_LIST_TEST_COUNT] = {
@@ -434,10 +438,10 @@ int main(int argc, char *argv[])
         end = TOTAL_RK_LIST_TEST_COUNT;
     } else if (argc == ARGC_NUMBER_2) {
         start = atoi(argv[START_ARG_INDEX]);
-        end   = start + DEFAULT_INCREMENT;
+        end = start + DEFAULT_INCREMENT;
     } else if (argc == ARGC_NUMBER_3) {
         start = atoi(argv[START_ARG_INDEX]);
-        end   = atoi(argv[END_ARG_INDEX]);
+        end = atoi(argv[END_ARG_INDEX]);
     } else {
         printf("too many argc %d\n", argc);
         return -1;
@@ -456,4 +460,3 @@ int main(int argc, char *argv[])
     return 0;
 }
 #endif
-

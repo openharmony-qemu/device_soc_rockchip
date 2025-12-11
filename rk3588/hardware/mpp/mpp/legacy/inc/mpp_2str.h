@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@
 #include "rk_type.h"
 #include "rk_venc_rc.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -31,7 +31,7 @@ const char *strof_rc_mode(MppEncRcMode rc_mode);
 const char *strof_profle(MppCodingType coding, RK_U32 profile);
 const char *strof_gop_mode(MppEncRcGopMode gop_mode);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

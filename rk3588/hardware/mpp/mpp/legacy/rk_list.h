@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,15 +18,14 @@
 #ifndef __RK_LIST_H__
 #define __RK_LIST_H__
 
-#include <cstdint> 
+#include <cstdint>
 #include <pthread.h>
 #include "rk_type.h"
 // desctructor of list node
 typedef void *(*node_destructor)(void *);
 
 struct rk_list_node;
-class rk_list
-{
+class rk_list {
 public:
     rk_list(node_destructor func);
     ~rk_list();
@@ -54,14 +53,14 @@ public:
     RK_S32 flush();
 
 private:
-    pthread_mutex_t         mutex;
-    node_destructor         destroy;
-    struct rk_list_node    *head;
-    RK_S32                 count;
+    pthread_mutex_t mutex;
+    node_destructor destroy;
+    struct rk_list_node *head;
+    RK_S32 count;
 
     rk_list();
     rk_list(const rk_list &);
-    rk_list &operator=(const rk_list &);
+    rk_list &operator = (const rk_list &);
 };
 
-#endif /*__RK_LIST_H__*/
+#endif /* __RK_LIST_H__ */

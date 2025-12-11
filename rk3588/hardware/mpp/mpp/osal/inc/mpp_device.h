@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,9 +24,9 @@
 #include "mpp_dev_defs.h"
 #include "mpp_callback.h"
 
-#define MPP_MAX_REG_TRANS_NUM   80
+#define MPP_MAX_REG_TRANS_NUM 80
 
-typedef void* MppDev;
+typedef void *MppDev;
 
 typedef enum MppDevIoctlCmd_e {
     /* device batch mode config */
@@ -56,109 +56,109 @@ typedef enum MppDevIoctlCmd_e {
 
 /* for MPP_DEV_REG_WR */
 typedef struct MppDevRegWrCfg_t {
-    void    *reg;
-    RK_U32  size;
-    RK_U32  offset;
+    void *reg;
+    RK_U32 size;
+    RK_U32 offset;
 } MppDevRegWrCfg;
 
 /* for MPP_DEV_REG_RD */
 typedef struct MppDevRegRdCfg_t {
-    void    *reg;
-    RK_U32  size;
-    RK_U32  offset;
+    void *reg;
+    RK_U32 size;
+    RK_U32 offset;
 } MppDevRegRdCfg;
 
 /* for MPP_DEV_REG_OFFSET */
 typedef struct MppDevRegOffsetCfg_t {
-    RK_U32  reg_idx;
-    RK_U32  offset;
+    RK_U32 reg_idx;
+    RK_U32 offset;
 } MppDevRegOffsetCfg;
 
 /* for multi MPP_DEV_REG_OFFSET */
 typedef struct MppDevRegOffsCfg_t {
-    RK_S32  size;
-    RK_S32  count;
+    RK_S32 size;
+    RK_S32 count;
     MppDevRegOffsetCfg cfgs[];
 } MppDevRegOffCfgs;
 
 /* for MPP_DEV_RCB_INFO */
 typedef struct MppDevRcbInfoCfg_t {
-    RK_U32  reg_idx;
-    RK_U32  size;
+    RK_U32 reg_idx;
+    RK_U32 size;
 } MppDevRcbInfoCfg;
 
 /* for MPP_DEV_SET_INFO */
 typedef struct MppDevSetInfoCfg_t {
-    RK_U32  type;
-    RK_U32  flag;
-    RK_U64  data;
+    RK_U32 type;
+    RK_U32 flag;
+    RK_U64 data;
 } MppDevInfoCfg;
 
 typedef union MppDevPollEncSliceInfo_u {
-    RK_U32  val;
+    RK_U32 val;
     struct {
-        RK_U32  length  : 31;
-        RK_U32  last    : 1;
+        RK_U32 length : 31;
+        RK_U32 last : 1;
     };
 } MppDevPollEncSliceInfo;
 
 /* for MPP_DEV_POLL */
 typedef struct MppDevPollCfg_t {
-    RK_S32  poll_type;
-    RK_S32  poll_ret;
-    RK_S32  count_max;
-    RK_S32  count_ret;
+    RK_S32 poll_type;
+    RK_S32 poll_ret;
+    RK_S32 count_max;
+    RK_S32 count_ret;
     MppDevPollEncSliceInfo slice_info[];
 } MppDevPollCfg;
 
 typedef struct MppDevBufMapNode_t {
     /* data write by buffer function */
-    struct list_head    list_buf;
-    pthread_mutex_t     *lock_buf;
-    MppBuffer           buffer;
-    MppDev              dev;
-    MppMemPool          pool;
-    RK_S32              buf_fd;
+    struct list_head list_buf;
+    pthread_mutex_t *lock_buf;
+    MppBuffer buffer;
+    MppDev dev;
+    MppMemPool pool;
+    RK_S32 buf_fd;
 
     /* data write by device function */
-    struct list_head    list_dev;
-    pthread_mutex_t     *lock_dev;
-    RK_S32              dev_fd;
-    RK_U32              iova;
+    struct list_head list_dev;
+    pthread_mutex_t *lock_dev;
+    RK_S32 dev_fd;
+    RK_U32 iova;
 } MppDevBufMapNode;
 
 typedef struct MppDevApi_t {
-    const char  *name;
-    RK_U32      ctx_size;
-    MPP_RET     (*init)(void *ctx, MppClientType type);
-    MPP_RET     (*deinit)(void *ctx);
+    const char *name;
+    RK_U32 ctx_size;
+    MPP_RET (*init)(void *ctx, MppClientType type);
+    MPP_RET (*deinit)(void *ctx);
 
     /* bat mode function */
-    MPP_RET     (*attach)(void *ctx);
-    MPP_RET     (*detach)(void *ctx);
-    MPP_RET     (*delimit)(void *ctx);
-    MPP_RET     (*set_cb_ctx)(void *ctx, MppCbCtx *cb);
+    MPP_RET (*attach)(void *ctx);
+    MPP_RET (*detach)(void *ctx);
+    MPP_RET (*delimit)(void *ctx);
+    MPP_RET (*set_cb_ctx)(void *ctx, MppCbCtx *cb);
 
     /* config the cmd on preparing */
-    MPP_RET     (*reg_wr)(void *ctx, MppDevRegWrCfg *cfg);
-    MPP_RET     (*reg_rd)(void *ctx, MppDevRegRdCfg *cfg);
-    MPP_RET     (*reg_offset)(void *ctx, MppDevRegOffsetCfg *cfg);
-    MPP_RET     (*reg_offs)(void *ctx, MppDevRegOffCfgs *cfg);
-    MPP_RET     (*rcb_info)(void *ctx, MppDevRcbInfoCfg *cfg);
-    MPP_RET     (*set_info)(void *ctx, MppDevInfoCfg *cfg);
-    MPP_RET     (*set_err_ref_hack)(void *ctx, RK_U32 *enable);
+    MPP_RET (*reg_wr)(void *ctx, MppDevRegWrCfg *cfg);
+    MPP_RET (*reg_rd)(void *ctx, MppDevRegRdCfg *cfg);
+    MPP_RET (*reg_offset)(void *ctx, MppDevRegOffsetCfg *cfg);
+    MPP_RET (*reg_offs)(void *ctx, MppDevRegOffCfgs *cfg);
+    MPP_RET (*rcb_info)(void *ctx, MppDevRcbInfoCfg *cfg);
+    MPP_RET (*set_info)(void *ctx, MppDevInfoCfg *cfg);
+    MPP_RET (*set_err_ref_hack)(void *ctx, RK_U32 *enable);
 
     /* buffer attach / detach */
-    MPP_RET     (*lock_map)(void *ctx);
-    MPP_RET     (*unlock_map)(void *ctx);
-    MPP_RET     (*attach_fd)(void *ctx, MppDevBufMapNode *node);
-    MPP_RET     (*detach_fd)(void *ctx, MppDevBufMapNode *node);
+    MPP_RET (*lock_map)(void *ctx);
+    MPP_RET (*unlock_map)(void *ctx);
+    MPP_RET (*attach_fd)(void *ctx, MppDevBufMapNode *node);
+    MPP_RET (*detach_fd)(void *ctx, MppDevBufMapNode *node);
 
     /* send cmd to hardware */
-    MPP_RET     (*cmd_send)(void *ctx);
+    MPP_RET (*cmd_send)(void *ctx);
 
     /* poll cmd from hardware */
-    MPP_RET     (*cmd_poll)(void *ctx, MppDevPollCfg *cfg);
+    MPP_RET (*cmd_poll)(void *ctx, MppDevPollCfg *cfg);
 } MppDevApi;
 
 #ifdef __cplusplus

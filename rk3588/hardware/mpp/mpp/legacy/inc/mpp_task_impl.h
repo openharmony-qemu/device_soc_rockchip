@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,8 +21,8 @@
 #include "mpp_list.h"
 #include "mpp_task.h"
 
-typedef void* MppPort;
-typedef void* MppTaskQueue;
+typedef void *MppPort;
+typedef void *MppTaskQueue;
 
 /*
  * mpp task status transaction
@@ -56,21 +56,21 @@ typedef void* MppTaskQueue;
  *
  */
 typedef enum MppTaskStatus_e {
-    MPP_INPUT_PORT,             /* in external queue and ready for external dequeue */
-    MPP_INPUT_HOLD,             /* dequeued and hold by external user, user will config */
-    MPP_OUTPUT_PORT,            /* in mpp internal work queue and ready for mpp dequeue */
-    MPP_OUTPUT_HOLD,            /* dequeued and hold by mpp internal worker, mpp is processing */
+    MPP_INPUT_PORT,  /* in external queue and ready for external dequeue */
+    MPP_INPUT_HOLD,  /* dequeued and hold by external user, user will config */
+    MPP_OUTPUT_PORT, /* in mpp internal work queue and ready for mpp dequeue */
+    MPP_OUTPUT_HOLD, /* dequeued and hold by mpp internal worker, mpp is processing */
     MPP_TASK_STATUS_BUTT,
 } MppTaskStatus;
 
 typedef struct MppTaskImpl_t {
-    const char          *name;
-    struct list_head    list;
-    MppTaskQueue        queue;
-    RK_S32              index;
-    MppTaskStatus       status;
+    const char *name;
+    struct list_head list;
+    MppTaskQueue queue;
+    RK_S32 index;
+    MppTaskStatus status;
 
-    MppMeta             meta;
+    MppMeta meta;
 } MppTaskImpl;
 
 #ifdef __cplusplus
@@ -83,10 +83,22 @@ MPP_RET mpp_task_queue_setup(MppTaskQueue queue, RK_S32 task_count);
 MPP_RET mpp_task_queue_deinit(MppTaskQueue queue);
 MppPort mpp_task_queue_get_port(MppTaskQueue queue, MppPortType type);
 
-#define mpp_port_poll(port, timeout) _mpp_port_poll(__FUNCTION__, port, timeout)
-#define mpp_port_dequeue(port, task) _mpp_port_dequeue(__FUNCTION__, port, task)
-#define mpp_port_enqueue(port, task) _mpp_port_enqueue(__FUNCTION__, port, task)
-#define mpp_port_awake(port) _mpp_port_awake(__FUNCTION__, port)
+inline MPP_RET mpp_port_poll(const char *caller, MppPort port, MppPollType timeout)
+{
+    return _mpp_port_poll(caller, timeout);
+}
+inline M_RET mpp_port_dequeue(const char *caller, MppPort port, MppTask *task)
+{
+    return _mpp_port_dequeue, port, task);
+}
+inline MPP_RET mpp_port_enqueue(const char *caller, MppPort port, MppTask task)
+{
+    return _mpp_port_enqueue(caller port, task);
+}
+inline MPP_RET mpp_port_awake(const char *caller, MPort port)
+{
+    return _mpp_port_awake(caller, port);
+}
 
 MPP_RET _mpp_port_poll(const char *caller, MppPort port, MppPollType timeout);
 MPP_RET _mpp_port_dequeue(const char *caller, MppPort port, MppTask *task);

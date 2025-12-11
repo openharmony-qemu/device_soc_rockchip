@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,23 +21,23 @@
 
 #include "mpp_meta.h"
 
-#define MPP_PACKET_FLAG_EOS             (0x00000001)
-#define MPP_PACKET_FLAG_EXTRA_DATA      (0x00000002)
-#define MPP_PACKET_FLAG_INTERNAL        (0x00000004)
+#define MPP_PACKET_FLAG_EOS (0x00000001)
+#define MPP_PACKET_FLAG_EXTRA_DATA (0x00000002)
+#define MPP_PACKET_FLAG_INTERNAL (0x00000004)
 
 typedef union MppPacketStatus_t {
-    RK_U32  val;
+    RK_U32 val;
     struct {
-        RK_U32  eos         : 1;
-        RK_U32  extra_data  : 1;
-        RK_U32  internal    : 1;
+        RK_U32 eos : 1;
+        RK_U32 extra_data : 1;
+        RK_U32 internal : 1;
         /* packet is inputed on reset mark as discard */
-        RK_U32  discard     : 1;
+        RK_U32 discard : 1;
 
         /* for slice input output */
-        RK_U32  partition   : 1;
-        RK_U32  soi         : 1;
-        RK_U32  eoi         : 1;
+        RK_U32 partition : 1;
+        RK_U32 soi : 1;
+        RK_U32 eoi : 1;
     };
 } MppPacketStatus;
 
@@ -52,21 +52,21 @@ typedef union MppPacketStatus_t {
  * dts      : packet dts
  */
 typedef struct MppPacketImpl_t {
-    const char      *name;
+    const char *name;
 
-    void            *data;
-    void            *pos;
-    size_t          size;
-    size_t          length;
+    void *data;
+    void *pos;
+    size_t size;
+    size_t length;
 
-    RK_S64          pts;
-    RK_S64          dts;
+    RK_S64 pts;
+    RK_S64 dts;
 
     MppPacketStatus status;
-    RK_U32          flag;
+    RK_U32 flag;
 
-    MppBuffer       buffer;
-    MppMeta         meta;
+    MppBuffer buffer;
+    MppMeta meta;
 } MppPacketImpl;
 
 #ifdef __cplusplus

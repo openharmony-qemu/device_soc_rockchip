@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,47 +51,47 @@ typedef enum RockchipSocType_e {
 } RockchipSocType;
 
 typedef struct MppDecHwCap_t {
-    RK_U32          cap_coding;
+    RK_U32 cap_coding;
 
-    MppClientType   type                : 8;
+    MppClientType type : 8;
 
-    RK_U32          cap_fbc             : 4;
-    RK_U32          cap_4k              : 1;
-    RK_U32          cap_8k              : 1;
-    RK_U32          cap_colmv_compress  : 1;
-    RK_U32          cap_hw_h265_rps     : 1;
-    RK_U32          cap_hw_vp9_prob     : 1;
-    RK_U32          cap_jpg_pp_out      : 1;
-    RK_U32          cap_10bit           : 1;
-    RK_U32          cap_down_scale      : 1;
-    RK_U32          cap_lmt_linebuf     : 1;
-    RK_U32          cap_core_num        : 3;
-    RK_U32          cap_hw_jpg_fix      : 1;
-    RK_U32          reserved            : 8;
+    RK_U32 cap_fbc : 4;
+    RK_U32 cap_4k : 1;
+    RK_U32 cap_8k : 1;
+    RK_U32 cap_colmv_compress : 1;
+    RK_U32 cap_hw_h265_rps : 1;
+    RK_U32 cap_hw_vp9_prob : 1;
+    RK_U32 cap_jpg_pp_out : 1;
+    RK_U32 cap_10bit : 1;
+    RK_U32 cap_down_scale : 1;
+    RK_U32 cap_lmt_linebuf : 1;
+    RK_U32 cap_core_num : 3;
+    RK_U32 cap_hw_jpg_fix : 1;
+    RK_U32 reserved : 8;
 } MppDecHwCap;
 
 typedef struct MppEncHwCap_t {
-    RK_U32          cap_coding;
+    RK_U32 cap_coding;
 
-    MppClientType   type            : 8;
+    MppClientType type : 8;
 
-    RK_U32          cap_fbc         : 4;
-    RK_U32          cap_4k          : 1;
-    RK_U32          cap_8k          : 1;
-    RK_U32          cap_hw_osd      : 1;
-    RK_U32          cap_hw_roi      : 1;
-    RK_U32          reserved        : 16;
+    RK_U32 cap_fbc : 4;
+    RK_U32 cap_4k : 1;
+    RK_U32 cap_8k : 1;
+    RK_U32 cap_hw_osd : 1;
+    RK_U32 cap_hw_roi : 1;
+    RK_U32 reserved : 16;
 } MppEncHwCap;
 
 typedef struct {
-    const char              *compatible;
-    const RockchipSocType   soc_type;
-    const RK_U32            vcodec_type;
+    const char *compatible;
+    const RockchipSocType soc_type;
+    const RK_U32 vcodec_type;
 
     /* Max 6 decoder cap */
-    const MppDecHwCap       *dec_caps[6];
+    const MppDecHwCap *dec_caps[6];
     /* Max 4 encoder cap */
-    const MppEncHwCap       *enc_caps[4];
+    const MppEncHwCap *enc_caps[4];
 } MppSocInfo;
 
 #ifdef __cplusplus
@@ -103,10 +103,10 @@ RockchipSocType mpp_get_soc_type(void);
 
 const MppSocInfo *mpp_get_soc_info(void);
 RK_U32 mpp_check_soc_cap(MppCtxType type, MppCodingType coding);
-const MppDecHwCap* mpp_get_dec_hw_info_by_client_type(MppClientType client_type);
+const MppDecHwCap *mpp_get_dec_hw_info_by_client_type(MppClientType client_type);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_SOC_H__*/
+#endif /* __MPP_SOC_H__ */

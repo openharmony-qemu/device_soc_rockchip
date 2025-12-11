@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,48 +24,48 @@
 #include "mpp_enc.h"
 #include "mpp_impl.h"
 
-#define MPP_DBG_FUNCTION                    (0x00000001)
-#define MPP_DBG_PACKET                      (0x00000002)
-#define MPP_DBG_FRAME                       (0x00000004)
-#define MPP_DBG_BUFFER                      (0x00000008)
+#define MPP_DBG_FUNCTION (0x00000001)
+#define MPP_DBG_PACKET (0x00000002)
+#define MPP_DBG_FRAME (0x00000004)
+#define MPP_DBG_BUFFER (0x00000008)
 
 /*
  * mpp notify event flags
  * When event happens mpp will signal deocder / encoder with different flag.
  * These event will wake up the codec thread or hal thread
  */
-#define MPP_INPUT_ENQUEUE                   (0x00000001)
-#define MPP_OUTPUT_DEQUEUE                  (0x00000002)
-#define MPP_INPUT_DEQUEUE                   (0x00000004)
-#define MPP_OUTPUT_ENQUEUE                  (0x00000008)
-#define MPP_RESET                           (0xFFFFFFFF)
+#define MPP_INPUT_ENQUEUE (0x00000001)
+#define MPP_OUTPUT_DEQUEUE (0x00000002)
+#define MPP_INPUT_DEQUEUE (0x00000004)
+#define MPP_OUTPUT_ENQUEUE (0x00000008)
+#define MPP_RESET (0xFFFFFFFF)
 
 /* mpp dec event flags */
-#define MPP_DEC_NOTIFY_PACKET_ENQUEUE       (MPP_INPUT_ENQUEUE)
-#define MPP_DEC_NOTIFY_FRAME_DEQUEUE        (MPP_OUTPUT_DEQUEUE)
-#define MPP_DEC_NOTIFY_EXT_BUF_GRP_READY    (0x00000010)
-#define MPP_DEC_NOTIFY_INFO_CHG_DONE        (0x00000020)
-#define MPP_DEC_NOTIFY_BUFFER_VALID         (0x00000040)
-#define MPP_DEC_NOTIFY_TASK_ALL_DONE        (0x00000080)
-#define MPP_DEC_NOTIFY_TASK_HND_VALID       (0x00000100)
-#define MPP_DEC_NOTIFY_TASK_PREV_DONE       (0x00000200)
-#define MPP_DEC_NOTIFY_BUFFER_MATCH         (0x00000400)
-#define MPP_DEC_NOTIFY_SLOT_VALID           (0x00004000)
-#define MPP_DEC_CONTROL                     (0x00010000)
-#define MPP_DEC_RESET                       (MPP_RESET)
+#define MPP_DEC_NOTIFY_PACKET_ENQUEUE (MPP_INPUT_ENQUEUE)
+#define MPP_DEC_NOTIFY_FRAME_DEQUEUE (MPP_OUTPUT_DEQUEUE)
+#define MPP_DEC_NOTIFY_EXT_BUF_GRP_READY (0x00000010)
+#define MPP_DEC_NOTIFY_INFO_CHG_DONE (0x00000020)
+#define MPP_DEC_NOTIFY_BUFFER_VALID (0x00000040)
+#define MPP_DEC_NOTIFY_TASK_ALL_DONE (0x00000080)
+#define MPP_DEC_NOTIFY_TASK_HND_VALID (0x00000100)
+#define MPP_DEC_NOTIFY_TASK_PREV_DONE (0x00000200)
+#define MPP_DEC_NOTIFY_BUFFER_MATCH (0x00000400)
+#define MPP_DEC_NOTIFY_SLOT_VALID (0x00004000)
+#define MPP_DEC_CONTROL (0x00010000)
+#define MPP_DEC_RESET (MPP_RESET)
 
 /* mpp enc event flags */
-#define MPP_ENC_NOTIFY_FRAME_ENQUEUE        (MPP_INPUT_ENQUEUE)
-#define MPP_ENC_NOTIFY_PACKET_DEQUEUE       (MPP_OUTPUT_DEQUEUE)
-#define MPP_ENC_NOTIFY_FRAME_DEQUEUE        (MPP_INPUT_DEQUEUE)
-#define MPP_ENC_NOTIFY_PACKET_ENQUEUE       (MPP_OUTPUT_ENQUEUE)
-#define MPP_ENC_CONTROL                     (0x00000010)
-#define MPP_ENC_RESET                       (MPP_RESET)
+#define MPP_ENC_NOTIFY_FRAME_ENQUEUE (MPP_INPUT_ENQUEUE)
+#define MPP_ENC_NOTIFY_PACKET_DEQUEUE (MPP_OUTPUT_DEQUEUE)
+#define MPP_ENC_NOTIFY_FRAME_DEQUEUE (MPP_INPUT_DEQUEUE)
+#define MPP_ENC_NOTIFY_PACKET_ENQUEUE (MPP_OUTPUT_ENQUEUE)
+#define MPP_ENC_CONTROL (0x00000010)
+#define MPP_ENC_RESET (MPP_RESET)
 
 typedef enum MppIOMode_e {
-    MPP_IO_MODE_DEFAULT                     = -1,
-    MPP_IO_MODE_NORMAL                      = 0,
-    MPP_IO_MODE_TASK                        = 1,
+    MPP_IO_MODE_DEFAULT = -1,
+    MPP_IO_MODE_NORMAL = 0,
+    MPP_IO_MODE_TASK = 1,
     MPP_IO_MODE_BUTT,
 } MppIoMode;
 
@@ -76,33 +76,32 @@ typedef enum MppIOMode_e {
  * mpp_dec create its parser and hal module
  * mpp_enc create its control and hal module
  *
- *                                  +-------+
- *                                  |       |
- *                    +-------------+  mpp  +-------------+
- *                    |             |       |             |
- *                    |             +-------+             |
- *                    |                                   |
- *                    |                                   |
- *                    |                                   |
- *              +-----+-----+                       +-----+-----+
- *              |           |                       |           |
- *          +---+  mpp_dec  +--+                 +--+  mpp_enc  +---+
- *          |   |           |  |                 |  |           |   |
- *          |   +-----------+  |                 |  +-----------+   |
- *          |                  |                 |                  |
- *          |                  |                 |                  |
- *          |                  |                 |                  |
- *  +-------v------+     +-----v-----+     +-----v-----+     +------v-------+
- *  |              |     |           |     |           |     |              |
- *  |  dec_parser  |     |  dec_hal  |     |  enc_hal  |     |  enc_control |
- *  |              |     |           |     |           |     |              |
- *  +--------------+     +-----------+     +-----------+     +--------------+
+ * +-------+
+ * |       |
+ * +-------------+  mpp  +-------------+
+ * |             |       |             |
+ * |             +-------+             |
+ * |                                   |
+ * |                                   |
+ * |                                   |
+ * +-----+-----+                       +-----+-----+
+ * |           |                       |           |
+ * +---+  mpp_dec  +--+                 +--+  mpp_enc  +---+
+ * |   |           |  |                 |  |           |   |
+ * |   +-----------+  |                 |  +-----------+   |
+ * |                  |                 |                  |
+ * |                  |                 |                  |
+ * |                  |                 |                  |
+ * +-------v------+     +-----v-----+     +-----v-----+     +------v-------+
+ * |              |     |           |     |           |     |              |
+ * |  dec_parser  |     |  dec_hal  |     |  enc_hal  |     |  enc_control |
+ * |              |     |           |     |           |     |              |
+ * +--------------+     +-----------+     +-----------+     +--------------+
  */
 
 #ifdef __cplusplus
 
-class Mpp
-{
+class Mpp {
 public:
     Mpp(MppCtx ctx = NULL);
     ~Mpp();
@@ -133,90 +132,90 @@ public:
     MPP_RET notify(RK_U32 flag);
     MPP_RET notify(MppBufferGroup group);
 
-    mpp_list        *mPktIn;
-    mpp_list        *mPktOut;
-    mpp_list        *mFrmIn;
-    mpp_list        *mFrmOut;
+    mpp_list *mPktIn;
+    mpp_list *mPktOut;
+    mpp_list *mFrmIn;
+    mpp_list *mFrmOut;
     /* counters for debug */
-    RK_U32          mPacketPutCount;
-    RK_U32          mPacketGetCount;
-    RK_U32          mFramePutCount;
-    RK_U32          mFrameGetCount;
-    RK_U32          mTaskPutCount;
-    RK_U32          mTaskGetCount;
+    RK_U32 mPacketPutCount;
+    RK_U32 mPacketGetCount;
+    RK_U32 mFramePutCount;
+    RK_U32 mFrameGetCount;
+    RK_U32 mTaskPutCount;
+    RK_U32 mTaskGetCount;
 
     /*
      * packet buffer group
-     *      - packets in I/O, can be ion buffer or normal buffer
+     * - packets in I/O, can be ion buffer or normal buffer
      * frame buffer group
-     *      - frames in I/O, normally should be a ion buffer group
+     * - frames in I/O, normally should be a ion buffer group
      */
-    MppBufferGroup  mPacketGroup;
-    MppBufferGroup  mFrameGroup;
-    RK_U32          mExternalBufferMode;
+    MppBufferGroup mPacketGroup;
+    MppBufferGroup mFrameGroup;
+    RK_U32 mExternalBufferMode;
 
     /*
      * Mpp task queue for advance task mode
      */
     /*
      * Task data flow:
-     *                  |
-     *     user         |          mpp
-     *           mInputTaskQueue
+     * |
+     * user         |          mpp
+     * mInputTaskQueue
      * mUsrInPort  ->   |   -> mMppInPort
-     *                  |          |
-     *                  |          v
-     *                  |       process
-     *                  |          |
-     *                  |          v
+     * |          |
+     * |          v
+     * |       process
+     * |          |
+     * |          v
      * mUsrOutPort <-   |   <- mMppOutPort
-     *           mOutputTaskQueue
+     * mOutputTaskQueue
      */
-    MppPort         mUsrInPort;
-    MppPort         mUsrOutPort;
-    MppPort         mMppInPort;
-    MppPort         mMppOutPort;
-    MppTaskQueue    mInputTaskQueue;
-    MppTaskQueue    mOutputTaskQueue;
-    RK_S32          mInputTaskCount;
-    RK_S32          mOutputTaskCount;
+    MppPort mUsrInPort;
+    MppPort mUsrOutPort;
+    MppPort mMppInPort;
+    MppPort mMppOutPort;
+    MppTaskQueue mInputTaskQueue;
+    MppTaskQueue mOutputTaskQueue;
+    RK_S32 mInputTaskCount;
+    RK_S32 mOutputTaskCount;
 
-    MppPollType     mInputTimeout;
-    MppPollType     mOutputTimeout;
+    MppPollType mInputTimeout;
+    MppPollType mOutputTimeout;
 
-    MppTask         mInputTask;
-    MppTask         mEosTask;
+    MppTask mInputTask;
+    MppTask mEosTask;
 
-    MppCtx          mCtx;
-    MppDec          mDec;
-    MppEnc          mEnc;
+    MppCtx mCtx;
+    MppDec mDec;
+    MppEnc mEnc;
 
-    RK_U32          mEncAyncIo;
-    RK_U32          mEncAyncProc;
-    MppIoMode       mIoMode;
-    RK_U32          mDisableThread;
+    RK_U32 mEncAyncIo;
+    RK_U32 mEncAyncProc;
+    MppIoMode mIoMode;
+    RK_U32 mDisableThread;
 
     /* dump info for debug */
-    MppDump         mDump;
+    MppDump mDump;
 
 private:
     void clear();
 
-    MppCtxType      mType;
-    MppCodingType   mCoding;
+    MppCtxType mType;
+    MppCodingType mCoding;
 
-    RK_U32          mInitDone;
+    RK_U32 mInitDone;
 
-    RK_U32          mStatus;
+    RK_U32 mStatus;
 
     /* decoder paramter before init */
-    MppDecCfgSet    mDecInitcfg;
-    RK_U32          mParserFastMode;
-    RK_U32          mParserNeedSplit;
-    RK_U32          mParserInternalPts;     /* for MPEG2/MPEG4 */
-    RK_U32          mImmediateOut;
+    MppDecCfgSet mDecInitcfg;
+    RK_U32 mParserFastMode;
+    RK_U32 mParserNeedSplit;
+    RK_U32 mParserInternalPts; /* for MPEG2/MPEG4 */
+    RK_U32 mImmediateOut;
     /* backup extra packet for seek */
-    MppPacket       mExtraPacket;
+    MppPacket mExtraPacket;
 
     MPP_RET control_mpp(MpiCmd cmd, MppParam param);
     MPP_RET control_osal(MpiCmd cmd, MppParam param);
@@ -232,12 +231,11 @@ private:
     void set_io_mode(MppIoMode mode);
 
     Mpp(const Mpp &);
-    Mpp &operator=(const Mpp &);
+    Mpp &operator = (const Mpp &);
 };
 
 
-extern "C" {
-}
+extern "C" {}
 #endif
 
-#endif /*__MPP_H__*/
+#endif /* __MPP_H__ */

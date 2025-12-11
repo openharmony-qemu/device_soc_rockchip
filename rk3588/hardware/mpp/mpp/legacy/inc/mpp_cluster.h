@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,9 +24,9 @@
 #include "mpp_thread.h"
 #include "mpp_dev_defs.h"
 
-#define MAX_PRIORITY            1
+#define MAX_PRIORITY 1
 
-typedef void* MppNode;
+typedef void *MppNode;
 
 typedef MPP_RET (*TaskProc)(void *param);
 

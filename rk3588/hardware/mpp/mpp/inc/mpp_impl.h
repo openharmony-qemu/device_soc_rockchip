@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,9 +21,9 @@
 #include "rk_type.h"
 #include "mpp_err.h"
 
-typedef void* MppDump;
+typedef void *MppDump;
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -40,7 +40,7 @@ MPP_RET mpp_ops_enc_get_pkt(MppDump info, MppPacket pkt);
 MPP_RET mpp_ops_ctrl(MppDump info, MpiCmd cmd);
 MPP_RET mpp_ops_reset(MppDump info);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

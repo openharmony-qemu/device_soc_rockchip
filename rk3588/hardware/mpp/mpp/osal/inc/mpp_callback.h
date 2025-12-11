@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,15 +24,15 @@ typedef MPP_RET (*MppCallBack)(const char *caller, void *ctx, RK_S32 cmd, void *
 
 typedef struct DecCallBackCtx_t {
     MppCallBack callBack;
-    void        *ctx;
-    RK_S32      cmd;
+    void *ctx;
+    RK_S32 cmd;
 } MppCbCtx;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define mpp_callback(ctx, param)  mpp_callback_f(__FUNCTION__, ctx, param)
+#define mpp_callback(ctx, param) mpp_callback_f(__FUNCTION__, ctx, param)
 
 MPP_RET mpp_callback_f(const char *caller, MppCbCtx *ctx, void *param);
 

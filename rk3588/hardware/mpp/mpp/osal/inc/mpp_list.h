@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,8 +33,7 @@ typedef void *(*node_destructor)(void *);
 
 struct mpp_list_node;
 
-class mpp_list : public MppMutexCond
-{
+class mpp_list : public MppMutexCond {
 public:
     mpp_list(node_destructor func = NULL);
     ~mpp_list();
@@ -72,14 +71,14 @@ public:
     MPP_RET wait_ge(RK_S64 timeout, RK_S32 val);
 
 private:
-    node_destructor         destroy;
-    struct mpp_list_node    *head;
-    RK_S32                  count;
-    static RK_U32           keys;
-    static RK_U32           get_key();
+    node_destructor destroy;
+    struct mpp_list_node *head;
+    RK_S32 count;
+    static RK_U32 keys;
+    static RK_U32 get_key();
 
     mpp_list(const mpp_list &);
-    mpp_list &operator=(const mpp_list &);
+    mpp_list &operator = (const mpp_list &);
 };
 #endif
 
@@ -92,65 +91,56 @@ struct list_head {
     struct list_head *next, *prev;
 };
 
-#define LIST_HEAD_INIT(name) { &(name), &(name) }
+#define LIST_HEAD_INIT(name) \
+    {                        \
+        &(name), &(name)     \
+    }
 
-#define LIST_HEAD(name) \
-    struct list_head name = LIST_HEAD_INIT(name)
+#define LIST_HEAD(name) struct list_head name = LIST_HEAD_INIT(name)
 
-#define INIT_LIST_HEAD(ptr) do { \
-        (ptr)->next = (ptr); (ptr)->prev = (ptr); \
+#define INIT_LIST_HEAD(ptr)  \
+    do {                     \
+        (ptr)->next = (ptr); \
+        (ptr)->prev = (ptr); \
     } while (0)
 
 #define list_for_each_safe(pos, n, head) \
-    for ((pos) = (head)->next, (n) = (pos)->next; (pos) != (head); \
-         (pos) = (n), (n) = (pos)->next)
+    for ((pos) = (head)->next, (n) = (pos)->next; (pos) != (head); (pos) = (n), (n) = (pos)->next)
 
-#define list_entry(ptr, type, member) \
-    (((type) *)((char *)(ptr)-(unsigned long)(&(((type) *)0)->(member))))
+#define list_entry(ptr, type, member) (((type) *)((char *)(ptr) - (unsigned long)(&(((type) *)0)->(member))))
 
-#define list_first_entry(ptr, type, member) \
-        list_entry((ptr)->next, (type), (member))
+#define list_first_entry(ptr, type, member) list_entry((ptr)->next, (type), (member))
 
-#define list_last_entry(ptr, type, member) \
-        list_entry((ptr)->prev, (type), (member))
+#define list_last_entry(ptr, type, member) list_entry((ptr)->prev, (type), (member))
 
-#define list_first_entry_or_null(ptr, type, member) ({ \
-        struct list_head *head__ = (ptr); \
-        struct list_head *pos__ = head__->next; \
+#define list_first_entry_or_null(ptr, type, member)                   \
+    ({                                                                \
+        struct list_head *head__ = (ptr);                             \
+        struct list_head *pos__ = head__->next;                       \
         pos__ != head__ ? list_entry(pos__, (type), (member)) : NULL; \
-})
+    })
 
-#define list_next_entry(pos, type, member) \
-        list_entry((pos)->member.next, type, member)
+#define list_next_entry(pos, type, member) list_entry((pos)->member.next, type, member)
 
-#define list_prev_entry(pos, type, member) \
-        list_entry((pos)->member.prev, (type), (member))
+#define list_prev_entry(pos, type, member) list_entry((pos)->member.prev, (type), (member))
 
-#define list_for_each_entry(pos, head, type, member) \
-    for ((pos) = list_entry((head)->next, (type), (member)); \
-         &(pos)->(member) != (head); \
-         (pos) = list_next_entry((pos), (type), (member)))
+#define list_for_each_entry(pos, head, type, member)                                     \
+    for ((pos) = list_entry((head)->next, (type), (member)); &(pos)->(member) != (head); \
+        (pos) = list_next_entry((pos), (type), (member)))
 
-#define list_for_each_entry_safe(pos, n, head, type, member) \
-    for ((pos) = list_first_entry((head), (type), (member)),  \
-         (n) = list_next_entry((pos), (type), (member)); \
-         &(pos)->(member) != (head);                    \
-         (pos) = (n), (n) = list_next_entry((n), (type), (member)))
+#define list_for_each_entry_safe(pos, n, head, type, member)                                                 \
+    for ((pos) = list_first_entry((head), (type), (member)), (n) = list_next_entry((pos), (type), (member)); \
+        &(pos)->(member) != (head); (pos) = (n), (n) = list_next_entry((n), (type), (member)))
 
-#define list_for_each_entry_reverse(pos, head, type, member) \
-    for ((pos) = list_last_entry((head), (type), (member)); \
-         &(pos)->(member) != (head); \
-         (pos) = list_prev_entry((pos), (type), (member)))
+#define list_for_each_entry_reverse(pos, head, type, member)                            \
+    for ((pos) = list_last_entry((head), (type), (member)); &(pos)->(member) != (head); \
+        (pos) = list_prev_entry((pos), (type), (member)))
 
-#define list_for_each_entry_safe_reverse(pos, n, head, type, member) \
-    for ((pos) = list_last_entry((head), (type), (member)),  \
-         (n) = list_prev_entry((pos), (type), (member)); \
-         &(pos)->(member) != (head);                    \
-         (pos) = (n), (n) = list_prev_entry((n), (type), (member)))
+#define list_for_each_entry_safe_reverse(pos, n, head, type, member)                                        \
+    for ((pos) = list_last_entry((head), (type), (member)), (n) = list_prev_entry((pos), (type), (member)); \
+        &(pos)->(member) != (head); (pos) = (n), (n) = list_prev_entry((n), (type), (member)))
 
-static inline void list_add(struct list_head * new_entry,
-                                struct list_head * prev,
-                                struct list_head * next)
+static inline void list_add(struct list_head *new_entry, struct list_head *prev, struct list_head *next)
 {
     next->prev = new_entry;
     new_entry->next = next;
@@ -168,7 +158,7 @@ static inline void list_add_tail(struct list_head *new_entry, struct list_head *
     list_add(new_entry, head->prev, head);
 }
 
-static inline void list_del(struct list_head * prev, struct list_head * next)
+static inline void list_del(struct list_head *prev, struct list_head *next)
 {
     next->prev = prev;
     prev->next = next;
@@ -212,4 +202,4 @@ void list_sort(void *priv, struct list_head *head, list_cmp_func_t cmp);
 #endif
 
 
-#endif /*__MPP_LIST_H__*/
+#endif /* __MPP_LIST_H__ */

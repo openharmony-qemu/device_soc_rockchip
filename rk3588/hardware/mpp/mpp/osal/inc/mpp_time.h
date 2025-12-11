@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,16 +22,16 @@
 
 #if defined(_WIN32) && !defined(__MINGW32CE__)
 #include <windows.h>
-#define msleep                  Sleep
-#define sleep(x)                Sleep((x)*1000)
+#define msleep Sleep
+#define sleep(x) Sleep((x)*1000)
 #else
 #include <unistd.h>
-#define msleep(x)               usleep((x)*1000)
+#define msleep(x) usleep((x)*1000)
 #endif
 
-typedef void* MppClock;
-typedef void* MppTimer;
-typedef void* MppStopwatch;
+typedef void *MppClock;
+typedef void *MppTimer;
+typedef void *MppStopwatch;
 
 #ifdef __cplusplus
 extern "C" {
@@ -81,7 +81,7 @@ const char *mpp_clock_get_name(MppClock clock);
  * 2. mpp_timer_set_callback
  * 3. mpp_timer_set_timing(initial, interval)
  * 4. mpp_timer_set_enable(initial, 1)
- *    ... running ...
+ * ... running ...
  * 5. mpp_timer_set_enable(initial, 0)
  * 6. mpp_timer_put
  */
@@ -99,7 +99,7 @@ void mpp_timer_put(MppTimer timer);
  * 1. mpp_stopwatch_get
  * 2. mpp_stopwatch_setup(max_count, show_on_exit)
  * 3. mpp_stopwatch_record(event)
- *    ... running ...
+ * ... running ...
  * 4. mpp_stopwatch_record(event)
  * 5. mpp_stopwatch_put (show events and time)
  */
@@ -114,25 +114,26 @@ RK_S64 mpp_stopwatch_elapsed_time(MppStopwatch stopwatch);
 #endif
 
 #ifdef __cplusplus
-class AutoTiming
-{
+class AutoTiming {
 public:
     AutoTiming(const char *name = "AutoTiming");
     ~AutoTiming();
+
 private:
-    const char  *mName;
-    RK_S64      mStart;
-    RK_S64      mEnd;
+    const char *mName;
+    RK_S64 mStart;
+    RK_S64 mEnd;
 
     AutoTiming(const AutoTiming &);
-    AutoTiming &operator = (const AutoTiming&);
+    AutoTiming &operator = (const AutoTiming &);
 };
 
 #endif
 
-#define AUTO_TIMER_STRING(name, cnt)        name ## cnt
-#define AUTO_TIMER_NAME_STRING(name, cnt)   AUTO_TIMER_STRING(name, cnt)
-#define AUTO_TIMER_NAME(name)               AUTO_TIMER_NAME_STRING(name, __COUNTER__)
-#define AUTO_TIMING()                       AutoTiming AUTO_TIMER_NAME(auto_timing)(__FUNCTION__)
+#define AUTO_TIMER_STRING(name, cnt) name##cnt
+#define AUTO_TIMER_NAME_STRING(name, cnt) AUTO_TIMER_STRING(name, cnt)
+#define AUTO_TIMER_NAME(name) AUTO_TIMER_NAME_STRING(name, __COUNTER__)
+#define AUTO_TIMING() AutoTiming AUTO_TIMER_NAME(auto_timing)(__FUNCTION__)
 
-#endif /*__MPP_TIME_H__*/
+#endif \
+    /* __MPP_TIME_H__ */
