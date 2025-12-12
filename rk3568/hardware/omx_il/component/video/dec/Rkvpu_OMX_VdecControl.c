@@ -493,7 +493,8 @@ OMX_ERRORTYPE Rkvpu_OMX_FlushPort(OMX_COMPONENTTYPE *pOMXComponent, OMX_S32 port
     ROCKCHIP_OMX_DATABUFFER    *pDataPortBuffer[2] = {NULL, NULL};
     ROCKCHIP_OMX_MESSAGE       *message = NULL;
     OMX_S32                semValue = 0;
-    int i = 0, maxBufferNum = 0;
+    int i = 0;
+    int maxBufferNum = 0;
     pRockchipPort = &pRockchipComponent->pRockchipPort[portIndex];
     while (Rockchip_OSAL_GetElemNum(&pRockchipPort->bufferQ) > 0) {
         Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->pRockchipPort[portIndex].bufferSemID, &semValue);
@@ -579,8 +580,9 @@ OMX_ERRORTYPE Rkvpu_OMX_FlushPort(OMX_COMPONENTTYPE *pOMXComponent, OMX_S32 port
     while (1) {
         OMX_S32 cnt = 0;
         Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->pRockchipPort[portIndex].bufferSemID, &cnt);
-        if (cnt <= 0)
+        if (cnt <= 0) {
             break;
+        }
         Rockchip_OSAL_SemaphoreWait(pRockchipComponent->pRockchipPort[portIndex].bufferSemID);
     }
     Rockchip_OSAL_ResetQueue(&pRockchipPort->bufferQ);

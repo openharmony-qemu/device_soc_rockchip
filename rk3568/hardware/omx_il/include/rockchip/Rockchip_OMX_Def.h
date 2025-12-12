@@ -237,9 +237,7 @@ typedef enum {
      * --------------------------------------------------------------
      */
     kMetadataBufferTypeGrallocSource = 1,
-
     // Add more here...
-
 } MetadataBufferType;
 
 #endif

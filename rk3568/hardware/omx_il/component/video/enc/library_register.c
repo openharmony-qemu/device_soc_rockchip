@@ -39,9 +39,10 @@ OSCL_EXPORT_REF int Rockchip_OMX_COMPONENT_Library_Register(RockchipRegisterComp
 {
     FunctionIn();
 
-    if (rockchipComponents == NULL)
+    if (rockchipComponents == NULL) {
         goto EXIT;
-
+    }
+        
     unsigned int i = 0;
     for (i = 0; i < SIZE_OF_ENC_CORE; i++) {
         Rockchip_OSAL_Strcpy(rockchipComponents[i]->componentName, (OMX_PTR)enc_core[i].compName);

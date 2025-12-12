@@ -128,7 +128,7 @@ OMX_API OMX_ERRORTYPE OMX_APIENTRY OMX_ComponentNameEnum(
         goto EXIT;
     }
 
-    snprintf(cComponentName, nNameLength, "%s", gComponentList[nIndex].component.componentName);
+    snprintf(cComponentName, nNameLength, "%.*s", (int)(nNameLength - 1), gComponentList[nIndexcomponent].componentName);
     ret = OMX_ErrorNone;
 
 EXIT:

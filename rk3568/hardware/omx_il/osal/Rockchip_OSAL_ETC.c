@@ -86,8 +86,9 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
                         retSize = -1;
                         goto EXIT;
                     }
-                    if (feof(pStream))
+                    if (feof(pStream)) {
                         clearerr(pStream);
+                    }
                 }
                 readByte += j;
                 retSize = readByte;
@@ -160,7 +161,9 @@ size_t Rockchip_OSAL_Strlen(const char *str)
 
 static OMX_U32 MeasureTime(struct timeval *start, struct timeval *stop)
 {
-    unsigned long sec, usec, time;
+    unsigned long sec;
+    unsigned long usec;
+    unsigned long time;
 
     sec = stop->tv_sec - start->tv_sec;
     if (stop->tv_usec >= start->tv_usec) {

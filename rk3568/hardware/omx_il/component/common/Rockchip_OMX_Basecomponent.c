@@ -310,8 +310,9 @@ OMX_ERRORTYPE Rockchip_OMX_ComponentStateSet(OMX_COMPONENTTYPE *pOMXComponent, O
                         if (CHECK_PORT_TUNNELED(pRockchipPort) && CHECK_PORT_BUFFER_SUPPLIER(pRockchipPort)) {
                             while (Rockchip_OSAL_GetElemNum(&pRockchipPort->bufferQ) > 0) {
                                 message = (ROCKCHIP_OMX_MESSAGE*)Rockchip_OSAL_Dequeue(&pRockchipPort->bufferQ);
-                                if (message != NULL)
+                                if (message != NULL) {
                                     Rockchip_OSAL_Free(message);
+                                }
                             }
                             ret = pRockchipComponent->rockchip_FreeTunnelBuffer(pRockchipPort, i);
                             if (OMX_ErrorNone != ret) {
@@ -350,8 +351,9 @@ OMX_ERRORTYPE Rockchip_OMX_ComponentStateSet(OMX_COMPONENTTYPE *pOMXComponent, O
                         if (CHECK_PORT_TUNNELED(pRockchipPort) && CHECK_PORT_BUFFER_SUPPLIER(pRockchipPort)) {
                             if (CHECK_PORT_ENABLED(pRockchipPort)) {
                                 ret = pRockchipComponent->rockchip_AllocateTunnelBuffer(pRockchipPort, i);
-                                if (ret != OMX_ErrorNone)
+                                if (ret != OMX_ErrorNone) {
                                     goto EXIT;
+                                }
                             }
                         } else {
                             if (CHECK_PORT_ENABLED(pRockchipPort)) {
@@ -374,9 +376,10 @@ OMX_ERRORTYPE Rockchip_OMX_ComponentStateSet(OMX_COMPONENTTYPE *pOMXComponent, O
                     } else {
                         for (i = 0; i < ALL_PORT_NUM; i++) {
                             Rockchip_OSAL_SignalCreate(&pRockchipComponent->pRockchipPort[i].pauseEvent);
-                            if (pRockchipComponent->pRockchipPort[i].bufferProcessType == BUFFER_SHARE)
+                            if (pRockchipComponent->pRockchipPort[i].bufferProcessType == BUFFER_SHARE) {
                                 Rockchip_OSAL_SignalCreate(&pRockchipComponent->pRockchipPort[i]. \
                                     hAllCodecBufferReturnEvent);
+                            }
                         }
                     }
                     for (i = 0; i < ALL_PORT_NUM; i++) {
@@ -529,9 +532,10 @@ OMX_ERRORTYPE Rockchip_OMX_ComponentStateSet(OMX_COMPONENTTYPE *pOMXComponent, O
                 case OMX_StatePause:
                     for (i = 0; i < pRockchipComponent->portParam.nPorts; i++) {
                         pRockchipPort = &pRockchipComponent->pRockchipPort[i];
-                        if (CHECK_PORT_TUNNELED(pRockchipPort) && CHECK_PORT_BUFFER_SUPPLIER(pRockchipPort) \
-                            && CHECK_PORT_ENABLED(pRockchipPort)) {
-                            OMX_S32 semaValue = 0, cnt = 0;
+                        if (CHECK_PORT_TUNNELED(pRockchipPort) && CHECK_PORT_BUFFER_SUPPLIER(pRockchipPort) &&
+                            CHECK_PORT_ENABLED(pRockchipPort)) {
+                            OMX_S32 semaValue = 0;
+                            OMX_S32 cnt = 0;
                             Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->pRockchipPort[i]. \
                                 bufferSemID, &semaValue);
                             if (Rockchip_OSAL_GetElemNum(&pRockchipPort->bufferQ) > semaValue) {
@@ -941,26 +945,30 @@ OMX_ERRORTYPE Rockchip_OMX_SendCommand(
             omx_trace("Command: OMX_CommandFlush");
             pRockchipComponent->nRkFlags |= RK_VPU_NEED_FLUSH_ON_SEEK;
             ret = Rockchip_SetPortFlush(pRockchipComponent, nParam);
-            if (ret != OMX_ErrorNone)
+            if (ret != OMX_ErrorNone) {
                 goto EXIT;
+            }
             break;
         case OMX_CommandPortDisable :
             omx_trace("Command: OMX_CommandPortDisable");
             ret = Rockchip_SetPortDisable(pRockchipComponent, nParam);
-            if (ret != OMX_ErrorNone)
+            if (ret != OMX_ErrorNone) {
                 goto EXIT;
+            }
             break;
         case OMX_CommandPortEnable :
             omx_trace("Command: OMX_CommandPortEnable");
             ret = Rockchip_SetPortEnable(pRockchipComponent, nParam);
-            if (ret != OMX_ErrorNone)
+            if (ret != OMX_ErrorNone) {
                 goto EXIT;
+            }
             break;
         case OMX_CommandMarkBuffer :
             omx_trace("Command: OMX_CommandMarkBuffer");
             ret = Rockchip_SetMarkBuffer(pRockchipComponent, nParam);
-            if (ret != OMX_ErrorNone)
+            if (ret != OMX_ErrorNone) {
                 goto EXIT;
+            }
             break;
         default:
         break;
@@ -1611,8 +1619,9 @@ OMX_ERRORTYPE Rockchip_OMX_BaseComponent_Destructor(
     Rockchip_OMX_CommandQueue(pRockchipComponent, (OMX_COMMANDTYPE)ROCKCHIP_OMX_CommandComponentDeInit, 0, NULL);
     Rockchip_OSAL_SleepMillisec(0);
     Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->msgSemaphoreHandle, &semaValue);
-    if (semaValue == 0)
+    if (semaValue == 0) {
         Rockchip_OSAL_SemaphorePost(pRockchipComponent->msgSemaphoreHandle);
+    }
     Rockchip_OSAL_SemaphorePost(pRockchipComponent->msgSemaphoreHandle);
 
     Rockchip_OSAL_ThreadTerminate(pRockchipComponent->hMessageHandler);

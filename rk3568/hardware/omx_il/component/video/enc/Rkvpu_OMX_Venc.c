@@ -124,7 +124,8 @@ static const CodeMap kCodeMap[] = {
 
 int calc_plane(int width, int height)
 {
-    int mbX, mbY;
+    int mbX;
+    int mbY;
 
     mbX = (width + 15) / 16; // 15:byte alignment, 16:byte alignment
     mbY = (height + 15) / 16; // 15:byte alignment, 16:byte alignment
@@ -340,7 +341,9 @@ OMX_U32 Rkvpu_N12_Process(OMX_COMPONENTTYPE *pOMXComponent, RockchipVideoPlane *
     ROCKCHIP_OMX_BASECOMPONENT *pRockchipComponent = (ROCKCHIP_OMX_BASECOMPONENT *)pOMXComponent->pComponentPrivate;
     RKVPU_OMX_VIDEOENC_COMPONENT *pVideoEnc = (RKVPU_OMX_VIDEOENC_COMPONENT *)pRockchipComponent->hComponentHandle;
     ROCKCHIP_OMX_BASEPORT *pOutPort = &pRockchipComponent->pRockchipPort[OUTPUT_PORT_INDEX];
-    RK_U32 new_width = 0, new_height = 0, len = 0;
+    RK_U32 new_width = 0;
+    RK_U32 new_height = 0;
+    RK_U32 len = 0;
     OMX_U32 Width_in = pOutPort->portDefinition.format.video.nFrameWidth;
     OMX_U32 Height_in =  pOutPort->portDefinition.format.video.nFrameHeight;
     OMX_U32 Width = pOutPort->portDefinition.format.video.nFrameWidth;
@@ -607,7 +610,8 @@ OMX_BOOL Rkvpu_SendInputData(OMX_COMPONENTTYPE *pOMXComponent)
 
 #ifdef USE_STOREMETADATA
         if (pVideoEnc->bStoreMetaData && !pRockchipComponent->bSaveFlagEOS) {
-            OMX_U32 aPhy_address = 0, len = 0;
+            OMX_U32 aPhy_address = 0;
+            OMX_U32 len = 0;
 
             ret = Rkvpu_ProcessStoreMetaData(pOMXComponent, inputUseBuffer->bufferHeader, &aPhy_address, &len);
             p_vpu_ctx = pVideoEnc->vpu_ctx; // may be reconfig in preprocess
@@ -911,11 +915,13 @@ OMX_ERRORTYPE Rkvpu_OMX_InputBufferProcess(OMX_HANDLETYPE hComponent)
                (!pVideoEnc->bExitBufferProcessThread)) {
             if ((CHECK_PORT_BEING_FLUSHED(rockchipInputPort)) ||
                 (((ROCKCHIP_OMX_EXCEPTION_STATE)rockchipOutputPort->exceptionFlag != GENERAL_STATE) &&
-                    ((ROCKCHIP_OMX_ERRORTYPE)ret == OMX_ErrorInputDataDecodeYet)))
+                    ((ROCKCHIP_OMX_ERRORTYPE)ret == OMX_ErrorInputDataDecodeYet))) {
+                        break;
+                    }
+                
+            if (rockchipInputPort->portState != OMX_StateIdle) {
                 break;
-
-            if (rockchipInputPort->portState != OMX_StateIdle)
-                break;
+            }
 
             Rockchip_OSAL_MutexLock(srcInputUseBuffer->bufferMutex);
             if ((ROCKCHIP_OMX_ERRORTYPE)ret != OMX_ErrorInputDataDecodeYet) {
@@ -970,8 +976,9 @@ OMX_ERRORTYPE Rkvpu_OMX_OutputBufferProcess(OMX_HANDLETYPE hComponent)
 
         while ((Rkvpu_Check_BufferProcess_State(pRockchipComponent, OUTPUT_PORT_INDEX)) &&
                (!pVideoEnc->bExitBufferProcessThread)) {
-            if (CHECK_PORT_BEING_FLUSHED(rockchipOutputPort))
+            if (CHECK_PORT_BEING_FLUSHED(rockchipOutputPort)) {
                 break;
+            }
 
             Rockchip_OSAL_MutexLock(dstOutputUseBuffer->bufferMutex);
             if ((dstOutputUseBuffer->dataValid != OMX_TRUE) &&
@@ -1244,7 +1251,7 @@ OMX_ERRORTYPE omx_open_vpuenc_context(RKVPU_OMX_VIDEOENC_COMPONENT *pVideoEnc)
     Rockchip_OSAL_MutexLock(&g_mutex);
     if (handle == NULL) {
         for (int i = 0; i < (int)ARRAY_SIZE(g_libVpu); i++) {
-            if ((handle = dlopen(g_libVpu[i], RTLD_LAZY))== NULL) {
+            if ((handle = dlopen(g_libVpu[i], RTLD_LAZY)) == NULL) {
                 continue;
             }
             openCtx = dlsym(handle, "vpu_open_context");
@@ -1271,7 +1278,6 @@ OMX_ERRORTYPE omx_open_vpuenc_context(RKVPU_OMX_VIDEOENC_COMPONENT *pVideoEnc)
     pVideoEnc->rkvpu_close_cxt = (OMX_S32 (*)(VpuCodecContext_t **ctx))dlsym(pVideoEnc->rkapi_hdl,
         "vpu_close_context");
     return OMX_ErrorNone;
-    
 }
 
 OMX_ERRORTYPE Rkvpu_Enc_DebugSwitchfromPropget(
@@ -1314,7 +1320,8 @@ OMX_ERRORTYPE Rkvpu_Enc_ComponentInit(OMX_COMPONENTTYPE *pOMXComponent)
     ROCKCHIP_OMX_BASEPORT           *pRockchipInputPort  = &pRockchipComponent->pRockchipPort[INPUT_PORT_INDEX];
     VpuCodecContext_t               *p_vpu_ctx           = NULL;
     EncParameter_t *EncParam = NULL;
-    RK_U32 new_width = 0, new_height = 0;
+    RK_U32 new_width = 0;
+    RK_U32 new_height = 0;
 
     if (omx_open_vpuenc_context(pVideoEnc) != OMX_ErrorNone) {
         ret = OMX_ErrorInsufficientResources;

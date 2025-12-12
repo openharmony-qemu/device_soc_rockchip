@@ -66,9 +66,10 @@ OMX_U32 Get_Video_HorAlign(OMX_VIDEO_CODINGTYPE codecId, OMX_U32 width, OMX_U32 
         if (codecProfile == CODEC_HEVC_PROFILE_MAIN10 || codecProfile == CODEC_HEVC_PROFILE_MAIN10_HDR10) {
             // 10:byte alignment, 8:byte alignment, 255:byte alignment, 256:byte alignment
             stride = (((width * 10 / 8 + 255) & ~(255)) | (256));
-        } else
+        } else {
             // 255:byte alignment, 256:byte alignment
             stride = ((width + 255) & (~255)) | (256);
+        }
     } else if (codecId == (OMX_VIDEO_CODINGTYPE)CODEC_OMX_VIDEO_CodingVP9) {
 #ifdef AVS100
         // 255:byte alignment, 256:byte alignment
@@ -94,9 +95,10 @@ OMX_U32 Get_Video_HorAlign(OMX_VIDEO_CODINGTYPE codecId, OMX_U32 width, OMX_U32 
                 if (codecProfile == OMX_VIDEO_AVCProfileHigh10) {
                     // 10:byte alignment, 8:byte alignment, 255:byte alignment, 256:byte alignment
                     stride = (((width * 10 / 8 + 255) & ~(255)) | (256));
-                } else
+                } else {
                     // 255:byte alignment, 256:byte alignment
                     stride = ((width + 255) & (~255)) | (256);
+                }
             }
         }
     }
