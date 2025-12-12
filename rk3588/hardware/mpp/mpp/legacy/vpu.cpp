@@ -17,8 +17,8 @@
 #define MODULE_TAG "vpu"
 
 #include <sys/ioctl.h>
-#include <errno.h>
-#include <string.h>
+#include <cerrno>
+#include <cstring>
 #include <securec.h>
 #include "vpu.h"
 #include "rk_mpi.h"
@@ -91,28 +91,33 @@ static RK_S32 vpu_api_set_client_type(int dev, RK_S32 client_type)
         mpp_req.offset = 0;
         mpp_req.data_ptr = REQ_DATA_PTR(&client_data);
         ret = (RK_S32)ioctl(dev, MPP_IOC_CFG_V1, &mpp_req);
-    } else {
-        if (vpu_api_ioctl_version < 0) {
-            ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE, client_type);
-            if (!ret) {
-                vpu_api_ioctl_version = 0;
-            } else {
-                ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE_U32, client_type);
-                if (!ret) {
-                    vpu_api_ioctl_version = 1;
-                }
-            }
-
-            if (ret) {
-                mpp_err_f("can not find valid client type ioctl\n");
-            }
-            mpp_assert(ret == 0);
-        } else {
-            RK_U32 cmd = (vpu_api_ioctl_version == 0) ? (VPU_IOC_SET_CLIENT_TYPE) : (VPU_IOC_SET_CLIENT_TYPE_U32);
-
-            ret = ioctl(dev, cmd, client_type);
+        if (ret) {
+            mpp_err_f("set client type failed ret %d errno %d\n", ret, errno);
         }
-    }
+        return ret;
+    } 
+    if (vpu_api_ioctl_version < 0) {
+        ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE, client_type);
+        if (!ret) {
+            vpu_api_ioctl_version = 0;
+        } else {
+            ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE_U32, client_type);
+            if (!ret) {
+                vpu_api_ioctl_version = 1;
+            }
+        }
+
+        if (ret) {
+            mpp_err_f("can not find valid client type ioctl\n");
+        }
+        mpp_assert(ret == 0);
+    } else {
+        RK_U32 cmd = (vpu_api_ioctl_version == 0) ?
+                        (VPU_IOC_SET_CLIENT_TYPE) :
+                        (VPU_IOC_SET_CLIENT_TYPE_U32);
+
+        ret = ioctl(dev, cmd, client_type);
+    }    
 
     if (ret) {
         mpp_err_f("set client type failed ret %d errno %d\n", ret, errno);
@@ -238,7 +243,11 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
         } else {
             MppReqV1 reqs_tmp[NUM_REQS];
             reqs[MPP_REQ_READ_INDEX].flag |= VPU_MPP_FLAGS_LAST_MSG;
-            memcpy_s(reqs_tmp, sizeof(MppReqV1) * NUM_REQS, reqs, sizeof(MppReqV1) * NUM_REQS);
+            ret = memcpy_s(reqs_tmp, sizeof(MppReqV1) * NUM_REQS, reqs, sizeof(MppReqV1) * NUM_REQS);
+            if (ret != EOK) {
+                mpp_err_f("copy reqs_tmp failed, error code: %{public}d", ret);
+                return ret;
+            }
             ret = (RK_S32)ioctl(fd, MPP_IOC_CFG_V1, &reqs_tmp);
         }
     } else {
@@ -258,7 +267,7 @@ RK_S32 VPUClientSendReg2(RK_S32 socket, RK_S32 offset, RK_S32 size, void *param)
 {
     RK_S32 ret = 0;
 
-    if (param == NULL) {
+    if (param == nullptr) {
         mpp_err_f("input param is NULL");
         return 1;
     }
@@ -341,7 +350,10 @@ RK_U32 VPUCheckSupportWidth()
     if (fd < 0) {
         fd = open("/dev/vpu-service", O_RDWR | O_CLOEXEC);
     }
-    memset_s(&hwCfg, sizeof(VPUHwDecConfig_t), 0, sizeof(VPUHwDecConfig_t));
+    RK_S32 ret = memset_s(&hwCfg, sizeof(VPUHwDecConfig_t), 0, sizeof(VPUHwDecConfig_t));
+    if (ret != EOK) {
+        mpp_err_f("memset_s hwCfg failed, return %d", ret);
+    }
     if (fd >= 0) {
         if (VPUClientGetHwCfg(fd, (RK_U32 *)&hwCfg, sizeof(hwCfg))) {
             mpp_err_f("Get HwCfg failed\n");

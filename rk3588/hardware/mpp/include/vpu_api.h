@@ -247,7 +247,6 @@ typedef struct EncoderOut {
     RK_S32 size;
     RK_S64 timeUs;
     RK_S32 keyFrame;
-
 } EncoderOut_t;
 
 typedef RK_S32 (*VpuFrmRdyCbFunc)(void *cb_ctx);

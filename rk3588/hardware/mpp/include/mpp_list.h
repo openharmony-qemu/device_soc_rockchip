@@ -36,7 +36,7 @@ struct mpp_list_node;
 class mpp_list : public MppMutexCond
 {
 public:
-    mpp_list(node_destructor func = NULL);
+    explicit  mpp_list(node_destructor func = NULL);
     ~mpp_list();
 
     // for FIFO or FILO implement
@@ -149,8 +149,8 @@ struct list_head {
          pos = n, n = list_prev_entry(n, type, member))
 
 static inline void list_add(struct list_head * new_entry,
-                                struct list_head * prev,
-                                struct list_head * next)
+                            struct list_head * prev,
+                            struct list_head * next)
 {
     next->prev = new_entry;
     new_entry->next = next;

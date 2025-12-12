@@ -132,7 +132,6 @@
 
 #include <stdio.h>
 #if defined(_WIN32) && !defined(__MINGW32CE__)
-#define snprintf_s                _snprintf_s
 #define fseeko                  _fseeki64
 
 #include <direct.h>
@@ -299,7 +298,7 @@ static inline RK_U32 mpp_is_32bit()
     const int IS_32BIT = 1;
     const int IS_NOT_32BIT = 0;
     const size_t SIZE_OF_UINT32 = sizeof(uint32_t);
-    return ((sizeof(void *) == SIZE_OF_UINT32) ? (IS_32BIT) : (IS_NOT_32BIT));
+    return ((SIZE_OF_UINT32 == sizeof(void *)) ? (IS_32BIT) : (IS_NOT_32BIT));
 }
 
 static inline RK_S32 mpp_dup(RK_S32 fd)

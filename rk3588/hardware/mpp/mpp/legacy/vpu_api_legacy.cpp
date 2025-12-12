@@ -41,52 +41,68 @@ static MppFrameFormat vpu_pic_type_remap_to_mpp(EncInputPictureType type)
     switch (type) {
         case ENC_INPUT_YUV420_PLANAR: {
             ret = MPP_FMT_YUV420P;
-        } break;
+            break;
+        } 
         case ENC_INPUT_YUV420_SEMIPLANAR: {
             ret = MPP_FMT_YUV420SP;
-        } break;
+            break;
+        } 
         case ENC_INPUT_YUV420_SEMIPLANAR_VU: {
             ret = MPP_FMT_YUV420SP_VU;
-        } break;
+            break;
+        } 
         case ENC_INPUT_YUV422_INTERLEAVED_YUYV: {
             ret = MPP_FMT_YUV422_YUYV;
-        } break;
+            break;
+        } 
         case ENC_INPUT_YUV422_INTERLEAVED_UYVY: {
             ret = MPP_FMT_YUV422_UYVY;
-        } break;
+            break;
+        } 
         case ENC_INPUT_RGB565: {
             ret = MPP_FMT_RGB565;
-        } break;
+            break;
+        } 
         case ENC_INPUT_BGR565: {
             ret = MPP_FMT_BGR565;
-        } break;
+            break;
+        } 
         case ENC_INPUT_RGB555: {
             ret = MPP_FMT_RGB555;
-        } break;
+            break;
+        } 
         case ENC_INPUT_BGR555: {
             ret = MPP_FMT_BGR555;
-        } break;
+            break;
+        } 
         case ENC_INPUT_RGB444: {
             ret = MPP_FMT_RGB444;
-        } break;
+            break;
+        } 
         case ENC_INPUT_BGR444: {
             ret = MPP_FMT_BGR444;
-        } break;
+            break;
+        } 
         case ENC_INPUT_RGB888: {
             ret = MPP_FMT_RGB888;
-        } break;
+            break;
+        } 
         case ENC_INPUT_BGR888: {
             ret = MPP_FMT_BGR888;
-        } break;
+            break;
+        } 
         case ENC_INPUT_RGB101010: {
             ret = MPP_FMT_RGB101010;
-        } break;
+            break;
+        } 
         case ENC_INPUT_BGR101010: {
             ret = MPP_FMT_BGR101010;
-        } break;
+            break;
+        } 
         default: {
             mpp_err("There is no match format, err!!!!!!");
-        } break;
+            break;
+        } 
     }
     return ret;
 }
@@ -139,27 +155,32 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420SP_VU: {
             mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB565:
         case MPP_FMT_BGR565:
         case MPP_FMT_RGB555:
         case MPP_FMT_BGR555: {
             mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", BPP_BGR555 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB888:
         case MPP_FMT_BGR888: {
             mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", BPP_RGB888_BGR888 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
-        } break;
+            break;
+        } 
         case MPP_FMT_ARGB8888:
         case MPP_FMT_ABGR8888:
         case MPP_FMT_BGRA8888:
         case MPP_FMT_RGBA8888: {
             mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride",
                 BPP_ARGB8888_ABGR8888_BGRA8888_RGBA8888 * MPP_ALIGN(width, HORIZONTAL_ALIGNMENT));
-        } break;
+            break;
+        } 
         default: {
             mpp_err("unsupport format 0x%x\n", fmt & MPP_FRAME_FMT_MASK);
-        } break;
+            break;
+        } 
     }
     mpp_enc_cfg_set_s32(enc_cfg, "prep:ver_stride", MPP_ALIGN(height, ver_stride_alignment));
     mpp_enc_cfg_set_s32(enc_cfg, "prep:format", fmt);
@@ -191,20 +212,24 @@ static MPP_RET vpu_api_set_enc_cfg(MppCtx mpp_ctx, MppApi *mpi, MppEncCfg enc_cf
             mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_max_i", H264_MAX_QP_I);
             mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_step", H264_QP_STEP);
             mpp_enc_cfg_set_s32(enc_cfg, "h264:qp_delta_ip", H264_QP_DELTA_IP);
-        } break;
+            break;
+        } 
         case MPP_VIDEO_CodingVP8: {
             mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_init", -1);
             mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_min", 0);
             mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_max", VP8_MAX_QP);
             mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_min_i", 0);
             mpp_enc_cfg_set_s32(enc_cfg, "vp8:qp_max_i", VP8_MAX_QP);
-        } break;
+            break;
+        } 
         case MPP_VIDEO_CodingMJPEG: {
             mpp_enc_cfg_set_s32(enc_cfg, "jpeg:quant", qp);
-        } break;
+            break;
+        } 
         default: {
             mpp_err_f("support encoder coding type %d\n", coding);
-        } break;
+            break;
+        } 
     }
 
     ret = mpi->control(mpp_ctx, MPP_ENC_SET_CFG, enc_cfg);
@@ -221,9 +246,11 @@ static int is_valid_dma_fd(int fd)
     int ret = 1;
     /* detect input file handle */
     int fs_flag = fcntl(fd, F_GETFL, nullptr);
+    if (fs_flag == -1) {
+        ret = 0;
+    }
     int fd_flag = fcntl(fd, F_GETFD, nullptr);
-
-    if (fs_flag == -1 || fd_flag == -1) {
+    if (fd_flag == -1) {
         ret = 0;
     }
 
@@ -250,51 +277,84 @@ static int copy_align_raw_buffer_to_dest(RK_U8 *dst, RK_U8 *src, RK_U32 width, R
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420SP_VU: {
             for (row = 0; row < height; row++) {
-                memcpy_s(dst_buf + row * hor_stride, width, src_buf + index, width);
+                ret = memcpy_s(dst_buf + row * hor_stride, width, src_buf + index, width);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
                 index += width;
             }
             for (row = 0; row < height / YUV_CHROMA_HEIGHT_DIVISOR; row++) {
-                memcpy_s(dst_u + row * hor_stride, width, src_buf + index, width);
+                ret = memcpy_s(dst_u + row * hor_stride, width, src_buf + index, width);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
                 index += width;
             }
-        } break;
+            break;
+        } 
         case MPP_FMT_YUV420P: {
             for (row = 0; row < height; row++) {
-                memcpy_s(dst_buf + row * hor_stride, width, src_buf + index, width);
+                ret = memcpy_s(dst_buf + row * hor_stride, width, src_buf + index, width);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
                 index += width;
             }
             for (row = 0; row < height / YUV_CHROMA_HEIGHT_DIVISOR; row++) {
-                memcpy_s(dst_u + row * hor_stride / YUV_CHROMA_WIDTH_DIVISOR,
+                ret = memcpy_s(dst_u + row * hor_stride / YUV_CHROMA_WIDTH_DIVISOR,
                     width / YUV_CHROMA_WIDTH_DIVISOR, src_buf + index,
                     width / YUV_CHROMA_WIDTH_DIVISOR);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
                 index += width / YUV_CHROMA_WIDTH_DIVISOR;
             }
             for (row = 0; row < height / YUV_CHROMA_HEIGHT_DIVISOR; row++) {
-                memcpy_s(dst_v + row * hor_stride / YUV_CHROMA_WIDTH_DIVISOR,
+                ret = memcpy_s(dst_v + row * hor_stride / YUV_CHROMA_WIDTH_DIVISOR,
                     width / YUV_CHROMA_WIDTH_DIVISOR, src_buf + index,
                     width / YUV_CHROMA_WIDTH_DIVISOR);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
                 index += width / YUV_CHROMA_WIDTH_DIVISOR;
             }
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB888:
         case MPP_FMT_BGR888: {
             for (row = 0; row < height; row++) {
-                memcpy_s(dst_buf + row * hor_stride * RGB888_PIXEL_COMPONENTS, width * RGB888_PIXEL_COMPONENTS,
+                ret = memcpy_s(dst_buf + row * hor_stride * RGB888_PIXEL_COMPONENTS, width * RGB888_PIXEL_COMPONENTS,
                     src_buf + row * width * RGB888_PIXEL_COMPONENTS, width * RGB888_PIXEL_COMPONENTS);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
             }
-        } break;
+            break;
+        } 
         case MPP_FMT_ABGR8888:
         case MPP_FMT_ARGB8888:
         case MPP_FMT_BGRA8888:
         case MPP_FMT_RGBA8888: {
             for (row = 0; row < height; row++) {
-                memcpy_s(dst_buf + row * hor_stride * RGBA8888_PIXEL_COMPONENTS, width * RGBA8888_PIXEL_COMPONENTS,
+                ret = memcpy_s(dst_buf + row * hor_stride * RGBA8888_PIXEL_COMPONENTS, width * RGBA8888_PIXEL_COMPONENTS,
                     src_buf + row * width * RGBA8888_PIXEL_COMPONENTS, width * RGBA8888_PIXEL_COMPONENTS);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy buffer failed, error code: %d", __func__, ret);
+                    break;
+                }
             }
-        } break;
+            break;
+        } 
         default: {
             mpp_err("unsupport align fmt:%d now\n", fmt);
-        } break;
+            break;
+        } 
     }
 
     return ret;
@@ -322,11 +382,20 @@ VpuApiLegacy::VpuApiLegacy()
 
     mpp_create(&mpp_ctx, &mpi);
 
-    memset_s(&frm_rdy_cb, sizeof(FrameRdyCB), 0, sizeof(FrameRdyCB));
-    memset_s(&enc_param, sizeof(enc_param), 0, sizeof(enc_param));
+    int ret = memset_s(&frm_rdy_cb, sizeof(FrameRdyCB), 0, sizeof(FrameRdyCB));
+    if (ret == EOK) {
+        vpu_api_dbg_func("memset_s frm_rdy_cb failed, error code: %d", ret);
+    }
+    ret = memset_s(&enc_param, sizeof(enc_param), 0, sizeof(enc_param));
+    if (ret == EOK) {
+        vpu_api_dbg_func("memset_s enc_param failed, error code: %d", ret);
+    }
 
     mlvec = nullptr;
-    memset_s(&mlvec_dy_cfg, sizeof(mlvec_dy_cfg), 0, sizeof(mlvec_dy_cfg));
+    ret = memset_s(&mlvec_dy_cfg, sizeof(mlvec_dy_cfg), 0, sizeof(mlvec_dy_cfg));
+    if (ret == EOK) {
+        vpu_api_dbg_func("memset_s mlvec_dy_cfg failed, error code: %d", ret);
+    }
 
     vpu_api_dbg_func("leave\n");
 }
@@ -473,10 +542,14 @@ RK_S32 VpuApiLegacy::init(VpuCodecContext *ctx, RK_U8 *extraData, RK_U32 extra_s
 
         format = vpu_pic_type_remap_to_mpp((EncInputPictureType)param->format);
 
-        memcpy_s(&enc_param, sizeof(enc_param), param, sizeof(enc_param));
+        RK_S32 sRet = memcpy_s(&enc_param, sizeof(enc_param), param, sizeof(enc_param));
+        if (sRet != EOK) {
+            mpp_err("%{public}s: copy enc_param failed, error code: %d", __func__, sRet);
+            return sRet;
+        }
 
         if (MPP_OK == vpu_api_mlvec_check_cfg(param)) {
-            if (nullptr == mlvec) {
+            if (mlvec == nullptr) {
                 vpu_api_mlvec_init(&mlvec);
                 vpu_api_mlvec_setup(mlvec, mpp_ctx, mpi, enc_cfg);
             }
@@ -489,8 +562,8 @@ RK_S32 VpuApiLegacy::init(VpuCodecContext *ctx, RK_U8 *extraData, RK_U32 extra_s
         vpu_api_set_enc_cfg(mpp_ctx, mpi, enc_cfg, coding, format, param);
 
         if (!mlvec) {
-            if (nullptr == enc_hdr_pkt) {
-                if (nullptr == enc_hdr_buf) {
+            if (enc_hdr_pkt == nullptr) {
+                if (enc_hdr_buf == nullptr) {
                     enc_hdr_buf_size = SZ_1K;
                     enc_hdr_buf = mpp_calloc_size(RK_U8, enc_hdr_buf_size);
                 }
@@ -599,49 +672,61 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
         case MPP_FMT_YUV420SP: {
             vframe->ColorType = VPU_OUTPUT_FORMAT_YUV420_SEMIPLANAR;
             vframe->OutputWidth = 0x20;
-        } break;
+            break;
+        } 
         case MPP_FMT_YUV420SP_10BIT: {
             vframe->ColorType = VPU_OUTPUT_FORMAT_YUV420_SEMIPLANAR;
             vframe->ColorType |= VPU_OUTPUT_FORMAT_BIT_10;
             vframe->OutputWidth = 0x22;
-        } break;
+            break;
+        } 
         case MPP_FMT_YUV422SP: {
             vframe->ColorType = VPU_OUTPUT_FORMAT_YUV422;
             vframe->OutputWidth = 0x10;
-        } break;
+            break;
+        } 
         case MPP_FMT_YUV422SP_10BIT: {
             vframe->ColorType = VPU_OUTPUT_FORMAT_YUV422;
             vframe->ColorType |= VPU_OUTPUT_FORMAT_BIT_10;
             vframe->OutputWidth = 0x23;
-        } break;
+            break;
+        } 
         case MPP_FMT_YUV444SP: {
             vframe->ColorType = VPU_OUTPUT_FORMAT_YUV444;
             vframe->OutputWidth = 0x11;
-        } break;
+            break;
+        } 
         default: {
-        } break;
+            break;
+        } 
     }
 
     switch (mpp_frame_get_fmt(mframe) & MPP_FRAME_FBC_MASK) {
         case MPP_FRAME_FBC_AFBC_V1: {
             vframe->ColorType |= VPU_OUTPUT_FORMAT_FBC_AFBC_V1;
-        } break;
+            break;
+        } 
         case MPP_FRAME_FBC_AFBC_V2: {
             vframe->ColorType |= VPU_OUTPUT_FORMAT_FBC_AFBC_V2;
-        } break;
+            break;
+        } 
         default: {
-        } break;
+            break;
+        } 
     }
 
     switch (colorTrc) {
         case MPP_FRAME_TRC_SMPTEST2084: {
             vframe->ColorType |= VPU_OUTPUT_FORMAT_DYNCRANGE_HDR10; // HDR10
-        } break;
+            break;
+        } 
         case MPP_FRAME_TRC_ARIB_STD_B67: {
             vframe->ColorType |= VPU_OUTPUT_FORMAT_DYNCRANGE_HDR_HLG; // HDR_HLG
-        } break;
+            break;
+        } 
         default: {
-        } break;
+            break;
+        } 
     }
 
     if (buf) {
@@ -696,6 +781,7 @@ static void setup_video_frame_meta(VideoFrame_t *videoFrame, MppFrame mframe)
 
 RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut_t *aDecOut)
 {
+    RK_S32 sRet = 0;
     MPP_RET ret = MPP_OK;
     MppFrame mframe = nullptr;
     MppPacket packet = nullptr;
@@ -745,7 +831,10 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
         if (fd_input) {
             MppBufferInfo inputCommit;
 
-            memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+            sRet = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+            if (sRet == EOK) {
+                vpu_api_dbg_func("memset_s inputCommit failed, error code: %d", sRet);
+            }
             inputCommit.type = MPP_BUFFER_TYPE_ION;
             inputCommit.size = pkt->size;
             inputCommit.fd = fd;
@@ -756,7 +845,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
                 goto DECODE_OUT;
             }
         } else {
-            if (nullptr == pkt->data) {
+            if (pkt->data == nullptr) {
                 ret = MPP_ERR_NULL_PTR;
                 goto DECODE_OUT;
             }
@@ -766,7 +855,11 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
                 mpp_err_f("allocate input picture buffer failed\n");
                 goto DECODE_OUT;
             }
-            memcpy_s((RK_U8 *)mpp_buffer_get_ptr(str_buf), pkt->size, pkt->data, pkt->size);
+            sRet = memcpy_s((RK_U8 *)mpp_buffer_get_ptr(str_buf), pkt->size, pkt->data, pkt->size);
+            if (sRet != EOK) {
+                mpp_err_f("%{public}s: copy pkt->data failed, error code: %d", sRet);
+                goto DECODE_OUT;
+            }
         }
 
         fd = (RK_S32)(aDecOut->timeUs & 0xffffffff);
@@ -777,7 +870,10 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
         if (fd_output) {
             MppBufferInfo outputCommit;
 
-            memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+            sRet = memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+            if (sRet == EOK) {
+                vpu_api_dbg_func("memset_s outputCommit failed, error code: %d", sRet);
+            }
             /* in order to avoid interface change use space in output to transmit information */
             outputCommit.type = MPP_BUFFER_TYPE_ION;
             outputCommit.fd = fd;
@@ -862,9 +958,12 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
 
             if (fd_output) {
                 mpp_log_f("fd for output is invalid!\n");
-                // TODO: check frame format and allocate correct buffer
                 aDecOut->data = mpp_malloc(RK_U8, width * height * YUV420P_PIXEL_SIZE);
-                memcpy_s(aDecOut->data, aDecOut->size, (RK_U8 *)mpp_buffer_get_ptr(pic_buf), aDecOut->size);
+                sRet = memcpy_s(aDecOut->data, aDecOut->size, (RK_U8 *)mpp_buffer_get_ptr(pic_buf), aDecOut->size);
+                if (sRet != EOK) {
+                    mpp_err("%{public}s: copy pkt->data failed, error code: %d", __func__, sRet);
+                    goto DECODE_OUT;
+                }
             }
 
             vpu_api_dbg_func("get frame %p size %d\n", mframe, len);
@@ -897,7 +996,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
         if (MPP_OK == ret) {
             pkt->size = 0;
         }
-        if (ret || nullptr == mframe) {
+        if (ret || mframe == nullptr) {
             aDecOut->size = 0;
         } else {
             VPU_FRAME *vframe = nullptr;
@@ -906,12 +1005,18 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
             if (dec_out_frm_struct_type) {
                 VideoFrame_t *videoFrame = (VideoFrame_t *)aDecOut->data;
                 vframe = &videoFrame->vpuFrame;
-                memset_s(videoFrame, sizeof(VideoFrame_t), 0, sizeof(VideoFrame_t));
+                sRet = memset_s(videoFrame, sizeof(VideoFrame_t), 0, sizeof(VideoFrame_t));
+                if (sRet == EOK) {
+                    vpu_api_dbg_func("memset_s videoFrame failed, error code: %d", sRet);
+                }
                 aDecOut->size = sizeof(VideoFrame_t);
                 setup_video_frame_meta(videoFrame, mframe);
             } else {
                 vframe = (VPU_FRAME *)aDecOut->data;
-                memset_s(vframe, sizeof(VPU_FRAME), 0, sizeof(VPU_FRAME));
+                sRet = memset_s(vframe, sizeof(VPU_FRAME), 0, sizeof(VPU_FRAME));
+                if (sRet == EOK) {
+                    vpu_api_dbg_func("memset_s vframe failed, error code: %d", sRet);
+                }
                 aDecOut->size = sizeof(VPU_FRAME);
             }
 
@@ -922,9 +1027,9 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
 
             if (mpp_frame_get_eos(mframe)) {
                 set_eos = 1;
-                if (buf == nullptr) {
-                    aDecOut->size = 0;
-                }
+            }
+            if (buf == nullptr) {
+                aDecOut->size = 0;
             }
             if (vpu_api_debug & VPU_API_DBG_OUTPUT) {
                 mpp_log("get one frame pts %lld, fd 0x%x, poc %d, errinfo %x, discard %d, eos %d, verr %d",
@@ -999,7 +1104,7 @@ RK_S32 VpuApiLegacy::decode_getoutframe(VpuCodecContext *ctx, DecoderOut_t *aDec
         return VPU_API_ERR_VPU_CODEC_INIT;
     }
 
-    if (nullptr == mpi) {
+    if (mpi == nullptr) {
         aDecOut->size = 0;
         return 0;
     }
@@ -1011,7 +1116,7 @@ RK_S32 VpuApiLegacy::decode_getoutframe(VpuCodecContext *ctx, DecoderOut_t *aDec
     }
 
     ret = mpi->decode_get_frame(mpp_ctx, &mframe);
-    if (ret || nullptr == mframe) {
+    if (ret || mframe == nullptr) {
         aDecOut->size = 0;
     } else {
         MppBuffer buf = mpp_frame_get_buffer(mframe);
@@ -1019,12 +1124,18 @@ RK_S32 VpuApiLegacy::decode_getoutframe(VpuCodecContext *ctx, DecoderOut_t *aDec
         if (dec_out_frm_struct_type) {
             VideoFrame_t *videoFrame = (VideoFrame_t *)aDecOut->data;
             vframe = &videoFrame->vpuFrame;
-            memset_s(videoFrame, sizeof(VideoFrame_t), 0, sizeof(VideoFrame_t));
+            ret = memset_s(videoFrame, sizeof(VideoFrame_t), 0, sizeof(VideoFrame_t));
+            if (ret == EOK) {
+                vpu_api_dbg_func("memset_s videoFrame failed, error code: %d", ret);
+            }
             aDecOut->size = sizeof(VideoFrame_t);
             setup_video_frame_meta(videoFrame, mframe);
         } else {
             vframe = (VPU_FRAME *)aDecOut->data;
-            memset_s(vframe, sizeof(VPU_FRAME), 0, sizeof(VPU_FRAME));
+            ret = memset_s(vframe, sizeof(VPU_FRAME), 0, sizeof(VPU_FRAME));
+            if (ret == EOK) {
+                vpu_api_dbg_func("memset_s vframe failed, error code: %d", ret);
+            }
             aDecOut->size = sizeof(VPU_FRAME);
         }
 
@@ -1080,7 +1191,7 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
         return VPU_API_ERR_UNKNOW;
     }
 
-    if (nullptr == aEncInStrm->buf || 0 == aEncInStrm->size) {
+    if (aEncInStrm->buf == nullptr || aEncInStrm->size == 0) {
         mpp_err("invalid input buffer %p size %d\n", aEncInStrm->buf, aEncInStrm->size);
         return VPU_API_ERR_UNKNOW;
     }
@@ -1105,31 +1216,36 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
     mpp_frame_set_width(frame, width);
     mpp_frame_set_height(frame, height);
     mpp_frame_set_ver_stride(frame, ver_stride);
-    switch (format & MPP_FRAME_FMT_MASK) {
+    switch ((format) & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420P:
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420SP_VU: {
             mpp_frame_set_hor_stride(frame, hor_stride);
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB565:
         case MPP_FMT_BGR565:
         case MPP_FMT_RGB555:
         case MPP_FMT_BGR555: {
             mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGB565);
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB888:
         case MPP_FMT_BGR888: {
             mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_BGR888);
-        } break;
+            break;
+        } 
         case MPP_FMT_ARGB8888:
         case MPP_FMT_ABGR8888:
         case MPP_FMT_BGRA8888:
         case MPP_FMT_RGBA8888: {
             mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGBA8888);
-        } break;
+            break;
+        } 
         default: {
             mpp_err("unsupport format 0x%x\n", format & MPP_FRAME_FMT_MASK);
-        } break;
+            break;
+        } 
     }
     mpp_frame_set_fmt(frame, (MppFrameFormat)(format & MPP_FRAME_FMT_MASK));
     if (aEncInStrm->nFlags) {
@@ -1144,7 +1260,10 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
     if (fd_input) {
         MppBufferInfo inputCommit;
 
-        memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+        RK_S32 sRet = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+        if (sRet == EOK) {
+            vpu_api_dbg_func("memset_s inputCommit failed, error code: %d", sRet);
+        }
         inputCommit.type = MPP_BUFFER_TYPE_ION;
         inputCommit.size = aEncInStrm->size;
         inputCommit.fd = fd;
@@ -1155,7 +1274,7 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
             goto ENCODE_OUT;
         }
     } else {
-        if (nullptr == aEncInStrm->buf) {
+        if (aEncInStrm->buf == nullptr) {
             ret = MPP_ERR_NULL_PTR;
             goto ENCODE_OUT;
         }
@@ -1165,7 +1284,11 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
             mpp_err_f("allocate input picture buffer failed\n");
             goto ENCODE_OUT;
         }
-        memcpy_s((RK_U8 *)mpp_buffer_get_ptr(pic_buf), aEncInStrm->size, aEncInStrm->buf, aEncInStrm->size);
+        RK_S32 sRet = memcpy_s((RK_U8 *)mpp_buffer_get_ptr(pic_buf), aEncInStrm->size, aEncInStrm->buf, aEncInStrm->size);
+        if (sRet != EOK) {
+            mpp_err("%{public}s: copy pic_buf failed, error code: %d", __func__, sRet);
+            goto ENCODE_OUT;
+        }
     }
 
     fd = (RK_S32)(aEncOut->timeUs & 0xffffffff);
@@ -1177,7 +1300,10 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
         RK_S32 *tmp = (RK_S32 *)(&aEncOut->timeUs);
         MppBufferInfo outputCommit;
 
-        memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+        RK_S32 sRet = memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+        if (sRet == EOK) {
+            vpu_api_dbg_func("memset_s inputCommit failed, error code: %d", sRet);
+        }
         /* in order to avoid interface change use space in output to transmit information */
         outputCommit.type = MPP_BUFFER_TYPE_ION;
         outputCommit.fd = fd;
@@ -1300,9 +1426,17 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
             if (ctx->videoCoding == OMX_RK_VIDEO_CodingAVC) {
                 // remove first 00 00 00 01
                 length -= AVC_HEADER_SIZE;
-                memcpy_s(aEncOut->data, aEncOut->size, src + START_OFFSET, length);
+                RK_S32 sRet = memcpy_s(aEncOut->data, aEncOut->size, src + START_OFFSET, length);
+                if (sRet != EOK) {
+                    mpp_err("%{public}s: copy aEncOut->data failed, error code: %d", __func__, sRet);
+                    goto ENCODE_OUT;
+                }
             } else {
-                memcpy_s(aEncOut->data, aEncOut->size, src, length);
+                RK_S32 sRet = memcpy_s(aEncOut->data, aEncOut->size, src, length);
+                if (sRet != EOK) {
+                    mpp_err("%{public}s: copy aEncOut->data failed, error code: %d", __func__, sRet);
+                    goto ENCODE_OUT;
+                }
             }
         }
 
@@ -1369,31 +1503,36 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     mpp_frame_set_height(frame, height);
     mpp_frame_set_ver_stride(frame, ver_stride);
     mpp_frame_set_pts(frame, pts);
-    switch (format & MPP_FRAME_FMT_MASK) {
+    switch ((format) & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420P:
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420SP_VU: {
             mpp_frame_set_hor_stride(frame, hor_stride);
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB565:
         case MPP_FMT_BGR565:
         case MPP_FMT_RGB555:
         case MPP_FMT_BGR555: {
             mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGB565);
-        } break;
+            break;
+        } 
         case MPP_FMT_RGB888:
         case MPP_FMT_BGR888: {
             mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_BGR888);
-        } break;
+            break;
+        } 
         case MPP_FMT_ARGB8888:
         case MPP_FMT_ABGR8888:
         case MPP_FMT_BGRA8888:
         case MPP_FMT_RGBA8888: {
             mpp_frame_set_hor_stride(frame, hor_stride * STRIDE_MULTIPLIER_RGBA8888);
-        } break;
+            break;
+        } 
         default: {
             mpp_err("unsupport format 0x%x\n", format & MPP_FRAME_FMT_MASK);
-        } break;
+            break;
+        } 
     }
     mpp_frame_set_fmt(frame, (MppFrameFormat)(format & MPP_FRAME_FMT_MASK));
     if (aEncInStrm->nFlags) {
@@ -1403,8 +1542,9 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
 
     if (size <= 0) {
         mpp_frame_set_buffer(frame, nullptr);
-        if (!aEncInStrm->nFlags)
+        if (!aEncInStrm->nFlags) {
             mpp_err_f("found empty frame without eos flag set!\n");
+        }
         goto PUT_FRAME;
     }
 
@@ -1414,7 +1554,10 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     if (fd_input) {
         MppBufferInfo inputCommit;
 
-        memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+        ret = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+        if (ret != EOK) {
+            mpp_err_f("memset_s inputCommit failed! ret %d\n", ret);
+        }
         inputCommit.type = MPP_BUFFER_TYPE_ION;
         inputCommit.size = size;
         inputCommit.fd = fd;
@@ -1432,7 +1575,7 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     } else {
         RK_U32 align_size = 0;
 
-        if (nullptr == aEncInStrm->buf) {
+        if (aEncInStrm->buf == nullptr) {
             ret = MPP_ERR_NULL_PTR;
             goto FUNC_RET;
         }
@@ -1443,7 +1586,8 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
         } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
             align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB565_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, 
+                         (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
         } else {
             mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;
@@ -1518,7 +1662,11 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
         if (length > 0) {
             aEncOut->data = mpp_calloc(RK_U8, MPP_ALIGN(length + ALIGNMENT_OFFSET, (size_t)SZ_4K));
             if (aEncOut->data) {
-                memcpy_s(aEncOut->data, aEncOut->size, src + offset, length);
+                ret = memcpy_s(aEncOut->data, aEncOut->size, src + offset, length);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy aEncOut->data failed, error code: %d", __func__, ret);
+                    goto FUNC_RET;
+                }
             }
         }
 
@@ -1554,7 +1702,8 @@ RK_S32 VpuApiLegacy::perform(PerformCmd cmd, RK_S32 *data)
             EncInputPictureType vpu_frame_fmt = *(EncInputPictureType *)data;
             MppFrameFormat mpp_frame_fmt = vpu_pic_type_remap_to_mpp(vpu_frame_fmt);
             *(MppFrameFormat *)data = mpp_frame_fmt;
-        } break;
+            break;
+        } 
         default:
             mpp_err("cmd can not match with any option!");
             break;
@@ -1598,18 +1747,29 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
     switch (cmd) {
         case VPU_API_ENABLE_DEINTERLACE: {
             mpicmd = MPP_DEC_SET_ENABLE_DEINTERLACE;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SETCFG: {
             MppCodingType coding = (MppCodingType)ctx->videoCoding;
 
-            memcpy_s(&enc_param, sizeof(enc_param), param, sizeof(enc_param));
+            RK_S32 sRet = memcpy_s(&enc_param, sizeof(enc_param), param, sizeof(enc_param));
+            if (sRet != EOK) {
+                mpp_err("%{public}s: copy param failed, error code: %d", __func__, sRet);
+                return sRet;
+            }
             return vpu_api_set_enc_cfg(mpp_ctx, mpi, enc_cfg, coding, format, &enc_param);
-        } break;
+            break;
+        } 
         case VPU_API_ENC_GETCFG: {
-            memcpy_s(param, sizeof(enc_param), &enc_param, sizeof(enc_param));
+            RK_S32 sRet = memcpy_s(param, sizeof(enc_param), &enc_param, sizeof(enc_param));
+            if (sRet != EOK) {
+                mpp_err("%{public}s: copy param failed, error code: %d", __func__, sRet);
+                return sRet;
+            }
             return mpi->control(mpp_ctx, MPP_ENC_GET_CFG, enc_cfg);
             ;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SETFORMAT: {
             EncInputPictureType type = *((EncInputPictureType *)param);
             MppCodingType coding = (MppCodingType)ctx->videoCoding;
@@ -1621,28 +1781,36 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             } else {
                 return 0;
             }
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SETIDRFRAME: {
             mpicmd = MPP_ENC_SET_IDR_FRAME;
-        } break;
+            break;
+        } 
         case VPU_API_SET_VPUMEM_CONTEXT: {
             mpicmd = MPP_DEC_SET_EXT_BUF_GROUP;
-        } break;
+            break;
+        } 
         case VPU_API_USE_PRESENT_TIME_ORDER: {
             mpicmd = MPP_DEC_SET_PRESENT_TIME_ORDER;
-        } break;
+            break;
+        } 
         case VPU_API_SET_INFO_CHANGE: {
             mpicmd = MPP_DEC_SET_INFO_CHANGE_READY;
-        } break;
+            break;
+        } 
         case VPU_API_USE_FAST_MODE: {
             mpicmd = MPP_DEC_SET_PARSER_FAST_MODE;
-        } break;
+            break;
+        } 
         case VPU_API_DEC_GET_STREAM_COUNT: {
             mpicmd = MPP_DEC_GET_STREAM_COUNT;
-        } break;
+            break;
+        } 
         case VPU_API_GET_VPUMEM_USED_COUNT: {
             mpicmd = MPP_DEC_GET_VPUMEM_USED_COUNT;
-        } break;
+            break;
+        } 
         case VPU_API_SET_OUTPUT_BLOCK: {
             mpicmd = MPP_SET_OUTPUT_TIMEOUT;
             if (param) {
@@ -1658,7 +1826,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
                     mpp_log("set output mode to non-block\n");
                 }
             }
-        } break;
+            break;
+        } 
         case VPU_API_SET_INPUT_BLOCK: {
             mpicmd = MPP_SET_INPUT_TIMEOUT;
             if (param) {
@@ -1675,29 +1844,35 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
                     mpp_log("set input mode to non-block\n");
                 }
             }
-        } break;
+            break;
+        } 
         case VPU_API_GET_EOS_STATUS: {
             *((RK_S32 *)param) = mEosSet;
             mpicmd = MPI_CMD_BUTT;
-        } break;
+            break;
+        } 
         case VPU_API_GET_FRAME_INFO: {
             *((VPU_GENERIC *)param) = vpug;
             mpicmd = MPI_CMD_BUTT;
-        } break;
+            break;
+        } 
         case VPU_API_SET_OUTPUT_MODE: {
             mpicmd = MPP_DEC_SET_OUTPUT_FORMAT;
-        } break;
+            break;
+        } 
         case VPU_API_DEC_EN_FBC_HDR_256_ODD: {
             MppCompat *compatItem = nullptr;
             compatItem = mpp_compat_query_by_id(MPP_COMPAT_DEC_FBC_HDR_256_ODD);
             if (compatItem) {
                 mpp_compat_update(compatItem, 1);
             }
-        } break;
+            break;
+        } 
         case VPU_API_DEC_OUT_FRM_STRUCT_TYPE: {
             dec_out_frm_struct_type = *((RK_S32 *)param);
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_DEC_EN_THUMBNAIL: {
             RK_S32 ret = 0;
             MppDecCfg cfg;
@@ -1711,7 +1886,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             ret = mpi->control(mpp_ctx, MPP_DEC_SET_CFG, cfg);
             mpp_dec_cfg_deinit(cfg);
             return ret;
-        } break;
+            break;
+        } 
         case VPU_API_DEC_EN_HDR_META: {
             RK_S32 ret = 0;
             MppDecCfg cfg;
@@ -1725,7 +1901,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             ret = mpi->control(mpp_ctx, MPP_DEC_SET_CFG, cfg);
             mpp_dec_cfg_deinit(cfg);
             return ret;
-        } break;
+            break;
+        } 
         case VPU_API_SET_FRM_RDY_CB: {
             RK_S32 ret = 0;
             MppDecCfg cfg;
@@ -1744,32 +1921,41 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             ret = mpi->control(mpp_ctx, MPP_DEC_SET_CFG, cfg);
             mpp_dec_cfg_deinit(cfg);
             return ret;
-        } break;
+            break;
+        } 
         case VPU_API_SET_DISABLE_ERROR: {
             mpicmd = MPP_DEC_SET_DISABLE_ERROR;
-        } break;
+            break;
+        } 
         case VPU_API_SET_IMMEDIATE_OUT: {
             mpicmd = MPP_DEC_SET_IMMEDIATE_OUT;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_VEPU22_CFG: {
             mpicmd = MPP_ENC_SET_CODEC_CFG;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_GET_VEPU22_CFG: {
             mpicmd = MPP_ENC_GET_CODEC_CFG;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_VEPU22_CTU_QP: {
             mpicmd = MPP_ENC_SET_CTU_QP;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_VEPU22_ROI: {
             mpicmd = MPP_ENC_SET_ROI_CFG;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_MPP_SETCFG: {
             mpicmd = MPP_ENC_SET_CFG;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_MPP_GETCFG: {
             *((MppEncCfg *)param) = enc_cfg;
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_MAX_TID: {
             RK_S32 max_tid = *(RK_S32 *)param;
 
@@ -1781,7 +1967,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
                 vpu_api_mlvec_set_dy_max_tid(mlvec, max_tid);
             }
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_MARK_LTR: {
             RK_S32 mark_ltr = *(RK_S32 *)param;
 
@@ -1792,7 +1979,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
                 mlvec_dy_cfg.updated |= VPU_API_ENC_MARK_LTR_UPDATED;
             }
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_USE_LTR: {
             RK_S32 use_ltr = *(RK_S32 *)param;
 
@@ -1802,7 +1990,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             mlvec_dy_cfg.updated |= VPU_API_ENC_USE_LTR_UPDATED;
 
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_FRAME_QP: {
             RK_S32 frame_qp = *(RK_S32 *)param;
 
@@ -1812,7 +2001,8 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             mlvec_dy_cfg.updated |= VPU_API_ENC_FRAME_QP_UPDATED;
 
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_ENC_SET_BASE_LAYER_PID: {
             RK_S32 base_layer_pid = *(RK_S32 *)param;
 
@@ -1822,14 +2012,15 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
             mlvec_dy_cfg.updated |= VPU_API_ENC_BASE_PID_UPDATED;
 
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_GET_EXTRA_INFO: {
             EncoderOut_t *out = (EncoderOut_t *)param;
 
             vpu_api_dbg_ctrl("VPU_API_GET_EXTRA_INFO\n");
 
-            if (nullptr == enc_hdr_pkt) {
-                if (nullptr == enc_hdr_buf) {
+            if (enc_hdr_pkt == nullptr) {
+                if (enc_hdr_buf == nullptr) {
                     enc_hdr_buf_size = SZ_1K;
                     enc_hdr_buf = mpp_calloc_size(RK_U8, enc_hdr_buf_size);
                 }
@@ -1846,19 +2037,27 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
                 RK_S32 length = mpp_packet_get_length(enc_hdr_pkt);
                 void *src = mpp_packet_get_data(enc_hdr_pkt);
 
-                memcpy_s(out->data, out->size, src, length);
+                RK_S32 ret = memcpy_s(out->data, out->size, src, length);
+                if (ret != EOK) {
+                    mpp_err("%{public}s: copy out->data failed, error code: %d", __func__, ret);
+                    return ret;
+                }
                 out->size = length;
             }
             return 0;
-        } break;
+            break;
+        } 
         case VPU_API_SET_PARSER_SPLIT_MODE: {
             mpicmd = MPP_DEC_SET_PARSER_SPLIT_MODE;
-        } break;
+            break;
+        } 
         case VPU_API_DEC_EN_MVC: {
             mpicmd = MPP_DEC_SET_ENABLE_MVC;
-        } break;
+            break;
+        } 
         default: {
-        } break;
+            break;
+        } 
     }
 
     RK_S32 ret = -1;

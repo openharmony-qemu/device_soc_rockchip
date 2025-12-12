@@ -143,7 +143,8 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             st_ref[REF_NUM_8].ref_mode = REF_TO_TEMPORAL_LAYER;
             st_ref[REF_NUM_8].ref_arg = 0;
             st_ref[REF_NUM_8].repeat = 0;
-        } break;
+            break;
+        } 
         case GOP_MODE_TSVC3: {
             // tsvc3
             //     /-> P1      /-> P3
@@ -185,7 +186,8 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             st_ref[REF_NUM_4].ref_mode = REF_TO_TEMPORAL_LAYER;
             st_ref[REF_NUM_4].ref_arg = 0;
             st_ref[REF_NUM_4].repeat = 0;
-        } break;
+            break;
+        } 
         case GOP_MODE_TSVC2: {
             // tsvc2
             //   /-> P1
@@ -213,10 +215,12 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             st_ref[REF_NUM_2].ref_mode = REF_MODE_TO_PREV_REF_FRM;
             st_ref[REF_NUM_2].ref_arg = 0;
             st_ref[REF_NUM_2].repeat = 0;
-        } break;
+            break;
+        } 
         default: {
             mpp_err_f("unsupport gop mode %d\n", gop_mode);
-        } break;
+            break;
+        } 
     }
 
     if (lt_cnt || st_cnt) {
@@ -303,12 +307,12 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
 /* ���˱������õ�һЩ����������ߣ�����ͼ���ʽ����������ʽ�ȣ�����������֪��ֱ����0
  * test_mpp_enc_cfg_setup�������Զ�����Ĭ�ϵĲ�����bps�� gop�Ȳ���
  */
+#define MPP_ALIGNMENT_SIZE 64
 static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
 {
     MpiEncTestData *p = NULL;
     MPP_RET ret = MPP_OK;
     const int YUV420_CHANNEL_RATIO = 3 / 2;
-#define MPP_ALIGNMENT_SIZE 64
     if (!data || !cmd) {
         mpp_err_f("invalid input data %p cmd %p\n", data, cmd);
         return MPP_ERR_NULL_PTR;
@@ -336,7 +340,8 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_YUV420P: {
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
                 MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
-        } break;
+            break;
+        } 
 
         case MPP_FMT_YUV422_YUYV:
         case MPP_FMT_YUV422_YVYU:
@@ -352,11 +357,13 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_BGR565: {
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
                 MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
-        } break;
+            break;
+        } 
         default: {
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
                 MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
-        } break;
+            break;
+        } 
     }
     *data = p;
     return ret;
@@ -477,14 +484,16 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     switch (p->rc_mode) {
         case MPP_ENC_RC_MODE_FIXQP: {
             /* do not setup bitrate on FIXQP mode */
-        } break;
+            break;
+        } 
         case MPP_ENC_RC_MODE_CBR: {
             /* CBR mode has narrow bound */
             mpp_enc_cfg_set_s32(cfg, "rc:bps_max",
                 p->bps_max ? p->bps_max : p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
             mpp_enc_cfg_set_s32(cfg, "rc:bps_min",
                 p->bps_min ? p->bps_min : p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
-        } break;
+            break;
+        } 
         case MPP_ENC_RC_MODE_VBR:
         case MPP_ENC_RC_MODE_AVBR: {
             /* VBR mode has wide bound */
@@ -492,14 +501,16 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
                 p->bps_max ? p->bps_max : p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
             mpp_enc_cfg_set_s32(cfg, "rc:bps_min",
                 p->bps_min ? p->bps_min : p->bps * BPS_MIN_VBR_FACTOR_NUMERATOR / BPS_MIN_VBR_FACTOR_DENOMINATOR);
-        } break;
+            break;
+        } 
         default: {
             /* default use CBR mode */
             mpp_enc_cfg_set_s32(cfg, "rc:bps_max",
                 p->bps_max ? p->bps_max : p->bps * BPS_MAX_FACTOR_NUMERATOR / BPS_MAX_FACTOR_DENOMINATOR);
             mpp_enc_cfg_set_s32(cfg, "rc:bps_min",
                 p->bps_min ? p->bps_min : p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
-        } break;
+            break;
+        } 
     }
 
     /* setup qp for different codec and rc_mode */
@@ -514,7 +525,8 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", FIX_QP_VALUE);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", RC_QP_IP);
-                } break;
+                    break;
+        } 
                 case MPP_ENC_RC_MODE_CBR:
                 case MPP_ENC_RC_MODE_VBR:
                 case MPP_ENC_RC_MODE_AVBR: {
@@ -524,12 +536,15 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", RC_QP_MAX_I);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", RC_QP_MIN_I);
                     mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", RC_QP_IP);
-                } break;
+                    break;
+        } 
                 default: {
                     mpp_err_f("unsupport encoder rc mode %d\n", p->rc_mode);
-                } break;
+                    break;
+        } 
             }
-        } break;
+            break;
+        } 
         case MPP_VIDEO_CodingVP8: {
             /* vp8 only setup base qp range */
             mpp_enc_cfg_set_s32(cfg, "rc:qp_init", VP8_QP_INIT);
@@ -538,15 +553,18 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             mpp_enc_cfg_set_s32(cfg, "rc:qp_max_i", VP8_QP_MAX_I);
             mpp_enc_cfg_set_s32(cfg, "rc:qp_min_i", VP8_QP_MIN_I);
             mpp_enc_cfg_set_s32(cfg, "rc:qp_ip", VP8_QP_IP);
-        } break;
+            break;
+        } 
         case MPP_VIDEO_CodingMJPEG: {
             /* jpeg use special codec config to control qtable */
             mpp_enc_cfg_set_s32(cfg, "jpeg:q_factor", JPEG_Q_FACTOR);
             mpp_enc_cfg_set_s32(cfg, "jpeg:qf_max", JPEG_QF_MAX);
             mpp_enc_cfg_set_s32(cfg, "jpeg:qf_min", JPEG_QF_MIN);
-        } break;
+            break;
+        } 
         default: {
-        } break;
+            break;
+        } 
     }
 
     /* setup codec  */
@@ -572,14 +590,17 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
             mpp_enc_cfg_set_s32(cfg, "h264:cabac_en", H264_CABAC_ENABLED);
             mpp_enc_cfg_set_s32(cfg, "h264:cabac_idc", H264_CABAC_IDC);
             mpp_enc_cfg_set_s32(cfg, "h264:trans8x8", H264_TRANS8x8_ENABLED);
-        } break;
+            break;
+        } 
         case MPP_VIDEO_CodingHEVC:
         case MPP_VIDEO_CodingMJPEG:
         case MPP_VIDEO_CodingVP8: {
-        } break;
+            break;
+        } 
         default: {
             mpp_err_f("unsupport encoder coding type %d\n", p->type);
-        } break;
+            break;
+        } 
     }
 
     p->split_mode = 0;
@@ -891,15 +912,13 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     /* ��ʼ��һ�³��õĲ������ã�cmd�����ñȽ϶� */
     ret = test_ctx_init(&p, args);
     if (ret) {
-        mpp_err_f("test data init failed ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
+        mpp_err_f("test data init failed ret %d\n");
         return NULL;
     }
 
     ret = mpp_buffer_group_get_internal(&p->buf_grp, MPP_BUFFER_TYPE_DRM);
     if (ret) {
         mpp_err_f("failed to get mpp buffer group ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 
@@ -907,7 +926,6 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     ret = mpp_buffer_get(p->buf_grp, &p->pkt_buf, p->frame_size);
     if (ret) {
         mpp_err_f("failed to get buffer for output packet ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 
@@ -915,7 +933,6 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     ret = mpp_create(&p->ctx, &p->mpi);
     if (ret) {
         mpp_err("mpp_create failed ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 
@@ -924,28 +941,24 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     ret = p->mpi->control(p->ctx, MPP_SET_OUTPUT_TIMEOUT, &timeout);
     if (MPP_OK != ret) {
         mpp_err("mpi control set output timeout %d ret %d\n", timeout, ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 
     ret = mpp_init(p->ctx, MPP_CTX_ENC, p->type);
     if (ret) {
         mpp_err("mpp_init failed ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 
     ret = mpp_enc_cfg_init(&p->cfg);
     if (ret) {
         mpp_err_f("mpp_enc_cfg_init failed ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 
     ret = test_mpp_enc_cfg_setup(p);
     if (ret) {
         mpp_err_f("test mpp setup failed ret %d\n", ret);
-        mpp_err("%p mpi_enc_test failed ret %d\n", p->ctx, ret);
         return NULL;
     }
 

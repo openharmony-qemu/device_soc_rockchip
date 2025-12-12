@@ -272,7 +272,10 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
     void *extradata = nullptr;
     RK_S32 extradata_size = 0;
     EXtraCfg_t extra_cfg;
-    memset_s(&extra_cfg, sizeof(EXtraCfg_t), 0, sizeof(EXtraCfg_t));
+    ret = memset_s(&extra_cfg, sizeof(EXtraCfg_t), 0, sizeof(EXtraCfg_t));
+    if (ret != EOK) {
+        vpu_api_dbg_func("memset_s extra_cfg failed, return %d", ret);
+    }
 
     mpp_env_get_u32("vpu_api_debug", &vpu_api_debug, 0);
     vpu_api_dbg_func("enter\n");
@@ -303,7 +306,7 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
             /* otherwise use original vpuapi path */
             use_mpp = 0;
         }
-    } else if (nullptr == s) {
+    } else if (s == nullptr) {
         /* caller is original vpuapi path. Force use original vpuapi path */
         use_mpp = 0;
     } else {

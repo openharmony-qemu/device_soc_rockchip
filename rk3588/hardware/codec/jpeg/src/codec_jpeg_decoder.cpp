@@ -103,7 +103,11 @@ MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, Buffe
     });
     ResetMppBuffer();
     MppBufferInfo info;
-    memset_s(&info, sizeof(MppBufferInfo), 0, sizeof(MppBufferInfo));
+    RK_S32 sRet= memset_s(&info, sizeof(MppBufferInfo), 0, sizeof(MppBufferInfo));
+    if (sRet != MPP_OK) {
+        CODEC_LOGE("memset_s info error %{public}d", sRet);
+        return MPP_NOK;
+    }
     info.type = MPP_BUFFER_TYPE_DRM;
     info.fd =  buffer->fd;
     info.size = buffer->size;
@@ -119,7 +123,11 @@ MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, Buffe
     mppApi_->HdiMppFrameInit(&frame_);
 #ifndef USE_RGA
     MppBufferInfo outputCommit;
-    memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+    sRet = memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+    if (sRet != MPP_OK) {
+        CODEC_LOGE("memset_s outputCommit error %{public}d", ret);
+        return MPP_NOK;
+    }
     outputCommit.type = MPP_BUFFER_TYPE_DRM;
     outputCommit.size = outHandle->size;
     outputCommit.fd = outHandle->fd;

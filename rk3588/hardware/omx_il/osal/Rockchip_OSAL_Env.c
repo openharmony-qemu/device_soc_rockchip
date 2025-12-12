@@ -127,7 +127,7 @@ OMX_ERRORTYPE Rockchip_OSAL_GetEnvU32(const char *name, OMX_U32 *value, OMX_U32 
     omx_info("%s defval: 0x%lx", name, default_value);
     *value = default_value;
     char bufDef[10] = {0};
-    if (snprintf(bufDef, sizeof(bufDef), "%d", default_value) <= 0) {
+    if (snprintf_s(bufDef, sizeof(bufDef), sizeof(bufDef)-1, "%d", default_value) <= 0) {
         omx_err("snprintf error");
         return OMX_ErrorUndefined;
     }
@@ -160,7 +160,7 @@ OMX_ERRORTYPE Rockchip_OSAL_SetEnvU32(const char *name, OMX_U32 value)
         return OMX_ErrorUndefined;
     }
     char buf[10] = {0};
-    if (snprintf(buf, sizeof(buf), "%d", value) <= 0) {
+    if (snprintf_s(buf, sizeof(buf), sizeof(buf) - 1, "%d", value) <= 0) {
         omx_err("snprintf error");
         return OMX_ErrorUndefined;
     }

@@ -42,7 +42,7 @@ typedef struct VpuApiMlvecImpl_t {
 
 MPP_RET vpu_api_mlvec_init(VpuApiMlvec *ctx)
 {
-    if (nullptr == ctx) {
+    if (ctx == nullptr) {
         mpp_err_f("invalid nullptr input\n");
         return MPP_ERR_NULL_PTR;
     }
@@ -50,7 +50,7 @@ MPP_RET vpu_api_mlvec_init(VpuApiMlvec *ctx)
     mlvec_dbg_func("enter %p\n", ctx);
 
     VpuApiMlvecImpl *impl = mpp_calloc(VpuApiMlvecImpl, 1);
-    if (nullptr == impl) {
+    if (impl == nullptr) {
         mpp_err_f("failed to create MLVEC context\n");
     }
     mpp_assert(sizeof(VpuApiMlvecStaticCfg) == sizeof(EncParameter_t));
@@ -73,7 +73,7 @@ MPP_RET vpu_api_mlvec_deinit(VpuApiMlvec ctx)
 
 MPP_RET vpu_api_mlvec_setup(VpuApiMlvec ctx, MppCtx mpp, MppApi *mpi, MppEncCfg enc_cfg)
 {
-    if (nullptr == ctx || nullptr == mpp || nullptr == mpi || nullptr == enc_cfg) {
+    if (ctx == nullptr || mpp == nullptr || mpi == nullptr || enc_cfg == nullptr) {
         mpp_err_f("invalid nullptr input ctx %p mpp %p mpi %p cfg %p\n", ctx, mpp, mpi, enc_cfg);
         return MPP_ERR_NULL_PTR;
     }
@@ -92,7 +92,7 @@ MPP_RET vpu_api_mlvec_setup(VpuApiMlvec ctx, MppCtx mpp, MppApi *mpi, MppEncCfg 
 
 MPP_RET vpu_api_mlvec_check_cfg(void *p)
 {
-    if (nullptr == p) {
+    if (p == nullptr) {
         mpp_err_f("invalid nullptr input\n");
         return MPP_ERR_NULL_PTR;
     }
@@ -115,7 +115,7 @@ MPP_RET vpu_api_mlvec_check_cfg(void *p)
 
 MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
 {
-    if (nullptr == ctx || nullptr == cfg) {
+    if (ctx == nullptr || cfg == nullptr) {
         mpp_err_f("invalid nullptr input ctx %p cfg %p\n");
         return MPP_ERR_NULL_PTR;
     }
@@ -130,7 +130,11 @@ MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
     /* update static configure */
     VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
 
-    memcpy_s(&impl->st_cfg, sizeof(VPUMemLinear_t), cfg, sizeof(impl->st_cfg));
+    RK_S32 sRet = memcpy_s(&impl->st_cfg, sizeof(VPUMemLinear_t), cfg, sizeof(impl->st_cfg));
+    if (sRet != EOK) {
+        mlvec_dbg_func("copy impl->st_cfg failed, error code: %{public}d", sRet);
+        return MPP_NOK;
+    }
     cfg = &impl->st_cfg;
 
     /* get mpp context and check */
@@ -170,7 +174,7 @@ MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
 
 MPP_RET vpu_api_mlvec_set_dy_cfg(VpuApiMlvec ctx, VpuApiMlvecDynamicCfg *cfg, MppMeta meta)
 {
-    if (nullptr == ctx || nullptr == cfg || nullptr == meta) {
+    if (ctx == nullptr || cfg == nullptr || meta == nullptr) {
         mpp_err_f("invalid nullptr input ctx %p cfg %p meta %p\n", ctx, cfg, meta);
         return MPP_ERR_NULL_PTR;
     }
@@ -227,7 +231,7 @@ MPP_RET vpu_api_mlvec_set_dy_cfg(VpuApiMlvec ctx, VpuApiMlvecDynamicCfg *cfg, Mp
 
 MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
 {
-    if (nullptr == ctx) {
+    if (ctx == nullptr) {
         mpp_err_f("invalid nullptr input\n");
         return MPP_ERR_NULL_PTR;
     }
@@ -260,8 +264,14 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     RK_S32 tid0_loop = 0;
     RK_S32 ltr_frames = impl->st_cfg.ltr_frames;
 
-    memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
-    memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref));
+    RK_S32 sRet = memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
+    if (sRet != EOK) {
+        mlvec_dbg_func("memset_s lt_ref failed, return %d", sRet);
+    }
+    sRet = memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref));
+    if (sRet != EOK) {
+        mlvec_dbg_func("memset_s st_ref failed, return %d", sRet);
+    }
 
     mlvec_dbg_flow("ltr_frames %d\n", ltr_frames);
     mlvec_dbg_flow("max_tid    %d\n", max_tid);
@@ -277,7 +287,8 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
             st_cfg_cnt = NO_TSVC_ST_CFG_CNT;
             tid0_loop = NO_TSVC_TID0_LOOP;
             mlvec_dbg_flow("no tsvc\n");
-        } break;
+            break;
+        } 
         case TSVC_MAX_TID_LEVEL_2: {
             /* set tsvc2 st-ref struct */
             /* st 0 layer 0 - ref */
@@ -302,7 +313,8 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
             st_cfg_cnt = TSVC2_ST_CFG_CNT;
             tid0_loop = TSVC2_TID0_LOOP;
             mlvec_dbg_flow("tsvc2\n");
-        } break;
+            break;
+        } 
         case TSVC_MAX_TID_LEVEL_3: {
             /* set tsvc3 st-ref struct */
             /* st 0 layer 0 - ref */
@@ -339,7 +351,8 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
             st_cfg_cnt = TSVC3_ST_CFG_CNT;
             tid0_loop = TSVC3_TID0_LOOP;
             mlvec_dbg_flow("tsvc3\n");
-        } break;
+            break;
+        } 
         case TSVC_MAX_TID_LEVEL_4: {
             /* set tsvc3 st-ref struct */
             /* st 0 layer 0 - ref */
@@ -400,10 +413,12 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
             st_cfg_cnt = TSVC4_ST_CFG_CNT;
             tid0_loop = TSVC4_TID0_LOOP;
             mlvec_dbg_flow("tsvc4\n");
-        } break;
+            break;
+        } 
         default: {
             mpp_err("invalid max temporal layer id %d\n", max_tid);
-        } break;
+            break;
+        } 
     }
 
     if (ltr_frames) {

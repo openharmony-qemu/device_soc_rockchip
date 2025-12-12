@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 #define mpp_mem_pool_init(size) mpp_mem_pool_init_f(__FUNCTION__, size)
-#define mpp_mem_pool_deinit(pool) mpp_mem_pool_deinit_f(__FUNCTION__, pool);
+#define mpp_mem_pool_deinit(pool) mpp_mem_pool_deinit_f(__FUNCTION__, pool)
 
 #define mpp_mem_pool_get(pool) mpp_mem_pool_get_f(__FUNCTION__, pool)
 #define mpp_mem_pool_put(pool, p) mpp_mem_pool_put_f(__FUNCTION__, pool, p)

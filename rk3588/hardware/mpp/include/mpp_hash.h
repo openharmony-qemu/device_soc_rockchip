@@ -80,8 +80,9 @@ static inline void hlist_del_internal(struct hlist_node *n)
     struct hlist_node **pprev = n->pprev;
 
     WRITE_ONCE(*pprev, next);
-    if (next)
+    if (next) {
         next->pprev = pprev;
+    }
 }
 
 static inline void hlist_del(struct hlist_node *n)
@@ -103,8 +104,9 @@ static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
 {
     struct hlist_node *first = h->first;
     n->next = first;
-    if (first)
+    if (first) {
         first->pprev = &n->next;
+    }
     WRITE_ONCE(h->first, n);
     n->pprev = &h->first;
 }
@@ -123,8 +125,9 @@ static inline void hlist_add_behind(struct hlist_node *n, struct hlist_node *pre
     WRITE_ONCE(prev->next, n);
     n->pprev = &prev->next;
 
-    if (n->next)
+    if (n->next) {
         n->next->pprev  = &n->next;
+    }
 }
 
 static inline void hlist_add_fake(struct hlist_node *n)
@@ -147,8 +150,9 @@ static inline void hlist_move_list(struct hlist_head *old,
                                    struct hlist_head *new_entry)
 {
     new_entry->first = old->first;
-    if (new_entry->first)
+    if (new_entry->first) {
         new_entry->first->pprev = &new_entry->first;
+    }
     old->first = NULL;
 }
 
@@ -363,10 +367,11 @@ static inline bool mpp_hash_empty(struct hlist_head *ht, unsigned int sz)
 {
     unsigned int i;
 
-    for (i = 0; i < sz; i++)
-        if (!hlist_empty(&ht[i]))
+    for (i = 0; i < sz; i++) {
+        if (!hlist_empty(&ht[i])) {
             return false;
-
+        }
+    }
     return true;
 }
 

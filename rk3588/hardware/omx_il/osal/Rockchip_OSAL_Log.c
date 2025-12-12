@@ -50,7 +50,7 @@ void Rockchip_OSAL_Log(ROCKCHIP_LOG_LEVEL logLevel, OMX_U32 flag, const char *ta
     va_list ap;
     va_start(ap, msg);
     char str[MPP_LOG_MAX_LEN] = {0};
-    if (vsnprintf_s(str, sizeof(str), sizeof(str), msg, ap) <= 0) {
+    if (vsnprintf_s(str, sizeof(str), sizeof(str) - 1, msg, ap) <= 0) {
         HDF_LOGE("%{public}s, vsnprintf ret failed", __func__);
         va_end(ap);
         return;

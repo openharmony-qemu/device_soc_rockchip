@@ -1142,7 +1142,8 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent,
                 videoFormat->codecCompressFormat = portDefinition->format.video.eCompressionFormat;
             }
             ret = OMX_ErrorNone;
-        } break;
+            break;
+        } 
 #endif // OHOS_BUFFER_HANDLE
     case OMX_IndexParamVideoBitrate: {
         OMX_VIDEO_PARAM_BITRATETYPE     *videoRateControl = (OMX_VIDEO_PARAM_BITRATETYPE *)ComponentParameterStructure;

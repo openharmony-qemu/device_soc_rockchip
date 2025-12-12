@@ -1412,7 +1412,8 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent, OMX_IN OM
             bufferTyps->bufferTypes  |= CODEC_BUFFER_TYPE_HANDLE;
         }
         ret = OMX_ErrorNone;
-        } break;
+            break;
+        } 
     case OMX_IndexParamGetBufferHandleUsage: {
         struct GetBufferHandleUsageParams *usage = (struct GetBufferHandleUsageParams *)ComponentParameterStructure;
         if (usage == NULL) {
@@ -1433,7 +1434,8 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent, OMX_IN OM
 
         usage->usage = HBM_USE_CPU_READ | HBM_USE_CPU_WRITE | HBM_USE_MEM_DMA;
         ret = OMX_ErrorNone;
-        } break;
+            break;
+        } 
     case OMX_IndexCodecVideoPortFormat: {
             struct CodecVideoPortFormatParam *videoFormat =
                 (struct CodecVideoPortFormatParam *)ComponentParameterStructure;
@@ -1483,7 +1485,8 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent, OMX_IN OM
             }
             ret = OMX_ErrorNone;
 
-        } break;
+            break;
+        } 
 #endif
 #ifdef USE_ANB
         case OMX_IndexParamGetAndroidNativeBufferUsage:
@@ -1945,7 +1948,8 @@ OMX_ERRORTYPE Rkvpu_OMX_SetParameter(OMX_IN OMX_HANDLETYPE hComponent,
             omx_trace("debug omx codecProfile %ld", pVideoDec->codecProfile);
 
             ret = OMX_ErrorNone;
-        } break;
+            break;
+        } 
         case OMX_IndexParamStandardComponentRole: {
             OMX_PARAM_COMPONENTROLETYPE *pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
 

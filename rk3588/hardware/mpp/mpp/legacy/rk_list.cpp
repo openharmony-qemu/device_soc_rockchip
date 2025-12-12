@@ -72,7 +72,10 @@ static rk_list_node *create_list(void *data, RK_S32 size, RK_U32 key)
     if (node) {
         void *dst = reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(node) + sizeof(rk_list_node));
         list_node_init_with_key_and_size(node, key, size);
-        memcpy_s(dst, size, data, size);
+        int32_t ret = memcpy_s(dst, size, data, size);
+        if (ret != EOK) {
+            LIST_ERROR("%{public}s: copy failed, error code: %{public}d", __func__, ret);
+        }
     } else {
         LIST_ERROR("failed to allocate list node");
     }
@@ -137,11 +140,17 @@ static void release_list(rk_list_node *node, void *data, RK_S32 size)
 {
     void *src = reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(node) + sizeof(rk_list_node));
     if (node->size == size) {
-        memcpy_s(data, node->size, src, size);
+        int32_t ret = memcpy_s(data, node->size, src, size);
+        if (ret != EOK) {
+            LIST_ERROR("%{public}s: copy failed, error code: %{public}d", __func__, ret);
+        }
     } else {
         LIST_ERROR("node size check failed when release_list");
         size = (size < node->size) ? (size) : (node->size);
-        memcpy_s(data, node->size, src, size);
+        int32_t ret = memcpy_s(data, node->size, src, size);
+        if (ret != EOK) {
+            LIST_ERROR("%{public}s: copy failed, error code: %{public}d", __func__, ret);
+        }
     }
     free(node);
 }
@@ -262,7 +271,7 @@ rk_list::rk_list(node_destructor func) : destroy(nullptr), head(nullptr), count(
     pthread_mutexattr_destroy(&attr);
     destroy = func;
     head = (rk_list_node *)malloc(sizeof(rk_list_node));
-    if (nullptr == head) {
+    if (head == nullptr) {
         LIST_ERROR("failed to allocate list header");
     } else {
         list_node_init_with_key_and_size(head, 0, 0);
@@ -386,7 +395,7 @@ void *rk_list_test_loop_0(void *pdata)
 
 int rk_list_test_0()
 {
-    int i, err = 0;
+    int i=0, err = 0;
     printf("rk_list test 0 FIFO start\n");
 
     rk_list *list_0 = new rk_list((node_destructor)VPUFreeLinear);
@@ -430,7 +439,7 @@ RK_LIST_TEST_FUNC test_func[TOTAL_RK_LIST_TEST_COUNT] = {
 
 int main(int argc, char *argv[])
 {
-    int i, start = 0, end = 0;
+    int i=0, start = 0, end = 0;
     const int DEFAULT_INCREMENT = 1;
     const int START_ARG_INDEX = 1;
     const int END_ARG_INDEX = 2;

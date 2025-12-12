@@ -158,14 +158,6 @@ static int32_t GetDefaultConfig(RKHdiBaseComponent *pBaseComponent)
     return HDF_SUCCESS;
 }
 
-// static PixelFormat ConvertRKFormat2HdiFormat(MppFrameFormat fmtRK)
-// {
-//     if (fmtRK == MPP_FMT_YUV420SP) {
-//         return PIXEL_FMT_YCBCR_420_SP;
-//     } else {
-//         return PIXEL_FMT_BUTT;
-//     }
-// }
 
 MppFrameFormat ConvertHdiFormat2RKFormat(PixelFormat fmtHDI)
 {

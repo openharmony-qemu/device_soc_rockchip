@@ -91,7 +91,9 @@ typedef enum {
 #define rk_failure              (-1)
 
 #define rk_void                 void
-#define rk_unused(x)            ((void)((x)))
+inline void rk_unused(const void* x) {
+    (void)(x);
+}
 
 #ifndef MODULE_TAG
 #define MODULE_TAG              NULL

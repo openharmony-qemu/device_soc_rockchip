@@ -20,7 +20,7 @@
 #include "ppOp.h"
 #include <securec.h>
 
-namespace android {
+namespace ppOp  {
 status_t ppOpInit(PP_OP_HANDLE *hnd, PP_OPERATION *init)
 {
     (void)hnd;
@@ -84,7 +84,8 @@ int main()
     const int SRC_VIR_HEIGHT = 1088;
     const int DST_VIR_WIDTH = 800;
     const int DST_VIR_HEIGHT = 1280;
-    FILE *fpr, *fpw;
+    FILE *fpr;
+    FILE *fpw;
     int wid_alig16 = ((SRC_WIDTH + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
     int hei_alig16 = ((SRC_HEIGHT + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
     int src_vir_width = SRC_VIR_WIDTH;   // 2048;
@@ -93,11 +94,17 @@ int main()
     int dst_vir_height = DST_VIR_HEIGHT; // 1280;
     int framecnt = 0;
     char *tmpbuf = (char *)malloc(src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);
-    RK_S32 ret = 0, i, j;
+    RK_S32 ret = 0;
+    RK_S32 i = 0;
+    RK_S32 j = 0;
 
+    if (tmpbuf ==) {
+        ALOGE("Memory allocation failed\n");
+        return -1; //设这是一个函数，返回错误码
+    }
     ALOGI("ppOp test start\n");
     VPUMemLinear_t src, dst;
-    android::PP_OP_HANDLE hnd;
+    ppOp::PP_OP_HANDLE hnd;
     int vpuFd = VPUClientInit(VPU_PP);
     ret |= VPUMallocLinear(&src, src_vir_width * src_vir_height * MEMORY_ALLOCATION_MULTIPLIER); // SRC_SIZE);
     ret |= VPUMallocLinear(&dst, dst_vir_width * dst_vir_height * MEMORY_ALLOCATION_MULTIPLIER); // DST_SIZE);
@@ -138,9 +145,12 @@ int main()
                     SRC_WIDTH * SRC_HEIGHT / QUARTER_DIVISOR + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
             }
         }
-        memcpy_s(&tmp[src_vir_width * src_vir_height],
+        ret = memcpy_s(&tmp[src_vir_width * src_vir_height],
             src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR, tmpbuf,
             src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);
+        if (ret == EOK) {
+            printf(" copy data failed, error code: %{public}d", ret);
+        }
 #endif
         VPUMemClean(&src);
     }
@@ -154,8 +164,11 @@ int main()
         wid_alig16 = ((SRC_WIDTH + ALIGN_16) & (~BIT_MASK_ALIGN_16));
         hei_alig16 = ((SRC_HEIGHT + ALIGN_16) & (~BIT_MASK_ALIGN_16));
 
-        android::PP_OPERATION opt;
-        memset_s(&opt, sizeof(opt), 0, sizeof(opt));
+        ppOp::PP_OPERATION opt;
+        ret = memset_s(&opt, sizeof(opt), 0, sizeof(opt));
+        if (ret == EOK) {
+            printf("memset_s opt failed, error code: %{public}d", ret);
+        }
         opt.srcAddr = src.phy_addr;
         opt.srcFormat = PP_IN_FORMAT_YUV420SEMI;
         opt.srcWidth = SRC_WIDTH;
@@ -185,39 +198,37 @@ int main()
 
         opt.deinterlace = 0;
 
-        opt.rotation = PP_ROTATION_RIGHT_90; // PP_ROTATION_RIGHT_90;//PP_ROTATION_RIGHT_90;//PP_ROTATION_RIGHT_90;
+        opt.rotation = PP_ROTATION_RIGHT_90;
 
         opt.vpuFd = vpuFd;
-        ret |= android::ppOpInit(&hnd, &opt);
+        ret |= ppOp::ppOpInit(&hnd, &opt);
         if (ret) {
             ALOGE("ppOpInit failed");
             hnd = nullptr;
             goto end;
         }
-        ret = android::ppOpPerform(hnd);
+        ret = ppOp::ppOpPerform(hnd);
         if (ret) {
             ALOGE("ppOpPerform failed");
         }
-        ret = android::ppOpSync(hnd);
+        ret = ppOp::ppOpSync(hnd);
         if (ret) {
             ALOGE("ppOpSync failed");
         }
-        ret = android::ppOpRelease(hnd);
+        ret = ppOp::ppOpRelease(hnd);
         if (ret) {
-            ALOGE("ppOpPerform failed");
+            ALOGE("ppOpRelease failed");
         }
 
         VPUMemInvalidate(&dst);
         {
 #if 1
-            char *tmp = (char *)dst.vir_addr;
+            // char *tmp = (char *)dst.vir_addr;
             fpw = fopen("/data/testout.yuv", "wb+");
 
             if (fpw) {
                 fwrite((char *)(dst.vir_addr), 1,
                     dst_vir_width * dst_vir_height * YUV420_TOTAL_SIZE_MULTIPLIER / YUV420_TOTAL_SIZE_DIVISOR, fpw);
-            }
-            if (fpw) {
                 fclose(fpw);
             }
 #endif

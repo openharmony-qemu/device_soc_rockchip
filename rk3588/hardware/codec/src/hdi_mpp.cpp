@@ -662,7 +662,7 @@ static IM_STATUS PutDecodeFrameToOutput(RKHdiBaseComponent* component, MppFrame 
         HDF_LOGE("%{public}s: memset_s src failed, error code: %{public}d", __func__, err);
         return IM_STATUS_FAILED;
     }
-    memset_s(&dst, sizeof(dst), 0, sizeof(dst));
+    err = memset_s(&dst, sizeof(dst), 0, sizeof(dst));
     if (err != EOK) {
         HDF_LOGE("%{public}s: memset_s dst failed, error code: %{public}d", __func__, err);
         return IM_STATUS_FAILED;
@@ -945,11 +945,8 @@ int32_t HandleEncodedPacket(RKHdiBaseComponent* component, MppPacket packet, RK_
     uint32_t outBufferSize = outInfo->buffer[0].capacity;
     if (outBuffer != NULL && outBufferSize != 0 && ptr != NULL && len != 0) {
         int32_t ret = memcpy_s(outBuffer, outBufferSize, ptr, len);
-        if (ret == EOK) {
-            outInfo->buffer[0].length = len;
-        } else {
-            HDF_LOGE("%{public}s: copy output data failed, error code: %{public}d", __func__, ret);
-            HDF_LOGE("%{public}s: dst bufferSize:%{public}d, src data len: %zu", __func__, outBufferSize, len);
+        if (ret != EOK) {
+            HDF_LOGE("%{public}s: copy output outBuffer failed, error code: %{public}d", __func__, ret);
         }
     } else {
         HDF_LOGE("%{public}s: output data not copy, buffer incorrect!", __func__);

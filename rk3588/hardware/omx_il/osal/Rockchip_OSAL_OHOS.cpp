@@ -873,7 +873,8 @@ OMX_U32 Rockchip_OSAL_CalculateTotalRefFrames(
             } else if (nRefFramesNum < 6) { // 6:frame number
                 nRefFramesNum = 6; // 6:frame number
             }
-        } break;
+            break;
+        } 
         case CODEC_OMX_VIDEO_CodingHEVC: {
             /* use 4K refs frame Num to computate others */
             nRefFramesNum = 4096 * 2160 * 6 / (width * height); /* 4096:Resolution size,
@@ -885,7 +886,8 @@ OMX_U32 Rockchip_OSAL_CalculateTotalRefFrames(
                 /* min refs frame number is 6 */
                 nRefFramesNum = 6;
             }
-        } break;
+            break;
+        } 
         case CODEC_OMX_VIDEO_CodingVP9: {
             nRefFramesNum = 4096 * 2176 * 4 / (width * height);/* 4096:Resolution size,
                                                                    2176:Resolution size, 4:frame number */
@@ -894,10 +896,12 @@ OMX_U32 Rockchip_OSAL_CalculateTotalRefFrames(
             } else if (nRefFramesNum < 4) { // 4:frame number
                 nRefFramesNum = 4; // 4:frame number
             }
-        } break;
+            break;
+        } 
         default: {
             nRefFramesNum = 8;
-        } break;
+            break;
+        } 
     }
 
     /*
