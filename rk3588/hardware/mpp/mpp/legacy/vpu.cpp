@@ -19,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <string.h>
-
+#include <securec.h>
 #include "vpu.h"
 #include "rk_mpi.h"
 

@@ -19,7 +19,7 @@
 #include <cstring>
 #include <dlfcn.h>
 #include <unistd.h>
-
+#include <securec.h>
 #include "mpp_mem.h"
 #include "mpp_env.h"
 #include "mpp_debug.h"
@@ -272,7 +272,7 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
     void *extradata = nullptr;
     RK_S32 extradata_size = 0;
     EXtraCfg_t extra_cfg;
-    memset_s(&extra_cfg, 0, sizeof(EXtraCfg_t));
+    memset_s(&extra_cfg, sizeof(EXtraCfg_t), 0, sizeof(EXtraCfg_t));
 
     mpp_env_get_u32("vpu_api_debug", &vpu_api_debug, 0);
     vpu_api_dbg_func("enter\n");

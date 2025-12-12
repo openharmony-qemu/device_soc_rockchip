@@ -20,7 +20,7 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
-
+#include <securec.h>
 #include "rk_list.h"
 #include "mpp_log.h"
 

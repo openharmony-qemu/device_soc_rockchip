@@ -54,7 +54,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
     MppEncRefStFrmCfg st_ref[16];
     RK_S32 lt_cnt = 0;
     RK_S32 st_cnt = 0;
-    MPP_RET ret = 0;
+    MPP_RET ret = MPP_OK;
     const int REF_COUNT_9 = 9;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
@@ -242,7 +242,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     RK_S32 lt_cnt = 1;
     RK_S32 st_cnt = 8;
     RK_S32 pos = 0;
-    MPP_RET ret = 0;
+    MPP_RET ret = MPP_OK;
     const int MIN_REPEAT = 2;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
@@ -306,7 +306,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
 static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
 {
     MpiEncTestData *p = NULL;
-    MPP_RET ret = 0;
+    MPP_RET ret = MPP_OK;
     const int YUV420_CHANNEL_RATIO = 3 / 2;
 #define MPP_ALIGNMENT_SIZE 64
     if (!data || !cmd) {
@@ -334,8 +334,8 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
     switch (p->fmt & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420P: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) *
-                MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
+            p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
+                MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
         } break;
 
         case MPP_FMT_YUV422_YUYV:
@@ -350,12 +350,12 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_BGR555:
         case MPP_FMT_RGB565:
         case MPP_FMT_BGR565: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) *
-                MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
+            p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
+                MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
         } break;
         default: {
-            p->frame_size = MPP_ALIGN(p->hor_stride, MPP_ALIGNMENT_SIZE) *
-                MPP_ALIGN(p->ver_stride, MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
+            p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
+                MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
         } break;
     }
     *data = p;
@@ -749,7 +749,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
         return MPP_NOK;
     }
 
-    MPP_RET ret = 0;
+    MPP_RET ret = MPP_OK;
     MppFrame frame = NULL;
     MppMeta meta = NULL;
     MppPacket packet = NULL;
@@ -884,7 +884,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
 
 void *hal_mpp_ctx_create(MpiEncTestArgs *args)
 {
-    MPP_RET ret = 0;
+    MPP_RET ret = MPP_OK;
     MpiEncTestData *p = NULL;
     MppPollType timeout = MPP_POLL_BLOCK;
 
@@ -954,5 +954,5 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
 
 void hal_mpp_ctx_delete(void *ctx)
 {
-    test_mpp_ctx_cleanup(ctx);
+    test_mpp_ctx_cleanup((MpiEncTestData*)ctx);
 }

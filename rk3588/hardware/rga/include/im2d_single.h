@@ -99,7 +99,7 @@ IM_API IM_STATUS imcrop(const rga_buffer_t src, rga_buffer_t dst, im_rect rect,
  * @returns success or else negative error code.
  */
 IM_API IM_STATUS imtranslate(const rga_buffer_t src, rga_buffer_t dst,
-                             sint x, int y, int sync = 1, int *release_fence_fd = NULL);
+                             int x, int y, int sync = 1, int *release_fence_fd = NULL);
 
 /**
  * format convert

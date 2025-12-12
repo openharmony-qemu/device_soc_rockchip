@@ -132,7 +132,7 @@
 
 #include <stdio.h>
 #if defined(_WIN32) && !defined(__MINGW32CE__)
-#define snprintf                _snprintf
+#define snprintf_s                _snprintf_s
 #define fseeko                  _fseeki64
 
 #include <direct.h>

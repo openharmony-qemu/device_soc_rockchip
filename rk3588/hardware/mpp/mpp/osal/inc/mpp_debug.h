@@ -75,25 +75,22 @@
  * 16~23 bit: hardware debug print
  * 24~31 bit: information print format
  */
-
-#define mpp_abort()                  \
-    do {                             \
-        if (mpp_debug & MPP_ABORT) { \
-            abort();                 \
-        }                            \
-    } while (0)
+#define mpp_abort() do {                \
+    if (mpp_debug & MPP_ABORT) {        \
+        abort();                        \
+    }                                   \
+} while (0)
 
 #define MPP_STRINGS(x) MPP_TO_STRING(x)
 #define MPP_TO_STRING(x) #x
 
-#define mpp_assert(cond)                                                                          \
-    do {                                                                                          \
-        if (!(cond)) {                                                                            \
+#define mpp_assert(cond) \
+    do { \
+        if (!(cond)) { \
             mpp_err("Assertion %s failed at %s:%d\n", MPP_STRINGS(cond), __FUNCTION__, __LINE__); \
-            mpp_abort();                                                                          \
-        }                                                                                         \
+            mpp_abort(); \
+        } \
     } while (0)
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -105,4 +102,4 @@ extern RK_U32 mpp_debug;
 }
 #endif
 
-#endif /* __MPP_DEBUG_H__ */
+#endif /*__MPP_DEBUG_H__*/

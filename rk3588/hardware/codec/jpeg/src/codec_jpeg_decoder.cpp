@@ -24,6 +24,7 @@
 #ifdef DUMP_FILE
 #include <fstream>
 #endif
+#include <securec.h>
 namespace OHOS {
 namespace VDI {
 namespace JPEG {
@@ -102,7 +103,7 @@ MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, Buffe
     });
     ResetMppBuffer();
     MppBufferInfo info;
-    memset(&info, 0, sizeof(MppBufferInfo));
+    memset_s(&info, sizeof(MppBufferInfo), 0, sizeof(MppBufferInfo));
     info.type = MPP_BUFFER_TYPE_DRM;
     info.fd =  buffer->fd;
     info.size = buffer->size;

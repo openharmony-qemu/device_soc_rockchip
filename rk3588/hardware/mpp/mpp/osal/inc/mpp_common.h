@@ -44,9 +44,9 @@
         (a) = SWAP_tmp;      \
     } while (0)
 #define MPP_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
-#define MPP_ALIGN(x, a) (((x) + (a)-1) & ~((a)-1))
-#define MPP_ALIGN_DOWN(x, a) ((x) & ~((a)-1))
-#define MPP_ALIGN_GEN(x, a) (((x) + (a)-1) / (a) * (a))
+#define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
+#define MPP_ALIGN_DOWN(x, a)    ((x)&~((a)-1))
+#define MPP_ALIGN_GEN(x, a)     (((x)+(a)-1)/(a)*(a))
 #define MPP_VSWAP(a, b) \
     {                   \
         (a) ^= (b);     \
@@ -145,7 +145,7 @@
 
 #include <stdio.h>
 #if defined(_WIN32) && !defined(__MINGW32CE__)
-#define snprintf _snprintf
+#define snprintf_s _snprintf_s
 #define fseeko _fseeki64
 
 #include <direct.h>
