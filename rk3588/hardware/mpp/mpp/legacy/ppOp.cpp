@@ -18,6 +18,7 @@
 
 #include "vpu.h"
 #include "ppOp.h"
+#include <securec.h>
 
 namespace android {
 status_t ppOpInit(PP_OP_HANDLE *hnd, PP_OPERATION *init)

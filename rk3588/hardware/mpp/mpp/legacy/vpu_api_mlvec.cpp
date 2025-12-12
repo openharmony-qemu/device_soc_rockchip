@@ -17,7 +17,7 @@
 #define MODULE_TAG "vpu_api_mlvec"
 
 #include <cstring>
-
+#include <securec.h>
 #include "mpp_mem.h"
 #include "mpp_debug.h"
 #include "mpp_common.h"
@@ -260,8 +260,8 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     RK_S32 tid0_loop = 0;
     RK_S32 ltr_frames = impl->st_cfg.ltr_frames;
 
-    memset_s(lt_ref, 0, sizeof(lt_ref));
-    memset_s(st_ref, 0, sizeof(st_ref));
+    memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
+    memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref));
 
     mlvec_dbg_flow("ltr_frames %d\n", ltr_frames);
     mlvec_dbg_flow("max_tid    %d\n", max_tid);

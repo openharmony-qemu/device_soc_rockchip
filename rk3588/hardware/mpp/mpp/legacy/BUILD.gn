@@ -16,11 +16,11 @@ import("//build/ohos.gni")
 ohos_source_set("rockchip_vpu_src") {
   sources = [
     "rk_list.cpp",
-    "vpu.c",
+    "vpu.cpp",
     "vpu_api.cpp",
     "vpu_api_legacy.cpp",
     "vpu_api_mlvec.cpp",
-    "vpu_mem_legacy.c",
+    "vpu_mem_legacy.cpp",
   ]
 
   cflags_c = [

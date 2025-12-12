@@ -15,6 +15,7 @@
  */
 
 #include <string.h>
+#include <securec.h>
 
 #include "mpp_mem.h"
 #include "mpp_env.h"
@@ -39,7 +40,7 @@ static RK_S32 commit_memory_handle(vpu_display_mem_pool *p, RK_S32 mem_hdl, RK_S
     vpu_display_mem_pool_impl *p_mempool = (vpu_display_mem_pool_impl *)p;
     const int INDEX_SHIFT = 27;
     vpu_mem_dbg_func("in  pool %p hnl %p size %d\n", p, mem_hdl, size);
-    memset_s(&info, 0, sizeof(MppBufferInfo));
+    memset_s(&info, sizeof(MppBufferInfo), 0, sizeof(MppBufferInfo));
     info.type = MPP_BUFFER_TYPE_ION;
     info.fd = mem_hdl;
     info.size = size & 0x07ffffff;
@@ -96,7 +97,7 @@ static RK_S32 put_used_memory_handle(vpu_display_mem_pool *p, void *hdl)
     vpu_mem_dbg_func("pool %p hnd %p buffer %p\n", p, hdl, buf);
     if (buf != NULL) {
         mpp_buffer_put(buf);
-        memset_s(dmabuf, 0, sizeof(VPUMemLinear_t));
+        memset_s(dmabuf, sizeof(VPUMemLinear_t), 0, sizeof(VPUMemLinear_t));
     }
     (void)p;
     return MPP_OK;
@@ -236,7 +237,7 @@ RK_S32 VPUMallocLinearFromRender(VPUMemLinear_t *p, RK_U32 size, void *ctx)
         return VPUMallocLinear(p, size);
     }
     dma_buf = (VPUMemLinear_t *)p_mempool->get_free((vpu_display_mem_pool *)ctx);
-    memset_s(p, 0, sizeof(VPUMemLinear_t));
+    memset_s(p, sizeof(VPUMemLinear_t), 0, sizeof(VPUMemLinear_t));
     if (dma_buf != NULL) {
         if (dma_buf->size < size) {
             mpp_free(dma_buf);

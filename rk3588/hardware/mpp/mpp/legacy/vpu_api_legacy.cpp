@@ -17,6 +17,7 @@
 #define MODULE_TAG "vpu_api_legacy"
 
 #include <cstring>
+#include <securec.h>
 
 #include "mpp_mem.h"
 #include "mpp_env.h"
@@ -236,8 +237,8 @@ static int copy_align_raw_buffer_to_dest(RK_U8 *dst, RK_U8 *src, RK_U32 width, R
     RK_U8 *dst_buf = dst;
     RK_U8 *src_buf = src;
     RK_U32 row = 0;
-    RK_U32 hor_stride = MPP_ALIGN(width, 16);
-    RK_U32 ver_stride = MPP_ALIGN(height, 8);
+    RK_U32 hor_stride = MPP_ALIGN(width, (RK_U32)16);
+    RK_U32 ver_stride = MPP_ALIGN(height, (RK_U32)8);
     RK_U8 *dst_u = dst_buf + hor_stride * ver_stride;
     RK_U8 *dst_v = dst_u + hor_stride * ver_stride / 4;
     const RK_U32 YUV_CHROMA_HEIGHT_DIVISOR = 2;
@@ -725,8 +726,8 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
         RK_S32 fd = -1;
         RK_U32 width = ctx->width;
         RK_U32 height = ctx->height;
-        RK_U32 hor_stride = MPP_ALIGN(width, 16);
-        RK_U32 ver_stride = MPP_ALIGN(height, 16);
+        RK_U32 hor_stride = MPP_ALIGN(width, (RK_U32)16);
+        RK_U32 ver_stride = MPP_ALIGN(height, (RK_U32)16);
         MppBuffer str_buf = nullptr; /* input */
         MppBuffer pic_buf = nullptr; /* output */
 
@@ -863,7 +864,7 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
                 mpp_log_f("fd for output is invalid!\n");
                 // TODO: check frame format and allocate correct buffer
                 aDecOut->data = mpp_malloc(RK_U8, width * height * YUV420P_PIXEL_SIZE);
-                memcpy_s(aDecOut->data, aEncOut->size, (RK_U8 *)mpp_buffer_get_ptr(pic_buf), aDecOut->size);
+                memcpy_s(aDecOut->data, aDecOut->size, (RK_U8 *)mpp_buffer_get_ptr(pic_buf), aDecOut->size);
             }
 
             vpu_api_dbg_func("get frame %p size %d\n", mframe, len);
@@ -1088,8 +1089,8 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
     RK_S32 fd = -1;
     RK_U32 width = ctx->width;
     RK_U32 height = ctx->height;
-    RK_U32 hor_stride = MPP_ALIGN(width, 16);
-    RK_U32 ver_stride = MPP_ALIGN(height, 16);
+    RK_U32 hor_stride = MPP_ALIGN(width, (RK_U32)16);
+    RK_U32 ver_stride = MPP_ALIGN(height, (RK_U32)16);
     MppFrame frame = nullptr;
     MppPacket packet = nullptr;
     MppBuffer pic_buf = nullptr;
@@ -1292,7 +1293,7 @@ RK_S32 VpuApiLegacy::encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, 
 
         if (!fd_output) {
             RK_U8 *src = (RK_U8 *)mpp_packet_get_data(packet);
-            size_t buffer = MPP_ALIGN(length, SZ_4K);
+            size_t buffer = MPP_ALIGN(length, (size_t)SZ_4K);
 
             aEncOut->data = mpp_malloc(RK_U8, buffer);
 
@@ -1348,8 +1349,8 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
     vpu_api_dbg_func("enter\n");
     RK_U32 width = ctx->width;
     RK_U32 height = ctx->height;
-    RK_U32 hor_stride = MPP_ALIGN(width, 16);
-    RK_U32 ver_stride = MPP_ALIGN(height, 8);
+    RK_U32 hor_stride = MPP_ALIGN(width, (RK_U32)16);
+    RK_U32 ver_stride = MPP_ALIGN(height, (RK_U32)8);
     RK_S64 pts = aEncInStrm->timeUs;
     RK_S32 fd = aEncInStrm->bufPhyAddr;
     RK_U32 size = aEncInStrm->size;
@@ -1436,13 +1437,13 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
             goto FUNC_RET;
         }
         if (format >= MPP_FMT_YUV420SP && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * RGB565_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB565_PIXEL_SIZE_RATIO;
         } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
+            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
         } else {
             mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;
@@ -1515,7 +1516,7 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
         }
         aEncOut->data = nullptr;
         if (length > 0) {
-            aEncOut->data = mpp_calloc(RK_U8, MPP_ALIGN(length + ALIGNMENT_OFFSET, SZ_4K));
+            aEncOut->data = mpp_calloc(RK_U8, MPP_ALIGN(length + ALIGNMENT_OFFSET, (size_t)SZ_4K));
             if (aEncOut->data) {
                 memcpy_s(aEncOut->data, aEncOut->size, src + offset, length);
             }

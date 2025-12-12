@@ -33,22 +33,10 @@
 #define mpp_buf_dbg(flag, fmt, ...) _mpp_dbg(mpp_buffer_debug, flag, fmt, ##__VA_ARGS__)
 #define mpp_buf_dbg_f(flag, fmt, ...) _mpp_dbg_f(mpp_buffer_debug, flag, fmt, ##__VA_ARGS__)
 
-void mpp_buf_function_enter(void)
-{
-    mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "enter\n");
-}
-void mpp_buf_function_leave(void)
-{
-    mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "leave\n");
-}
-void mpp_buf_function_leave_ok(void)
-{
-    mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "success\n");
-}
-void mpp_buf_function_leave_fail(void)
-{
-    mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "failed\n");
-}
+#define MPP_BUF_FUNCTION_ENTER() mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "enter\n")
+#define MPP_BUF_FUNCTION_LEAVE() mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "leave\n")
+#define MPP_BUF_FUNCTION_LEAVE_OK() mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "success\n")
+#define MPP_BUF_FUNCTION_LEAVE_FAIL() mpp_buf_dbg_f(MPP_BUF_DBG_FUNCTION, "failed\n")
 
 typedef enum MppBufOps_e {
     GRP_CREATE,
@@ -172,12 +160,12 @@ struct MppBufferGroupImpl_t {
     struct list_head list_group;
 };
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 extern RK_U32 mpp_buffer_debug;
-
 /*
  * mpp_buffer_create       : create a unused buffer with parameter tag/size/data
  * if input buffer is NULL then buffer will be register to unused list

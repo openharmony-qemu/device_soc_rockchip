@@ -22,10 +22,10 @@ ohos_shared_library("libcodec_oem_interface") {
     "//device/soc/rockchip/rk3588/hardware/rga/include",
   ]
   sources = [
-    "src/hdi_mpp.c",
+    "src/hdi_mpp.cpp",
     "src/hdi_mpp_component_manager.cpp",
-    "src/hdi_mpp_config.c",
-    "src/hdi_mpp_mpi.c",
+    "src/hdi_mpp_config.cpp",
+    "src/hdi_mpp_mpi.cpp",
   ]
 
   deps = [

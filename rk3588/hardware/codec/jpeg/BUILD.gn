@@ -29,7 +29,7 @@ ohos_shared_library("libjpeg_vdi_impl") {
     "$hdf_uhdf_path/osal/include",
   ]
   sources = [
-    "${HARDWARE_PATH}/codec/src/hdi_mpp_mpi.c",
+    "${HARDWARE_PATH}/codec/src/hdi_mpp_mpi.cpp",
     "src/codec_jpeg_decoder.cpp",
     "src/codec_jpeg_helper.cpp",
     "src/codec_jpeg_impl.cpp",

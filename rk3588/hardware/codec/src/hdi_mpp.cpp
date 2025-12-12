@@ -118,7 +118,7 @@ int32_t CodecSetCallback(CODEC_HANDLETYPE handle, CodecCallback *cb, UINTPTR ins
 
 static MppCtxType GetMppCtxType(const char* name)
 {
-    char *pos = strstr(name, "decoder");
+    const char *pos = strstr(name, "decoder");
     if (pos != NULL) {
         return MPP_CTX_DEC;
     }
@@ -134,7 +134,7 @@ static MppCtxType GetMppCtxType(const char* name)
 
 static MppCodingType GetMppCodingType(const char* name)
 {
-    char *pos = strstr(name, "avc");
+    const char *pos = strstr(name, "avc");
     if (pos != NULL) {
         return MPP_VIDEO_CodingAVC;
     }
@@ -209,7 +209,7 @@ int32_t CodecCreate(const char* name, CODEC_HANDLETYPE *handle)
     }
     *handle = ctx;
     component->ctx = ctx;
-    component->componentName = name;
+    component->componentName = (char*)name;
     if (!AddToMppComponentManager(*handle, component)) {
         HDF_LOGE("%{public}s: AddToMppComponentManager failed!", __func__);
         return HDF_FAILURE;
@@ -370,7 +370,7 @@ int32_t CodecSetParameter(CODEC_HANDLETYPE handle, Param *params, int32_t paramC
         return HDF_FAILURE;
     }
     if (ctx != component->ctx) {
-        HDF_LOGE("%{public}s: ctx not match %{public}d", __func__, ctx);
+        HDF_LOGE("%{public}s: ctx not match %{public}d", __func__, *(int*)ctx);
         return HDF_FAILURE;
     }
 
@@ -473,7 +473,7 @@ int32_t CodecGetParameter(CODEC_HANDLETYPE handle, Param *params, int32_t paramC
         return HDF_FAILURE;
     }
     if (ctx != component->ctx) {
-        HDF_LOGE("%{public}s: ctx not match %{public}d", __func__, ctx);
+        HDF_LOGE("%{public}s: ctx not match %{public}d", __func__, *(int*)ctx);
         return HDF_FAILURE;
     }
 
@@ -923,7 +923,7 @@ int32_t EncodeInitFrame(RKHdiBaseComponent* component, MppFrame *pFrame, RK_U32 
     if (status == IM_STATUS_SUCCESS) {
         mppApi->HdiMppFrameSetBuffer(*pFrame, component->frmBuf);
     } else {
-        mppApi->HdiMppFrameDeinit(&pFrame);
+        mppApi->HdiMppFrameDeinit(pFrame);
         HDF_LOGE("%{public}s: copy encode input data failed, error code: %{public}d", __func__, ret);
         return HDF_FAILURE;
     }
@@ -949,7 +949,7 @@ int32_t HandleEncodedPacket(RKHdiBaseComponent* component, MppPacket packet, RK_
             outInfo->buffer[0].length = len;
         } else {
             HDF_LOGE("%{public}s: copy output data failed, error code: %{public}d", __func__, ret);
-            HDF_LOGE("%{public}s: dst bufferSize:%{public}d, src data len: %{public}d", __func__, outBufferSize, len);
+            HDF_LOGE("%{public}s: dst bufferSize:%{public}d, src data len: %zu", __func__, outBufferSize, len);
         }
     } else {
         HDF_LOGE("%{public}s: output data not copy, buffer incorrect!", __func__);
@@ -1010,7 +1010,7 @@ int32_t CodecEncode(CODEC_HANDLETYPE handle, CodecBuffer *inputData, CodecBuffer
     RK_U32 pkt_eos = 0;
     RK_U32 loop_end = 0;
     RK_U32 frm_eos = 0;
-    UINTPTR userData = NULL;
+    UINTPTR userData = (UINTPTR)NULL;
     int32_t acquireFd = 1;
 
     if (inputData == NULL || inputData->bufferCnt == 0) {

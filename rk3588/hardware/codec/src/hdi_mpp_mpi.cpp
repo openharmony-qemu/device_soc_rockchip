@@ -23,7 +23,7 @@
 
 void *mLibHandle = NULL;
 
-char *mLibName = "librockchip_mpp.z.so";
+const char *mLibName = "librockchip_mpp.z.so";
 RKMppApi *GetPacketApi(RKMppApi *pMppApi)
 {
     pMppApi->HdiMppPacketNew = (hdiMppPacketNew)dlsym(mLibHandle, "mpp_packet_new");
