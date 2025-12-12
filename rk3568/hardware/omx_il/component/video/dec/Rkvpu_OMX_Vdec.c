@@ -162,7 +162,8 @@ void UpdateFrameSize(OMX_COMPONENTTYPE *pOMXComponent)
          rockchipInputPort->portDefinition.format.video.nStride) ||
         (rockchipOutputPort->portDefinition.format.video.nSliceHeight !=
          rockchipInputPort->portDefinition.format.video.nSliceHeight)) {
-        OMX_U32 width = 0, height = 0;
+        OMX_U32 width = 0;
+        OMX_U32 height = 0;
 
         rockchipOutputPort->portDefinition.format.video.nFrameWidth =
             rockchipInputPort->portDefinition.format.video.nFrameWidth;
@@ -932,7 +933,7 @@ OMX_BOOL Rkvpu_Post_OutputFrame(OMX_COMPONENTTYPE *pOMXComponent)
                     OMX_U32 verStride = Get_Video_VerAlign(pVideoDec->codecId, pframe.DisplayHeight,
                         pVideoDec->codecProfile);
                     outputUseBuffer->remainDataLen = GetDataSize(horStride, verStride, eColorFormat);
-                } else{
+                } else {
                     outputUseBuffer->remainDataLen =
                         GetDataSize(pframe.DisplayWidth, pframe.DisplayHeight, eColorFormat);
                 }

@@ -188,7 +188,8 @@ OMX_S32 rga_crop_scale(RockchipVideoPlane *plane,
                        RK_U32 orgin_w, RK_U32 orgin_h, int rga_fd)
 {
     struct rga_req  Rga_Request;
-    RK_U32 new_width = 0, new_height = 0;
+    RK_U32 new_width = 0;
+    RK_U32 new_height = 0;
     Rockchip_OSAL_Memset(&Rga_Request, 0x0, sizeof(Rga_Request));
     if (param_video->bEnableScaling || param_video->bEnableCropping) {
         if (param_video->bEnableScaling) {
@@ -397,7 +398,8 @@ void rga_nv12_crop_scale(RockchipVideoPlane *plane,
         omx_err("rga_crop_scale fail");
     }
 #else
-    RK_U32 new_width = 0, new_height = 0;
+    RK_U32 new_width = 0;
+    RK_U32 new_height = 0;
     rga_info_t src;
     rga_info_t dst;
     (void) rga_ctx;

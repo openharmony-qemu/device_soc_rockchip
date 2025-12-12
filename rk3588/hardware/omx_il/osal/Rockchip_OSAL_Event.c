@@ -192,8 +192,9 @@ OMX_ERRORTYPE Rockchip_OSAL_SignalWait(OMX_HANDLETYPE eventHandle, OMX_U32 ms)
         if (!event->signal)
             ret = OMX_ErrorTimeout;
     } else if (ms == DEF_MAX_WAIT_TIME) {
-        while (!event->signal)
+        while (!event->signal) {
             pthread_cond_wait(&event->condition, (pthread_mutex_t *)(event->mutex));
+        }
         ret = OMX_ErrorNone;
     } else {
         while (!event->signal) {
