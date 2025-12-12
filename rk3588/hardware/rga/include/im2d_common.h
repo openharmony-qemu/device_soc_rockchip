@@ -50,14 +50,10 @@ IM_EXPORT_API const char* querystring(int name);
         const char* im2d_api_err; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            im2d_api_err = imStrError_t(IM_STATUS_INVALID_PARAM); \
-        } else if (__argc == 1){ \
-            im2d_api_err = imStrError_t((IM_STATUS)__args[0]); \
-        } else { \
-            im2d_api_err = ("Fatal error, imStrError() too many parameters\n"); \
-            printf("Fatal error, imStrError() too many parameters\n"); \
-        } \
+        im2d_api_err = (__argc == 0) ? imStrError_t(IM_STATUS_INVALID_PARAM) : \
+                       (__argc == 1) ? imStrError_t((IM_STATUS)__args[0]) : \
+                       (printf("Fatal error, imStrError() too many parameters\n"), \
+                        "Fatal error, imStrError() too many parameters\n"); \
         im2d_api_err; \
     })
 IM_C_API const char* imStrError_t(IM_STATUS status);
@@ -96,14 +92,9 @@ IM_API IM_STATUS imcheckHeader(im_api_version_t header_version = RGA_CURRENT_API
         memset_s(&__pat_rect, sizeof(im_rect), 0, sizeof(im_rect)); \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imcheck_t(src, dst, __pat, src_rect, dst_rect, __pat_rect, 0); \
-        } else if (__argc == 1){ \
-            __ret = imcheck_t(src, dst, __pat, src_rect, dst_rect, __pat_rect, __args[0]); \
-        } else { \
-            __ret = IM_STATUS_FAILED; \
-            printf("check failed\n"); \
-        } \
+        __ret = (__argc == 0) ? imcheck_t(src, dst, __pat, src_rect, dst_rect, __pat_rect, 0) : \
+                (__argc == 1) ? imcheck_t(src, dst, __pat, src_rect, dst_rect, __pat_rect, __args[0]) : \
+                (printf("check failed\n"), IM_STATUS_FAILED); \
         __ret; \
     })
 #define imcheck_composite(src, dst, pat, src_rect, dst_rect, pat_rect, ...) \
@@ -111,14 +102,9 @@ IM_API IM_STATUS imcheckHeader(im_api_version_t header_version = RGA_CURRENT_API
         IM_STATUS __ret = IM_STATUS_NOERROR; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imcheck_t(src, dst, pat, src_rect, dst_rect, pat_rect, 0); \
-        } else if (__argc == 1){ \
-            __ret = imcheck_t(src, dst, pat, src_rect, dst_rect, pat_rect, __args[0]); \
-        } else { \
-            __ret = IM_STATUS_FAILED; \
-            printf("check failed\n"); \
-        } \
+        __ret = (__argc == 0) ? imcheck_t(src, dst, pat, src_rect, dst_rect, pat_rect, 0) : \
+                (__argc == 1) ? imcheck_t(src, dst, pat, src_rect, dst_rect, pat_rect, __args[0]) : \
+                (printf("check failed\n"), IM_STATUS_FAILED); \
         __ret; \
     })
 IM_C_API IM_STATUS imcheck_t(const rga_buffer_t src, const rga_buffer_t dst, const rga_buffer_t pat,

@@ -103,14 +103,10 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         rga_buffer_t im2d_api_buffer; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            im2d_api_buffer = wrapbuffer_handle_t(handle, width, height, width, height, format); \
-        } else if (__argc == 2){ \
-            im2d_api_buffer = wrapbuffer_handle_t(handle, width, height, __args[0], __args[1], format); \
-        } else { \
-            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
-            printf("invalid parameter\n"); \
-        } \
+        im2d_api_buffer = (__argc == 0) ? wrapbuffer_handle_t(handle, width, height, width, height, format) : \
+                          (__argc == 2) ? wrapbuffer_handle_t(handle, width, height, __args[0], __args[1], format) : \
+                          (printf("invalid parameter\n"), memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), \
+                                                                   0x0, sizeof(im2d_api_buffer)), im2d_api_buffer); \
         im2d_api_buffer; \
     })
 
@@ -119,14 +115,11 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         rga_buffer_t im2d_api_buffer; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            im2d_api_buffer = wrapbuffer_virtualaddr_t(vir_addr, width, height, width, height, format); \
-        } else if (__argc == 2){ \
-            im2d_api_buffer = wrapbuffer_virtualaddr_t(vir_addr, width, height, __args[0], __args[1], format); \
-        } else { \
-            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
-            printf("invalid parameter\n"); \
-        } \
+        im2d_api_buffer = (__argc == 0) ? wrapbuffer_virtualaddr_t(vir_addr, width, height, width, height, format) : \
+                          (__argc == 2) ? wrapbuffer_virtualaddr_t(vir_addr, width, height, __args[0], \
+                                                                   __args[1], format) : \
+                          (printf("invalid parameter\n"), memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), \
+                                                                   0x0, sizeof(im2d_api_buffer)), im2d_api_buffer); \
         im2d_api_buffer; \
     })
 
@@ -135,14 +128,11 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         rga_buffer_t im2d_api_buffer; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            im2d_api_buffer = wrapbuffer_physicaladdr_t(phy_addr, width, height, width, height, format); \
-        } else if (__argc == 2){ \
-            im2d_api_buffer = wrapbuffer_physicaladdr_t(phy_addr, width, height, __args[0], __args[1], format); \
-        } else { \
-            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
-            printf("invalid parameter\n"); \
-        } \
+        im2d_api_buffer = (__argc == 0) ? wrapbuffer_physicaladdr_t(phy_addr, width, height, width, height, format) : \
+                          (__argc == 2) ? wrapbuffer_physicaladdr_t(phy_addr, width, height, __args[0], \
+                                                                    __args[1], format) : \
+                          (printf("invalid parameter\n"), memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), \
+                                                                   0x0, sizeof(im2d_api_buffer)), im2d_api_buffer); \
         im2d_api_buffer; \
     })
 
@@ -151,14 +141,10 @@ IM_EXPORT_API IM_STATUS releasebuffer_handle(rga_buffer_handle_t handle);
         rga_buffer_t im2d_api_buffer; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            im2d_api_buffer = wrapbuffer_fd_t(fd, width, height, width, height, format); \
-        } else if (__argc == 2){ \
-            im2d_api_buffer = wrapbuffer_fd_t(fd, width, height, __args[0], __args[1], format); \
-        } else { \
-            memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), 0x0, sizeof(im2d_api_buffer)); \
-            printf("invalid parameter\n"); \
-        } \
+        im2d_api_buffer = (__argc == 0) ? wrapbuffer_fd_t(fd, width, height, width, height, format) : \
+                          (__argc == 2) ? wrapbuffer_fd_t(fd, width, height, __args[0], __args[1], format) : \
+                          (printf("invalid parameter\n"), memset_s(&im2d_api_buffer, sizeof(im2d_api_buffer), \
+                          0x0, sizeof(im2d_api_buffer)), im2d_api_buffer); \
         im2d_api_buffer; \
     })
 /* Symbols for define *_t functions */

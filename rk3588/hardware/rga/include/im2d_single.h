@@ -538,14 +538,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imcopy_t(src, dst, 1); \
-        } else if (__argc == 1){ \
-            __ret = imcopy_t(src, dst, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imcopy_t(src, dst, 1) : \
+                (__argc == 1) ? imcopy_t(src, dst, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -567,21 +562,14 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         double __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(double); \
-        if (__argc == 0) { \
-            __ret = imresize_t(src, dst, 0, 0, INTER_LINEAR, 1); \
-        } else if (__argc == 2){ \
-            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], \
-                               __args[RGA_GET_MIN(__argc, 1)], INTER_LINEAR, 1); \
-        } else if (__argc == 3){ \
-            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], \
-                               __args[RGA_GET_MIN(__argc, 1)], (int)__args[RGA_GET_MIN(__argc, 2)], 1); \
-        } else if (__argc == 4){ \
-            __ret = imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], __args[RGA_GET_MIN(__argc, 1)], \
-                              (int)__args[RGA_GET_MIN(__argc, 2)], (int)__args[RGA_GET_MIN(__argc, 3)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imresize_t(src, dst, 0, 0, INTER_LINEAR, 1) : \
+                (__argc == 2) ? imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], \
+                                         __args[RGA_GET_MIN(__argc, 1)], INTER_LINEAR, 1) : \
+                (__argc == 3) ? imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], \
+                                         __args[RGA_GET_MIN(__argc, 1)], (int)__args[RGA_GET_MIN(__argc, 2)], 1) : \
+                (__argc == 4) ? imresize_t(src, dst, __args[RGA_GET_MIN(__argc, 0)], __args[RGA_GET_MIN(__argc, 1)], \
+                                         (int)__args[RGA_GET_MIN(__argc, 2)], (int)__args[RGA_GET_MIN(__argc, 3)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -611,17 +599,11 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imcvtcolor_t(src, dst, sfmt, dfmt, IM_COLOR_SPACE_DEFAULT, 1); \
-        } else if (__argc == 1){ \
-            __ret = imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
-        } else if (__argc == 2){ \
-            __ret = imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], \
-                                (int)__args[RGA_GET_MIN(__argc, 1)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imcvtcolor_t(src, dst, sfmt, dfmt, IM_COLOR_SPACE_DEFAULT, 1) : \
+                (__argc == 1) ? imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], 1) : \
+                (__argc == 2) ? imcvtcolor_t(src, dst, sfmt, dfmt, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                                           (int)__args[RGA_GET_MIN(__argc, 1)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -641,14 +623,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imcrop_t(src, dst, rect, 1); \
-        } else if (__argc == 1){ \
-            __ret = imcrop_t(src, dst, rect, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imcrop_t(src, dst, rect, 1) : \
+                (__argc == 1) ? imcrop_t(src, dst, rect, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -669,14 +646,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imtranslate_t(src, dst, x, y, 1); \
-        } else if (__argc == 1){ \
-            __ret = imtranslate_t(src, dst, x, y, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imtranslate_t(src, dst, x, y, 1) : \
+                (__argc == 1) ? imtranslate_t(src, dst, x, y, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -699,17 +671,11 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imrotate_t(src, dst, rotation, 1); \
-        } else if (__argc == 1){ \
-            __ret = imrotate_t(src, dst, rotation, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imrotate_t(src, dst, rotation, 1) : \
+                (__argc == 1) ? imrotate_t(src, dst, rotation, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
-
 
 /**
  * flip
@@ -729,14 +695,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imflip_t(src, dst, mode, 1); \
-        } else if (__argc == 1){ \
-            __ret = imflip_t(src, dst, mode, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imflip_t(src, dst, mode, 1) : \
+                (__argc == 1) ? imflip_t(src, dst, mode, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -760,35 +721,24 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         memset_s(&srcB, sizeof(rga_buffer_t), 0x00, sizeof(rga_buffer_t)); \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imblend_t(srcA, srcB, dst, IM_ALPHA_BLEND_SRC_OVER, 1); \
-        } else if (__argc == 1){ \
-            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
-        } else if (__argc == 2){ \
-            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], \
-                             (int)__args[RGA_GET_MIN(__argc, 1)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imblend_t(srcA, srcB, dst, IM_ALPHA_BLEND_SRC_OVER, 1) : \
+                (__argc == 1) ? imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], 1) : \
+                (__argc == 2) ? imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                                         (int)__args[RGA_GET_MIN(__argc, 1)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
+
 #define imcomposite(srcA, srcB, dst, ...) \
     ({ \
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imblend_t(srcA, srcB, dst, IM_ALPHA_BLEND_SRC_OVER, 1); \
-        } else if (__argc == 1){ \
-            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
-        } else if (__argc == 2){ \
-            __ret = imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], \
-                             (int)__args[RGA_GET_MIN(__argc, 1)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imblend_t(srcA, srcB, dst, IM_ALPHA_BLEND_SRC_OVER, 1) : \
+                (__argc == 1) ? imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], 1) : \
+                (__argc == 2) ? imblend_t(srcA, srcB, dst, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                                         (int)__args[RGA_GET_MIN(__argc, 1)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -810,17 +760,11 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imcolorkey_t(src, dst, range, IM_ALPHA_COLORKEY_NORMAL, 1); \
-        } else if (__argc == 1){ \
-            __ret = imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], 1); \
-        } else if (__argc == 2){ \
-            __ret = imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], \
-                                (int)__args[RGA_GET_MIN(__argc, 1)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imcolorkey_t(src, dst, range, IM_ALPHA_COLORKEY_NORMAL, 1) : \
+                (__argc == 1) ? imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], 1) : \
+                (__argc == 2) ? imcolorkey_t(src, dst, range, (int)__args[RGA_GET_MIN(__argc, 0)], \
+                                           (int)__args[RGA_GET_MIN(__argc, 1)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -840,17 +784,11 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imquantize_t(src, dst, nn_info, 1); \
-        } else if (__argc == 1){ \
-            __ret = imquantize_t(src, dst, nn_info, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imquantize_t(src, dst, nn_info, 1) : \
+                (__argc == 1) ? imquantize_t(src, dst, nn_info, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
-
 
 /**
  * ROP
@@ -868,14 +806,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imrop_t(src, dst, rop_code, 1); \
-        } else if (__argc == 1){ \
-            __ret = imrop_t(src, dst, rop_code, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imrop_t(src, dst, rop_code, 1) : \
+                (__argc == 1) ? imrop_t(src, dst, rop_code, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -896,14 +829,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imfill_t(buf, rect, color, 1); \
-        } else if (__argc == 1){ \
-            __ret = imfill_t(buf, rect, color, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imfill_t(buf, rect, color, 1) : \
+                (__argc == 1) ? imfill_t(buf, rect, color, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -912,14 +840,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imfill_t(buf, rect, color, 1); \
-        } else if (__argc == 1){ \
-            __ret = imfill_t(buf, rect, color, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imfill_t(buf, rect, color, 1) : \
+                (__argc == 1) ? imfill_t(buf, rect, color, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
@@ -928,14 +851,9 @@ IM_C_API IM_STATUS impalette_t(rga_buffer_t src, rga_buffer_t dst, rga_buffer_t 
         IM_STATUS __ret = IM_STATUS_SUCCESS; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
-        if (__argc == 0) { \
-            __ret = imfill_t(buf, rect, color, 1); \
-        } else if (__argc == 1){ \
-            __ret = imfill_t(buf, rect, color, (int)__args[RGA_GET_MIN(__argc, 0)]); \
-        } else { \
-            __ret = IM_STATUS_INVALID_PARAM; \
-            printf("invalid parameter\n"); \
-        } \
+        __ret = (__argc == 0) ? imfill_t(buf, rect, color, 1) : \
+                (__argc == 1) ? imfill_t(buf, rect, color, (int)__args[RGA_GET_MIN(__argc, 0)]) : \
+                (printf("invalid parameter\n"), IM_STATUS_INVALID_PARAM); \
         __ret; \
     })
 
