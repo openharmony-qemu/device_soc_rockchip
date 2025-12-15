@@ -23,6 +23,28 @@
 #include "display_gfx.h"
 
 #define ALIGN_UP(x, a) ((((x) + ((a)-1)) / (a)) * (a))
+#define MIN_THRESHOLD   2
+#define MAX_THRESHOLD   4
+#define FORCED_VALUE    2
+#define MIN_WIDTH       2
+#define MAX_HEIGHT      64
+
+typedef struct {
+    rga_buffer_t dstRgaBuffer;
+    rga_buffer_t srcRgaBuffer;
+    rga_buffer_t bRgbBuffer;
+    rga_buffer_handle_t src_handle;
+    rga_buffer_handle_t dst_handle;
+    rga_buffer_handle_t brgb_handle;
+    im_rect srect;
+    im_rect drect;
+    im_rect prect;
+    int32_t blendType;
+    int32_t transformType;
+    int32_t usage;
+    uint8_t isYuv;
+} BufferContainer;
+
 int32_t rkInitGfx()
 {
     DISPLAY_LOGE("%s\n", querystring(RGA_ALL));
@@ -270,130 +292,58 @@ int32_t TransformTypeChange(TransformType type)
     }
     return rkTransformType;
 }
-
-int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect *dstRect, GfxOpt *opt)
+int32_t ImportSourceAndDestinationBuffers(ISurface *dstSurface,
+                                             ISurface *srcSurface,
+                                             BufferContainer *buffers)
 {
-    int32_t usage = 0;
-    uint8_t isYuv = 0;
-    rga_buffer_t dstRgaBuffer;
-    rga_buffer_t srcRgaBuffer;
-    rga_buffer_t bRgbBuffer;
-    rga_buffer_handle_t src_handle = 0;
-    rga_buffer_handle_t dst_handle = 0;
-    rga_buffer_handle_t brgb_handle = 0;
     im_handle_param_t src_param;
     im_handle_param_t dst_param;
-    im_handle_param_t brgb_param;
-    IM_STATUS ret = 0;
-    im_rect srect;
-    im_rect drect;
-    im_rect prect;
-    int32_t rkBlendType = 0;
-    int32_t rkTransformType = 0;
-    int32_t ret_val = DISPLAY_SUCCESS;
-    const int MIN_THRESHOLD = 2;
-    const int MAX_THRESHOLD = 4;
-    const int FORCED_VALUE = 2;
-    const int MIN_WIDTH = 2;
-    const int MAX_HEIGHT = 64;
 
-    errno_t eok = memset_s(&dstRgaBuffer, sizeof(dstRgaBuffer), 0, sizeof(dstRgaBuffer));
-    if (eok != EOK) {
-        DISPLAY_LOGE("memset_s failed");
-        ret_val = false;
-        goto EXIT;
-    }
-    eok = memset_s(&srcRgaBuffer, sizeof(srcRgaBuffer), 0, sizeof(srcRgaBuffer));
-    if (eok != EOK) {
-        DISPLAY_LOGE("memset_s failed");
-        ret_val = false;
-        goto EXIT;
-    }
-    eok = memset_s(&bRgbBuffer, sizeof(bRgbBuffer), 0, sizeof(bRgbBuffer));
-    if (eok != EOK) {
-        DISPLAY_LOGE("memset_s failed");
-        ret_val = false;
-        goto EXIT;
-    }
-    eok = memset_s(&srect, sizeof(srect), 0, sizeof(srect));
-    if (eok != EOK) {
-        DISPLAY_LOGE("memset_s failed");
-        ret_val = false;
-        goto EXIT;
-    }
-    eok = memset_s(&drect, sizeof(drect), 0, sizeof(drect));
-    if (eok != EOK) {
-        DISPLAY_LOGE("memset_s failed");
-        ret_val = false;
-        goto EXIT;
-    }
-    eok = memset_s(&prect, sizeof(prect), 0, sizeof(prect));
-    if (eok != EOK) {
-        DISPLAY_LOGE("memset_s failed");
-        ret_val = false;
-        goto EXIT;
-    }
-
-    DISPLAY_LOGD("gfx src fd %{public}d, w %{public}d, h %{publuc}d, sw %{public}d sh %{public}d",
-        (int32_t)srcSurface->phyAddr, srcSurface->width, srcSurface->height, ALIGN_UP(srcSurface->width, 16),
-        ALIGN_UP(srcSurface->height, 2));
-    DISPLAY_LOGD("gfx dst fd %{public}d, w %{public}d, h %{public}d, sw %{public}d sh %{public}d",
-        (int32_t)dstSurface->phyAddr, dstSurface->width, dstSurface->height, ALIGN_UP(dstSurface->width, 16),
-        ALIGN_UP(dstSurface->height, 2));
-
-    //rga_gauss_matrix_demo.cpp
     dst_param.width = (uint32_t)dstSurface->width;
     dst_param.height = (uint32_t)dstSurface->height;
-    dst_param.format = (uint32_t)colorSpaceModeChange(dstSurface->enColorFmt, &isYuv);
-    if (isYuv == 1) {
+    dst_param.format = (uint32_t)colorSpaceModeChange(dstSurface->enColorFmt, &(buffers->isYuv));
+    if (buffers->isYuv == 1) {
         DISPLAY_LOGE("rk gfx do not support dst buffer is yuv format");
-        ret_val = DISPLAY_PARAM_ERR;
-        goto EXIT;
+        return DISPLAY_FAILURE;
     }
 
     src_param.width = (uint32_t)srcSurface->width;
     src_param.height = (uint32_t)srcSurface->height;
-    src_param.format = (uint32_t)colorSpaceModeChange(srcSurface->enColorFmt, &isYuv);
+    src_param.format = (uint32_t)colorSpaceModeChange(srcSurface->enColorFmt, &(buffers->isYuv));
 
-    dst_handle = importbuffer_fd(dstSurface->phyAddr, &dst_param);
-    if (dst_handle == 0) {
+    buffers->dst_handle = importbuffer_fd(dstSurface->phyAddr, &dst_param);
+    if (buffers->dst_handle == 0) {
         DISPLAY_LOGE("import dst_handle error!");
-        ret_val = DISPLAY_FAILURE;
-        goto EXIT;
+        return DISPLAY_FAILURE;
     }
+
     if (srcSurface->phyAddr == 0) {
         DISPLAY_LOGE("source fd is invalid");
-        ret_val = DISPLAY_PARAM_ERR;
-        goto EXIT;
+        return DISPLAY_FAILURE;
     }
 
-    src_handle = importbuffer_fd(srcSurface->phyAddr, &src_param);
-    if (src_handle == 0) {
+    buffers->src_handle = importbuffer_fd(srcSurface->phyAddr, &src_param);
+    if (buffers->src_handle == 0) {
         DISPLAY_LOGE("import src_handle error!");
-        ret_val = DISPLAY_FAILURE;
-        goto EXIT;
+        return DISPLAY_FAILURE;
     }
-    srcRgaBuffer = wrapbuffer_handle(src_handle, srcSurface->width, srcSurface->height, src_param.format);
-    dstRgaBuffer = wrapbuffer_handle(dst_handle, dstSurface->width, dstSurface->height, dst_param.format);
 
-    srect.x = srcRect->x;
-    srect.x = (srect.x % 2 == 1) ? (srect.x - 1) : srect.x; // 2: Is it odd?
-    srect.y = srcRect->y;
-    srect.y = (srect.y % 2 == 1) ? (srect.y - 1) : srect.y; // 2: Is it odd?
-    srect.height = srcRect->h;
-    srect.height = (srect.height % 2 == 1) ? (srect.height + 1) : srect.height; // 2: Is it odd?
-    srect.width = srcRect->w;
-    srect.width = (srect.width % 2 == 1) ? (srect.width + 1) : srect.width; // 2: Is it odd?
-    drect.x = dstRect->x;
-    drect.x = (drect.x % 2 == 1) ? (drect.x - 1) : drect.x; // 2: Is it odd?
-    drect.y = dstRect->y;
-    drect.y = (drect.y % 2 == 1) ? (drect.y - 1) : drect.y; // 2: Is it odd?
-    drect.height = dstRect->h;
-    drect.height = (drect.height % 2 == 1) ? (drect.height + 1) : drect.height; // 2: Is it odd?
-    drect.width = dstRect->w;
-    drect.width = (drect.width % 2 == 1) ? (drect.width + 1) : drect.width; // 2: Is it odd?
+    buffers->srcRgaBuffer = wrapbuffer_handle(buffers->src_handle, \
+        srcSurface->width, srcSurface->height, src_param.format);
+    buffers->dstRgaBuffer = wrapbuffer_handle(buffers->dst_handle, \
+        dstSurface->width, dstSurface->height, dst_param.format);
 
-    if (srect.width <= MIN_WIDTH && srect.height <= MAX_HEIGHT) {
+    buffers->srcRgaBuffer.wstride = ALIGN_UP(srcSurface->width, 16);
+    buffers->srcRgaBuffer.hstride = ALIGN_UP(srcSurface->height, 2);
+    buffers->dstRgaBuffer.wstride = ALIGN_UP(dstSurface->width, 16);
+    buffers->dstRgaBuffer.hstride = ALIGN_UP(dstSurface->height, 2);
+
+    return DISPLAY_SUCCESS;
+}
+
+void handleSpecialRectCases(BufferContainer *buffers, GfxOpt *opt)
+{
+    if (buffers->srect.width <= MIN_WIDTH && buffers->srect.height <= MAX_HEIGHT) {
         // When move mouse (pointer window, or other tiny window?) to right edge of the screen,
         // in the mirror screen, the content in srect(srcRgaBuffer) will be copyied to drect(dstRgaBuffer)
         // with scale or rotate (for example, srect [0, 0, 2, 64] --> drect [1916, 68, 4, 96]).
@@ -402,114 +352,194 @@ int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
             opt->rotateType == ROTATE_270 ||
             opt->rotateType == MIRROR_H_ROTATE_90 ||
             opt->rotateType == MIRROR_V_ROTATE_90) {
-            if (drect.height > MIN_THRESHOLD && drect.height <= MAX_THRESHOLD) {
+            if (buffers->drect.height > MIN_THRESHOLD && buffers->drect.height <= MAX_THRESHOLD) {
                 DISPLAY_LOGD("force drect.height to 2");
-                drect.height = FORCED_VALUE;
+                buffers->drect.height = FORCED_VALUE;
             }
         } else {
-            if (drect.width > MIN_THRESHOLD && drect.width <= MAX_THRESHOLD) {
+            if (buffers->drect.width > MIN_THRESHOLD && buffers->drect.width <= MAX_THRESHOLD) {
                 DISPLAY_LOGD("force drect.width to 2");
-                drect.width = FORCED_VALUE;
+                buffers->drect.width = FORCED_VALUE;
             }
         }
     }
+}
 
+int32_t prepareRgaBufferRects(IRect *srcRect, IRect *dstRect, BufferContainer *buffers, GfxOpt *opt)
+{
+    buffers->srect.x = srcRect->x;
+    buffers->srect.x = (buffers->srect.x % 2 == 1) ? (buffers->srect.x - 1) : buffers->srect.x;
+    buffers->srect.y = srcRect->y;
+    buffers->srect.y = (buffers->srect.y % 2 == 1) ? (buffers->srect.y - 1) : buffers->srect.y;
+    buffers->srect.height = srcRect->h;
+    buffers->srect.height = (buffers->srect.height % 2 == 1) ? (buffers->srect.height + 1) : buffers->srect.height;
+    buffers->srect.width = srcRect->w;
+    buffers->srect.width = (buffers->srect.width % 2 == 1) ? (buffers->srect.width + 1) : buffers->srect.width;
+    buffers->drect.x = dstRect->x;
+    buffers->drect.x = (buffers->drect.x % 2 == 1) ? (buffers->drect.x - 1) : buffers->drect.x;
+    buffers->drect.y = dstRect->y;
+    buffers->drect.y = (buffers->drect.y % 2 == 1) ? (buffers->drect.y - 1) : buffers->drect.y;
+    buffers->drect.height = dstRect->h;
+    buffers->drect.height = (buffers->drect.height % 2 == 1) ? (buffers->drect.height + 1) : buffers->drect.height;
+    buffers->drect.width = dstRect->w;
+    buffers->drect.width = (buffers->drect.width % 2 == 1) ? (buffers->drect.width + 1) : buffers->drect.width;
+    handleSpecialRectCases(buffers, opt);
     if (opt->blendType) {
-        rkBlendType = blendTypeChange(opt->blendType);
-        if (rkBlendType > 0) {
-            usage |= rkBlendType;
-        } else if (rkBlendType == IM_STATUS_NOT_SUPPORTED) {
-            ret_val = DISPLAY_NOT_SUPPORT;
-            goto EXIT;
+        buffers->blendType = blendTypeChange(opt->blendType);
+        if (buffers->blendType > 0) {
+            buffers->usage |= buffers->blendType;
+        } else if (buffers->blendType == IM_STATUS_NOT_SUPPORTED) {
+            return DISPLAY_FAILURE;
         }
     }
     if (opt->rotateType) {
-        rkTransformType = TransformTypeChange(opt->rotateType);
-        if (rkTransformType != 0)
-            usage |= rkTransformType;
+        buffers->transformType = TransformTypeChange(opt->rotateType);
+        if (buffers->transformType != 0)
+            buffers->usage |= buffers->transformType;
     }
     if (opt->enableScale) {
         DISPLAY_LOGE("gfx scale from (%{puhblic}d, %{public}d) to (%{public}d, %{public}d)", \
-            srcRgaBuffer.width, srcRgaBuffer.height, dstRgaBuffer.width, dstRgaBuffer.height);
+            buffers->srcRgaBuffer.width, buffers->srcRgaBuffer.height,
+            buffers->dstRgaBuffer.width, buffers->dstRgaBuffer.height);
     }
-    usage |= IM_SYNC;
-    if (isYuv == 1) {
-        if (rkBlendType == IM_ALPHA_BLEND_SRC_OVER || rkBlendType == IM_ALPHA_BLEND_SRC) {
-            usage = 0;
-            if (opt->enableScale == 0) {
-                eok = memset_s(&srect, sizeof(srect), 0, sizeof(srect));
-                if (eok != EOK) {
-                    DISPLAY_LOGE("memset_s failed");
-                    ret_val = false;
-                    goto EXIT;
-                }
-                srect.width = srcRgaBuffer.width;
-                srect.height = srcRgaBuffer.height;
+    buffers->usage |= IM_SYNC;
 
-                eok = memset_s(&drect, sizeof(drect), 0, sizeof(drect));
-                if (eok != EOK) {
-                    DISPLAY_LOGE("memset_s failed");
-                    ret_val = false;
-                    goto EXIT;
-                }
-                drect.x = dstRgaBuffer.width - srcRgaBuffer.width;
-                drect.y = dstRgaBuffer.height - srcRgaBuffer.height;
-                drect.width = srcRgaBuffer.width;
-                drect.height = srcRgaBuffer.height;
-            }
-            srcRgaBuffer.wstride = srcSurface->stride;
-            usage = rkTransformType | IM_SYNC | IM_ALPHA_BLEND_PRE_MUL;
-            srcRgaBuffer.color_space_mode = IM_YUV_TO_RGB_BT601_LIMIT;
-            ret = improcess(srcRgaBuffer, dstRgaBuffer, bRgbBuffer, srect, drect, prect, usage);
-            if (ret != IM_STATUS_SUCCESS) {
-                DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
-                ret_val = DISPLAY_FAILURE;
-            }
-        } else if (rkBlendType == IM_ALPHA_BLEND_DST_OVER) {
-            brgb_param.width = dstRgaBuffer.width;
-            brgb_param.height = dstRgaBuffer.height;
-            brgb_param.format = RK_FORMAT_RGBA_8888;
+    return DISPLAY_SUCCESS;
+}
 
-            brgb_handle = importbuffer_fd(-1, &brgb_param);
-            if (dst_handle == 0) {
-                DISPLAY_LOGE("import dst_handle error!");
-                ret_val = DISPLAY_FAILURE;
-                goto EXIT;
-            }
-            bRgbBuffer = wrapbuffer_handle(brgb_handle, dstRgaBuffer.width, dstRgaBuffer.height, RK_FORMAT_RGBA_8888);
-            int ret = memcpy_s(&prect, sizeof(drect), &drect, sizeof(drect));
-            if (!ret) {
-                printf("memcpy_s failed!\n");
-            }
-            ret = improcess(srcRgaBuffer, bRgbBuffer, dstRgaBuffer, srect, prect, drect, usage);
-            if (ret != IM_STATUS_SUCCESS) {
-                DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
-                ret_val = DISPLAY_FAILURE;
-            } else {
-                ret = imcopy(bRgbBuffer, dstRgaBuffer);
-                if (ret != IM_STATUS_SUCCESS) {
-                    DISPLAY_LOGE("gfx imcopy %{public}s", imStrError(ret));
-                    ret_val = DISPLAY_FAILURE;
-                }
-            }
+int32_t handleSrcOverBlending(ISurface *srcSurface, BufferContainer *buffers, GfxOpt *opt)
+{
+    errno_t eok;
+    buffers->usage = 0;
+    if (opt->enableScale == 0) {
+        eok = memset_s(&(buffers->srect), sizeof(buffers->srect), 0, sizeof(buffers->srect));
+        if (eok != EOK) {
+            return DISPLAY_FAILURE;
+        }
+        buffers->srect.width = buffers->srcRgaBuffer.width;
+        buffers->srect.height = buffers->srcRgaBuffer.height;
+
+        eok = memset_s(&(buffers->drect), sizeof(buffers->drect), 0, sizeof(buffers->drect));
+        if (eok != EOK) {
+            return DISPLAY_FAILURE;
+        }
+        buffers->drect.x = buffers->dstRgaBuffer.width - buffers->srcRgaBuffer.width;
+        buffers->drect.y = buffers->dstRgaBuffer.height - buffers->srcRgaBuffer.height;
+        buffers->drect.width = buffers->srcRgaBuffer.width;
+        buffers->drect.height = buffers->srcRgaBuffer.height;
+    }
+    buffers->srcRgaBuffer.wstride = srcSurface->stride;
+    buffers->usage = buffers->transformType | IM_SYNC | IM_ALPHA_BLEND_PRE_MUL;
+    buffers->srcRgaBuffer.color_space_mode = IM_YUV_TO_RGB_BT601_LIMIT;
+    int ret = improcess(buffers->srcRgaBuffer, buffers->dstRgaBuffer, buffers->bRgbBuffer,
+                    buffers->srect, buffers->drect, buffers->prect, buffers->usage);
+    if (ret != IM_STATUS_SUCCESS) {
+        DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
+        return DISPLAY_FAILURE;
+    }
+    return DISPLAY_SUCCESS;
+}
+
+int32_t handleDstOverBlending(BufferContainer *buffers)
+{
+    im_handle_param_t brgb_param;
+
+    brgb_param.width = buffers->dstRgaBuffer.width;
+    brgb_param.height = buffers->dstRgaBuffer.height;
+    brgb_param.format = RK_FORMAT_RGBA_8888;
+
+    buffers->brgb_handle = importbuffer_fd(-1, &brgb_param);
+    if (buffers->brgb_handle == 0) {
+        DISPLAY_LOGE("import dst_handle error!");
+        return DISPLAY_FAILURE;
+    }
+    buffers->bRgbBuffer = wrapbuffer_handle(buffers->brgb_handle, buffers->dstRgaBuffer.width,
+                                           buffers->dstRgaBuffer.height, RK_FORMAT_RGBA_8888);
+    int ret = memcpy_s(&(buffers->prect), sizeof(buffers->drect), &(buffers->drect), sizeof(buffers->drect));
+    if (ret != EOK) {
+        return DISPLAY_FAILURE;
+    }
+    ret = improcess(buffers->srcRgaBuffer, buffers->bRgbBuffer, buffers->dstRgaBuffer,
+                    buffers->srect, buffers->prect, buffers->drect, buffers->usage);
+    if (ret != IM_STATUS_SUCCESS) {
+        DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
+        return DISPLAY_FAILURE;
+    } else {
+        ret = imcopy(buffers->bRgbBuffer, buffers->dstRgaBuffer);
+        if (ret != IM_STATUS_SUCCESS) {
+            DISPLAY_LOGE("gfx imcopy %{public}s", imStrError(ret));
+            return DISPLAY_FAILURE;
+        }
+    }
+
+    return DISPLAY_SUCCESS;
+}
+
+int32_t performImageBlending(ISurface *srcSurface, BufferContainer *buffers, GfxOpt *opt)
+{
+    IM_STATUS ret = 0;
+    if (buffers->isYuv == 1) {
+        if (buffers->blendType == IM_ALPHA_BLEND_SRC_OVER ||
+            buffers->blendType == IM_ALPHA_BLEND_SRC) {
+            return handleSrcOverBlending(srcSurface, buffers, opt);
+        } else if (buffers->blendType == IM_ALPHA_BLEND_DST_OVER) {
+            return handleDstOverBlending(buffers);
         }
     } else {
-        ret = improcess(srcRgaBuffer, dstRgaBuffer, bRgbBuffer, srect, drect, prect, usage);
+        ret = improcess(buffers->srcRgaBuffer, buffers->dstRgaBuffer, buffers->bRgbBuffer,
+                        buffers->srect, buffers->drect, buffers->prect, buffers->usage);
         if (ret != IM_STATUS_SUCCESS) {
             DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
-            ret_val = DISPLAY_FAILURE;
+            return DISPLAY_FAILURE;
         }
+    }
+
+    return DISPLAY_SUCCESS;
+}
+
+int32_t doFlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect *dstRect, GfxOpt *opt)
+{
+    int32_t ret = 0;
+    BufferContainer buffers;
+    int32_t ret_val = DISPLAY_SUCCESS;
+
+    errno_t eok = memset_s(&buffers, sizeof(buffers), 0, sizeof(buffers));
+    if (eok != EOK) {
+        DISPLAY_LOGE("memset_s failed");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
+    }
+
+    ret = ImportSourceAndDestinationBuffers(dstSurface, srcSurface, &buffers);
+    if (ret != DISPLAY_SUCCESS) {
+        DISPLAY_LOGE("ImportSourceAndDestinationBuffers failed");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
+    }
+
+    ret = prepareRgaBufferRects(srcRect, dstRect, &buffers, opt);
+    if (ret != DISPLAY_SUCCESS) {
+        DISPLAY_LOGE("prepareRgaBufferRects failed");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
+    }
+
+    ret = performImageBlending(srcSurface, &buffers, opt);
+    if (ret != DISPLAY_SUCCESS) {
+        DISPLAY_LOGE("performImageBlending failed");
+        ret_val = DISPLAY_FAILURE;
+        goto EXIT;
     }
 
 EXIT:
-    if (brgb_handle) {
-        releasebuffer_handle(brgb_handle);
+    if (buffers.brgb_handle) {
+        releasebuffer_handle(buffers.brgb_handle);
     }
-    if (src_handle) {
-        releasebuffer_handle(src_handle);
+    if (buffers.src_handle) {
+        releasebuffer_handle(buffers.src_handle);
     }
-    if (dst_handle) {
-        releasebuffer_handle(dst_handle);
+    if (buffers.dst_handle) {
+        releasebuffer_handle(buffers.dst_handle);
     }
     return ret_val;
 }
@@ -521,6 +551,13 @@ int32_t rkBlit(ISurface *srcSurface, IRect *srcRect, ISurface *dstSurface, IRect
     CHECK_NULLPOINTER_RETURN_VALUE(dstSurface, DISPLAY_NULL_PTR);
     CHECK_NULLPOINTER_RETURN_VALUE(dstRect, DISPLAY_NULL_PTR);
     CHECK_NULLPOINTER_RETURN_VALUE(opt, DISPLAY_NULL_PTR);
+
+    DISPLAY_LOGD("gfx src fd %{public}d, w %{public}d, h %{publuc}d, sw %{public}d sh %{public}d",
+        (int32_t)srcSurface->phyAddr, srcSurface->width, srcSurface->height, ALIGN_UP(srcSurface->width, 16),
+        ALIGN_UP(srcSurface->height, 2));
+    DISPLAY_LOGD("gfx dst fd %{public}d, w %{public}d, h %{public}d, sw %{public}d sh %{public}d",
+        (int32_t)dstSurface->phyAddr, dstSurface->width, dstSurface->height, ALIGN_UP(dstSurface->width, 16),
+        ALIGN_UP(dstSurface->height, 2));
 
     if (doFlit(srcSurface, srcRect, dstSurface, dstRect, opt) < 0)
         return DISPLAY_FAILURE;
