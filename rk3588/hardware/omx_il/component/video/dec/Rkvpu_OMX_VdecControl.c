@@ -493,7 +493,8 @@ OMX_ERRORTYPE Rkvpu_OMX_FlushPort(OMX_COMPONENTTYPE *pOMXComponent, OMX_S32 port
     ROCKCHIP_OMX_DATABUFFER    *pDataPortBuffer[2] = {NULL, NULL};
     ROCKCHIP_OMX_MESSAGE       *message = NULL;
     OMX_S32                semValue = 0;
-    int i = 0, maxBufferNum = 0;
+    int i = 0;
+    int maxBufferNum = 0;
     pRockchipPort = &pRockchipComponent->pRockchipPort[portIndex];
     while (Rockchip_OSAL_GetElemNum(&pRockchipPort->bufferQ) > 0) {
         Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->pRockchipPort[portIndex].bufferSemID, &semValue);
@@ -579,8 +580,9 @@ OMX_ERRORTYPE Rkvpu_OMX_FlushPort(OMX_COMPONENTTYPE *pOMXComponent, OMX_S32 port
     while (1) {
         OMX_S32 cnt = 0;
         Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->pRockchipPort[portIndex].bufferSemID, &cnt);
-        if (cnt <= 0)
+        if (cnt <= 0) {
             break;
+        }
         Rockchip_OSAL_SemaphoreWait(pRockchipComponent->pRockchipPort[portIndex].bufferSemID);
     }
     Rockchip_OSAL_ResetQueue(&pRockchipPort->bufferQ);
@@ -1435,7 +1437,7 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent, OMX_IN OM
         usage->usage = HBM_USE_CPU_READ | HBM_USE_CPU_WRITE | HBM_USE_MEM_DMA;
         ret = OMX_ErrorNone;
             break;
-        } 
+        }
     case OMX_IndexCodecVideoPortFormat: {
             struct CodecVideoPortFormatParam *videoFormat =
                 (struct CodecVideoPortFormatParam *)ComponentParameterStructure;
@@ -1949,7 +1951,7 @@ OMX_ERRORTYPE Rkvpu_OMX_SetParameter(OMX_IN OMX_HANDLETYPE hComponent,
 
             ret = OMX_ErrorNone;
             break;
-        } 
+        }
         case OMX_IndexParamStandardComponentRole: {
             OMX_PARAM_COMPONENTROLETYPE *pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
 

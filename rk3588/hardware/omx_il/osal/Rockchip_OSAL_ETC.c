@@ -64,7 +64,7 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
 
             size_t copySize = (*pLen < defaultBufferSize) ? *pLen : defaultBufferSize;
             if (copySize > 0) {
-                memcpy(newBuffer, *ppLine, copySize);
+                memcpy_s(newBuffer, *ppLine, copySize);
             }
 
             free(*ppLine);
@@ -125,7 +125,7 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
             }
 
             if (readByte > 0) {
-                memcpy(newBuffer, *ppLine, readByte);
+                memcpy_s(newBuffer, *ppLine, readByte);
             }
 
             free(*ppLine);

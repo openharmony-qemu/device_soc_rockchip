@@ -81,8 +81,9 @@ OMX_U32 Get_Video_HorAlign(OMX_VIDEO_CODINGTYPE codecId, OMX_U32 width, OMX_U32 
     } else {
         if (codecProfile == OMX_VIDEO_AVCProfileHigh10 && codecId == OMX_VIDEO_CodingAVC) {
             stride = ((width * 10 / 8 + 15) & (~15)); // 10:byte alignment, 8:byte alignment, 15:byte alignment
-        } else
+        } else{
             stride = ((width + 15) & (~15)); // 15:byte alignment
+        }
     }
 #ifdef AVS100
     if (access("/d/mpp_service/rkvdec/aclk", F_OK) == 0 ||
@@ -614,7 +615,7 @@ OMX_ERRORTYPE Rockchip_OSAL_PowerControl(
 
     char para[200] = {0}; // 200:array length
     int paraLen = 0;
-    paraLen = sprintf(para, "%d,width=%d,height=%d,ishevc=%d,videoFramerate=%d,streamBitrate=%d",
+    paraLen = sprintf_s(para, "%d,width=%d,height=%d,ishevc=%d,videoFramerate=%d,streamBitrate=%d",
         mFlag, width, height, mHevc, frameRate, bitDepth);
     omx_info(" write: %s", para);
     if (pVideoDec->power_fd != -1) {
@@ -874,7 +875,7 @@ OMX_U32 Rockchip_OSAL_CalculateTotalRefFrames(
                 nRefFramesNum = 6; // 6:frame number
             }
             break;
-        } 
+        }
         case CODEC_OMX_VIDEO_CodingHEVC: {
             /* use 4K refs frame Num to computate others */
             nRefFramesNum = 4096 * 2160 * 6 / (width * height); /* 4096:Resolution size,

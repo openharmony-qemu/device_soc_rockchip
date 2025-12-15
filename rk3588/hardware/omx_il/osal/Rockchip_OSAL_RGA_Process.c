@@ -416,7 +416,10 @@ void rga_nv12_crop_scale(RockchipVideoPlane *plane,
     }
 
     if (param_video->bEnableCropping) {
-        RK_U32 x, y, w, h;
+        RK_U32 x;
+        RK_U32 y;
+        RK_U32 w;
+        RK_U32 h;
         w = orgin_w - param_video->ui16CropLeft - param_video->ui16CropRight;
         h = orgin_h - param_video->ui16CropTop - param_video->ui16CropBottom;
         x = param_video->ui16CropLeft;

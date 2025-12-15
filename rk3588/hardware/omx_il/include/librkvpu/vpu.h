@@ -26,8 +26,6 @@ extern "C"
 {
 #endif
 
-
-
 #define VPU_SUCCESS                     (0)
 #define VPU_FAILURE                     (-1)
 

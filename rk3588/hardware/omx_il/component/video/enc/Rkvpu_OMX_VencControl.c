@@ -1143,7 +1143,7 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent,
             }
             ret = OMX_ErrorNone;
             break;
-        } 
+        }
 #endif // OHOS_BUFFER_HANDLE
     case OMX_IndexParamVideoBitrate: {
         OMX_VIDEO_PARAM_BITRATETYPE     *videoRateControl = (OMX_VIDEO_PARAM_BITRATETYPE *)ComponentParameterStructure;
@@ -1908,8 +1908,9 @@ OMX_ERRORTYPE Rkvpu_OMX_SetConfig(OMX_HANDLETYPE hComponent, OMX_INDEXTYPE nInde
                 ret = OMX_ErrorBadPortIndex;
                 goto EXIT;
             } else {
-                if (pAVCIntraPeriod->nIDRPeriod == (pAVCIntraPeriod->nPFrames + 1))
+                if (pAVCIntraPeriod->nIDRPeriod == (pAVCIntraPeriod->nPFrames + 1)) {
                     pVideoEnc->AVCComponent[OUTPUT_PORT_INDEX].nPFrames = pAVCIntraPeriod->nPFrames;
+                }
                 else {
                     ret = OMX_ErrorBadParameter;
                     goto EXIT;

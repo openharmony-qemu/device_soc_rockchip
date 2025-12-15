@@ -90,7 +90,8 @@ static const CodeMap kCodeMap[] = {
 
 int calc_plane(int width, int height)
 {
-    int mbX, mbY;
+    int mbX;
+    int mbY;
 
     mbX = (width + 15) / 16; // 15:byte alignment, 16:byte alignment
     mbY = (height + 15) / 16; // 15:byte alignment, 16:byte alignment

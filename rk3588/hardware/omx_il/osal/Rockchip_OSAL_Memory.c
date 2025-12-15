@@ -73,7 +73,7 @@ OMX_S32 Rockchip_OSAL_Memset(OMX_PTR dest, OMX_S32 c, OMX_S32 n)
     }
 
     if (n > 0) {
-        memset(dest, c, (size_t)n);
+        memset_s(dest, c, (size_t)n);
     }
     return 0;
 }
@@ -96,7 +96,7 @@ OMX_S32 Rockchip_OSAL_Memcpy(OMX_PTR dest, OMX_PTR src, OMX_S32 n)
         return -1;
     }
 
-    memcpy(dest, src, (size_t)n);
+    memcpy_s(dest, src, (size_t)n);
     return 0;
 }
 
@@ -110,6 +110,6 @@ OMX_S32 Rockchip_OSAL_Memmove(OMX_PTR dest, OMX_PTR src, OMX_S32 n)
         return 0;
     }
 
-    memmove(dest, src, (size_t)n);
+    memmove_s(dest, src, (size_t)n);
     return 0;
 }

@@ -114,7 +114,8 @@ OMX_ERRORTYPE Rockchip_OMX_BufferFlushProcess(OMX_COMPONENTTYPE *pOMXComponent, 
     OMX_ERRORTYPE             ret = OMX_ErrorNone;
     ROCKCHIP_OMX_BASECOMPONENT *pRockchipComponent = NULL;
     OMX_S32                   portIndex = 0;
-    OMX_U32                   i = 0, cnt = 0;
+    OMX_U32                   i = 0;
+    OMX_U32                   cnt = 0;
 
     FunctionIn();
 
@@ -199,7 +200,8 @@ OMX_ERRORTYPE Rockchip_OMX_PortEnableProcess(OMX_COMPONENTTYPE *pOMXComponent, O
     OMX_ERRORTYPE          ret = OMX_ErrorNone;
     ROCKCHIP_OMX_BASECOMPONENT *pRockchipComponent = NULL;
     OMX_S32                portIndex = 0;
-    OMX_U32                i = 0, cnt = 0;
+    OMX_U32                   i = 0;
+    OMX_U32                   cnt = 0;
 
     FunctionIn();
 
@@ -301,7 +303,8 @@ OMX_ERRORTYPE Rockchip_OMX_PortDisableProcess(OMX_COMPONENTTYPE *pOMXComponent, 
     OMX_ERRORTYPE          ret = OMX_ErrorNone;
     ROCKCHIP_OMX_BASECOMPONENT *pRockchipComponent = NULL;
     OMX_S32                portIndex = 0;
-    OMX_U32                i = 0, cnt = 0;
+    OMX_U32                   i = 0;
+    OMX_U32                   cnt = 0;
 
     FunctionIn();
 

@@ -303,7 +303,8 @@ OMX_API OMX_ERRORTYPE OMX_GetComponentsOfRole (
 {
     OMX_ERRORTYPE ret = OMX_ErrorNone;
     int           max_role_num = 0;
-    int i = 0, j = 0;
+    int i = 0;
+    int j = 0;
 
     FunctionIn();
 

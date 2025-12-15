@@ -1275,7 +1275,6 @@ OMX_ERRORTYPE omx_open_vpuenc_context(RKVPU_OMX_VIDEOENC_COMPONENT *pVideoEnc)
     pVideoEnc->rkvpu_close_cxt = (OMX_S32 (*)(VpuCodecContext_t **ctx))dlsym(pVideoEnc->rkapi_hdl,
         "vpu_close_context");
     return OMX_ErrorNone;
-    
 }
 
 OMX_ERRORTYPE Rkvpu_Enc_DebugSwitchfromPropget(

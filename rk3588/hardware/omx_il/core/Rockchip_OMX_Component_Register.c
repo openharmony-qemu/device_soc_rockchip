@@ -58,7 +58,8 @@ static ROCKCHIP_OPENED_LIB gOpenedLIb[] = {
 OMX_ERRORTYPE Rockchip_OMX_Component_Register(ROCKCHIP_OMX_COMPONENT_REGLIST **compList, OMX_U32 *compNum)
 {
     OMX_ERRORTYPE  ret = OMX_ErrorNone;
-    int            componentNum = 0, totalCompNum = 0;
+    int            componentNum = 0;
+    int            totalCompNum = 0;
     OMX_U32        i = 0;
     const char    *errorMsg;
     omx_err_f("in");

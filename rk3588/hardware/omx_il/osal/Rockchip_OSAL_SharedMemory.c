@@ -722,7 +722,7 @@ void Rockchip_OSAL_SharedMemory_Free(OMX_HANDLETYPE handle, OMX_PTR pBuffer)
         while ((pCurrentElement != NULL) && (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
                (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->mapAddr != pBuffer)) {
                 pCurrentElement = pCurrentElement->pNextMemory;
-               }
+        }
             
         if ((((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
             (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->mapAddr == pBuffer)) {
@@ -853,9 +853,8 @@ void Rockchip_OSAL_SharedMemory_Unmap(OMX_HANDLETYPE handle, int ionfd)
         while ((pCurrentElement != NULL) && (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
                (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->ion_hdl != (RK_U32)ionfd)) {
                 pCurrentElement = pCurrentElement->pNextMemory;
-               }
+        }
             
-
         if ((((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
             (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->ion_hdl == (RK_U32)ionfd)) {
             pDeleteElement = pCurrentElement->pNextMemory;
@@ -891,9 +890,10 @@ int Rockchip_OSAL_SharedMemory_VirtToION(OMX_HANDLETYPE handle, OMX_PTR pBuffer)
     ROCKCHIP_SHAREDMEM_LIST *pSMList         = NULL;
     ROCKCHIP_SHAREDMEM_LIST *pCurrentElement = NULL;
     ROCKCHIP_SHAREDMEM_LIST *pFindElement    = NULL;
-    if (pHandle == NULL || pBuffer == NULL)
+    if (pHandle == NULL || pBuffer == NULL) {
         goto EXIT;
-
+    }
+    
     Rockchip_OSAL_MutexLock(pHandle->hSMMutex);
     pSMList = pHandle->pAllocMemory;
     if (pSMList == NULL) {
@@ -908,7 +908,7 @@ int Rockchip_OSAL_SharedMemory_VirtToION(OMX_HANDLETYPE handle, OMX_PTR pBuffer)
         while ((pCurrentElement != NULL) && (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
                (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->mapAddr != pBuffer)) {
                 pCurrentElement = pCurrentElement->pNextMemory;
-               }
+        }
 
         if ((((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
             (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->mapAddr == pBuffer)) {
@@ -950,7 +950,7 @@ OMX_PTR Rockchip_OSAL_SharedMemory_IONToVirt(OMX_HANDLETYPE handle, int ion_fd)
         while ((pCurrentElement != NULL) && (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
                (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->ion_hdl != (RK_U32)ion_fd)) {
                 pCurrentElement = pCurrentElement->pNextMemory;
-               }
+        }
 
         if ((((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory)) != NULL) &&
             (((ROCKCHIP_SHAREDMEM_LIST *)(pCurrentElement->pNextMemory))->ion_hdl == (RK_U32)ion_fd)) {
