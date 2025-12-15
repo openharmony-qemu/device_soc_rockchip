@@ -253,33 +253,10 @@ static RK_S32 close_orign_vpu(VpuCodecContext **ctx)
     return MPP_NOK;
 }
 
-/*
- * old libvpu path will input a nullptr pointer in *ctx
- * new libvpu path will input non-nullptr pointer in *ctx
- */
-RK_S32 vpu_open_context(VpuCodecContext **ctx)
+void decideUseMpp(VpuCodecContext *s, RK_U32 &use_mpp)
 {
-    VpuCodecContext *s = *ctx;
-    RK_S32 ret = -1;
     RK_U32 force_original = 0;
     RK_U32 force_mpp_mode = 0;
-    RK_U32 use_mpp = 0;
-
-    CODEC_TYPE codecType = CODEC_NONE;
-    OMX_RK_VIDEO_CODINGTYPE videoCoding = OMX_RK_VIDEO_CodingUnused;
-    RK_U32 width = 0;
-    RK_U32 height = 0;
-    void *extradata = nullptr;
-    RK_S32 extradata_size = 0;
-    EXtraCfg_t extra_cfg;
-    ret = memset_s(&extra_cfg, sizeof(EXtraCfg_t), 0, sizeof(EXtraCfg_t));
-    if (ret != EOK) {
-        vpu_api_dbg_func("memset_s extra_cfg failed, return %d", ret);
-    }
-
-    mpp_env_get_u32("vpu_api_debug", &vpu_api_debug, 0);
-    vpu_api_dbg_func("enter\n");
-
     mpp_env_get_u32("use_original", &force_original, 0);
     mpp_env_get_u32("use_mpp_mode", &force_mpp_mode, 0);
 
@@ -330,76 +307,97 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
             }
         }
     }
+}
 
+void copyParam(VpuCodecContext *src, VpuCodecContext *dst)
+{
+    dst->codecType = src->codecType;
+    dst->videoCoding = src->videoCoding;
+    dst->width = src->width;
+    dst->height = src->height;
+    dst->extradata = src->extradata;
+    dst->extradata_size = src->extradata_size;
+    dst->extra_cfg = src->extra_cfg;
+}
+
+RK_S32 setVpuApi(VpuCodecContext *src, VpuCodecContext *dst)
+{
+    RK_S32 ret = 0;
+    VpuApiLegacy *api = new VpuApiLegacy();
+
+    if (api) {
+        src->vpuApiObj = (void *)api;
+        src->init = vpu_api_init;
+        src->decode = vpu_api_decode;
+        src->encode = vpu_api_encode;
+        src->flush = vpu_api_flush;
+        src->control = vpu_api_control;
+        src->decode_sendstream = vpu_api_sendstream;
+        src->decode_getframe = vpu_api_getframe;
+        src->encoder_sendframe = vpu_api_sendframe;
+        src->encoder_getstream = vpu_api_getstream;
+
+        src->extra_cfg.ori_vpu = 0;
+        dst->extra_cfg.ori_vpu = 0;
+    }
+    else {
+        ret = -1;
+    }
+    return ret;
+}
+
+/*
+ * old libvpu path will input a nullptr pointer in *ctx
+ * new libvpu path will input non-nullptr pointer in *ctx
+ */
+RK_S32 vpu_open_context(VpuCodecContext **ctx)
+{
+    VpuCodecContext *s = *ctx;
+    VpuCodecContext tmp;
+    RK_S32 ret = -1;
+    RK_U32 use_mpp = 0;
+
+    mpp_env_get_u32("vpu_api_debug", &vpu_api_debug, 0);
+    vpu_api_dbg_func("enter\n");
+    decideUseMpp(s, use_mpp);
     /*
      * No matter what is the old context just release it.
      * But we need to save to pre-configured parameter
      */
     if (s) {
-        codecType = s->codecType;
-        videoCoding = s->videoCoding;
-        width = s->width;
-        height = s->height;
-        extradata = s->extradata;
-        extradata_size = s->extradata_size;
-        extra_cfg = s->extra_cfg;
-
+        copyParam(s, &tmp);
         free(s);
         s = nullptr;
     }
-
     if (!use_mpp) {
         vpu_api_dbg_func("use vpuapi path\n");
-
         ret = open_orign_vpu(&s);
         if (!ret && s) {
             // for safety
             s->extra_cfg.ori_vpu = 1;
-            extra_cfg.ori_vpu = 1;
+            tmp.extra_cfg.ori_vpu = 1;
+            copyParam(&tmp, s);
+            *ctx = s;
+        }
+        vpu_api_dbg_func("leave\n");
+        return ret;
+    } 
+    vpu_api_dbg_func("use mpp path\n");
+    s = mpp_calloc(VpuCodecContext, 1);
+    if (s) {
+        s->enableparsing = 1;
+        ret = setVpuApi(s, &tmp);
+        if (ret) {
+            mpp_err("Vpu api object has not been properly allocated");
+            mpp_free(s);
+            s = nullptr;
         }
     } else {
-        vpu_api_dbg_func("use mpp path\n");
-
-        s = mpp_calloc(VpuCodecContext, 1);
-        if (s) {
-            s->enableparsing = 1;
-
-            VpuApiLegacy *api = new VpuApiLegacy();
-
-            if (api) {
-                s->vpuApiObj = (void *)api;
-                s->init = vpu_api_init;
-                s->decode = vpu_api_decode;
-                s->encode = vpu_api_encode;
-                s->flush = vpu_api_flush;
-                s->control = vpu_api_control;
-                s->decode_sendstream = vpu_api_sendstream;
-                s->decode_getframe = vpu_api_getframe;
-                s->encoder_sendframe = vpu_api_sendframe;
-                s->encoder_getstream = vpu_api_getstream;
-
-                s->extra_cfg.ori_vpu = 0;
-                extra_cfg.ori_vpu = 0;
-
-                ret = 0;
-            } else {
-                mpp_err("Vpu api object has not been properly allocated");
-                mpp_free(s);
-                s = nullptr;
-            }
-        } else {
-            mpp_err("Input context has not been properly allocated");
-        }
+        mpp_err("Input context has not been properly allocated");
     }
 
     if (s) {
-        s->codecType = codecType;
-        s->videoCoding = videoCoding;
-        s->width = width;
-        s->height = height;
-        s->extradata = extradata;
-        s->extradata_size = extradata_size;
-        s->extra_cfg = extra_cfg;
+        copyParam(&tmp, s);
     }
     *ctx = s;
 

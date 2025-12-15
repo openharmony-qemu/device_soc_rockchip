@@ -51,6 +51,8 @@ public:
     VpuApiLegacy();
     ~VpuApiLegacy();
 
+    void setEncHdr_pkt(VpuCodecContext *ctx);
+    RK_S32 initEnc(VpuCodecContext *ctx);
     RK_S32 init(VpuCodecContext *ctx, RK_U8 *extraData, RK_U32 extra_size);
     RK_S32 flush(VpuCodecContext *ctx);
 

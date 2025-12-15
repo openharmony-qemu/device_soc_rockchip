@@ -580,7 +580,7 @@ MPP_RET DecodeGetFrame(RKHdiBaseComponent* component, MppCtx ctx, MppFrame *fram
     MppApi *mpi = component->mpi;
     MPP_RET ret = MPP_OK;
     RK_S32 retryTimes = 10;
-    while (true) {
+    while (retryTimes > 0) {
         ret = mpi->decode_get_frame(ctx, frame);
         if (ret != MPP_ERR_TIMEOUT) {
             break;
@@ -839,7 +839,7 @@ int32_t CodecDecode(CODEC_HANDLETYPE handle, CodecBuffer* inputData, CodecBuffer
             break;
         }
         usleep(SLEEP_INTERVAL_MICROSECONDS);
-    } while (1);
+    } while (!pkt_done);
     UINTPTR userData = (UINTPTR)component->ctx;
     int32_t acquireFd = 1;
     component->pCallbacks->InputBufferAvailable(userData, inputData, &acquireFd);
