@@ -615,7 +615,7 @@ OMX_ERRORTYPE Rockchip_OSAL_PowerControl(
 
     char para[200] = {0}; // 200:array length
     int paraLen = 0;
-    paraLen = sprintf_s(para, "%d,width=%d,height=%d,ishevc=%d,videoFramerate=%d,streamBitrate=%d",
+    paraLen = sprintf_s(para, sizeof(para), "%d,width=%d,height=%d,ishevc=%d,videoFramerate=%d,streamBitrate=%d",
         mFlag, width, height, mHevc, frameRate, bitDepth);
     omx_info(" write: %s", para);
     if (pVideoDec->power_fd != -1) {

@@ -28,6 +28,8 @@
 #define FORCED_VALUE    2
 #define MIN_WIDTH       2
 #define MAX_HEIGHT      64
+#define RGA_ALIGNMENT 2
+#define REMAINDER_ODD 1
 
 typedef struct {
     rga_buffer_t dstRgaBuffer;
@@ -44,6 +46,21 @@ typedef struct {
     int32_t usage;
     uint8_t isYuv;
 } BufferContainer;
+
+inline bool IsOdd(int32_t value)
+{
+    return (value % RGA_ALIGNMENT == REMAINDER_ODD);
+}
+
+inline int32_t AlignDownIfOdd(int32_t value)
+{
+    return IsOdd(value) ? (value - 1) : value;
+}
+
+inline int32_t AlignUpIfOdd(int32_t value)
+{
+    return IsOdd(value) ? (value + 1) : value;
+}
 
 int32_t rkInitGfx()
 {
@@ -292,9 +309,7 @@ int32_t TransformTypeChange(TransformType type)
     }
     return rkTransformType;
 }
-int32_t ImportSourceAndDestinationBuffers(ISurface *dstSurface,
-                                             ISurface *srcSurface,
-                                             BufferContainer *buffers)
+int32_t ImportSourceAndDestinationBuffers(ISurface *dstSurface, ISurface *srcSurface, BufferContainer *buffers)
 {
     im_handle_param_t src_param;
     im_handle_param_t dst_param;
@@ -367,22 +382,15 @@ void handleSpecialRectCases(BufferContainer *buffers, GfxOpt *opt)
 
 int32_t prepareRgaBufferRects(IRect *srcRect, IRect *dstRect, BufferContainer *buffers, GfxOpt *opt)
 {
-    buffers->srect.x = srcRect->x;
-    buffers->srect.x = (buffers->srect.x % 2 == 1) ? (buffers->srect.x - 1) : buffers->srect.x;
-    buffers->srect.y = srcRect->y;
-    buffers->srect.y = (buffers->srect.y % 2 == 1) ? (buffers->srect.y - 1) : buffers->srect.y;
-    buffers->srect.height = srcRect->h;
-    buffers->srect.height = (buffers->srect.height % 2 == 1) ? (buffers->srect.height + 1) : buffers->srect.height;
-    buffers->srect.width = srcRect->w;
-    buffers->srect.width = (buffers->srect.width % 2 == 1) ? (buffers->srect.width + 1) : buffers->srect.width;
-    buffers->drect.x = dstRect->x;
-    buffers->drect.x = (buffers->drect.x % 2 == 1) ? (buffers->drect.x - 1) : buffers->drect.x;
-    buffers->drect.y = dstRect->y;
-    buffers->drect.y = (buffers->drect.y % 2 == 1) ? (buffers->drect.y - 1) : buffers->drect.y;
-    buffers->drect.height = dstRect->h;
-    buffers->drect.height = (buffers->drect.height % 2 == 1) ? (buffers->drect.height + 1) : buffers->drect.height;
-    buffers->drect.width = dstRect->w;
-    buffers->drect.width = (buffers->drect.width % 2 == 1) ? (buffers->drect.width + 1) : buffers->drect.width;
+    buffers->srect.x = AlignDownIfOdd(srcRect->x);
+    buffers->srect.y = AlignDownIfOdd(srcRect->y);
+    buffers->drect.x = AlignDownIfOdd(dstRect->x);
+    buffers->drect.y = AlignDownIfOdd(dstRect->y);
+    buffers->srect.height = AlignUpIfOdd(srcRect->h);
+    buffers->srect.width = AlignUpIfOdd(srcRect->w);
+    buffers->drect.height = AlignUpIfOdd(dstRect->h);
+    buffers->drect.width = AlignUpIfOdd(dstRect->w);
+
     handleSpecialRectCases(buffers, opt);
     if (opt->blendType) {
         buffers->blendType = blendTypeChange(opt->blendType);
@@ -394,8 +402,9 @@ int32_t prepareRgaBufferRects(IRect *srcRect, IRect *dstRect, BufferContainer *b
     }
     if (opt->rotateType) {
         buffers->transformType = TransformTypeChange(opt->rotateType);
-        if (buffers->transformType != 0)
+        if (buffers->transformType != 0) {
             buffers->usage |= buffers->transformType;
+        }
     }
     if (opt->enableScale) {
         DISPLAY_LOGE("gfx scale from (%{puhblic}d, %{public}d) to (%{public}d, %{public}d)", \
@@ -432,7 +441,8 @@ int32_t handleSrcOverBlending(ISurface *srcSurface, BufferContainer *buffers, Gf
     buffers->usage = buffers->transformType | IM_SYNC | IM_ALPHA_BLEND_PRE_MUL;
     buffers->srcRgaBuffer.color_space_mode = IM_YUV_TO_RGB_BT601_LIMIT;
     int ret = improcess(buffers->srcRgaBuffer, buffers->dstRgaBuffer, buffers->bRgbBuffer,
-                    buffers->srect, buffers->drect, buffers->prect, buffers->usage);
+                        buffers->srect, buffers->drect, buffers->prect,
+                        buffers->usage);
     if (ret != IM_STATUS_SUCCESS) {
         DISPLAY_LOGE("gfx improcess %{public}s", imStrError(ret));
         return DISPLAY_FAILURE;
@@ -454,7 +464,7 @@ int32_t handleDstOverBlending(BufferContainer *buffers)
         return DISPLAY_FAILURE;
     }
     buffers->bRgbBuffer = wrapbuffer_handle(buffers->brgb_handle, buffers->dstRgaBuffer.width,
-                                           buffers->dstRgaBuffer.height, RK_FORMAT_RGBA_8888);
+                                            buffers->dstRgaBuffer.height, RK_FORMAT_RGBA_8888);
     int ret = memcpy_s(&(buffers->prect), sizeof(buffers->drect), &(buffers->drect), sizeof(buffers->drect));
     if (ret != EOK) {
         return DISPLAY_FAILURE;
