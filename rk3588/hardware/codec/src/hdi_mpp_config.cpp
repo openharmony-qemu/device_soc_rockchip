@@ -561,7 +561,7 @@ int32_t SetEncCfg(RKHdiBaseComponent *pBaseComponent)
     pBaseComponent->horStride = GetStrideByWidth(setup->width, pBaseComponent->fmt);
     pBaseComponent->verStride = setup->height;
     if (pBaseComponent->horStride == 0 || pBaseComponent->verStride == 0) {
-        HDF_LOGE("%{public}s: size or stride incorrect!", __func__);
+        // HDF_LOGE("%{public}s: size or stride incorrect!", __func__);
         return HDF_FAILURE;
     }
     mppApi->HdiMppEncCfgSetS32(pBaseComponent->cfg, "prep:hor_stride", pBaseComponent->horStride);

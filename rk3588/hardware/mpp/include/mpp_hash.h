@@ -173,16 +173,16 @@ static inline void hlist_move_list(struct hlist_head *old,
 #define hlist_for_each_entry(pos, head, member)             \
     for ((pos) = hlist_entry_safe((head)->first, __typeof__(*(pos)), (member));\
          (pos);                           \
-         (pos) = hlist_entry_safe((pos)->(member).next, __typeof__(*(pos)), (member)))
+         (pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)))
 
 #define hlist_for_each_entry_continue(pos, member)          \
-    for ((pos) = hlist_entry_safe((pos)->(member).next, __typeof__(*(pos)), (member));\
+    for ((pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member));\
          (pos);                           \
-         (pos) = hlist_entry_safe((pos)->(member).next, __typeof__(*(pos)), (member)))
+         (pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)))
 
 #define hlist_for_each_entry_from(pos, member)              \
     for (; (pos);                         \
-         (pos) = hlist_entry_safe((pos)->(member).next, __typeof__(*(pos)), (member)))
+         (pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)))
 
 #define hlist_for_each_entry_safe(pos, n, head, member)         \
     for ((pos) = hlist_entry_safe((head)->first, __typeof__(*(pos)), (member));\
@@ -270,10 +270,10 @@ static inline void hlist_move_list(struct hlist_head *old,
 
 /* Use hash_32 when possible to allow for fast 32bit hashing in 64bit kernels. */
 #define hash_min(val, bits) \
-    (sizeof(val) <= 4 ? hash_32(val, bits) : hash_long(val, bits))
+    ((sizeof(val) <= 4) ? (hash_32(val, bits)) : (hash_long(val, bits)))
 
 #define hash_add(hashtable, node, key) \
-    hlist_add_head(node, &hashtable[hash_min(key, HASH_BITS(hashtable))])
+    hlist_add_head((node), &(hashtable)[hash_min((key), HASH_BITS(hashtable))])
 
 /**
  * hash_empty - check whether a hashtable is empty
@@ -292,7 +292,7 @@ static inline void hlist_move_list(struct hlist_head *old,
  * @member: the name of the hlist_node within the struct
  */
 #define hash_for_each(name, bkt, obj, member)                           \
-    for ((bkt) = 0, (obj) = NULL; (obj) == NULL && (bkt) < HASH_SIZE(name); \
+    for ((bkt) = 0, (obj) = NULL; (obj) == NULL && (bkt) < HASH_SIZE((name)); \
          (bkt)++)                                                       \
     hlist_for_each_entry((obj), &(name)[bkt], (member))
 
@@ -306,20 +306,21 @@ static inline void hlist_move_list(struct hlist_head *old,
  * @member: the name of the hlist_node within the struct
  */
 #define hash_for_each_safe(name, bkt, tmp, obj, member)                 \
-    for ((bkt) = 0, (obj) = NULL; (obj) == NULL && (bkt) < HASH_SIZE(name); \
+    for ((bkt) = 0, (obj) = NULL; (obj) == NULL && (bkt) < HASH_SIZE((name)); \
          (bkt)++)                                                       \
     hlist_for_each_entry_safe((obj), (tmp), &(name)[bkt], (member))
 
 #define hash_for_each_possible(name, obj, member, key) \
-    hlist_for_each_entry((obj), &(name)[hash_min((key), HASH_BITS(name))], (member))
+    hlist_for_each_entry((obj), &(name)[hash_min((key), HASH_BITS((name)))], (member))
 
 static inline RK_U32 hash_32(RK_U32 val, unsigned int bits)
 {
     /* On some cpus multiply is faster, on others gcc will do shifts */
     RK_U32 hash = val * GOLDEN_RATIO_32;
+    const RK_U32 BIT_MASK_SHIFT = 32;
 
     /* High bits are more random, so use them. */
-    return hash >> (32 - bits);
+    return hash >> (BIT_MASK_SHIFT - bits);
 }
 
 static inline RK_U32 hash_32(RK_U32 val)
@@ -347,9 +348,9 @@ static inline RK_U32 hash_ptr(const void *ptr, unsigned int bits)
 static inline RK_U32 hash32_ptr(const void *ptr)
 {
     unsigned long val = (unsigned long)ptr;
-
+    const RK_U32 BIT_MASK_SHIFT = 32;
 #if __SIZEOF_POINTER__ == 8
-    val ^= (val >> 32);
+    val ^= (val >> BIT_MASK_SHIFT);
 #endif
     return (RK_U32)val;
 }
@@ -372,6 +373,7 @@ static inline bool mpp_hash_empty(struct hlist_head *ht, unsigned int sz)
             return false;
         }
     }
+
     return true;
 }
 

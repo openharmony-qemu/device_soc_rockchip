@@ -69,187 +69,212 @@ status_t ppOpRelease(PP_OP_HANDLE hnd)
 #include "vpu.h"
 #include "ppOp.h"
 
-int main()
-{
-    const int BIT_MASK_ALIGN_16 = 0xf;
-    const int ALIGN_16_VALUE = 15;
+const int BIT_MASK_ALIGN_16 = 0xf;
+const int ALIGN_16_VALUE = 15;
 
-    const int YUV420_CHROMA_SIZE_DIVISOR = 2;
-    const int YUV420_TOTAL_SIZE_MULTIPLIER = 3;
-    const int YUV420_TOTAL_SIZE_DIVISOR = 2;
-    const int MEMORY_ALLOCATION_MULTIPLIER = 2;
-    const int QUARTER_DIVISOR = 4;
+const int YUV420_CHROMA_SIZE_DIVISOR = 2;
+const int YUV420_TOTAL_SIZE_MULTIPLIER = 3;
+const int YUV420_TOTAL_SIZE_DIVISOR = 2;
+const int MEMORY_ALLOCATION_MULTIPLIER = 2;
+const int QUARTER_DIVISOR = 4;
 
-    const int SRC_VIR_WIDTH = 1920;
-    const int SRC_VIR_HEIGHT = 1088;
-    const int DST_VIR_WIDTH = 800;
-    const int DST_VIR_HEIGHT = 1280;
-    FILE *fpr;
-    FILE *fpw;
-    int wid_alig16 = ((SRC_WIDTH + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
-    int hei_alig16 = ((SRC_HEIGHT + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
-    int src_vir_width = SRC_VIR_WIDTH;   // 2048;
-    int src_vir_height = SRC_VIR_HEIGHT; // 1088;
-    int dst_vir_width = DST_VIR_WIDTH;   // 800;
-    int dst_vir_height = DST_VIR_HEIGHT; // 1280;
-    int framecnt = 0;
-    char *tmpbuf = (char *)malloc(src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);
-    RK_S32 ret = 0;
-    RK_S32 i = 0;
-    RK_S32 j = 0;
+const int SRC_VIR_WIDTH = 1920;
+const int SRC_VIR_HEIGHT = 1088;
+const int DST_VIR_WIDTH = 800;
+const int DST_VIR_HEIGHT = 1280;
 
-    if (tmpbuf ==) {
-        ALOGE("Memory allocation failed\n");
-        return -1; //设这是一个函数，返回错误码
-    }
-    ALOGI("ppOp test start\n");
-    VPUMemLinear_t src, dst;
-    ppOp::PP_OP_HANDLE hnd;
-    int vpuFd = VPUClientInit(VPU_PP);
-    ret |= VPUMallocLinear(&src, src_vir_width * src_vir_height * MEMORY_ALLOCATION_MULTIPLIER); // SRC_SIZE);
-    ret |= VPUMallocLinear(&dst, dst_vir_width * dst_vir_height * MEMORY_ALLOCATION_MULTIPLIER); // DST_SIZE);
+static int initVpuResources(VPUMemLinear_t *src, VPUMemLinear_t *dst, int *vpuFd) {
+    int ret = 0;
+    // 分配VPU内存
+    ret |= VPUMallocLinear(src, SRC_VIR_WIDTH * SRC_VIR_HEIGHT * MEMORY_ALLOCATION_MULTIPLIER);
+    ret |= VPUMallocLinear(dst, DST_VIR_WIDTH * DST_VIR_HEIGHT * MEMORY_ALLOCATION_MULTIPLIER);
     if (ret) {
         ALOGE("failed to malloc vpu_mem");
-        goto end;
+        return ret;
     }
-    if (vpuFd < 0) {
+    // 初始化VPU客户端
+    *vpuFd = VPUClientInit(VPU_PP);
+    if (*vpuFd < 0) {
         ALOGE("failed to open vpu client");
-        goto end;
+        VPUFreeLinear(src);
+        VPUFreeLinear(dst);
+        return -1;
     }
-
-    {
-#if 1
-        char *tmp = (char *)src.vir_addr;
-        fpr = fopen("/sdcard/testin.yuv", "rb");
-        for (i = 0; i < SRC_HEIGHT; i++) {
-            if (fpr) {
-                fread(tmp, 1, SRC_WIDTH, fpr);
-            }
-            {
-                tmp += src_vir_width;
-            }
-        }
-        tmp = (char *)src.vir_addr;
-        if (fpr) {
-            fread(&tmp[src_vir_width * src_vir_height], 1, SRC_WIDTH * SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR, fpr);
-        }
-        if (fpr) {
-            fclose(fpr);
-        }
-
-        for (i = 0; i < SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR; i++) {    // planar to semi planar
-            for (j = 0; j < SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR; j++) { // planar to semi planar
-                tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 0] =
-                    tmp[src_vir_width * src_vir_height + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
-                tmpbuf[i * src_vir_width + j * MEMORY_ALLOCATION_MULTIPLIER + 1] = tmp[src_vir_width * src_vir_height +
-                    SRC_WIDTH * SRC_HEIGHT / QUARTER_DIVISOR + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
-            }
-        }
-        ret = memcpy_s(&tmp[src_vir_width * src_vir_height],
-            src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR, tmpbuf,
-            src_vir_width * src_vir_height / YUV420_CHROMA_SIZE_DIVISOR);
-        if (ret == EOK) {
-            printf(" copy data failed, error code: %{public}d", ret);
-        }
-#endif
-        VPUMemClean(&src);
-    }
-
-    while (1) {
-        printf("framecnt=%d\n", framecnt);
-
-        if (framecnt++ >= 1) {
-            break;
-        }
-        wid_alig16 = ((SRC_WIDTH + ALIGN_16) & (~BIT_MASK_ALIGN_16));
-        hei_alig16 = ((SRC_HEIGHT + ALIGN_16) & (~BIT_MASK_ALIGN_16));
-
-        ppOp::PP_OPERATION opt;
-        ret = memset_s(&opt, sizeof(opt), 0, sizeof(opt));
-        if (ret == EOK) {
-            printf("memset_s opt failed, error code: %{public}d", ret);
-        }
-        opt.srcAddr = src.phy_addr;
-        opt.srcFormat = PP_IN_FORMAT_YUV420SEMI;
-        opt.srcWidth = SRC_WIDTH;
-        opt.srcHeight = SRC_HEIGHT;
-        opt.srcHStride = src_vir_width;
-        opt.srcVStride = src_vir_height;
-        opt.srcX = 0;
-        opt.srcY = 0;
-        if (wid_alig16 != SRC_WIDTH) {
-            opt.srcCrop8R = 1;
-        }
-        if (hei_alig16 != SRC_HEIGHT) {
-            opt.srcCrop8D = 1;
-        }
-
-        wid_alig16 = ((DST_WIDTH + ALIGN_16) & (~BIT_MASK_ALIGN_16));
-        hei_alig16 = ((DST_HEIGHT + ALIGN_16) & (~BIT_MASK_ALIGN_16));
-
-        opt.dstAddr = dst.phy_addr;
-        opt.dstFormat = PP_OUT_FORMAT_YUV420INTERLAVE;
-        opt.dstWidth = DST_WIDTH;
-        opt.dstHeight = DST_HEIGHT;
-        opt.dstHStride = dst_vir_width;
-        opt.dstVStride = dst_vir_height;
-        opt.dstX = 0;
-        opt.dstY = 0;
-
-        opt.deinterlace = 0;
-
-        opt.rotation = PP_ROTATION_RIGHT_90;
-
-        opt.vpuFd = vpuFd;
-        ret |= ppOp::ppOpInit(&hnd, &opt);
-        if (ret) {
-            ALOGE("ppOpInit failed");
-            hnd = nullptr;
-            goto end;
-        }
-        ret = ppOp::ppOpPerform(hnd);
-        if (ret) {
-            ALOGE("ppOpPerform failed");
-        }
-        ret = ppOp::ppOpSync(hnd);
-        if (ret) {
-            ALOGE("ppOpSync failed");
-        }
-        ret = ppOp::ppOpRelease(hnd);
-        if (ret) {
-            ALOGE("ppOpRelease failed");
-        }
-
-        VPUMemInvalidate(&dst);
-        {
-#if 1
-            // char *tmp = (char *)dst.vir_addr;
-            fpw = fopen("/data/testout.yuv", "wb+");
-
-            if (fpw) {
-                fwrite((char *)(dst.vir_addr), 1,
-                    dst_vir_width * dst_vir_height * YUV420_TOTAL_SIZE_MULTIPLIER / YUV420_TOTAL_SIZE_DIVISOR, fpw);
-                fclose(fpw);
-            }
-#endif
-        }
-    }
-
-end:
-    if (tmpbuf) {
-        free(tmpbuf);
-    }
-    if (src.phy_addr) {
-        VPUFreeLinear(&src);
-    }
-    if (dst.phy_addr) {
-        VPUFreeLinear(&dst);
-    }
-    if (vpuFd > 0) {
-        VPUClientRelease(vpuFd);
-    }
-    ALOGI("ppOp test end\n");
     return 0;
 }
 
+static int readYuvFile(void *srcVirAddr) {
+    FILE *fpr = fopen("/sdcard/testin.yuv", "rb");
+    if (!fpr) {
+        ALOGE("failed to open testin.yuv");
+        return -1;
+    }
+
+    char *tmp = (char *)srcVirAddr;
+    // 读取Y分量
+    for (int i = 0; i < SRC_HEIGHT; i++) {
+        fread(tmp, 1, SRC_WIDTH, fpr);
+        tmp += SRC_VIR_WIDTH;
+    }
+
+    // 读取UV分量
+    tmp = (char *)srcVirAddr;
+    int nRead = fread(&tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT], 1, 
+          SRC_WIDTH * SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR, fpr);
+    if (nRead < 0) {
+        ALOGE("fread return error,ret = %d", nRead);
+    }
+    fclose(fpr);
+    return 0;
+}
+
+static int convertPlanarToSemiPlanar(void *srcVirAddr, char *tmpbuf) {
+    char *tmp = (char *)srcVirAddr;
+    
+    for (int i = 0; i < SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR; i++) {
+        for (int j = 0; j < SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR; j++) {
+            tmpbuf[i * SRC_VIR_WIDTH + j * MEMORY_ALLOCATION_MULTIPLIER + 0] =
+                tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT + i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
+            tmpbuf[i * SRC_VIR_WIDTH + j * MEMORY_ALLOCATION_MULTIPLIER + 1] =
+                tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT + SRC_WIDTH * SRC_HEIGHT / QUARTER_DIVISOR +
+                    i * SRC_WIDTH / YUV420_CHROMA_SIZE_DIVISOR + j];
+        }
+    }
+
+    RK_S32 ret = memcpy_s(&tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT],
+                          SRC_VIR_WIDTH * SRC_VIR_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR,
+                          tmpbuf, SRC_VIR_WIDTH * SRC_VIR_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR);
+    if (ret != EOK) { 
+        ALOGE("copy data failed, error code: %d", ret);
+        return -1;
+    }
+    return 0;
+}
+
+static int processVpuPP(VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd) {
+    int ret = 0;
+    int wid_alig16, hei_alig16;
+    ppOp::PP_OP_HANDLE hnd = nullptr;
+    ppOp::PP_OPERATION opt;
+
+    ret = memset_s(&opt, sizeof(opt), 0, sizeof(opt));
+    if (ret != EOK) {
+        ALOGE("memset_s opt failed, error code: %d", ret);
+        return ret;
+    }
+
+    wid_alig16 = ((SRC_WIDTH + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
+    hei_alig16 = ((SRC_HEIGHT + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
+    opt.srcAddr = src->phy_addr;
+    opt.srcFormat = PP_IN_FORMAT_YUV420SEMI;
+    opt.srcWidth = SRC_WIDTH;
+    opt.srcHeight = SRC_HEIGHT;
+    opt.srcHStride = SRC_VIR_WIDTH;
+    opt.srcVStride = SRC_VIR_HEIGHT;
+    opt.srcX = 0;
+    opt.srcY = 0;
+    opt.srcCrop8R = (wid_alig16 != SRC_WIDTH) ? 1 : 0;
+    opt.srcCrop8D = (hei_alig16 != SRC_HEIGHT) ? 1 : 0;
+
+    // 配置目标参数
+    wid_alig16 = ((DST_WIDTH + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
+    hei_alig16 = ((DST_HEIGHT + ALIGN_16_VALUE) & (~BIT_MASK_ALIGN_16));
+    opt.dstAddr = dst->phy_addr;
+    opt.dstFormat = PP_OUT_FORMAT_YUV420INTERLAVE;
+    opt.dstWidth = DST_WIDTH;
+    opt.dstHeight = DST_HEIGHT;
+    opt.dstHStride = DST_VIR_WIDTH;
+    opt.dstVStride = DST_VIR_HEIGHT;
+    opt.dstX = 0;
+    opt.dstY = 0;
+    opt.deinterlace = 0;
+    opt.rotation = PP_ROTATION_RIGHT_90;
+    opt.vpuFd = vpuFd;
+
+    // 执行PP处理
+    ret |= ppOp::ppOpInit(&hnd, &opt);
+    ret |= ppOp::ppOpPerform(hnd);
+    ret |= ppOp::ppOpSync(hnd);
+    ret |= ppOp::ppOpRelease(hnd);
+    if (ret) {
+        ALOGE("ppOp process failed, ret: %d", ret);
+        return ret;
+    }
+    return 0;
+}
+
+static int saveOutputYuv(void *dstVirAddr) {
+    FILE *fpw = fopen("/data/testout.yuv", "wb+");
+    if (!fpw) {
+        ALOGE("failed to open testout.yuv");
+        return -1;
+    }
+    int ret = fwrite((char *)dstVirAddr, 1,
+           DST_VIR_WIDTH * DST_VIR_HEIGHT * YUV420_TOTAL_SIZE_MULTIPLIER / YUV420_TOTAL_SIZE_DIVISOR, fpw);
+    if (ret < 0) {
+        ALOGE("fwrite failed ret = %d", ret);
+    }
+    fclose(fpw);
+    return 0;
+}
+
+static void releaseAllResources(char *tmpbuf, VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd) {
+    if (tmpbuf) free(tmpbuf);
+    if (src->phy_addr) VPUFreeLinear(src);
+    if (dst->phy_addr) VPUFreeLinear(dst);
+    if (vpuFd > 0) VPUClientRelease(vpuFd);
+}
+
+// 主函数
+int main() {
+    ALOGI("ppOp test start\n");
+    int ret = 0;
+    int vpuFd = -1;
+    VPUMemLinear_t src = {0}, dst = {0};
+    char *tmpbuf = nullptr;
+    int framecnt = 0;
+
+    // 分配临时缓冲区
+    tmpbuf = (char *)malloc(SRC_VIR_WIDTH * SRC_VIR_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR);
+    if (tmpbuf == nullptr) {  // 原代码缺失nullptr，补充完整
+        ALOGE("Memory allocation failed\n");
+        return -1;
+    }
+
+    // 初始化VPU资源
+    ret = initVpuResources(&src, &dst, &vpuFd);
+    if (ret != 0) {
+        goto end;
+    }
+
+    // 读取YUV文件并转换格式
+    ret = readYuvFile(src.vir_addr);
+    if (ret == 0) {
+        ret = convertPlanarToSemiPlanar(src.vir_addr, tmpbuf);
+        VPUMemClean(&src);
+    }
+    if (ret != 0) {
+        goto end;
+    }
+
+    // 循环处理帧（仅处理1帧）
+    while (1) {
+        printf("framecnt=%d\n", framecnt);
+        if (framecnt++ >= 1) break;
+
+        // 执行VPU PP处理
+        ret = processVpuPP(&src, &dst, vpuFd);
+        if (ret != 0) break;
+
+        // 刷新缓存并保存输出
+        VPUMemInvalidate(&dst);
+        saveOutputYuv(dst.vir_addr);
+    }
+
+end:
+    // 释放所有资源
+    releaseAllResources(tmpbuf, &src, &dst, vpuFd);
+    ALOGI("ppOp test end\n");
+    return ret;
+}
 #endif

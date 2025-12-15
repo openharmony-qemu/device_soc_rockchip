@@ -193,6 +193,22 @@ RK_S32 VPUClientRelease(int socket)
     return VPU_SUCCESS;
 }
 
+void setMppWriteReadReq(MppReqV1 *reqs, RK_U32 *regs, RK_U32 reg_size)
+{
+    reqs[MPP_REQ_WRITE_INDEX].cmd = MPP_CMD_SET_REG_WRITE;
+    reqs[MPP_REQ_WRITE_INDEX].flag = VPU_FLAG_DEFAULT; // VPU_FLAG_DEFAULT 表示默认标志位
+    reqs[MPP_REQ_WRITE_INDEX].offset = VPU_DEFAULT_OFFSET;
+    reqs[MPP_REQ_WRITE_INDEX].size = reg_size * sizeof(RK_U32);
+    reqs[MPP_REQ_WRITE_INDEX].data_ptr = REQ_DATA_PTR((void *)regs);
+    reqs[MPP_REQ_WRITE_INDEX].flag |= VPU_MPP_FLAGS_MULTI_MSG;
+
+    reqs[MPP_REQ_READ_INDEX].cmd = MPP_CMD_SET_REG_READ;
+    reqs[MPP_REQ_READ_INDEX].flag = VPU_FLAG_DEFAULT; // VPU_FLAG_DEFAULT 表示默认标志位
+    reqs[MPP_REQ_READ_INDEX].offset = VPU_DEFAULT_OFFSET;
+    reqs[MPP_REQ_READ_INDEX].size = reg_size * sizeof(RK_U32);
+    reqs[MPP_REQ_READ_INDEX].data_ptr = REQ_DATA_PTR((void *)regs);
+}
+
 RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
 {
     int fd = socket;
@@ -212,19 +228,7 @@ RK_S32 VPUClientSendReg(int socket, RK_U32 *regs, RK_U32 nregs)
         RK_U32 reg_size = nregs;
 
         VpuExtraInfo *extra_info = (VpuExtraInfo *)(regs + (nregs - VPU_EXTRA_INFO_SIZE));
-
-        reqs[MPP_REQ_WRITE_INDEX].cmd = MPP_CMD_SET_REG_WRITE;
-        reqs[MPP_REQ_WRITE_INDEX].flag = VPU_FLAG_DEFAULT; // VPU_FLAG_DEFAULT 表示默认标志位
-        reqs[MPP_REQ_WRITE_INDEX].offset = VPU_DEFAULT_OFFSET;
-        reqs[MPP_REQ_WRITE_INDEX].size = reg_size * sizeof(RK_U32);
-        reqs[MPP_REQ_WRITE_INDEX].data_ptr = REQ_DATA_PTR((void *)regs);
-        reqs[MPP_REQ_WRITE_INDEX].flag |= VPU_MPP_FLAGS_MULTI_MSG;
-
-        reqs[MPP_REQ_READ_INDEX].cmd = MPP_CMD_SET_REG_READ;
-        reqs[MPP_REQ_READ_INDEX].flag = VPU_FLAG_DEFAULT; // VPU_FLAG_DEFAULT 表示默认标志位
-        reqs[MPP_REQ_READ_INDEX].offset = VPU_DEFAULT_OFFSET;
-        reqs[MPP_REQ_READ_INDEX].size = reg_size * sizeof(RK_U32);
-        reqs[MPP_REQ_READ_INDEX].data_ptr = REQ_DATA_PTR((void *)regs);
+        setMppWriteReadReq(reqs, regs, reg_size);
 
         if (extra_info && extra_info->magic == VPU_EXTRA_INFO_MAGIC) {
             reg_size = nregs - VPU_EXTRA_INFO_SIZE;

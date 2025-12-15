@@ -304,6 +304,16 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     return ret;
 }
 
+void setEncParam(MpiEncTestData *p, MpiEncTestArgs *cmd) {
+    // get paramter from cmd
+    p->width = cmd->width;
+    p->height = cmd->height;
+    p->hor_stride = MPP_ALIGN(cmd->width, 16);  // 16:hor_stride
+    p->ver_stride = MPP_ALIGN(cmd->height, 16); // 16:ver_stride
+    p->fmt = cmd->format;
+    p->type = cmd->type;
+}
+
 /* ���˱������õ�һЩ����������ߣ�����ͼ���ʽ����������ʽ�ȣ�����������֪��ֱ����0
  * test_mpp_enc_cfg_setup�������Զ�����Ĭ�ϵĲ�����bps�� gop�Ȳ���
  */
@@ -326,13 +336,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         return ret;
     }
 
-    // get paramter from cmd
-    p->width = cmd->width;
-    p->height = cmd->height;
-    p->hor_stride = MPP_ALIGN(cmd->width, 16);  // 16:hor_stride
-    p->ver_stride = MPP_ALIGN(cmd->height, 16); // 16:ver_stride
-    p->fmt = cmd->format;
-    p->type = cmd->type;
+    setEncParam(p, cmd);
 
     // update resource parameter
     switch (p->fmt & MPP_FRAME_FMT_MASK) {
@@ -438,7 +442,7 @@ static MPP_RET test_mpp_enc_cfg_setup(MpiEncTestData *p)
     const RK_S32 H264_CABAC_IDC = 0;
     const RK_S32 H264_TRANS8x8_ENABLED = 1;
 
-    const RK_U32 GOP_MODE_THRESHOLD = 4;
+    const RK_S32 GOP_MODE_THRESHOLD = 4;
 
     /* setup default parameter */
     if (p->fps_in_den == 0) {

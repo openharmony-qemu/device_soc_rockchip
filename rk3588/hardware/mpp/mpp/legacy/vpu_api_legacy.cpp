@@ -622,13 +622,10 @@ RK_S32 VpuApiLegacy::flush(VpuCodecContext *ctx)
     return 0;
 }
 
-static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vframe, MppFrame mframe)
+void VpuApiLegacy::setVframeParms(VpuCodecContext *ctx, VPU_FRAME *vframe, MppFrame mframe)
 {
-    MppBuffer buf = mpp_frame_get_buffer(mframe);
     RK_U64 pts = mpp_frame_get_pts(mframe);
     RK_U32 mode = mpp_frame_get_mode(mframe);
-    const int YUV420_BYTES_NUM = 3;
-    const int YUV420_BYTES_DEN = 2;
     const RK_U32 FIELD_TYPE_FRAME = 0;
     const RK_U32 FIELD_TYPE_TOP_FIRST = 1;
     const RK_U32 FIELD_TYPE_BOTTOM_FIRST = 2;
@@ -637,11 +634,6 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
     MppFrameColorTransferCharacteristic colorTrc = mpp_frame_get_color_trc(mframe);
     MppFrameColorPrimaries colorPri = mpp_frame_get_color_primaries(mframe);
     MppFrameColorSpace colorSpa = mpp_frame_get_colorspace(mframe);
-
-    if (buf) {
-        mpp_buffer_inc_ref(buf);
-    }
-
     vframe->CodingType = ctx->videoCoding;
     vframe->DisplayWidth = mpp_frame_get_width(mframe);
     vframe->DisplayHeight = mpp_frame_get_height(mframe);
@@ -668,6 +660,10 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
     vframe->ErrorInfo = mpp_frame_get_errinfo(mframe) | mpp_frame_get_discard(mframe);
     vframe->ShowTime.TimeHigh = (RK_U32)(pts >> 32); /* 将 pts 的高 32 位转换为无符号 32 位整 */
     vframe->ShowTime.TimeLow = (RK_U32)pts;
+}
+
+void VpuApiLegacy::getColorTypeByFmtMask(VPU_FRAME *vframe, MppFrame mframe)
+{
     switch (mpp_frame_get_fmt(mframe) & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420SP: {
             vframe->ColorType = VPU_OUTPUT_FORMAT_YUV420_SEMIPLANAR;
@@ -700,7 +696,10 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
             break;
         } 
     }
+}
 
+void VpuApiLegacy::getColorTypeByFbcMask(VPU_FRAME *vframe, MppFrame mframe)
+{
     switch (mpp_frame_get_fmt(mframe) & MPP_FRAME_FBC_MASK) {
         case MPP_FRAME_FBC_AFBC_V1: {
             vframe->ColorType |= VPU_OUTPUT_FORMAT_FBC_AFBC_V1;
@@ -714,7 +713,10 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
             break;
         } 
     }
+}
 
+void VpuApiLegacy::getColorTypeByColorTrc(VPU_FRAME *vframe,  MppFrameColorTransferCharacteristic colorTrc)
+{
     switch (colorTrc) {
         case MPP_FRAME_TRC_SMPTEST2084: {
             vframe->ColorType |= VPU_OUTPUT_FORMAT_DYNCRANGE_HDR10; // HDR10
@@ -728,6 +730,22 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
             break;
         } 
     }
+}
+
+void VpuApiLegacy::setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vframe, MppFrame mframe)
+{
+    MppBuffer buf = mpp_frame_get_buffer(mframe);
+    const int YUV420_BYTES_NUM = 3;
+    const int YUV420_BYTES_DEN = 2;
+    MppFrameColorTransferCharacteristic colorTrc = mpp_frame_get_color_trc(mframe);
+
+    if (buf) {
+        mpp_buffer_inc_ref(buf);
+    }
+    setVframeParms(ctx, vframe, mframe);
+    getColorTypeByFmtMask(vframe, mframe);
+    getColorTypeByFbcMask(vframe, mframe);
+    getColorTypeByColorTrc(vframe, colorTrc);
 
     if (buf) {
         MppBufferImpl *p = (MppBufferImpl *)buf;
@@ -744,7 +762,7 @@ static void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vfra
     }
 }
 
-static void setup_video_frame_meta(VideoFrame_t *videoFrame, MppFrame mframe)
+void VpuApiLegacy::setup_video_frame_meta(VideoFrame_t *videoFrame, MppFrame mframe)
 {
     if (mpp_frame_get_thumbnail_en(mframe) == MPP_FRAME_THUMBNAIL_MIXED) {
         MppMeta meta = nullptr;
@@ -779,43 +797,267 @@ static void setup_video_frame_meta(VideoFrame_t *videoFrame, MppFrame mframe)
     videoFrame->viewId = mpp_frame_get_viewid(mframe);
 }
 
-RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut_t *aDecOut)
-{
+RK_S32 VpuApiLegacy::checkDecodeParams(VideoPacket_t *pkt, DecoderOut_t *aDecOut) {
+    if (!init_ok) {
+        mpp_err("init failed!\n");
+        return VPU_API_ERR_VPU_CODEC_INIT;
+    }
+    if (!pkt || !aDecOut) {
+        mpp_err("invalid input %p and output %p\n", pkt, aDecOut);
+        return VPU_API_ERR_UNKNOW;
+    }
+    if (pkt->size <= 0) {
+        mpp_err("invalid input size %d\n", pkt->size);
+        return VPU_API_ERR_UNKNOW;
+    }
+    return 0;
+}
+
+MPP_RET VpuApiLegacy::importMjpegInputBuffer(VideoPacket_t *pkt, MppBuffer *str_buf) {
+    RK_S32 fd = (RK_S32)(pkt->pts & 0xffffffff);
+    MPP_RET ret = MPP_OK;
+    RK_S32 sRet = 0;
+
+    if (fd_input < 0) {
+        fd_input = is_valid_dma_fd(fd);
+    }
+
+    if (fd_input) {
+        MppBufferInfo inputCommit;
+        sRet = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+        if (sRet != EOK) {  // 修复原逻辑：EOK是成功，非EOK才报错
+            vpu_api_dbg_func("memset_s inputCommit failed, error code: %d", sRet);
+        }
+        inputCommit.type = MPP_BUFFER_TYPE_ION;
+        inputCommit.size = pkt->size;
+        inputCommit.fd = fd;
+        ret = mpp_buffer_import(str_buf, &inputCommit);
+        if (ret) {
+            mpp_err_f("import input picture buffer failed\n");
+        }
+    } else {
+        if (pkt->data == nullptr) {
+            return MPP_ERR_NULL_PTR;
+        }
+        ret = mpp_buffer_get(memGroup, str_buf, pkt->size);
+        if (ret) {
+            mpp_err_f("allocate input picture buffer failed\n");
+            return ret;
+        }
+        sRet = memcpy_s((RK_U8 *)mpp_buffer_get_ptr(*str_buf), pkt->size, pkt->data, pkt->size);
+        if (sRet != EOK) {
+            mpp_err_f("%s: copy pkt->data failed, error code: %d", __func__, sRet);
+            mpp_buffer_put(*str_buf);
+            *str_buf = nullptr;
+            return MPP_NOK;
+        }
+    }
+    return ret;
+}
+
+MPP_RET VpuApiLegacy::importMjpegOutputBuffer(VpuCodecContext *ctx, DecoderOut_t *aDecOut, MppBuffer *pic_buf) {
+    const int YUV420P_PIXEL_SIZE = 3 / 2;
+    RK_S32 fd = (RK_S32)(aDecOut->timeUs & 0xffffffff);
+    MPP_RET ret = MPP_OK;
+    RK_S32 sRet = 0;
+
+    if (fd_output < 0) {
+        fd_output = is_valid_dma_fd(fd);
+    }
+
+    if (fd_output) {
+        MppBufferInfo outputCommit;
+        sRet = memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+        if (sRet != EOK) {  // 修复原逻辑：EOK是成功，非EOK才报错
+            vpu_api_dbg_func("memset_s outputCommit failed, error code: %d", sRet);
+        }
+        outputCommit.type = MPP_BUFFER_TYPE_ION;
+        outputCommit.fd = fd;
+        outputCommit.size = ctx->width * ctx->height * YUV420P_PIXEL_SIZE;
+        outputCommit.ptr = (void *)aDecOut->data;
+
+        ret = mpp_buffer_import(pic_buf, &outputCommit);
+        if (ret) {
+            mpp_err_f("import output stream buffer failed\n");
+        }
+    } else {
+        RK_U32 hor_stride = MPP_ALIGN(ctx->width, (RK_U32)16);
+        RK_U32 ver_stride = MPP_ALIGN(ctx->height, (RK_U32)16);
+        ret = mpp_buffer_get(memGroup, pic_buf, hor_stride * ver_stride * YUV420P_PIXEL_SIZE);
+        if (ret) {
+            mpp_err_f("allocate output stream buffer failed\n");
+        }
+    }
+    return ret;
+}
+
+MPP_RET VpuApiLegacy::execMjpegDecodeTask(MppPacket packet, MppFrame mframe) {
+    MPP_RET ret = MPP_OK;
+    MppTask task = nullptr;
+
+    ret = mpi->poll(mpp_ctx, MPP_PORT_INPUT, MPP_POLL_BLOCK);
+    if (ret) {
+        mpp_err("mpp input poll failed\n");
+        return ret;
+    }
+
+    ret = mpi->dequeue(mpp_ctx, MPP_PORT_INPUT, &task);
+    if (ret) {
+        mpp_err("mpp task input dequeue failed\n");
+        return ret;
+    }
+
+    mpp_task_meta_set_packet(task, KEY_INPUT_PACKET, packet);
+    mpp_task_meta_set_frame(task, KEY_OUTPUT_FRAME, mframe);
+
+    ret = mpi->enqueue(mpp_ctx, MPP_PORT_INPUT, task);
+    if (ret) {
+        mpp_err("mpp task input enqueue failed\n");
+        return ret;
+    }
+
+    ret = mpi->poll(mpp_ctx, MPP_PORT_INPUT, MPP_POLL_BLOCK);
+    if (ret) {
+        mpp_err("mpp output poll failed\n");
+        return ret;
+    }
+
+    ret = mpi->dequeue(mpp_ctx, MPP_PORT_OUTPUT, &task);
+    if (ret) {
+        mpp_err("ret %d mpp task output dequeue failed\n", ret);
+        return ret;
+    }
+
+    if (task) {
+        MppFrame frame_out = nullptr;
+        mpp_task_meta_get_frame(task, KEY_OUTPUT_FRAME, &frame_out);
+        mpp_assert(frame_out == mframe);
+        vpu_api_dbg_func("decoded frame %d\n", frame_count);
+        frame_count++;
+
+        ret = mpi->enqueue(mpp_ctx, MPP_PORT_OUTPUT, task);
+        task = nullptr;
+    }
+    return ret;
+}
+
+MPP_RET VpuApiLegacy::handleMjpegOutputFrame(VpuCodecContext *ctx, MppFrame mframe, DecoderOut_t *aDecOut) {
+    const int YUV420P_PIXEL_SIZE = 3 / 2;
+    MPP_RET ret = MPP_OK;
+    RK_S32 sRet = 0;
+
+    if (mframe != nullptr) {
+        MppBuffer buf_out = mpp_frame_get_buffer(mframe);
+        size_t len = mpp_buffer_get_size(buf_out);
+        aDecOut->size = len;
+
+        if (fd_output) {
+            mpp_log_f("fd for output is invalid!\n");
+            aDecOut->data = mpp_malloc(RK_U8, ctx->width * ctx->height * YUV420P_PIXEL_SIZE);
+            sRet = memcpy_s(aDecOut->data, aDecOut->size, 
+                           (RK_U8 *)mpp_buffer_get_ptr(buf_out), aDecOut->size);
+            if (sRet != EOK) {
+                mpp_err("%s: copy frame data failed, error code: %d", __func__, sRet);
+                ret = MPP_NOK;
+            }
+        }
+        vpu_api_dbg_func("get frame %p size %d\n", mframe, len);
+        mpp_frame_deinit(&mframe);
+    } else {
+        mpp_log("outputPacket is nullptr!");
+        ret = MPP_ERR_NULL_PTR;
+    }
+    return ret;
+}
+
+MPP_RET VpuApiLegacy::handleNonMjpegDecode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut_t *aDecOut,
+                                    MppPacket *packet, MppFrame *mframe) {
+    RK_S32 sRet = 0;
+    MPP_RET ret = MPP_OK;
+
+    mpp_packet_init(packet, pkt->data, pkt->size);
+    mpp_packet_set_pts(*packet, pkt->pts);
+    if (pkt->nFlags & OMX_BUFFERFLAG_EOS) {
+        mpp_packet_set_eos(*packet);
+    }
+
+    vpu_api_dbg_input("input size %-6d flag %x pts %lld\n", pkt->size, pkt->nFlags, pkt->pts);
+
+    ret = mpi->decode(mpp_ctx, *packet, mframe);
+    if (MPP_OK == ret) {
+        pkt->size = 0;
+    }
+    if (ret || *mframe == nullptr) {
+        aDecOut->size = 0;
+        return ret;
+    }
+
+    VPU_FRAME *vframe = nullptr;
+    MppBuffer buf = mpp_frame_get_buffer(*mframe);
+    if (dec_out_frm_struct_type) {
+        VideoFrame_t *videoFrame = (VideoFrame_t *)aDecOut->data;
+        vframe = &videoFrame->vpuFrame;
+        sRet = memset_s(videoFrame, sizeof(VideoFrame_t), 0, sizeof(VideoFrame_t));
+        if (sRet != EOK) {  // 修复原逻辑：EOK是成功，非EOK才报错
+            vpu_api_dbg_func("memset_s videoFrame failed, error code: %d", sRet);
+        }
+        aDecOut->size = sizeof(VideoFrame_t);
+        setup_video_frame_meta(videoFrame, *mframe);
+    } else {
+        vframe = (VPU_FRAME *)aDecOut->data;
+        sRet = memset_s(vframe, sizeof(VPU_FRAME), 0, sizeof(VPU_FRAME));
+        if (sRet != EOK) {  // 修复原逻辑：EOK是成功，非EOK才报错
+            vpu_api_dbg_func("memset_s vframe failed, error code: %d", sRet);
+        }
+        aDecOut->size = sizeof(VPU_FRAME);
+    }
+
+    setup_VPU_FRAME_from_mpp_frame(ctx, vframe, *mframe);
+    aDecOut->timeUs = mpp_frame_get_pts(*mframe);
+    frame_count++;
+
+    if (mpp_frame_get_eos(*mframe)) {
+        set_eos = 1;
+    }
+    if (buf == nullptr) {
+        aDecOut->size = 0;
+    }
+    if (vpu_api_debug & VPU_API_DBG_OUTPUT) {
+        mpp_log("get one frame pts %lld, fd 0x%x, poc %d, errinfo %x, discard %d, eos %d, verr %d",
+                aDecOut->timeUs, ((buf) ? (mpp_buffer_get_fd(buf)) : (-1)), mpp_frame_get_poc(*mframe),
+                mpp_frame_get_errinfo(*mframe), mpp_frame_get_discard(*mframe), 
+                mpp_frame_get_eos(*mframe), vframe->ErrorInfo);
+    }
+    mpp_frame_deinit(mframe);
+    return ret;
+}
+
+void VpuApiLegacy::releaseMjpegBuffers(MppBuffer str_buf, MppBuffer pic_buf) {
+    if (str_buf) {
+        mpp_buffer_put(str_buf);
+    }
+    if (pic_buf) {
+        mpp_buffer_put(pic_buf);
+    }
+}
+
+RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut_t *aDecOut) {
     RK_S32 sRet = 0;
     MPP_RET ret = MPP_OK;
     MppFrame mframe = nullptr;
     MppPacket packet = nullptr;
-    const int YUV420P_PIXEL_SIZE = 3 / 2;
+    MppBuffer str_buf = nullptr;
+    MppBuffer pic_buf = nullptr;
 
     vpu_api_dbg_func("enter\n");
 
+    // 处理MJPEG解码
     if (ctx->videoCoding == OMX_RK_VIDEO_CodingMJPEG) {
-        MppTask task = nullptr;
-
-        if (!init_ok) {
-            mpp_err("init failed!\n");
-            return VPU_API_ERR_VPU_CODEC_INIT;
+        sRet = checkDecodeParams(pkt, aDecOut);
+        if (sRet != 0) {
+            ret = MPP_NOK;
+            goto DECODE_OUT;
         }
-
-        /* check input param */
-        if (!pkt || !aDecOut) {
-            mpp_err("invalid input %p and output %p\n", pkt, aDecOut);
-            return VPU_API_ERR_UNKNOW;
-        }
-
-        if (pkt->size <= 0) {
-            mpp_err("invalid input size %d\n", pkt->size);
-            return VPU_API_ERR_UNKNOW;
-        }
-
-        /* try import input buffer and output buffer */
-        RK_S32 fd = -1;
-        RK_U32 width = ctx->width;
-        RK_U32 height = ctx->height;
-        RK_U32 hor_stride = MPP_ALIGN(width, (RK_U32)16);
-        RK_U32 ver_stride = MPP_ALIGN(height, (RK_U32)16);
-        MppBuffer str_buf = nullptr; /* input */
-        MppBuffer pic_buf = nullptr; /* output */
 
         ret = mpp_frame_init(&mframe);
         if (MPP_OK != ret) {
@@ -823,237 +1065,48 @@ RK_S32 VpuApiLegacy::decode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut
             goto DECODE_OUT;
         }
 
-        fd = (RK_S32)(pkt->pts & 0xffffffff);
-        if (fd_input < 0) {
-            fd_input = is_valid_dma_fd(fd);
-        }
-
-        if (fd_input) {
-            MppBufferInfo inputCommit;
-
-            sRet = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
-            if (sRet == EOK) {
-                vpu_api_dbg_func("memset_s inputCommit failed, error code: %d", sRet);
-            }
-            inputCommit.type = MPP_BUFFER_TYPE_ION;
-            inputCommit.size = pkt->size;
-            inputCommit.fd = fd;
-
-            ret = mpp_buffer_import(&str_buf, &inputCommit);
-            if (ret) {
-                mpp_err_f("import input picture buffer failed\n");
-                goto DECODE_OUT;
-            }
-        } else {
-            if (pkt->data == nullptr) {
-                ret = MPP_ERR_NULL_PTR;
-                goto DECODE_OUT;
-            }
-
-            ret = mpp_buffer_get(memGroup, &str_buf, pkt->size);
-            if (ret) {
-                mpp_err_f("allocate input picture buffer failed\n");
-                goto DECODE_OUT;
-            }
-            sRet = memcpy_s((RK_U8 *)mpp_buffer_get_ptr(str_buf), pkt->size, pkt->data, pkt->size);
-            if (sRet != EOK) {
-                mpp_err_f("%{public}s: copy pkt->data failed, error code: %d", sRet);
-                goto DECODE_OUT;
-            }
-        }
-
-        fd = (RK_S32)(aDecOut->timeUs & 0xffffffff);
-        if (fd_output < 0) {
-            fd_output = is_valid_dma_fd(fd);
-        }
-
-        if (fd_output) {
-            MppBufferInfo outputCommit;
-
-            sRet = memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
-            if (sRet == EOK) {
-                vpu_api_dbg_func("memset_s outputCommit failed, error code: %d", sRet);
-            }
-            /* in order to avoid interface change use space in output to transmit information */
-            outputCommit.type = MPP_BUFFER_TYPE_ION;
-            outputCommit.fd = fd;
-            outputCommit.size = width * height * YUV420P_PIXEL_SIZE;
-            outputCommit.ptr = (void *)aDecOut->data;
-
-            ret = mpp_buffer_import(&pic_buf, &outputCommit);
-            if (ret) {
-                mpp_err_f("import output stream buffer failed\n");
-                goto DECODE_OUT;
-            }
-        } else {
-            ret = mpp_buffer_get(memGroup, &pic_buf, hor_stride * ver_stride * YUV420P_PIXEL_SIZE);
-            if (ret) {
-                mpp_err_f("allocate output stream buffer failed\n");
-                goto DECODE_OUT;
-            }
-        }
-
-        mpp_packet_init_with_buffer(&packet, str_buf); /* input */
-        mpp_frame_set_buffer(mframe, pic_buf);         /* output */
-
-        vpu_api_dbg_func("mpp import input fd %d output fd %d", mpp_buffer_get_fd(str_buf), mpp_buffer_get_fd(pic_buf));
-
-        ret = mpi->poll(mpp_ctx, MPP_PORT_INPUT, MPP_POLL_BLOCK);
-        if (ret) {
-            mpp_err("mpp input poll failed\n");
+        // 导入输入buffer
+        ret = importMjpegInputBuffer(pkt, &str_buf);
+        if (ret != MPP_OK) {
             goto DECODE_OUT;
         }
 
-        ret = mpi->dequeue(mpp_ctx, MPP_PORT_INPUT, &task);
-        if (ret) {
-            mpp_err("mpp task input dequeue failed\n");
+        // 导入输出buffer
+        ret = importMjpegOutputBuffer(ctx, aDecOut, &pic_buf);
+        if (ret != MPP_OK) {
             goto DECODE_OUT;
         }
 
-        mpp_task_meta_set_packet(task, KEY_INPUT_PACKET, packet);
-        mpp_task_meta_set_frame(task, KEY_OUTPUT_FRAME, mframe);
+        // 初始化packet和frame
+        mpp_packet_init_with_buffer(&packet, str_buf);
+        mpp_frame_set_buffer(mframe, pic_buf);
+        vpu_api_dbg_func("mpp import input fd %d output fd %d", 
+                        mpp_buffer_get_fd(str_buf), mpp_buffer_get_fd(pic_buf));
 
-        ret = mpi->enqueue(mpp_ctx, MPP_PORT_INPUT, task);
-        if (ret) {
-            mpp_err("mpp task input enqueue failed\n");
+        // 执行解码任务
+        ret = execMjpegDecodeTask(packet, mframe);
+        if (ret != MPP_OK) {
             goto DECODE_OUT;
         }
 
-        pkt->size = 0;
-        task = nullptr;
-
-        ret = mpi->poll(mpp_ctx, MPP_PORT_INPUT, MPP_POLL_BLOCK);
-        if (ret) {
-            mpp_err("mpp output poll failed\n");
-            goto DECODE_OUT;
-        }
-
-        ret = mpi->dequeue(mpp_ctx, MPP_PORT_OUTPUT, &task);
-        if (ret) {
-            mpp_err("ret %d mpp task output dequeue failed\n", ret);
-            goto DECODE_OUT;
-        }
-
-        if (task) {
-            MppFrame frame_out = nullptr;
-
-            mpp_task_meta_get_frame(task, KEY_OUTPUT_FRAME, &frame_out);
-            mpp_assert(frame_out == mframe);
-            vpu_api_dbg_func("decoded frame %d\n", frame_count);
-            frame_count++;
-
-            ret = mpi->enqueue(mpp_ctx, MPP_PORT_OUTPUT, task);
-            if (ret) {
-                mpp_err("mpp task output enqueue failed\n");
-                goto DECODE_OUT;
-            }
-            task = nullptr;
-        }
-
-        // copy decoded frame into output buffer, and set outpub frame size
-        if (mframe != nullptr) {
-            MppBuffer buf_out = mpp_frame_get_buffer(mframe);
-            size_t len = mpp_buffer_get_size(buf_out);
-            aDecOut->size = len;
-
-            if (fd_output) {
-                mpp_log_f("fd for output is invalid!\n");
-                aDecOut->data = mpp_malloc(RK_U8, width * height * YUV420P_PIXEL_SIZE);
-                sRet = memcpy_s(aDecOut->data, aDecOut->size, (RK_U8 *)mpp_buffer_get_ptr(pic_buf), aDecOut->size);
-                if (sRet != EOK) {
-                    mpp_err("%{public}s: copy pkt->data failed, error code: %d", __func__, sRet);
-                    goto DECODE_OUT;
-                }
-            }
-
-            vpu_api_dbg_func("get frame %p size %d\n", mframe, len);
-
-            mpp_frame_deinit(&mframe);
-        } else {
-            mpp_log("outputPacket is nullptr!");
-        }
+        // 处理输出帧
+        ret = handleMjpegOutputFrame(ctx, mframe, aDecOut);
 
     DECODE_OUT:
-        if (str_buf) {
-            mpp_buffer_put(str_buf);
-            str_buf = nullptr;
-        }
-
-        if (pic_buf) {
-            mpp_buffer_put(pic_buf);
-            pic_buf = nullptr;
-        }
+        releaseMjpegBuffers(str_buf, pic_buf);
     } else {
-        mpp_packet_init(&packet, pkt->data, pkt->size);
-        mpp_packet_set_pts(packet, pkt->pts);
-        if (pkt->nFlags & OMX_BUFFERFLAG_EOS) {
-            mpp_packet_set_eos(packet);
-        }
-
-        vpu_api_dbg_input("input size %-6d flag %x pts %lld\n", pkt->size, pkt->nFlags, pkt->pts);
-
-        ret = mpi->decode(mpp_ctx, packet, &mframe);
-        if (MPP_OK == ret) {
-            pkt->size = 0;
-        }
-        if (ret || mframe == nullptr) {
-            aDecOut->size = 0;
-        } else {
-            VPU_FRAME *vframe = nullptr;
-            MppBuffer buf = mpp_frame_get_buffer(mframe);
-
-            if (dec_out_frm_struct_type) {
-                VideoFrame_t *videoFrame = (VideoFrame_t *)aDecOut->data;
-                vframe = &videoFrame->vpuFrame;
-                sRet = memset_s(videoFrame, sizeof(VideoFrame_t), 0, sizeof(VideoFrame_t));
-                if (sRet == EOK) {
-                    vpu_api_dbg_func("memset_s videoFrame failed, error code: %d", sRet);
-                }
-                aDecOut->size = sizeof(VideoFrame_t);
-                setup_video_frame_meta(videoFrame, mframe);
-            } else {
-                vframe = (VPU_FRAME *)aDecOut->data;
-                sRet = memset_s(vframe, sizeof(VPU_FRAME), 0, sizeof(VPU_FRAME));
-                if (sRet == EOK) {
-                    vpu_api_dbg_func("memset_s vframe failed, error code: %d", sRet);
-                }
-                aDecOut->size = sizeof(VPU_FRAME);
-            }
-
-            setup_VPU_FRAME_from_mpp_frame(ctx, vframe, mframe);
-
-            aDecOut->timeUs = mpp_frame_get_pts(mframe);
-            frame_count++;
-
-            if (mpp_frame_get_eos(mframe)) {
-                set_eos = 1;
-            }
-            if (buf == nullptr) {
-                aDecOut->size = 0;
-            }
-            if (vpu_api_debug & VPU_API_DBG_OUTPUT) {
-                mpp_log("get one frame pts %lld, fd 0x%x, poc %d, errinfo %x, discard %d, eos %d, verr %d",
-                    aDecOut->timeUs, ((buf) ? (mpp_buffer_get_fd(buf)) : (-1)), mpp_frame_get_poc(mframe),
-                    mpp_frame_get_errinfo(mframe), mpp_frame_get_discard(mframe), mpp_frame_get_eos(mframe),
-                    vframe->ErrorInfo);
-            }
-
-            /*
-             * IMPORTANT: mframe is malloced from mpi->decode_get_frame
-             * So we need to deinit mframe here. But the buffer in the frame should not be free with mframe.
-             * Because buffer need to be set to vframe->vpumem.offset and send to display.
-             * The we have to clear the buffer pointer in mframe then release mframe.
-             */
-            mpp_frame_deinit(&mframe);
-        }
+        // 处理非MJPEG解码
+        ret = handleNonMjpegDecode(ctx, pkt, aDecOut, &packet, &mframe);
     }
 
+    // 通用资源释放
     if (packet) {
         mpp_packet_deinit(&packet);
     }
     if (mframe) {
         mpp_frame_deinit(&mframe);
     }
+
     vpu_api_dbg_func("leave ret %d\n", ret);
     return ret;
 }
@@ -1477,32 +1530,8 @@ ENCODE_OUT:
     return ret;
 }
 
-RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm)
+void VpuApiLegacy::setHorStride(MppFrame frame, RK_U32 hor_stride)
 {
-    RK_S32 ret = 0;
-    vpu_api_dbg_func("enter\n");
-    RK_U32 width = ctx->width;
-    RK_U32 height = ctx->height;
-    RK_U32 hor_stride = MPP_ALIGN(width, (RK_U32)16);
-    RK_U32 ver_stride = MPP_ALIGN(height, (RK_U32)8);
-    RK_S64 pts = aEncInStrm->timeUs;
-    RK_S32 fd = aEncInStrm->bufPhyAddr;
-    RK_U32 size = aEncInStrm->size;
-    const int YUV420_PIXEL_SIZE_RATIO = YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_RATIO_DENOMINATOR;
-    const int VERTICAL_ALIGNMENT_VALUE = 16;
-    /* try import input buffer and output buffer */
-    MppFrame frame = nullptr;
-
-    ret = mpp_frame_init(&frame);
-    if (MPP_OK != ret) {
-        mpp_err_f("mpp_frame_init failed\n");
-        goto FUNC_RET;
-    }
-
-    mpp_frame_set_width(frame, width);
-    mpp_frame_set_height(frame, height);
-    mpp_frame_set_ver_stride(frame, ver_stride);
-    mpp_frame_set_pts(frame, pts);
     switch ((format) & MPP_FRAME_FMT_MASK) {
         case MPP_FMT_YUV420P:
         case MPP_FMT_YUV420SP:
@@ -1534,86 +1563,137 @@ RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *a
             break;
         } 
     }
+}
+
+RK_S32 VpuApiLegacy::setBufferFromFdInput(MppFrame frame, RK_S32 fd, RK_U32 size)
+{
+    RK_S32 ret = 0;
+    MppBufferInfo inputCommit;
+
+    ret = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
+    if (ret != EOK) {
+        mpp_err_f("memset_s inputCommit failed! ret %d\n", ret);
+    }
+    inputCommit.type = MPP_BUFFER_TYPE_ION;
+    inputCommit.size = size;
+    inputCommit.fd = fd;
+    if (size > 0) {
+        MppBuffer buffer = nullptr;
+        ret = mpp_buffer_import(&buffer, &inputCommit);
+        if (ret) {
+            mpp_err_f("import input picture buffer failed\n");
+            return MPP_NOK;
+        }
+        mpp_frame_set_buffer(frame, buffer);
+        mpp_buffer_put(buffer);
+        buffer = nullptr;
+    }
+    return MPP_OK;
+}
+
+RK_S32 VpuApiLegacy::setBufferFromMem(VpuCodecContext *ctx, MppFrame frame, RK_U8 *buf, RK_U32 hor_stride, 
+                                        RK_U32 ver_stride)
+{
+    RK_S32 ret = 0;
+    RK_U32 align_size = 0;
+    const int YUV420_PIXEL_SIZE_RATIO = YUV420_PIXEL_SIZE_RATIO_NUMERATOR / YUV420_PIXEL_RATIO_DENOMINATOR;
+    const int VERTICAL_ALIGNMENT_VALUE = 16;
+
+    if (format >= MPP_FMT_YUV420SP && format < MPP_FMT_YUV_BUTT) {
+        align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
+    } else if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
+        align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
+    } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
+        align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB565_PIXEL_SIZE_RATIO;
+    } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
+        align_size = hor_stride * MPP_ALIGN(ver_stride, 
+                        (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
+    } else {
+        mpp_err_f("unsupport input format:%d\n", format);
+        ret = MPP_NOK;
+        return ret;
+    }
+    if (align_size > 0) {
+        MppBuffer buffer = nullptr;
+        ret = mpp_buffer_get(memGroup, &buffer, align_size);
+        if (ret) {
+            mpp_err_f("allocate input picture buffer failed\n");
+            return ret;
+        }
+        copy_align_raw_buffer_to_dest((RK_U8 *)mpp_buffer_get_ptr(buffer), buf, ctx->width, ctx->height, format);
+        mpp_frame_set_buffer(frame, buffer);
+        mpp_buffer_put(buffer);
+        buffer = nullptr;
+    }
+    return MPP_OK;
+}
+
+RK_S32 VpuApiLegacy::frameInit(VpuCodecContext *ctx, MppFrame frame, EncInputStream_t *aEncInStrm,
+                               RK_U32 hor_stride, RK_U32 ver_stride)
+{
+    RK_S32 ret = 0;
+    RK_S32 fd = aEncInStrm->bufPhyAddr;
+    RK_U32 size = aEncInStrm->size;
+    
+    ret = mpp_frame_init(&frame);
+    if (ret != MPP_NOK) {
+        mpp_err_f("mpp_frame_init failed\n");
+       return ret;
+    }
+    mpp_frame_set_width(frame, ctx->width);
+    mpp_frame_set_height(frame, ctx->height);
+    mpp_frame_set_ver_stride(frame, ver_stride);
+    mpp_frame_set_pts(frame, aEncInStrm->timeUs);
+    setHorStride(frame, hor_stride);
     mpp_frame_set_fmt(frame, (MppFrameFormat)(format & MPP_FRAME_FMT_MASK));
     if (aEncInStrm->nFlags) {
         mpp_log_f("found eos true\n");
         mpp_frame_set_eos(frame, 1);
     }
-
     if (size <= 0) {
         mpp_frame_set_buffer(frame, nullptr);
         if (!aEncInStrm->nFlags) {
             mpp_err_f("found empty frame without eos flag set!\n");
         }
-        goto PUT_FRAME;
+        return MPP_ERR_UNKNOW;
     }
 
     if (fd_input < 0) {
         fd_input = is_valid_dma_fd(fd);
     }
     if (fd_input) {
-        MppBufferInfo inputCommit;
-
-        ret = memset_s(&inputCommit, sizeof(inputCommit), 0, sizeof(inputCommit));
-        if (ret != EOK) {
-            mpp_err_f("memset_s inputCommit failed! ret %d\n", ret);
-        }
-        inputCommit.type = MPP_BUFFER_TYPE_ION;
-        inputCommit.size = size;
-        inputCommit.fd = fd;
-        if (size > 0) {
-            MppBuffer buffer = nullptr;
-            ret = mpp_buffer_import(&buffer, &inputCommit);
-            if (ret) {
-                mpp_err_f("import input picture buffer failed\n");
-                goto FUNC_RET;
-            }
-            mpp_frame_set_buffer(frame, buffer);
-            mpp_buffer_put(buffer);
-            buffer = nullptr;
-        }
+       ret = setBufferFromFdInput(frame, fd, size);
     } else {
-        RK_U32 align_size = 0;
-
         if (aEncInStrm->buf == nullptr) {
-            ret = MPP_ERR_NULL_PTR;
-            goto FUNC_RET;
-        }
-        if (format >= MPP_FMT_YUV420SP && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
-        } else if (format >= MPP_FMT_YUV420SP_VU && format < MPP_FMT_YUV_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * YUV420_PIXEL_SIZE_RATIO;
-        } else if (format >= MPP_FMT_RGB565 && format < MPP_FMT_BGR888) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB565_PIXEL_SIZE_RATIO;
-        } else if (format >= MPP_FMT_RGB101010 && format < MPP_FMT_RGB_BUTT) {
-            align_size = hor_stride * MPP_ALIGN(ver_stride, 
-                         (RK_U32)VERTICAL_ALIGNMENT_VALUE) * RGB101010_PIXEL_SIZE_RATIO;
-        } else {
-            mpp_err_f("unsupport input format:%d\n", format);
             ret = MPP_NOK;
-            goto FUNC_RET;
         }
-        if (align_size > 0) {
-            MppBuffer buffer = nullptr;
-            ret = mpp_buffer_get(memGroup, &buffer, align_size);
-            if (ret) {
-                mpp_err_f("allocate input picture buffer failed\n");
-                goto FUNC_RET;
-            }
-            copy_align_raw_buffer_to_dest((RK_U8 *)mpp_buffer_get_ptr(buffer), aEncInStrm->buf, width, height, format);
-            mpp_frame_set_buffer(frame, buffer);
-            mpp_buffer_put(buffer);
-            buffer = nullptr;
-        }
+        ret = setBufferFromMem(ctx, frame, aEncInStrm->buf, hor_stride, ver_stride);
     }
+    return ret;
+}
 
+RK_S32 VpuApiLegacy::encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm)
+{
+    RK_S32 ret = 0;
+    vpu_api_dbg_func("enter\n");
+    RK_U32 hor_stride = MPP_ALIGN(ctx->width, (RK_U32)16);
+    RK_U32 ver_stride = MPP_ALIGN(ctx->height, (RK_U32)8);
+    /* try import input buffer and output buffer */
+    MppFrame frame = nullptr;
+
+    ret = frameInit(ctx, frame, aEncInStrm, hor_stride, ver_stride);
+    if (ret == MPP_NOK) {
+        goto FUNC_RET;
+    }
+    else if (ret == MPP_ERR_UNKNOW) {
+        goto PUT_FRAME;
+    }
 PUT_FRAME:
 
-    vpu_api_dbg_input("w %d h %d input fd %d size %d pts %lld, flag %d \n", width, height, fd, size, aEncInStrm->timeUs,
-        aEncInStrm->nFlags);
+    vpu_api_dbg_input("w %d h %d input fd %d size %d pts %lld, flag %d \n", 
+        ctx->width, ctx->height, aEncInStrm->bufPhyAddr, aEncInStrm->size, aEncInStrm->timeUs, aEncInStrm->nFlags);
     if (mlvec) {
         MppMeta meta = mpp_frame_get_meta(frame);
-
         vpu_api_mlvec_set_dy_cfg(mlvec, &mlvec_dy_cfg, meta);
     }
 
@@ -1661,12 +1741,12 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
         aEncOut->data = nullptr;
         if (length > 0) {
             aEncOut->data = mpp_calloc(RK_U8, MPP_ALIGN(length + ALIGNMENT_OFFSET, (size_t)SZ_4K));
-            if (aEncOut->data) {
-                ret = memcpy_s(aEncOut->data, aEncOut->size, src + offset, length);
-                if (ret != EOK) {
-                    mpp_err("%{public}s: copy aEncOut->data failed, error code: %d", __func__, ret);
-                    goto FUNC_RET;
-                }
+        }
+        if (aEncOut->data) {
+            ret = memcpy_s(aEncOut->data, aEncOut->size, src + offset, length);
+            if (ret != EOK) {
+                mpp_err("%{public}s: copy aEncOut->data failed, error code: %d", __func__, ret);
+                goto FUNC_RET;
             }
         }
 
@@ -1676,14 +1756,13 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
         aEncOut->timeUs = pts;
         aEncOut->keyFrame = is_intra;
 
-        vpu_api_dbg_output("get packet %p size %d pts %lld keyframe %d eos %d\n", packet, length, pts,
-            aEncOut->keyFrame, eos);
+        mpp_err("get packet %p size %d pts %lld keyframe %d eos %d\n", packet, length, pts, aEncOut->keyFrame, eos);
 
         mEosSet = eos;
         mpp_packet_deinit(&packet);
     } else {
         aEncOut->size = 0;
-        vpu_api_dbg_output("get nullptr packet, eos %d\n", mEosSet);
+        mpp_err("get nullptr packet, eos %d\n", mEosSet);
         if (mEosSet) {
             ret = -1;
         }
@@ -2045,7 +2124,6 @@ RK_S32 VpuApiLegacy::control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param)
                 out->size = length;
             }
             return 0;
-            break;
         } 
         case VPU_API_SET_PARSER_SPLIT_MODE: {
             mpicmd = MPP_DEC_SET_PARSER_SPLIT_MODE;

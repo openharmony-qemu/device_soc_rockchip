@@ -27,7 +27,7 @@ typedef void *(*node_destructor)(void *);
 struct rk_list_node;
 class rk_list {
 public:
-    rk_list(node_destructor func);
+    explicit  rk_list(node_destructor func);
     ~rk_list();
 
     // for FIFO or FILO implement
