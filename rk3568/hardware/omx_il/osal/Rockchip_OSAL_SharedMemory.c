@@ -353,10 +353,9 @@ static int drm_alloc(int fd, size_t len, size_t align, RK_U32 *handle, int flag)
     dmcb.size = dmcb.width * dmcb.bpp;
     dmcb.flags = flag;
 
-    if (handle == NULL) {
+    if (handle == NULL)
         return -1;
-    }
-        
+
     ret = drm_ioctl(fd, DRM_IOCTL_MODE_CREATE_DUMB, &dmcb);
     if (ret < 0) {
         omx_err("drm_alloc fail: ret = %d", ret);
@@ -891,10 +890,9 @@ int Rockchip_OSAL_SharedMemory_VirtToION(OMX_HANDLETYPE handle, OMX_PTR pBuffer)
     ROCKCHIP_SHAREDMEM_LIST *pSMList         = NULL;
     ROCKCHIP_SHAREDMEM_LIST *pCurrentElement = NULL;
     ROCKCHIP_SHAREDMEM_LIST *pFindElement    = NULL;
-    if (pHandle == NULL || pBuffer == NULL) {
+    if (pHandle == NULL || pBuffer == NULL)
         goto EXIT;
-    }
-        
+
     Rockchip_OSAL_MutexLock(pHandle->hSMMutex);
     pSMList = pHandle->pAllocMemory;
     if (pSMList == NULL) {

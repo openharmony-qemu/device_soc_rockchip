@@ -45,9 +45,8 @@ OMX_ERRORTYPE Rockchip_OSAL_QueueCreate(ROCKCHIP_QUEUE *queueHandle, int maxNumE
         return OMX_ErrorBadParameter;
 
     ret = Rockchip_OSAL_MutexCreate(&queue->qMutex);
-    if (ret != OMX_ErrorNone) {
+    if (ret != OMX_ErrorNone)
         return ret;
-    }
 
     queue->first = (ROCKCHIP_QElem *)Rockchip_OSAL_Malloc(sizeof(ROCKCHIP_QElem));
     if (queue->first == NULL)

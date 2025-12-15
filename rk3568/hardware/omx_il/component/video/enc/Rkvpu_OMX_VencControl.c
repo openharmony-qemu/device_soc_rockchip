@@ -451,8 +451,7 @@ OMX_ERRORTYPE Rkvpu_OMX_FlushPort(OMX_COMPONENTTYPE *pOMXComponent, OMX_S32 port
     ROCKCHIP_OMX_DATABUFFER    *pDataPortBuffer[2] = {NULL, NULL};
     ROCKCHIP_OMX_MESSAGE       *message = NULL;
     OMX_S32                semValue = 0;
-    int i = 0;
-    int maxBufferNum = 0;
+    int i = 0, maxBufferNum = 0;
     pRockchipPort = &pRockchipComponent->pRockchipPort[portIndex];
     while (Rockchip_OSAL_GetElemNum(&pRockchipPort->bufferQ) > 0) {
         Rockchip_OSAL_Get_SemaphoreCount(pRockchipComponent->pRockchipPort[portIndex].bufferSemID, &semValue);
@@ -1907,9 +1906,8 @@ OMX_ERRORTYPE Rkvpu_OMX_SetConfig(OMX_HANDLETYPE hComponent, OMX_INDEXTYPE nInde
                 ret = OMX_ErrorBadPortIndex;
                 goto EXIT;
             } else {
-                if (pAVCIntraPeriod->nIDRPeriod == (pAVCIntraPeriod->nPFrames + 1)) {
+                if (pAVCIntraPeriod->nIDRPeriod == (pAVCIntraPeriod->nPFrames + 1))
                     pVideoEnc->AVCComponent[OUTPUT_PORT_INDEX].nPFrames = pAVCIntraPeriod->nPFrames;
-                }
                 else {
                     ret = OMX_ErrorBadParameter;
                     goto EXIT;

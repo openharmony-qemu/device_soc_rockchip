@@ -65,16 +65,11 @@
     (((port)->bIsPortFlushed == OMX_TRUE) || (port->bIsPortDisabled == OMX_TRUE))
 #define CHECK_PORT_ENABLED(port) \
     (((port)->portDefinition.bEnabled) == OMX_TRUE)
-bool checkPortPopulated(const OMX_PORT_PARAM_TYPE* port) {
-    return (port->portDefinition.bPopulated == OMX_TRUE);
-}
-bool checkPortneled(const OMX_PORT_PARAM_TYPE* port) {
-    return (port->tunnelFlags & ROCKCHIP_TUNNEL_ESTABLISHED) != 0;
-}
+#define CHECK_PORT_POPULATED(port) \
+    (((port)->portDefinition.bPopulated) == OMX_TRUE)
 #define CHECK_PORT_TUNNELED(port)  \
     (((port)->tunnelFlags) & ROCKCHIP_TUNNEL_ESTABLISHED)
-bool checkPortBufferSupplier(const OMX_PORT_PARAM_TYPE* port) {
-    return (port->tunnelFlags & ROCKCHIP_TUNNEL_IS_SUP) != 0;
-}
+#define CHECK_PORT_BUFFER_SUPPLIER(port) \
+    (((port)->tunnelFlags) & ROCKCHIP_TUNNEL_IS_SUPPLIER)
 
 #endif

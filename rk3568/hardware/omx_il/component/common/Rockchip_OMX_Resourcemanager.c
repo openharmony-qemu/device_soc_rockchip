@@ -145,9 +145,8 @@ int searchLowPriority(ROCKCHIP_OMX_RM_COMPONENT_LIST *RMComp_list,
     while (pTempComp != NULL) {
         if (pTempComp->groupPriority > inComp_priority) {
             if (pCandidateComp != NULL) {
-                if (pCandidateComp->groupPriority < pTempComp->groupPriority) {
+                if (pCandidateComp->groupPriority < pTempComp->groupPriority)
                     pCandidateComp = pTempComp;
-                }
             } else {
                 pCandidateComp = pTempComp;
             }
