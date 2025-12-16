@@ -64,6 +64,7 @@ public:
     RK_S32 encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, EncoderOut_t *aEncOut);
     RK_S32 encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm);
     RK_S32 encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncOut);
+    RK_S32 getDecOutData(VpuCodecContext *ctx, DecoderOut_t *aDecOut, MppFrame &mframe);
 
     RK_S32 perform(PerformCmd cmd, RK_S32 *data);
     RK_S32 control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param);

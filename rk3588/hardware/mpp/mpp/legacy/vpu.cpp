@@ -63,14 +63,12 @@ static RK_S32 ioctl_version = 0;
 
 static RK_S32 vpu_api_set_client_type(int dev, RK_S32 client_type)
 {
-    static RK_S32 vpu_api_ioctl_version = -1;
     RK_S32 ret;
 
     if (ioctl_version > 0) {
         MppReqV1 mpp_req;
         RK_U32 vcodec_type;
         RK_U32 client_data;
-
         vcodec_type = mpp_get_vcodec_type();
 
         switch (client_type) {
@@ -95,33 +93,16 @@ static RK_S32 vpu_api_set_client_type(int dev, RK_S32 client_type)
             mpp_err_f("set client type failed ret %d errno %d\n", ret, errno);
         }
         return ret;
-    } 
-    if (vpu_api_ioctl_version < 0) {
-        ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE, client_type);
-        if (!ret) {
-            vpu_api_ioctl_version = 0;
-        } else {
-            ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE_U32, client_type);
-            if (!ret) {
-                vpu_api_ioctl_version = 1;
-            }
-        }
-
-        if (ret) {
-            mpp_err_f("can not find valid client type ioctl\n");
-        }
-        mpp_assert(ret == 0);
-    } else {
-        RK_U32 cmd = (vpu_api_ioctl_version == 0) ?
-                        (VPU_IOC_SET_CLIENT_TYPE) :
-                        (VPU_IOC_SET_CLIENT_TYPE_U32);
-
-        ret = ioctl(dev, cmd, client_type);
-    }    
+    }
+    ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE, client_type);
+    if (ret) {
+        ret = ioctl(dev, VPU_IOC_SET_CLIENT_TYPE_U32, client_type);
+    }
 
     if (ret) {
-        mpp_err_f("set client type failed ret %d errno %d\n", ret, errno);
+        mpp_err_f("can not find valid client type ioctl\n");
     }
+    mpp_assert(ret == 0);  
     return ret;
 }
 

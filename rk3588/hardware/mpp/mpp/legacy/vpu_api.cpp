@@ -264,10 +264,7 @@ void decideUseMpp(VpuCodecContext *s, RK_U32 &use_mpp)
     if (check_orign_vpu()) {
         force_mpp_mode = 1;
     }
-    if (force_original) {
-        /* force mpp mode here */
-        use_mpp = 0;
-    } else if (force_mpp_mode) {
+    if (force_mpp_mode) {
         /* force mpp mode here */
         use_mpp = 1;
     } else if (!access("/dev/mpp_service", F_OK)) {
@@ -279,31 +276,25 @@ void decideUseMpp(VpuCodecContext *s, RK_U32 &use_mpp)
             (!access("/dev/hevc-service", F_OK) || !access("/dev/hevc_service", F_OK))) {
             /* if this is a hevc request and exist hevc_service for decoding use mpp */
             use_mpp = 1;
-        } else {
-            /* otherwise use original vpuapi path */
-            use_mpp = 0;
-        }
-    } else if (s == nullptr) {
-        /* caller is original vpuapi path. Force use original vpuapi path */
-        use_mpp = 0;
-    } else {
-        if (s->videoCoding == OMX_RK_VIDEO_CodingAVC && s->codecType == CODEC_DECODER && s->width <= MAX_WIDTH &&
-            s->height <= MAX_HEIGHT && !s->extra_cfg.mpp_mode && mpp_get_soc_type() != ROCKCHIP_SOC_RK3399) {
+        } 
+    } else if (s != nullptr) {
+        if (s->videoCoding == OMX_RK_VIDEO_CodingAVC && 
+            s->codecType == CODEC_DECODER && 
+            s->width <= MAX_WIDTH &&
+            s->height <= MAX_HEIGHT && 
+            !s->extra_cfg.mpp_mode && 
+            mpp_get_soc_type() != ROCKCHIP_SOC_RK3399) {
             /* H.264 smaller than 1080p use original vpuapi library for better error process */
             // NOTE: rk3399 need better performance
             use_mpp = 0;
         } else {
             MppCtxType type = (s->codecType == CODEC_DECODER) ?
-                (MPP_CTX_DEC) :
-                (s->codecType == CODEC_ENCODER) ? (MPP_CTX_ENC) : (MPP_CTX_BUTT);
+                              (MPP_CTX_DEC) :(s->codecType == CODEC_ENCODER) ? (MPP_CTX_ENC) : (MPP_CTX_BUTT);
             MppCodingType coding = (MppCodingType)s->videoCoding;
 
             if (MPP_OK == mpp_check_support_format(type, coding)) {
                 /* If current mpp can support this format use mpp */
                 use_mpp = 1;
-            } else {
-                /* unsupport format use vpuapi library */
-                use_mpp = 0;
             }
         }
     }
@@ -339,8 +330,7 @@ RK_S32 setVpuApi(VpuCodecContext *src, VpuCodecContext *dst)
 
         src->extra_cfg.ori_vpu = 0;
         dst->extra_cfg.ori_vpu = 0;
-    }
-    else {
+    } else {
         ret = -1;
     }
     return ret;
@@ -381,7 +371,7 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
         }
         vpu_api_dbg_func("leave\n");
         return ret;
-    } 
+    }
     vpu_api_dbg_func("use mpp path\n");
     s = mpp_calloc(VpuCodecContext, 1);
     if (s) {

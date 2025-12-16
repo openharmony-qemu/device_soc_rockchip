@@ -83,7 +83,8 @@ const int SRC_VIR_HEIGHT = 1088;
 const int DST_VIR_WIDTH = 800;
 const int DST_VIR_HEIGHT = 1280;
 
-static int initVpuResources(VPUMemLinear_t *src, VPUMemLinear_t *dst, int *vpuFd) {
+static int initVpuResources(VPUMemLinear_t *src, VPUMemLinear_t *dst, int *vpuFd)
+{
     int ret = 0;
     // 分配VPU内存
     ret |= VPUMallocLinear(src, SRC_VIR_WIDTH * SRC_VIR_HEIGHT * MEMORY_ALLOCATION_MULTIPLIER);
@@ -103,7 +104,8 @@ static int initVpuResources(VPUMemLinear_t *src, VPUMemLinear_t *dst, int *vpuFd
     return 0;
 }
 
-static int readYuvFile(void *srcVirAddr) {
+static int readYuvFile(void *srcVirAddr)
+{
     FILE *fpr = fopen("/sdcard/testin.yuv", "rb");
     if (!fpr) {
         ALOGE("failed to open testin.yuv");
@@ -113,22 +115,25 @@ static int readYuvFile(void *srcVirAddr) {
     char *tmp = (char *)srcVirAddr;
     // 读取Y分量
     for (int i = 0; i < SRC_HEIGHT; i++) {
-        fread(tmp, 1, SRC_WIDTH, fpr);
-        tmp += SRC_VIR_WIDTH;
+        tmp += fread(tmp, 1, SRC_WIDTH, fpr);
+        // tmp += SRC_VIR_WIDTH;
     }
 
     // 读取UV分量
     tmp = (char *)srcVirAddr;
-    int nRead = fread(&tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT], 1, 
-          SRC_WIDTH * SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR, fpr);
+    int nRead = fread(&tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT], 1,
+                      SRC_WIDTH * SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR, fpr);
     if (nRead < 0) {
         ALOGE("fread return error,ret = %d", nRead);
     }
-    fclose(fpr);
+    if (fclose(fpr) != 0) {
+        ALOGE("fclose  error");
+    }
     return 0;
 }
 
-static int convertPlanarToSemiPlanar(void *srcVirAddr, char *tmpbuf) {
+static int convertPlanarToSemiPlanar(void *srcVirAddr, char *tmpbuf)
+{
     char *tmp = (char *)srcVirAddr;
     
     for (int i = 0; i < SRC_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR; i++) {
@@ -151,9 +156,11 @@ static int convertPlanarToSemiPlanar(void *srcVirAddr, char *tmpbuf) {
     return 0;
 }
 
-static int processVpuPP(VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd) {
+static int processVpuPP(VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd)
+{
     int ret = 0;
-    int wid_alig16, hei_alig16;
+    int wid_alig16;
+    int hei_alig16;
     ppOp::PP_OP_HANDLE hnd = nullptr;
     ppOp::PP_OPERATION opt;
 
@@ -203,14 +210,15 @@ static int processVpuPP(VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd) {
     return 0;
 }
 
-static int saveOutputYuv(void *dstVirAddr) {
+static int saveOutputYuv(void *dstVirAddr)
+{
     FILE *fpw = fopen("/data/testout.yuv", "wb+");
     if (!fpw) {
         ALOGE("failed to open testout.yuv");
         return -1;
     }
     int ret = fwrite((char *)dstVirAddr, 1,
-           DST_VIR_WIDTH * DST_VIR_HEIGHT * YUV420_TOTAL_SIZE_MULTIPLIER / YUV420_TOTAL_SIZE_DIVISOR, fpw);
+                     DST_VIR_WIDTH * DST_VIR_HEIGHT * YUV420_TOTAL_SIZE_MULTIPLIER / YUV420_TOTAL_SIZE_DIVISOR, fpw);
     if (ret < 0) {
         ALOGE("fwrite failed ret = %d", ret);
     }
@@ -218,7 +226,8 @@ static int saveOutputYuv(void *dstVirAddr) {
     return 0;
 }
 
-static void releaseAllResources(char *tmpbuf, VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd) {
+static void releaseAllResources(char *tmpbuf, VPUMemLinear_t *src, VPUMemLinear_t *dst, int vpuFd)
+{
     if (tmpbuf) free(tmpbuf);
     if (src->phy_addr) VPUFreeLinear(src);
     if (dst->phy_addr) VPUFreeLinear(dst);
@@ -226,11 +235,13 @@ static void releaseAllResources(char *tmpbuf, VPUMemLinear_t *src, VPUMemLinear_
 }
 
 // 主函数
-int main() {
+int main()
+{
     ALOGI("ppOp test start\n");
     int ret = 0;
     int vpuFd = -1;
-    VPUMemLinear_t src = {0}, dst = {0};
+    VPUMemLinear_t src = {0};
+    VPUMemLinear_t dst = {0};
     char *tmpbuf = nullptr;
     int framecnt = 0;
 

@@ -387,71 +387,30 @@ void setTsvc(MppEncRefStFrmCfg *st_ref, RK_S32 &st_cfg_cnt, RK_S32 &tid0_loop, R
         case TSVC_MAX_TID_LEVEL_1: {
             setTsvc1(st_ref, st_cfg_cnt, tid0_loop);
             break;
-        } 
+        }
         case TSVC_MAX_TID_LEVEL_2: {
             setTsvc2(st_ref, st_cfg_cnt, tid0_loop);
             break;
-        } 
+        }
         case TSVC_MAX_TID_LEVEL_3: {
             setTsvc3(st_ref, st_cfg_cnt, tid0_loop);
             break;
-        } 
+        }
         case TSVC_MAX_TID_LEVEL_4: {
             setTsvc4(st_ref, st_cfg_cnt, tid0_loop);
             break;
-        } 
+        }
         default: {
             mpp_err("invalid max temporal layer id %d\n", max_tid);
             break;
-        } 
+        }
     }
 }
 
-MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
+MPP_RET setMppRefCfg(VpuApiMlvecImpl *impl, MppEncRefStFrmCfg *st_ref, MppEncRefLtFrmCfg *lt_ref, RK_S32 st_cfg_cnt, RK_S32 lt_cfg_cnt)
 {
     MPP_RET ret = MPP_OK;
-    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
-    mpp_assert(impl);
-    mpp_assert(impl->mpp);
-    mpp_assert(impl->mpi);
 
-    MppEncRefLtFrmCfg lt_ref[MAX_TSVC_REF_FRAMES];
-    MppEncRefStFrmCfg st_ref[MAX_TSVC_REF_FRAMES];
-    RK_S32 lt_cfg_cnt = 0;
-    RK_S32 st_cfg_cnt = 0;
-    RK_S32 tid0_loop = 0;
-    RK_S32 ltr_frames = impl->st_cfg.ltr_frames;
-
-    RK_S32 sRet = memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
-    if (sRet != EOK) {
-        mlvec_dbg_func("memset_s lt_ref failed, return %d", sRet);
-    }
-    sRet = memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref));
-    if (sRet != EOK) {
-        mlvec_dbg_func("memset_s st_ref failed, return %d", sRet);
-    }
-    mlvec_dbg_func("enter ctx %p max_tid %d ltr_frames %d\n", ctx, max_tid, ltr_frames);
-
-    setTsvc(st_ref, st_cfg_cnt, tid0_loop, max_tid);
-
-    if (ltr_frames) {
-        RK_S32 i;
-
-        lt_cfg_cnt = ltr_frames;
-        mpp_assert(ltr_frames <= MPP_ENC_MAX_LT_REF_NUM);
-        for (i = 0; i < ltr_frames; i++) {
-            lt_ref[i].lt_idx = i;
-            lt_ref[i].temporal_id = TEMPORAL_ID_LAYER_0;
-            lt_ref[i].ref_mode = REF_TO_PREV_LT_REF;
-            lt_ref[i].lt_gap = 0;
-            lt_ref[i].lt_delay = tid0_loop * i;
-        }
-    }
-
-    if (lt_cfg_cnt) {
-        mpp_assert(st_cfg_cnt);
-    }
-    mlvec_dbg_flow("lt_cfg_cnt %d st_cfg_cnt %d\n", lt_cfg_cnt, st_cfg_cnt);
     if (lt_cfg_cnt || st_cfg_cnt) {
         MppEncRefCfg ref = nullptr;
 
@@ -474,6 +433,54 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
             mpp_err("impl->mpi control enc set ref cfg failed ret %d\n", ret);
         }
     }
+
+    return ret;
+}
+
+MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
+{
+    MPP_RET ret = MPP_OK;
+    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
+    mpp_assert(impl);
+    mpp_assert(impl->mpp);
+    mpp_assert(impl->mpi);
+
+    MppEncRefLtFrmCfg lt_ref[MAX_TSVC_REF_FRAMES];
+    MppEncRefStFrmCfg st_ref[MAX_TSVC_REF_FRAMES];
+    RK_S32 lt_cfg_cnt = 0;
+    RK_S32 st_cfg_cnt = 0;
+    RK_S32 tid0_loop = 0;
+    RK_S32 ltr_frames = impl->st_cfg.ltr_frames;
+
+    RK_S32 sRet = memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
+    if (sRet != EOK) {
+         mlvec_dbg_func("memset_s lt_ref failed, return %d", sRet);
+     }
+    sRet = memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref));
+    if (sRet != EOK) {
+        mlvec_dbg_func("memset_s st_ref failed, return %d", sRet);
+     }
+    mlvec_dbg_func("enter ctx %p max_tid %d ltr_frames %d\n", ctx, max_tid, ltr_frames);
+
+    setTsvc(st_ref, st_cfg_cnt, tid0_loop, max_tid);
+
+    if (ltr_frames) {
+        lt_cfg_cnt = ltr_frames;
+        mpp_assert(ltr_frames <= MPP_ENC_MAX_LT_REF_NUM);
+        for (RK_S32 i = 0; i < ltr_frames; i++) {
+            lt_ref[i].lt_idx = i;
+            lt_ref[i].temporal_id = TEMPORAL_ID_LAYER_0;
+            lt_ref[i].ref_mode = REF_TO_PREV_LT_REF;
+            lt_ref[i].lt_gap = 0;
+            lt_ref[i].lt_delay = tid0_loop * i;
+        }
+    }
+
+    if (lt_cfg_cnt) {
+        mpp_assert(st_cfg_cnt);
+    }
+    mlvec_dbg_flow("lt_cfg_cnt %d st_cfg_cnt %d\n", lt_cfg_cnt, st_cfg_cnt);
+    ret = setMppRefCfg(impl, st_ref, lt_ref, st_cfg_cnt, lt_cfg_cnt);
 
     mlvec_dbg_func("leave ctx %p ret %d\n", ctx, ret);
 

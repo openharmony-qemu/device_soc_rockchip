@@ -186,19 +186,19 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
         case GOP_MODE_TSVC4: {
             genltRefTsvc4(lt_ref, st_ref, &lt_cnt, &st_cnt);
             break;
-        } 
+        }
         case GOP_MODE_TSVC3: {
             genltRefTsvc3(lt_ref, st_ref, &lt_cnt, &st_cnt);
             break;
-        } 
+        }
         case GOP_MODE_TSVC2: {
             genltRefTsvc2(lt_ref, st_ref, &lt_cnt, &st_cnt);
             break;
-        } 
+        }
         default: {
             mpp_err_f("unsupport gop mode %d\n", gop_mode);
             break;
-        } 
+        }
     }
 
     if (lt_cnt || st_cnt) {
@@ -282,7 +282,8 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     return ret;
 }
 
-void setEncParam(MpiEncTestData *p, MpiEncTestArgs *cmd) {
+void setEncParam(MpiEncTestData *p, MpiEncTestArgs *cmd)
+{
     // get paramter from cmd
     p->width = cmd->width;
     p->height = cmd->height;
@@ -320,7 +321,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
                 MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
             break;
-        } 
+        }
         case MPP_FMT_YUV422_YUYV:
         case MPP_FMT_YUV422_YVYU:
         case MPP_FMT_YUV422_UYVY:
@@ -336,12 +337,12 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
                 MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * BPP_RGB_16BIT_FORMATS;
             break;
-        } 
+        }
         default: {
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
                 MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * BPP_DEFAULT_FORMATS;
             break;
-        } 
+        }
     }
     *data = p;
     return ret;
@@ -433,7 +434,7 @@ void setCfgBpsByRcMode(MpiEncTestData *p, MppEncCfg *cfg)
         case MPP_ENC_RC_MODE_FIXQP: {
             /* do not setup bitrate on FIXQP mode */
             break;
-        } 
+        }
         case MPP_ENC_RC_MODE_CBR: {
             /* CBR mode has narrow bound */
             mpp_enc_cfg_set_s32(*cfg, "rc:bps_max",
@@ -441,7 +442,7 @@ void setCfgBpsByRcMode(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "rc:bps_min",
                 p->bps_min ? p->bps_min : p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
             break;
-        } 
+        }
         case MPP_ENC_RC_MODE_VBR:
         case MPP_ENC_RC_MODE_AVBR: {
             /* VBR mode has wide bound */
@@ -450,7 +451,7 @@ void setCfgBpsByRcMode(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "rc:bps_min",
                 p->bps_min ? p->bps_min : p->bps * BPS_MIN_VBR_FACTOR_NUMERATOR / BPS_MIN_VBR_FACTOR_DENOMINATOR);
             break;
-        } 
+        }
         default: {
             /* default use CBR mode */
             mpp_enc_cfg_set_s32(*cfg, "rc:bps_max",
@@ -458,7 +459,7 @@ void setCfgBpsByRcMode(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "rc:bps_min",
                 p->bps_min ? p->bps_min : p->bps * BPS_MIN_CBR_FACTOR_NUMERATOR / BPS_MIN_CBR_FACTOR_DENOMINATOR);
             break;
-        } 
+        }
     }
 }
 
@@ -473,7 +474,7 @@ void setCfgQpByRcMode(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_min_i", FIX_QP_VALUE);
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_ip", RC_QP_IP);
             break;
-        } 
+        }
         case MPP_ENC_RC_MODE_CBR:
         case MPP_ENC_RC_MODE_VBR:
         case MPP_ENC_RC_MODE_AVBR: {
@@ -484,11 +485,11 @@ void setCfgQpByRcMode(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_min_i", RC_QP_MIN_I);
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_ip", RC_QP_IP);
             break;
-        } 
+        }
         default: {
             mpp_err_f("unsupport encoder rc mode %d\n", p->rc_mode);
             break;
-        } 
+        }
     }
 }
 
@@ -500,7 +501,7 @@ void setCfgQpByType(MpiEncTestData *p, MppEncCfg *cfg)
         case MPP_VIDEO_CodingHEVC: {
             setCfgQpByRcMode(p, *cfg);
             break;
-        } 
+        }
         case MPP_VIDEO_CodingVP8: {
             /* vp8 only setup base qp range */
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_init", VP8_QP_INIT);
@@ -510,17 +511,17 @@ void setCfgQpByType(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_min_i", VP8_QP_MIN_I);
             mpp_enc_cfg_set_s32(*cfg, "rc:qp_ip", VP8_QP_IP);
             break;
-        } 
+        }
         case MPP_VIDEO_CodingMJPEG: {
             /* jpeg use special codec config to control qtable */
             mpp_enc_cfg_set_s32(*cfg, "jpeg:q_factor", JPEG_Q_FACTOR);
             mpp_enc_cfg_set_s32(*cfg, "jpeg:qf_max", JPEG_QF_MAX);
             mpp_enc_cfg_set_s32(*cfg, "jpeg:qf_min", JPEG_QF_MIN);
             break;
-        } 
+        }
         default: {
             break;
-        } 
+        }
     }
 }
 
@@ -548,16 +549,16 @@ void setCfgCodecByType(MpiEncTestData *p, MppEncCfg *cfg)
             mpp_enc_cfg_set_s32(*cfg, "h264:cabac_idc", H264_CABAC_IDC);
             mpp_enc_cfg_set_s32(*cfg, "h264:trans8x8", H264_TRANS8x8_ENABLED);
             break;
-        } 
+        }
         case MPP_VIDEO_CodingHEVC:
         case MPP_VIDEO_CodingMJPEG:
         case MPP_VIDEO_CodingVP8: {
             break;
-        } 
+        }
         default: {
             mpp_err_f("unsupport encoder coding type %d\n", p->type);
             break;
-        } 
+        }
     }
 }
 

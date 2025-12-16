@@ -1488,7 +1488,7 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent, OMX_IN OM
             ret = OMX_ErrorNone;
 
             break;
-        } 
+        }
 #endif
 #ifdef USE_ANB
         case OMX_IndexParamGetAndroidNativeBufferUsage:

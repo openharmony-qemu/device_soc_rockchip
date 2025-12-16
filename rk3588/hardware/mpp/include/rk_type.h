@@ -91,7 +91,8 @@ typedef enum {
 #define rk_failure              (-1)
 
 #define rk_void                 void
-inline void rk_unused(const void* x) {
+inline void rk_unused(const void* x)
+{
     (void)(x);
 }
 

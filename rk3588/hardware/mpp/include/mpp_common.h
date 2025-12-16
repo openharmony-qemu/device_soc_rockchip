@@ -288,9 +288,13 @@ static inline RK_S32 mpp_ceil_log2(RK_S32 x)
 
 static inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
 {
-    if      (a < amin) return amin;
-    else if (a > amax) return amax;
-    else               return a;
+    if (a < amin) {
+        return amin;
+    } else if (a > amax) {
+        return amax;
+    } else {
+        return a;
+    }
 }
 
 static inline RK_U32 mpp_is_32bit()

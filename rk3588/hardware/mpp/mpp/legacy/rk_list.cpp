@@ -395,7 +395,8 @@ void *rk_list_test_loop_0(void *pdata)
 
 int rk_list_test_0()
 {
-    int i=0, err = 0;
+    int i = 0;
+    int err = 0;
     printf("rk_list test 0 FIFO start\n");
 
     rk_list *list_0 = new rk_list((node_destructor)VPUFreeLinear);
@@ -439,7 +440,9 @@ RK_LIST_TEST_FUNC test_func[TOTAL_RK_LIST_TEST_COUNT] = {
 
 int main(int argc, char *argv[])
 {
-    int i=0, start = 0, end = 0;
+    int i = 0;
+    int start = 0;
+    int end = 0;
     const int DEFAULT_INCREMENT = 1;
     const int START_ARG_INDEX = 1;
     const int END_ARG_INDEX = 2;
