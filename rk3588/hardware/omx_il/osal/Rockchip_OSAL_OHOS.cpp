@@ -50,6 +50,7 @@
 #include "Rockchip_OSAL_OHOS.h"
 #include "VideoExt.h"
 #include "IVCommonExt.h"
+#include "securec.h"
 
 enum {
     kFenceTimeoutMs = 1000
@@ -81,7 +82,7 @@ OMX_U32 Get_Video_HorAlign(OMX_VIDEO_CODINGTYPE codecId, OMX_U32 width, OMX_U32 
     } else {
         if (codecProfile == OMX_VIDEO_AVCProfileHigh10 && codecId == OMX_VIDEO_CodingAVC) {
             stride = ((width * 10 / 8 + 15) & (~15)); // 10:byte alignment, 8:byte alignment, 15:byte alignment
-        } else{
+        } else {
             stride = ((width + 15) & (~15)); // 15:byte alignment
         }
     }
@@ -618,6 +619,9 @@ OMX_ERRORTYPE Rockchip_OSAL_PowerControl(
     paraLen = sprintf_s(para, sizeof(para), "%d,width=%d,height=%d,ishevc=%d,videoFramerate=%d,streamBitrate=%d",
         mFlag, width, height, mHevc, frameRate, bitDepth);
     omx_info(" write: %s", para);
+    if (paraLen < 0) {
+        omx_error("sprintf_s failed to format parameters");
+    }
     if (pVideoDec->power_fd != -1) {
         write(pVideoDec->power_fd, para, paraLen);
         if (!mFlag) {
@@ -888,7 +892,7 @@ OMX_U32 Rockchip_OSAL_CalculateTotalRefFrames(
                 nRefFramesNum = 6;
             }
             break;
-        } 
+        }
         case CODEC_OMX_VIDEO_CodingVP9: {
             nRefFramesNum = 4096 * 2176 * 4 / (width * height);/* 4096:Resolution size,
                                                                    2176:Resolution size, 4:frame number */
@@ -898,11 +902,11 @@ OMX_U32 Rockchip_OSAL_CalculateTotalRefFrames(
                 nRefFramesNum = 4; // 4:frame number
             }
             break;
-        } 
+        }
         default: {
             nRefFramesNum = 8;
             break;
-        } 
+        }
     }
 
     /*

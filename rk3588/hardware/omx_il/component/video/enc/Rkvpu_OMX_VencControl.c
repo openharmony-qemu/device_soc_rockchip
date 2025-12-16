@@ -1910,8 +1910,7 @@ OMX_ERRORTYPE Rkvpu_OMX_SetConfig(OMX_HANDLETYPE hComponent, OMX_INDEXTYPE nInde
             } else {
                 if (pAVCIntraPeriod->nIDRPeriod == (pAVCIntraPeriod->nPFrames + 1)) {
                     pVideoEnc->AVCComponent[OUTPUT_PORT_INDEX].nPFrames = pAVCIntraPeriod->nPFrames;
-                }
-                else {
+                } else {
                     ret = OMX_ErrorBadParameter;
                     goto EXIT;
                 }

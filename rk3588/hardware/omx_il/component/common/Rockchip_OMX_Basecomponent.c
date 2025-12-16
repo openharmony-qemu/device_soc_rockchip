@@ -947,8 +947,9 @@ OMX_ERRORTYPE Rockchip_OMX_SendCommand(
             omx_trace("Command: OMX_CommandFlush");
             pRockchipComponent->nRkFlags |= RK_VPU_NEED_FLUSH_ON_SEEK;
             ret = Rockchip_SetPortFlush(pRockchipComponent, nParam);
-            if (ret != OMX_ErrorNone)
+            if (ret != OMX_ErrorNone) {
                 goto EXIT;
+            }
             break;
         case OMX_CommandPortDisable :
             omx_trace("Command: OMX_CommandPortDisable");

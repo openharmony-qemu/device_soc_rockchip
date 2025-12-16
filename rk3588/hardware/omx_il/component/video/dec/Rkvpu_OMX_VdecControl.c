@@ -1415,7 +1415,7 @@ OMX_ERRORTYPE Rkvpu_OMX_GetParameter(OMX_IN OMX_HANDLETYPE hComponent, OMX_IN OM
         }
         ret = OMX_ErrorNone;
             break;
-        } 
+        }
     case OMX_IndexParamGetBufferHandleUsage: {
         struct GetBufferHandleUsageParams *usage = (struct GetBufferHandleUsageParams *)ComponentParameterStructure;
         if (usage == NULL) {
