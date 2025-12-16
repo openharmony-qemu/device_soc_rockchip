@@ -64,7 +64,10 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
 
             size_t copySize = (*pLen < defaultBufferSize) ? *pLen : defaultBufferSize;
             if (copySize > 0) {
-                memcpy_s(newBuffer, *ppLine, copySize);
+                int32_t ret = memcpy_s(newBuffer, copySize, *ppLine, copySize);
+                if (ret != EOK) {
+                    omx_info("%{public}s: copy output outBuffer failed, error code: %{public}d", __func__, ret);
+                }
             }
 
             free(*ppLine);
@@ -125,7 +128,10 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
             }
 
             if (readByte > 0) {
-                memcpy_s(newBuffer, *ppLine, readByte);
+                int32_t ret = memcpy_s(newBuffer, readByte, *ppLine, readByte);
+                if (ret != EOK) {
+                    omx_info("%{public}s: copy output outBuffer failed, error code: %{public}d", __func__, ret);
+                }
             }
 
             free(*ppLine);

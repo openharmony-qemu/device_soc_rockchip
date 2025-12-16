@@ -953,8 +953,9 @@ OMX_ERRORTYPE Rockchip_OMX_SendCommand(
         case OMX_CommandPortDisable :
             omx_trace("Command: OMX_CommandPortDisable");
             ret = Rockchip_SetPortDisable(pRockchipComponent, nParam);
-            if (ret != OMX_ErrorNone)
+            if (ret != OMX_ErrorNone) {
                 goto EXIT;
+            }
             break;
         case OMX_CommandPortEnable :
             omx_trace("Command: OMX_CommandPortEnable");
