@@ -20,7 +20,10 @@
 #include <stdint.h>
 #include "rk_type.h"
 
-#define FOURCC_META(a, b, c, d) (((RK_U32)(a) << 24) | ((RK_U32)(b) << 16) | ((RK_U32)(c) << 8) | ((RK_U32)(d) << 0))
+constexpr RK_U32 FOURCC_META(RK_U8 a, RK_U8 b, RK_U8 c, RK_U8 d)
+{
+    return (((RK_U32)(a) << 24) | ((RK_U32)(b) << 16) | ((RK_U32)(c) << 8) | ((RK_U32)(d) << 0));
+}
 
 /*
  * Mpp Metadata definition

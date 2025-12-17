@@ -49,7 +49,7 @@ MPP_RET vpu_api_mlvec_init(VpuApiMlvec *ctx)
 
     mlvec_dbg_func("enter %p\n", ctx);
 
-    VpuApiMlvecImpl *impl = mpp_calloc(VpuApiMlvecImpl, 1);
+    VpuApiMlvecImpl *impl = (VpuApiMlvecImpl*)mpp_osal_malloc(__FUNCTION__, sizeof(VpuApiMlvecImpl));
     if (impl == nullptr) {
         mpp_err_f("failed to create MLVEC context\n");
     }
@@ -66,7 +66,7 @@ MPP_RET vpu_api_mlvec_init(VpuApiMlvec *ctx)
 MPP_RET vpu_api_mlvec_deinit(VpuApiMlvec ctx)
 {
     mlvec_dbg_func("enter %p\n", ctx);
-    MPP_FREE(ctx);
+    mpp_osal_free(__FUNCTION__, ctx);
     mlvec_dbg_func("leave %p\n", ctx);
     return MPP_OK;
 }

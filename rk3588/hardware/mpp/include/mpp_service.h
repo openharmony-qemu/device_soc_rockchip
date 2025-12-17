@@ -26,9 +26,15 @@
 #define MAX_REQ_NUM                         16
 
 #if __SIZEOF_POINTER__ == 4
-#define REQ_DATA_PTR(ptr) ((RK_U32)(ptr))
+inline RK_U32 REQ_DATA_PTR(void* ptr)
+{
+    return reinterpret_cast<RK_U32>(ptr);
+}
 #elif __SIZEOF_POINTER__ == 8
-#define REQ_DATA_PTR(ptr) ((RK_U64)(ptr))
+inline RK_U64 REQ_DATA_PTR(void* ptr)
+{
+    return reinterpret_cast<RK_U64>(ptr);
+}
 #endif
 
 /* define flags for mpp_request */

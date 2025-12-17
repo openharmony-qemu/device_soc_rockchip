@@ -366,7 +366,7 @@ static uint32_t GetMppFrameBufferSize(RKHdiBaseComponent *pBaseComponent)
 static uint32_t GetMppFrameHeaderSize(RKHdiBaseComponent *pBaseComponent)
 {
     uint32_t headerSize = 0;
-    if (MPP_FRAME_FMT_IS_FBC(pBaseComponent->fmt)) {
+    if (pBaseComponent->fmt & MPP_FRAME_FBC_MASK) {
         headerSize = MPP_ALIGN(MPP_ALIGN(pBaseComponent->setup.width, MPP_ALIGN_STRIDE_WITH_SIXTEEN)
             * MPP_ALIGN(pBaseComponent->setup.height, MPP_ALIGN_STRIDE_WITH_SIXTEEN)
             / MPP_ALIGN_DIVISOR_WITH_SIXTEEN, SZ_4K);
@@ -561,7 +561,6 @@ int32_t SetEncCfg(RKHdiBaseComponent *pBaseComponent)
     pBaseComponent->horStride = GetStrideByWidth(setup->width, pBaseComponent->fmt);
     pBaseComponent->verStride = setup->height;
     if (pBaseComponent->horStride == 0 || pBaseComponent->verStride == 0) {
-        HDF_LOGE("%{public}s: size or stride incorrect!", __func__);
         return HDF_FAILURE;
     }
     mppApi->HdiMppEncCfgSetS32(pBaseComponent->cfg, "prep:hor_stride", pBaseComponent->horStride);

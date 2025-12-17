@@ -21,27 +21,8 @@
 
 static void *mLibHandle = nullptr;
 static pthread_mutex_t g_Mutex = PTHREAD_MUTEX_INITIALIZER;
-void GetMppAPI(RKMppApi *pMppApi)
+void GetPacketApi(RKMppApi *pMppApi)
 {
-    pthread_mutex_lock(&g_Mutex);
-    if (mLibHandle == nullptr) {
-        mLibHandle = dlopen("librockchip_mpp.z.so", RTLD_NOW);
-    }
-    pthread_mutex_unlock(&g_Mutex);
-    if (mLibHandle == nullptr) {
-        HDF_LOGE("jkf open no\n");
-        return;
-    }
-    HDF_LOGE("jkf open yes\n");
-    pMppApi->HdiMppCreate = (hdiMppCreate)dlsym(mLibHandle, "mpp_create");
-    pMppApi->HdiMppInit = (hdiMppInit)dlsym(mLibHandle, "mpp_init");
-    pMppApi->HdiMppStart = (hdiMppStart)dlsym(mLibHandle, "mpp_start");
-    pMppApi->HdiMppStop = (hdiMppStop)dlsym(mLibHandle, "mpp_stop");
-    pMppApi->HdiMppDestroy = (hdiMppDestroy)dlsym(mLibHandle, "mpp_destroy");
-    pMppApi->HdiMppCheckSupportFormat = (hdiMppCheckSupportFormat)dlsym(mLibHandle, "mpp_check_support_format");
-    pMppApi->HdiMppShowSupportFormat = (hdiMppShowSupportFormat)dlsym(mLibHandle, "mpp_show_support_format");
-    pMppApi->HdiMppShowColorFormat = (hdiMppShowColorFormat)dlsym(mLibHandle, "mpp_show_color_format");
-
     pMppApi->HdiMppPacketNew = (hdiMppPacketNew)dlsym(mLibHandle, "mpp_packet_new");
     pMppApi->HdiMppPacketInit = (hdiMppPacketInit)dlsym(mLibHandle, "mpp_packet_init");
     pMppApi->HdiMppPacketInitWithBuffer = (hdiMppPacketInitWithBuffer)dlsym(mLibHandle, "mpp_packet_init_with_buffer");
@@ -60,7 +41,10 @@ void GetMppAPI(RKMppApi *pMppApi)
     pMppApi->HdiMppPacketIsPartition = (hdiMppPacketIsPartition)dlsym(mLibHandle, "mpp_packet_is_partition");
     pMppApi->HdiMppPacketIsEoi = (hdiMppPacketIsEoi)dlsym(mLibHandle, "mpp_packet_is_eoi");
     pMppApi->HdiMppMetaSetPacket = (hdiMppMetaSetPacket)dlsym(mLibHandle, "mpp_meta_set_packet");
+}
 
+void GetFrameApi(RKMppApi *pMppApi)
+{
     pMppApi->HdiMppFrameInit = (hdiMppFrameInit)dlsym(mLibHandle, "mpp_frame_init");
     pMppApi->HdiMppFrameDeinit = (hdiMppFrameDeinit)dlsym(mLibHandle, "mpp_frame_deinit");
     pMppApi->HdiMppFrameGetNext = (hdiMppFrameGetNext)dlsym(mLibHandle, "mpp_frame_get_next");
@@ -83,7 +67,10 @@ void GetMppAPI(RKMppApi *pMppApi)
     pMppApi->HdiMppFrameSetHorStride = (hdiMppFrameSetHorStride)dlsym(mLibHandle, "mpp_frame_set_hor_stride");
     pMppApi->HdiMppFrameSetVerStride = (hdiMppFrameSetVerStride)dlsym(mLibHandle, "mpp_frame_set_ver_stride");
     pMppApi->HdiMppFrameGetMeta = (hdiMppFrameGetMeta)dlsym(mLibHandle, "mpp_frame_get_meta");
+}
 
+void GetConfigApi(RKMppApi *pMppApi)
+{
     pMppApi->HdiMppDecCfgInit = (hdiMppDecCfgInit)dlsym(mLibHandle, "mpp_dec_cfg_init");
     pMppApi->HdiMppDecCfgDeinit = (hdiMppDecCfgDeinit)dlsym(mLibHandle, "mpp_dec_cfg_deinit");
     pMppApi->HdiMppDecCfgSetU32 = (hdiMppDecCfgSetU32)dlsym(mLibHandle, "mpp_dec_cfg_set_u32");
@@ -95,9 +82,10 @@ void GetMppAPI(RKMppApi *pMppApi)
     pMppApi->HdiMppEncRefCfgInit = (hdiMppEncRefCfgInit)dlsym(mLibHandle, "mpp_enc_ref_cfg_init");
     pMppApi->HdiMppEncRefCfgDeinit = (hdiMppEncRefCfgDeinit)dlsym(mLibHandle, "mpp_enc_ref_cfg_deinit");
     pMppApi->HdiMppEncGenRefCfg = (hdiMppEncGenRefCfg)dlsym(mLibHandle, "mpi_enc_gen_ref_cfg");
-    pMppApi->HdiMppEncGenSmartGopRefCfg =
-        (hdiMppEncGenSmartGopRefCfg)dlsym(mLibHandle, "mpi_enc_gen_smart_gop_ref_cfg");
+}
 
+void GetBufferGroupApi(RKMppApi *pMppApi)
+{
     pMppApi->HdiMppBufferGroupGet = (hdiMppBufferGroupGet)dlsym(mLibHandle, "mpp_buffer_group_get");
     pMppApi->HdiMppBufferGroupPut = (hdiMppBufferGroupPut)dlsym(mLibHandle, "mpp_buffer_group_put");
     pMppApi->HdiMppBufferGroupClear = (hdiMppBufferGroupClear)dlsym(mLibHandle, "mpp_buffer_group_clear");
@@ -110,11 +98,10 @@ void GetMppAPI(RKMppApi *pMppApi)
         (hdiMppBufferGetPtrWithCaller)dlsym(mLibHandle, "mpp_buffer_get_ptr_with_caller");
     pMppApi->HdiMppBufferGroupUsage = (hdiMppBufferGroupUsage)dlsym(mLibHandle, "mpp_buffer_group_usage");
     pMppApi->HdiMppBufferPutWithCaller = (hdiMppBufferPutWithCaller)dlsym(mLibHandle, "mpp_buffer_put_with_caller");
+}
 
-    pMppApi->HdiMppTaskMetaGetPacket = (hdiMppTaskMetaGetPacket)dlsym(mLibHandle, "mpp_task_meta_get_packet");
-
-    pMppApi->HdiMppEnvGetU32 = (hdiMppEnvGetU32)dlsym(mLibHandle, "mpp_env_get_u32");
-
+void GetHdimppFunc(RKMppApi *pMppApi)
+{
     pMppApi->Hdimpp_get_vcodec_dev_name = (hdimpp_get_vcodec_dev_name)dlsym(mLibHandle, "mpp_get_vcodec_dev_name");
     pMppApi->Hdimpp_get_ioctl_version = (hdimpp_get_ioctl_version)dlsym(mLibHandle, "mpp_get_ioctl_version");
     pMppApi->Hdimpp_get_vcodec_type = (hdimpp_get_vcodec_type)dlsym(mLibHandle, "mpp_get_vcodec_type");
@@ -157,6 +144,34 @@ void GetMppAPI(RKMppApi *pMppApi)
     pMppApi->Hdimpp_frame_get_pts = (hdimpp_frame_get_pts)dlsym(mLibHandle, "mpp_frame_get_pts");
     pMppApi->Hdimpp_buffer_import_with_tag =
         (hdimpp_buffer_import_with_tag)dlsym(mLibHandle, "mpp_buffer_import_with_tag");
+}
+
+void GetMppAPI(RKMppApi *pMppApi)
+{
+    pthread_mutex_lock(&g_Mutex);
+    if (mLibHandle == nullptr) {
+        mLibHandle = dlopen("librockchip_mpp.z.so", RTLD_NOW);
+    }
+    pthread_mutex_unlock(&g_Mutex);
+    if (mLibHandle == nullptr) {
+        HDF_LOGE("jkf open no\n");
+        return;
+    }
+    HDF_LOGE("jkf open yes\n");
+    pMppApi->HdiMppCreate = (hdiMppCreate)dlsym(mLibHandle, "mpp_create");
+    pMppApi->HdiMppInit = (hdiMppInit)dlsym(mLibHandle, "mpp_init");
+    pMppApi->HdiMppStart = (hdiMppStart)dlsym(mLibHandle, "mpp_start");
+    pMppApi->HdiMppStop = (hdiMppStop)dlsym(mLibHandle, "mpp_stop");
+    pMppApi->HdiMppDestroy = (hdiMppDestroy)dlsym(mLibHandle, "mpp_destroy");
+    pMppApi->HdiMppCheckSupportFormat = (hdiMppCheckSupportFormat)dlsym(mLibHandle, "mpp_check_support_format");
+    pMppApi->HdiMppShowSupportFormat = (hdiMppShowSupportFormat)dlsym(mLibHandle, "mpp_show_support_format");
+    pMppApi->HdiMppShowColorFormat = (hdiMppShowColorFormat)dlsym(mLibHandle, "mpp_show_color_format");
+    GetPacketApi(pMppApi);
+    GetFrameApi(pMppApi);
+    GetConfigApi(pMppApi);
+    GetBufferGroupApi(pMppApi);
+    pMppApi->HdiMppEnvGetU32 = (hdiMppEnvGetU32)dlsym(mLibHandle, "mpp_env_get_u32");
+    GetHdimppFunc(pMppApi);
 }
 
 void ReleaseMppAPI()

@@ -88,7 +88,6 @@ int32_t CodecJpegDecoder::DeCode(BufferHandle *buffer, BufferHandle *outBuffer, 
 
 MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, BufferHandle* buffer, BufferHandle *outHandle)
 {
-    CODEC_LOGI("enter");
     MppBuffer pktBuf = nullptr;
     MppBuffer frmBuf = nullptr;
     OHOS::CodecScopeGuard scope([&] {

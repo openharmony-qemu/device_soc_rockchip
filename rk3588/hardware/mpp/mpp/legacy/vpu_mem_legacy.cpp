@@ -61,7 +61,7 @@ static void *get_free_memory_vpumem(vpu_display_mem_pool *p)
 {
     MPP_RET ret = MPP_OK;
     MppBuffer buffer = NULL;
-    VPUMemLinear_t *dmabuf = mpp_calloc(VPUMemLinear_t, 1);
+    VPUMemLinear_t *dmabuf = (VPUMemLinear_t*)mpp_osal_malloc(__FUNCTION__, sizeof(VPUMemLinear_t));
     vpu_display_mem_pool_impl *p_mempool = (vpu_display_mem_pool_impl *)p;
     if (dmabuf == NULL) {
         return nullptr;
@@ -69,7 +69,7 @@ static void *get_free_memory_vpumem(vpu_display_mem_pool *p)
     vpu_mem_dbg_func("in  pool %p\n", p);
     ret = mpp_buffer_get(p_mempool->group, &buffer, p_mempool->size);
     if (MPP_OK != ret) {
-        mpp_free(dmabuf);
+        mpp_osal_free(__FUNCTION__, dmabuf);
         return nullptr;
     }
     dmabuf->phy_addr = (RK_U32)mpp_buffer_get_fd(buffer);
@@ -128,7 +128,8 @@ static RK_S32 reset_vpu_mem_pool(vpu_display_mem_pool *p)
 
 vpu_display_mem_pool *open_vpu_memory_pool()
 {
-    vpu_display_mem_pool_impl *p_mempool = mpp_calloc(vpu_display_mem_pool_impl, 1);
+    void *p = mpp_osal_malloc(__FUNCTION__, sizeof(vpu_display_mem_pool_impl));
+    vpu_display_mem_pool_impl *p_mempool = (vpu_display_mem_pool_impl*)p;
 
     mpp_env_get_u32("vpu_mem_debug", &vpu_mem_debug, 0);
     vpu_mem_dbg_func("in  pool %p\n", p_mempool);
@@ -159,13 +160,14 @@ void close_vpu_memory_pool(vpu_display_mem_pool *p)
 
     vpu_mem_dbg_func("pool %p group %p\n", p_mempool, p_mempool->group);
     mpp_buffer_group_put(p_mempool->group);
-    mpp_free(p_mempool);
+    mpp_osal_free(__FUNCTION__, p_mempool);
     return;
 }
 
 int create_vpu_memory_pool_allocator(vpu_display_mem_pool **ipool, int num, int size)
 {
-    vpu_display_mem_pool_impl *p_mempool = mpp_calloc(vpu_display_mem_pool_impl, 1);
+    void *p = mpp_osal_malloc(__FUNCTION__, sizeof(vpu_display_mem_pool_impl));
+    vpu_display_mem_pool_impl *p_mempool = (vpu_display_mem_pool_impl*)p;
     const int MIN_BUFFER_COUNT = 4;
     mpp_env_get_u32("vpu_mem_debug", &vpu_mem_debug, 0);
     vpu_mem_dbg_func("in  pool %p num %d size %d\n", p_mempool, num, size);
@@ -204,7 +206,7 @@ void release_vpu_memory_pool_allocator(vpu_display_mem_pool *ipool)
     }
 
     vpu_mem_dbg_func("free %p\n", p_mempool);
-    mpp_free(p_mempool);
+    mpp_osal_free(__FUNCTION__, p_mempool);
     return;
 }
 
@@ -249,16 +251,16 @@ RK_S32 VPUMallocLinearFromRender(VPUMemLinear_t *p, RK_U32 size, void *ctx)
     }
     if (dma_buf != nullptr) {
         if (dma_buf->size < size) {
-            mpp_free(dma_buf);
+            mpp_osal_free(__FUNCTION__, dma_buf);
             return -1;
         }
         ret = memcpy_s(p, sizeof(VPUMemLinear_t), dma_buf, sizeof(VPUMemLinear_t));
         if (ret != EOK) {
-            mpp_free(dma_buf);
+            mpp_osal_free(__FUNCTION__, dma_buf);
             vpu_mem_dbg_func("copy idma_buf failed, error code: %{public}d", ret);
             return -1;
         }
-        mpp_free(dma_buf);
+        mpp_osal_free(__FUNCTION__, dma_buf);
         return 0;
     }
     return -1;

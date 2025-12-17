@@ -307,7 +307,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         return MPP_ERR_NULL_PTR;
     }
 
-    p = mpp_calloc(MpiEncTestData, 1);
+    p = (MpiEncTestData*)mpp_osal_malloc(__FUNCTION__, sizeof(MpiEncTestData));
     if (!p) {
         mpp_err_f("create MpiEncTestData failed\n");
         *data = p;
@@ -358,7 +358,7 @@ static MPP_RET test_ctx_deinit(MpiEncTestData **data)
     }
     p = *data;
     if (p) {
-        MPP_FREE(p);
+        mpp_osal_free(__FUNCTION__, p);
         *data = NULL;
     }
     return MPP_OK;
@@ -499,7 +499,7 @@ void setCfgQpByType(MpiEncTestData *p, MppEncCfg *cfg)
     switch (p->type) {
         case MPP_VIDEO_CodingAVC:
         case MPP_VIDEO_CodingHEVC: {
-            setCfgQpByRcMode(p, *cfg);
+            setCfgQpByRcMode(p, cfg);
             break;
         }
         case MPP_VIDEO_CodingVP8: {
@@ -903,6 +903,10 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
     }
 
     void *ptr = mpp_packet_get_pos(packet);
+    if (ptr == nullptr) {
+        mpp_err("mpp_packet_get_pos failed\n");
+        return MPP_NOK;
+    }
     size_t len = mpp_packet_get_length(packet);
 
     if (*buf_size < len) {

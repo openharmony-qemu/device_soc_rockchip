@@ -621,7 +621,7 @@ OMX_ERRORTYPE Rockchip_OSAL_PowerControl(
                     mFlag, width, height, mHevc, frameRate, bitDepth);
     omx_info(" write: %s", para);
     if (paraLen < 0) {
-        omx_error("sprintf_s failed to format parameters");
+        omx_err("sprintf_s failed to format parameters");
     }
     if (pVideoDec->power_fd != -1) {
         write(pVideoDec->power_fd, para, paraLen);

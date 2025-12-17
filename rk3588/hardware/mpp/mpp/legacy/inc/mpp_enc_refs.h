@@ -76,8 +76,6 @@ MPP_RET mpp_enc_refs_dryrun(MppEncRefs refs);
 MPP_RET mpp_enc_refs_stash(MppEncRefs refs);
 MPP_RET mpp_enc_refs_rollback(MppEncRefs refs);
 
-#define dump_frm(frm) _dump_frm(frm, __FUNCTION__, __LINE__)
-
 void _dump_frm(EncFrmStatus *frm, const char *func, RK_S32 line);
 
 #ifdef __cplusplus

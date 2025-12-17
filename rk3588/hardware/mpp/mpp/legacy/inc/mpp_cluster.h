@@ -42,8 +42,6 @@ MPP_RET mpp_node_set_func(MppNode node, TaskProc proc, void *param);
 MPP_RET mpp_node_attach(MppNode node, MppClientType type);
 MPP_RET mpp_node_detach(MppNode node);
 
-#define mpp_node_trigger(node, trigger) mpp_node_trigger_f(__FUNCTION__, node, trigger)
-
 MPP_RET mpp_node_trigger_f(const char *caller, MppNode node, RK_S32 trigger);
 
 #ifdef __cplusplus

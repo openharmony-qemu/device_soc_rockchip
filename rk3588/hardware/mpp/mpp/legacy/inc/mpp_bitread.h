@@ -27,99 +27,6 @@
 
 #define BITREAD_ERR bitread_error
 
-#define READ_ONEBIT(bitctx, out)                           \
-    do {                                                   \
-        RK_S32 _out;                                       \
-        (bitctx)->ret = mpp_read_bits((bitctx), 1, &_out); \
-        if (!(bitctx)->ret) {                              \
-            *(out) = _out;                                 \
-        } else {                                           \
-            goto BITREAD_ERR;                              \
-        }                                                  \
-    } while (0)
-
-#define READ_BITS(bitctx, num_bits, out)                          \
-    do {                                                          \
-        RK_S32 _out;                                              \
-        (bitctx)->ret = mpp_read_bits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) {                                     \
-            *(out) = _out;                                        \
-        } else {                                                  \
-            goto BITREAD_ERR;                                     \
-        }                                                         \
-    } while (0)
-
-#define READ_BITS_LONG(bitctx, num_bits, out)                         \
-    do {                                                              \
-        RK_U32 _out;                                                  \
-        (bitctx)->ret = mpp_read_longbits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) {                                         \
-            *(out) = _out;                                            \
-        } else {                                                      \
-            goto BITREAD_ERR;                                         \
-        }                                                             \
-    } while (0)
-
-#define SHOW_BITS(bitctx, num_bits, out)                          \
-    do {                                                          \
-        RK_S32 _out;                                              \
-        (bitctx)->ret = mpp_show_bits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) {                                     \
-            *(out) = _out;                                        \
-        } else {                                                  \
-            goto BITREAD_ERR;                                     \
-        }                                                         \
-    } while (0)
-
-#define SHOW_BITS_LONG(bitctx, num_bits, out)                         \
-    do {                                                              \
-        RK_U32 _out;                                                  \
-        (bitctx)->ret = mpp_show_longbits((bitctx), num_bits, &_out); \
-        if (!(bitctx)->ret) {                                         \
-            *(out) = _out;                                            \
-        } else {                                                      \
-            goto BITREAD_ERR;                                         \
-        }                                                             \
-    } while (0)
-
-#define SKIP_BITS(bitctx, num_bits)                        \
-    do {                                                   \
-        (bitctx)->ret = mpp_skip_bits((bitctx), num_bits); \
-        if ((bitctx)->ret) {                               \
-            goto BITREAD_ERR;                              \
-        }                                                  \
-    } while (0)
-
-#define SKIP_BITS_LONG(bitctx, num_bits)                       \
-    do {                                                       \
-        (bitctx)->ret = mpp_skip_longbits((bitctx), num_bits); \
-        if ((bitctx)->ret) {                                   \
-            goto BITREAD_ERR;                                  \
-        }                                                      \
-    } while (0)
-
-#define READ_UE(bitctx, out)                          \
-    do {                                              \
-        RK_U32 _out;                                  \
-        (bitctx)->ret = mpp_read_ue((bitctx), &_out); \
-        if (!(bitctx)->ret) {                         \
-            *(out) = _out;                            \
-        } else {                                      \
-            goto BITREAD_ERR;                         \
-        }                                             \
-    } while (0)
-
-#define READ_SE(bitctx, out)                          \
-    do {                                              \
-        RK_S32 _out;                                  \
-        (bitctx)->ret = mpp_read_se((bitctx), &_out); \
-        if (!(bitctx)->ret) {                         \
-            *(out) = _out;                            \
-        } else {                                      \
-            goto BITREAD_ERR;                         \
-        }                                             \
-    } while (0)
-
 typedef struct bitread_ctx_t {
     // Pointer to the next unread (not in curr_byte_) byte in the stream.
     RK_U8 *data_;
@@ -192,6 +99,5 @@ RK_S32 mpp_get_bits_count(BitReadCtx_t *bitctx);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* __MPP_BITREAD_H__ */

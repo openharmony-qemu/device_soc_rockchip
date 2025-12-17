@@ -207,7 +207,7 @@ public:
     {
         RK_U32 i;
 
-        for (i = 0; i < MPP_ARRAY_ELEMS(codec_paths); i++) {
+        for (i = 0; i < (sizeof(codec_paths) / sizeof(codec_paths[0])); i++) {
             rkapi_hdl = dlopen(codec_paths[i], RTLD_LAZY | RTLD_GLOBAL);
             if (rkapi_hdl) {
                 break;
@@ -276,13 +276,13 @@ void decideUseMpp(VpuCodecContext *s, RK_U32 &use_mpp)
             (!access("/dev/hevc-service", F_OK) || !access("/dev/hevc_service", F_OK))) {
             /* if this is a hevc request and exist hevc_service for decoding use mpp */
             use_mpp = 1;
-        } 
+        }
     } else if (s != nullptr) {
-        if (s->videoCoding == OMX_RK_VIDEO_CodingAVC && 
-            s->codecType == CODEC_DECODER && 
+        if (s->videoCoding == OMX_RK_VIDEO_CodingAVC &&
+            s->codecType == CODEC_DECODER &&
             s->width <= MAX_WIDTH &&
-            s->height <= MAX_HEIGHT && 
-            !s->extra_cfg.mpp_mode && 
+            s->height <= MAX_HEIGHT &&
+            !s->extra_cfg.mpp_mode &&
             mpp_get_soc_type() != ROCKCHIP_SOC_RK3399) {
             /* H.264 smaller than 1080p use original vpuapi library for better error process */
             // NOTE: rk3399 need better performance
@@ -373,13 +373,13 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
         return ret;
     }
     vpu_api_dbg_func("use mpp path\n");
-    s = mpp_calloc(VpuCodecContext, 1);
+    s = (VpuCodecContext*)mpp_osal_malloc(__FUNCTION__, sizeof(VpuCodecContext));
     if (s) {
         s->enableparsing = 1;
         ret = setVpuApi(s, &tmp);
         if (ret) {
             mpp_err("Vpu api object has not been properly allocated");
-            mpp_free(s);
+            mpp_osal_free(__FUNCTION__, s);
             s = nullptr;
         }
     } else {
@@ -424,9 +424,9 @@ RK_S32 vpu_close_context(VpuCodecContext **ctx)
             }
 
             if (s->private_data)
-                mpp_free(s->private_data);
+                mpp_osal_free(__FUNCTION__, s->private_data);
 
-            mpp_free(s);
+            mpp_osal_free(__FUNCTION__, s);
             ret = 0;
         }
 

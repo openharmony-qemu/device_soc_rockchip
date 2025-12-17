@@ -53,11 +53,14 @@ struct hlist_head {
 #define LIST_POISON1  ((void *) 0x100)
 #define LIST_POISON2  ((void *) 0x200)
 
-#define WRITE_ONCE(var, val) \
-    (*((volatile __typeof__(val) *)(&(var))) = (val))
-
-#define READ_ONCE(var) (*((volatile __typeof__(var) *)(&(var))))
-
+static inline void WRITE_ONCE(volatile void *var, volatile void *val)
+{
+    *((volatile void **)(&var)) = val;
+}
+static inline volatile void *READ_ONCE(volatile void *var)
+{
+    return *((volatile void **)(&var));
+}
 static inline void INIT_HLIST_NODE(struct hlist_node *h)
 {
     h->next = NULL;
@@ -171,12 +174,12 @@ static inline void hlist_move_list(struct hlist_head *old,
     })
 
 #define hlist_for_each_entry(pos, head, member)             \
-    for ((pos) = hlist_entry_safe((head)->first, __typeof__(*(pos)), (member));\
+    for ((pos) = hlist_entry_safe((head)->first, __typeof__(*(pos)), (member)); \
          (pos);                           \
          (pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)))
 
 #define hlist_for_each_entry_continue(pos, member)          \
-    for ((pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member));\
+    for ((pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)); \
          (pos);                           \
          (pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)))
 
@@ -185,7 +188,7 @@ static inline void hlist_move_list(struct hlist_head *old,
          (pos) = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), (member)))
 
 #define hlist_for_each_entry_safe(pos, n, head, member)         \
-    for ((pos) = hlist_entry_safe((head)->first, __typeof__(*(pos)), (member));\
+    for ((pos) = hlist_entry_safe((head)->first, __typeof__(*(pos)), (member)); \
          (pos) && ({ (n) = (pos)->(member).next; 1; });         \
          (pos) = hlist_entry_safe((n), __typeof__(*(pos)), (member)))
 
@@ -196,8 +199,11 @@ static inline void hlist_move_list(struct hlist_head *old,
 #define DECLARE_HASHTABLE(name, bits) \
     struct hlist_head name[1 << (bits)]
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-
+static inline size_t array_size_func(size_t total_size, size_t elem_size)
+{
+    return (elem_size == 0) ? 0 : (total_size / elem_size);
+}
+#define ARRAY_SIZE(x) array_size_func(sizeof(x), sizeof((x)[0]))
 #define ilog2(n) \
     ( \
         (n) & (1ULL << 63) ? 63 : \

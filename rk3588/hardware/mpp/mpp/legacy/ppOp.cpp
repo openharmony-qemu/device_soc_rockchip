@@ -149,7 +149,7 @@ static int convertPlanarToSemiPlanar(void *srcVirAddr, char *tmpbuf)
     RK_S32 ret = memcpy_s(&tmp[SRC_VIR_WIDTH * SRC_VIR_HEIGHT],
                           SRC_VIR_WIDTH * SRC_VIR_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR,
                           tmpbuf, SRC_VIR_WIDTH * SRC_VIR_HEIGHT / YUV420_CHROMA_SIZE_DIVISOR);
-    if (ret != EOK) { 
+    if (ret != EOK) {
         ALOGE("copy data failed, error code: %d", ret);
         return -1;
     }

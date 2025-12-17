@@ -224,74 +224,6 @@ typedef struct MppBufferInfo_t {
  * imported buffer is leak or not and trace its usage inside mpp process. So we attach this kind
  * of buffer to default misc buffer group for management.
  */
-#define mpp_buffer_commit(group, info) \
-        mpp_buffer_import_with_tag(group, info, NULL, MODULE_TAG, __FUNCTION__)
-
-#define mpp_buffer_import(buffer, info) \
-        mpp_buffer_import_with_tag(NULL, info, buffer, MODULE_TAG, __FUNCTION__)
-
-#define mpp_buffer_get(group, buffer, size) \
-        mpp_buffer_get_with_tag(group, buffer, size, MODULE_TAG, __FUNCTION__)
-
-#define mpp_buffer_put(buffer) \
-        mpp_buffer_put_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_inc_ref(buffer) \
-        mpp_buffer_inc_ref_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_info_get(buffer, info) \
-        mpp_buffer_info_get_with_caller(buffer, info, __FUNCTION__)
-
-#define mpp_buffer_read(buffer, offset, data, size) \
-        mpp_buffer_read_with_caller(buffer, offset, data, size, __FUNCTION__)
-
-#define mpp_buffer_write(buffer, offset, data, size) \
-        mpp_buffer_write_with_caller(buffer, offset, data, size, __FUNCTION__)
-
-#define mpp_buffer_get_ptr(buffer) \
-        mpp_buffer_get_ptr_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_get_fd(buffer) \
-        mpp_buffer_get_fd_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_get_size(buffer) \
-        mpp_buffer_get_size_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_get_index(buffer) \
-        mpp_buffer_get_index_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_set_index(buffer, index) \
-        mpp_buffer_set_index_with_caller(buffer, index, __FUNCTION__)
-
-#define mpp_buffer_get_offset(buffer) \
-        mpp_buffer_get_offset_with_caller(buffer, __FUNCTION__)
-
-#define mpp_buffer_set_offset(buffer, offset) \
-        mpp_buffer_set_offset_with_caller(buffer, offset, __FUNCTION__)
-
-#define mpp_buffer_sync_begin(buffer) \
-        mpp_buffer_sync_begin_f(buffer, 0, __FUNCTION__)
-#define mpp_buffer_sync_end(buffer) \
-        mpp_buffer_sync_end_f(buffer, 0, __FUNCTION__)
-#define mpp_buffer_sync_partial_begin(buffer, offset, length) \
-        mpp_buffer_sync_partial_begin_f(buffer, 0, offset, length, __FUNCTION__)
-#define mpp_buffer_sync_partial_end(buffer, offset, length) \
-        mpp_buffer_sync_partial_end_f(buffer, 0, offset, length, __FUNCTION__)
-
-#define mpp_buffer_sync_ro_begin(buffer) \
-        mpp_buffer_sync_begin_f(buffer, 1, __FUNCTION__)
-#define mpp_buffer_sync_ro_end(buffer) \
-        mpp_buffer_sync_end_f(buffer, 1, __FUNCTION__)
-#define mpp_buffer_sync_ro_partial_begin(buffer, offset, length) \
-        mpp_buffer_sync_partial_begin_f(buffer, 1, offset, length, __FUNCTION__)
-#define mpp_buffer_sync_ro_partial_end(buffer, offset, length) \
-        mpp_buffer_sync_partial_end_f(buffer, 1, offset, length, __FUNCTION__)
-
-#define mpp_buffer_group_get_internal(group, type, ...) \
-        mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_INTERNAL, MODULE_TAG, __FUNCTION__)
-
-#define mpp_buffer_group_get_external(group, type, ...) \
-        mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_EXTERNAL, MODULE_TAG, __FUNCTION__)
 
 #ifdef __cplusplus
 extern "C" {
@@ -353,6 +285,58 @@ MPP_RET mpp_buffer_group_limit_config(MppBufferGroup group, size_t size, RK_S32 
 
 RK_U32 mpp_buffer_total_now();
 RK_U32 mpp_buffer_total_max();
+
+
+#define mpp_buffer_commit(group, info) \
+        mpp_buffer_import_with_tag(group, info, NULL, MODULE_TAG, __FUNCTION__)
+
+#define mpp_buffer_import(buffer, info) \
+        mpp_buffer_import_with_tag(NULL, info, buffer, MODULE_TAG, __FUNCTION__)
+
+#define mpp_buffer_get(group, buffer, size) \
+        mpp_buffer_get_with_tag(group, buffer, size, MODULE_TAG, __FUNCTION__)
+
+#define mpp_buffer_put(buffer) \
+        mpp_buffer_put_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_inc_ref(buffer) \
+        mpp_buffer_inc_ref_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_info_get(buffer, info) \
+        mpp_buffer_info_get_with_caller(buffer, info, __FUNCTION__)
+
+#define mpp_buffer_read(buffer, offset, data, size) \
+        mpp_buffer_read_with_caller(buffer, offset, data, size, __FUNCTION__)
+
+#define mpp_buffer_write(buffer, offset, data, size) \
+        mpp_buffer_write_with_caller(buffer, offset, data, size, __FUNCTION__)
+
+#define mpp_buffer_get_ptr(buffer) \
+        mpp_buffer_get_ptr_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_get_fd(buffer) \
+        mpp_buffer_get_fd_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_get_size(buffer) \
+        mpp_buffer_get_size_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_get_index(buffer) \
+        mpp_buffer_get_index_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_set_index(buffer, index) \
+        mpp_buffer_set_index_with_caller(buffer, index, __FUNCTION__)
+
+#define mpp_buffer_get_offset(buffer) \
+        mpp_buffer_get_offset_with_caller(buffer, __FUNCTION__)
+
+#define mpp_buffer_set_offset(buffer, offset) \
+        mpp_buffer_set_offset_with_caller(buffer, offset, __FUNCTION__)
+
+#define mpp_buffer_group_get_internal(group, type, ...) \
+        mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_INTERNAL, MODULE_TAG, __FUNCTION__)
+
+#define mpp_buffer_group_get_external(group, type, ...) \
+        mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_EXTERNAL, MODULE_TAG, __FUNCTION__)
 
 #ifdef __cplusplus
 }

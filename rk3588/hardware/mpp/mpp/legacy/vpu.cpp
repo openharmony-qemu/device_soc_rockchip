@@ -102,7 +102,7 @@ static RK_S32 vpu_api_set_client_type(int dev, RK_S32 client_type)
     if (ret) {
         mpp_err_f("can not find valid client type ioctl\n");
     }
-    mpp_assert(ret == 0);  
+    mpp_assert(ret == 0);
     return ret;
 }
 

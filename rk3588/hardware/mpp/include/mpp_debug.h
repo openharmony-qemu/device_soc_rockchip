@@ -76,31 +76,32 @@
  * 24~31 bit: information print format
  */
 
-#define mpp_abort() do {                \
-    if (mpp_debug & MPP_ABORT) {        \
-        abort();                        \
-    }                                   \
-} while (0)
-
-#define MPP_STRINGS(x) MPP_TO_STRING(x)
-#define MPP_TO_STRING(x) #x
-
-#define mpp_assert(cond) \
-    do { \
-        if (!(cond)) { \
-            mpp_err("Assertion %s failed at %s:%d\n", MPP_STRINGS(cond), __FUNCTION__, __LINE__); \
-            mpp_abort(); \
-        } \
-    } while (0)
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 extern RK_U32 mpp_debug;
 
+inline void mpp_abort()
+{
+    do {
+        if (mpp_debug & MPP_ABORT) {
+            abort();
+        }
+    } while (0);
+}
+inline void mpp_assert_func(bool cond, const char *cond_str) {
+    do {
+        if (!(cond)) {
+            mpp_err("Assertion %s failed at %s:%d\n", cond_str, __FUNCTION__, __LINE__);
+            mpp_abort();
+        }
+    } while (0);
+}
+
+#define mpp_assert(cond) mpp_assert_func((cond), #cond)
+
 #ifdef __cplusplus
 }
 #endif
-
 #endif /*__MPP_DEBUG_H__*/
