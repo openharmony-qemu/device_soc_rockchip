@@ -73,7 +73,8 @@ typedef enum {
     MPP_FRAME_PRI_BT470M        = 4,    ///< also FCC Title 47 Code of Federal Regulations 73.682 (a)(20)
 
     MPP_FRAME_PRI_BT470BG       = 5,    ///< also ITU-R BT601-6 625 / ITU-R BT1358 625 / ITU-R BT1700 625 PAL & SECAM
-    MPP_FRAME_PRI_SMPTE170M     = 6,    ///< also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC/SMPTE ST 170 (2004)
+    MPP_FRAME_PRI_SMPTE170M     = 6,    ///< also ITU-R BT601-6 525 / ITU-R BT1358 525 /
+                                        ///ITU-R BT1700 NTSC/SMPTE ST 170 (2004)
     MPP_FRAME_PRI_SMPTE240M     = 7,    ///< functionally identical to above/SMPTE ST 240
     MPP_FRAME_PRI_FILM          = 8,    ///< colour filters using Illuminant C
     MPP_FRAME_PRI_BT2020        = 9,    ///< ITU-R BT2020 / ITU-R BT.2100-2

@@ -25,7 +25,7 @@
 #include "vpu.h"
 #include "vpu_mem_legacy.h"
 
-#define VPU_MEM_DBG_FUNCTION (0x00000001)
+const int VPU_MEM_DBG_FUNCTION = (0x00000001);
 
 static RK_U32 vpu_mem_debug = 0;
 
@@ -61,7 +61,7 @@ static void *get_free_memory_vpumem(vpu_display_mem_pool *p)
 {
     MPP_RET ret = MPP_OK;
     MppBuffer buffer = NULL;
-    VPUMemLinear_t *dmabuf = (VPUMemLinear_t*)mpp_osal_malloc(__FUNCTION__, sizeof(VPUMemLinear_t));
+    VPUMemLinear_t *dmabuf = static_cast<VPUMemLinear_t*>(mpp_osal_malloc(__FUNCTION__, sizeof(VPUMemLinear_t)));
     vpu_display_mem_pool_impl *p_mempool = (vpu_display_mem_pool_impl *)p;
     if (dmabuf == NULL) {
         return nullptr;
@@ -76,7 +76,8 @@ static void *get_free_memory_vpumem(vpu_display_mem_pool *p)
     dmabuf->vir_addr = (RK_U32 *)mpp_buffer_get_ptr(buffer);
     dmabuf->size = p_mempool->size;
     dmabuf->offset = (RK_U32 *)buffer;
-    vpu_mem_dbg_func("out pool %p ret %p fd %d size %d buffer %p\n", p, dmabuf, dmabuf->phy_addr, dmabuf->size, buffer);
+    vpu_mem_dbg_func("out pool %p ret %p fd %d size %d buffer %p\n",
+                     p, dmabuf, dmabuf->phy_addr, dmabuf->size, buffer);
     return dmabuf;
 }
 

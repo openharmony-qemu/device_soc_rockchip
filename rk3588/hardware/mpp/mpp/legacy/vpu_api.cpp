@@ -30,8 +30,8 @@
 #include "vpu_api_legacy.h"
 #include "vpu_mem_legacy.h"
 
-#define MAX_WIDTH 1920
-#define MAX_HEIGHT 1088
+const int MAX_WIDTH = 1920;
+const int MAX_HEIGHT = 1088;
 
 static RK_S32 vpu_api_init(VpuCodecContext *ctx, RK_U8 *extraData, RK_U32 extra_size)
 {
@@ -373,7 +373,7 @@ RK_S32 vpu_open_context(VpuCodecContext **ctx)
         return ret;
     }
     vpu_api_dbg_func("use mpp path\n");
-    s = (VpuCodecContext*)mpp_osal_malloc(__FUNCTION__, sizeof(VpuCodecContext));
+    s = static_cast<VpuCodecContext*>(mpp_osal_malloc(__FUNCTION__, sizeof(VpuCodecContext)));
     if (s) {
         s->enableparsing = 1;
         ret = setVpuApi(s, &tmp);

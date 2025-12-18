@@ -51,6 +51,7 @@ public:
     VpuApiLegacy();
     ~VpuApiLegacy();
 
+    RK_S32 vpu_api_set_enc_cfg(MppCodingType coding, MppFrameFormat fmt, EncParameter_t *cfg);
     void setEncHdr_pkt(VpuCodecContext *ctx);
     RK_S32 initEnc(VpuCodecContext *ctx);
     RK_S32 init(VpuCodecContext *ctx, RK_U8 *extraData, RK_U32 extra_size);
@@ -61,19 +62,45 @@ public:
     RK_S32 decode_getoutframe(VpuCodecContext *ctx, DecoderOut_t *aDecOut);
     RK_S32 preProcessPacket(VpuCodecContext *ctx, VideoPacket_t *pkt);
 
+    RK_S32 encodeCheckParam(EncInputStream_t *aEncInStrm, EncoderOut_t *aEncOut);
+    RK_S32 encodeSetFrameInput(EncInputStream_t *aEncInStrm, MppFrame &frame);
+    RK_S32 encodeSetFrameOutput(VpuCodecContext *ctx, EncoderOut_t *aEncOut, MppPacket &packet);
+    RK_S32 encodeFrameInit(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, MppFrame &frame);
+    RK_S32 encodeTaskSetFramePacket(MppTask &task, MppFrame &frame, MppPacket &packet);
+    RK_S32 encodeDoTask(MppTask &task, MppFrame &frame, MppPacket &packet);
+    RK_S32 encodeCopyOutputBuffer(VpuCodecContext *ctx, EncoderOut_t *aEncOut, MppPacket &packet);
     RK_S32 encode(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm, EncoderOut_t *aEncOut);
     RK_S32 encoder_sendframe(VpuCodecContext *ctx, EncInputStream_t *aEncInStrm);
     RK_S32 encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncOut);
     RK_S32 getDecOutData(VpuCodecContext *ctx, DecoderOut_t *aDecOut, MppFrame &mframe);
 
     RK_S32 perform(PerformCmd cmd, RK_S32 *data);
+    RK_S32 handleEncSetCfg(VpuCodecContext *ctx, void *param);
+    RK_S32 handleEncGetCfg(void *param);
+    RK_S32 handleEncSetFormat(VpuCodecContext *ctx, void *param);
+    RK_S32 handleSetOutputBlock(void *param);
+    RK_S32 handleSetInputBlock(void *param);
+    RK_S32 handleGetMppGetCfg(void *param);
+    RK_S32 handleGetEosStatus(void *param);
+    RK_S32 handleGetFrameInfo(void *param);
+    RK_S32 handleDecEnThumbnail(void *param);
+    RK_S32 handleDecEnHdrMeta(void *param);
+    RK_S32 handleSetFrmRdyCb(void *param);
+    RK_S32 handleEncSetMaxTid(void *param);
+    RK_S32 handleEncSetMarkLtr(void *param);
+    RK_S32 handleEncSetUseLtr(void *param);
+    RK_S32 handleEncSetFrameQp(void *param);
+    RK_S32 handleEncSetBaseLayerPid(void *param);
+    RK_S32 handleGetExtraInfo(void *param);
+    RK_S32 handleDecEnFbcHdr256Odd();
+    RK_S32 handleDecOutFrmStructType(void *param);
+    RK_S32 handleGetSetParam(VPU_API_CMD cmd, void *param);
+    RK_S32 handleEncDecParam(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param);
     RK_S32 control(VpuCodecContext *ctx, VPU_API_CMD cmd, void *param);
-    void setHorStride(MppFrame frame, RK_U32 hor_stride);
-    RK_S32 setBufferFromFdInput(MppFrame frame, RK_S32 fd, RK_U32 size);
-    RK_S32 setBufferFromMem(VpuCodecContext *ctx, MppFrame frame, RK_U8 *buf,
-                            RK_U32 hor_stride, RK_U32 ver_stride);
-    RK_S32 frameInit(VpuCodecContext *ctx, MppFrame frame, EncInputStream_t *aEncInStrm,
-                     RK_U32 hor_stride, RK_U32 ver_stride);
+    void setHorStride(MppFrame &frame, RK_U32 hor_stride);
+    RK_S32 setBufferFromFdInput(MppFrame &frame, RK_S32 fd, RK_U32 size);
+    RK_S32 setBufferFromMem(VpuCodecContext *ctx, MppFrame &frame, RK_U8 *buf);
+    RK_S32 frameInit(VpuCodecContext *ctx, MppFrame &frame, EncInputStream_t *aEncInStrm);
     void setVframeParms(VpuCodecContext *ctx, VPU_FRAME *vframe, MppFrame mframe);
     void getColorTypeByFmtMask(VPU_FRAME *vframe, MppFrame mframe);
     void getColorTypeByFbcMask(VPU_FRAME *vframe, MppFrame mframe);
@@ -81,11 +108,11 @@ public:
     void setup_VPU_FRAME_from_mpp_frame(VpuCodecContext *ctx, VPU_FRAME *vframe, MppFrame mframe);
     void setup_video_frame_meta(VideoFrame_t *videoFrame, MppFrame mframe);
     RK_S32 checkDecodeParams(VideoPacket_t *pkt, DecoderOut_t *aDecOut);
-    MPP_RET importMjpegInputBuffer(VideoPacket_t *pkt, MppBuffer *str_buf);
-    MPP_RET importMjpegOutputBuffer(VpuCodecContext *ctx, DecoderOut_t *aDecOut, MppBuffer *pic_buf);
-    MPP_RET execMjpegDecodeTask(MppPacket packet, MppFrame mframe);
-    MPP_RET handleMjpegOutputFrame(VpuCodecContext *ctx, MppFrame mframe, DecoderOut_t *aDecOut);
-    MPP_RET handleNonMjpegDecode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut_t *aDecOut,
+    RK_S32 importMjpegInputBuffer(VideoPacket_t *pkt, MppBuffer *str_buf);
+    RK_S32 importMjpegOutputBuffer(VpuCodecContext *ctx, DecoderOut_t *aDecOut, MppBuffer *pic_buf);
+    RK_S32 execMjpegDecodeTask(MppPacket packet, MppFrame mframe);
+    RK_S32 handleMjpegOutputFrame(VpuCodecContext *ctx, MppFrame mframe, DecoderOut_t *aDecOut);
+    RK_S32 handleNonMjpegDecode(VpuCodecContext *ctx, VideoPacket_t *pkt, DecoderOut_t *aDecOut,
                                     MppPacket *packet, MppFrame *mframe);
     void releaseMjpegBuffers(MppBuffer str_buf, MppBuffer pic_buf);
 

@@ -15,7 +15,7 @@
 
 #define MODULE_TAG "mpi_enc_utils"
 
-#include <string.h>
+#include <cstring>
 #include "securec.h"
 #include "mpp_mem.h"
 #include "mpp_env.h"
@@ -26,27 +26,27 @@
 #include "mpp_packet.h"
 #include "mpi_enc_utils.h"
 
-#define GOP_MODE_TSVC4 3
-#define GOP_MODE_TSVC3 2
-#define GOP_MODE_TSVC2 1
+const int GOP_MODE_TSVC4 = 3;
+const int GOP_MODE_TSVC3 = 2;
+const int GOP_MODE_TSVC2 = 1;
 
-#define TEMPORAL_ID_0 0
-#define TEMPORAL_ID_1 1
-#define TEMPORAL_ID_2 2
-#define TEMPORAL_ID_3 3
+const int TEMPORAL_ID_0 = 0;
+const int TEMPORAL_ID_1 = 1;
+const int TEMPORAL_ID_2 = 2;
+const int TEMPORAL_ID_3 = 3;
 
-#define REF_NUM_0 0
-#define REF_NUM_1 1
-#define REF_NUM_2 2
-#define REF_NUM_3 3
-#define REF_NUM_4 4
-#define REF_NUM_5 5
-#define REF_NUM_6 6
-#define REF_NUM_7 7
-#define REF_NUM_8 8
+const int REF_NUM_0 = 0;
+const int REF_NUM_1 = 1;
+const int REF_NUM_2 = 2;
+const int REF_NUM_3 = 3;
+const int REF_NUM_4 = 4;
+const int REF_NUM_5 = 5;
+const int REF_NUM_6 = 6;
+const int REF_NUM_7 = 7;
+const int REF_NUM_8 = 8;
 
-#define ST_COUNT_3 3
-#define ST_COUNT_5 5
+const int ST_COUNT_3 = 3;
+const int ST_COUNT_5 = 5;
 
 void genltRefTsvc4(MppEncRefLtFrmCfg *lt_ref, MppEncRefStFrmCfg *st_ref, RK_S32 *lt_cnt, RK_S32 *st_cnt)
 {
@@ -137,7 +137,7 @@ void genltRefTsvc3(MppEncRefLtFrmCfg *lt_ref, MppEncRefStFrmCfg *st_ref, RK_S32 
     st_ref[REF_NUM_4].ref_mode = REF_TO_TEMPORAL_LAYER;
 }
 
-void genltRefTsvc2(MppEncRefLtFrmCfg *lt_ref, MppEncRefStFrmCfg *st_ref, RK_S32 *lt_cnt, RK_S32 *st_cnt)
+void genltRefTsvc2(MppEncRefStFrmCfg *st_ref, RK_S32 *lt_cnt, RK_S32 *st_cnt)
 {
     // tsvc2
     //   /-> P1
@@ -192,7 +192,7 @@ static MPP_RET mpi_enc_gen_ref_cfg(MppEncRefCfg ref, RK_S32 gop_mode)
             break;
         }
         case GOP_MODE_TSVC2: {
-            genltRefTsvc2(lt_ref, st_ref, &lt_cnt, &st_cnt);
+            genltRefTsvc2(st_ref, &lt_cnt, &st_cnt);
             break;
         }
         default: {
@@ -296,7 +296,7 @@ void setEncParam(MpiEncTestData *p, MpiEncTestArgs *cmd)
 /* ���˱������õ�һЩ����������ߣ�����ͼ���ʽ����������ʽ�ȣ�����������֪��ֱ����0
  * test_mpp_enc_cfg_setup�������Զ�����Ĭ�ϵĲ�����bps�� gop�Ȳ���
  */
-#define MPP_ALIGNMENT_SIZE 64
+const int MPP_ALIGNMENT_SIZE = 64;
 static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
 {
     MpiEncTestData *p = NULL;
@@ -307,7 +307,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         return MPP_ERR_NULL_PTR;
     }
 
-    p = (MpiEncTestData*)mpp_osal_malloc(__FUNCTION__, sizeof(MpiEncTestData));
+    p = static_cast<MpiEncTestData*>(mpp_osal_malloc(__FUNCTION__, sizeof(MpiEncTestData)));
     if (!p) {
         mpp_err_f("create MpiEncTestData failed\n");
         *data = p;
@@ -908,7 +908,6 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
         return MPP_NOK;
     }
     size_t len = mpp_packet_get_length(packet);
-
     if (*buf_size < len) {
         mpp_err("mpi buffer size too small\n");
         if (cam_buf) {
@@ -940,27 +939,27 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     ret = test_ctx_init(&p, args);
     if (ret) {
         mpp_err_f("test data init failed ret %d\n");
-        return NULL;
+        return nullptr;
     }
 
     ret = mpp_buffer_group_get_internal(&p->buf_grp, MPP_BUFFER_TYPE_DRM);
     if (ret) {
         mpp_err_f("failed to get mpp buffer group ret %d\n", ret);
-        return NULL;
+        return nullptr;
     }
 
     /* pkt_buf�����Ա���?���Ǹ�packetʹ�õ�buffer */
     ret = mpp_buffer_get(p->buf_grp, &p->pkt_buf, p->frame_size);
     if (ret) {
         mpp_err_f("failed to get buffer for output packet ret %d\n", ret);
-        return NULL;
+        return nullptr;
     }
 
     // encoder demo
     ret = mpp_create(&p->ctx, &p->mpi);
     if (ret) {
         mpp_err("mpp_create failed ret %d\n", ret);
-        return NULL;
+        return nullptr;
     }
 
     mpp_log("%p mpi_enc_test encoder test start w %d h %d type %d\n", p->ctx, p->width, p->height, p->type);
@@ -968,25 +967,25 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     ret = p->mpi->control(p->ctx, MPP_SET_OUTPUT_TIMEOUT, &timeout);
     if (MPP_OK != ret) {
         mpp_err("mpi control set output timeout %d ret %d\n", timeout, ret);
-        return NULL;
+        return nullptr;
     }
 
     ret = mpp_init(p->ctx, MPP_CTX_ENC, p->type);
     if (ret) {
         mpp_err("mpp_init failed ret %d\n", ret);
-        return NULL;
+        return nullptr;
     }
 
     ret = mpp_enc_cfg_init(&p->cfg);
     if (ret) {
         mpp_err_f("mpp_enc_cfg_init failed ret %d\n", ret);
-        return NULL;
+        return nullptr;
     }
 
     ret = test_mpp_enc_cfg_setup(p);
     if (ret) {
         mpp_err_f("test mpp setup failed ret %d\n", ret);
-        return NULL;
+        return nullptr;
     }
 
     return p;

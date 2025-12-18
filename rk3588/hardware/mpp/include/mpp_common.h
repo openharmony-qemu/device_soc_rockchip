@@ -23,7 +23,7 @@
 
 inline RK_S32 MPP_ALIGN(RK_S32 x, RK_S32 a)
 {
-    return (((x)+(a)-1)&~((a)-1));
+    return (((x) + (a) - 1) & ~((a) - 1));
 }
 #include <stdio.h>
 #if defined(_WIN32) && !defined(__MINGW32CE__)

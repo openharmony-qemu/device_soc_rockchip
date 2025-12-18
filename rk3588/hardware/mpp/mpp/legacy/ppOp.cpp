@@ -222,7 +222,10 @@ static int saveOutputYuv(void *dstVirAddr)
     if (ret < 0) {
         ALOGE("fwrite failed ret = %d", ret);
     }
-    fclose(fpw);
+    ret = fclose(fpw);
+    if (ret) {
+        ALOGE("fclose failed ret = %d", ret);
+    }
     return 0;
 }
 

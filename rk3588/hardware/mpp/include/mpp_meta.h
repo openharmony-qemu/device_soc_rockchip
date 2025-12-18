@@ -20,9 +20,16 @@
 #include <stdint.h>
 #include "rk_type.h"
 
+#define BIT_SHIFT_24 24
+#define BIT_SHIFT_16 16
+#define BIT_SHIFT_8 8
+#define BIT_SHIFT_0 0
 constexpr RK_U32 FOURCC_META(RK_U8 a, RK_U8 b, RK_U8 c, RK_U8 d)
 {
-    return (((RK_U32)(a) << 24) | ((RK_U32)(b) << 16) | ((RK_U32)(c) << 8) | ((RK_U32)(d) << 0));
+    return (((RK_U32)(a) << BIT_SHIFT_24) |
+            ((RK_U32)(b) << BIT_SHIFT_16) |
+            ((RK_U32)(c) << BIT_SHIFT_8) |
+            ((RK_U32)(d) << BIT_SHIFT_0));
 }
 
 /*

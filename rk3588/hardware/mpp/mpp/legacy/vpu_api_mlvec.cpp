@@ -25,8 +25,8 @@
 #include "vpu_api_mlvec.h"
 #include "vpu_api_legacy.h"
 
-#define VPU_API_DBG_MLVEC_FUNC (0x00010000)
-#define VPU_API_DBG_MLVEC_FLOW (0x00020000)
+const int VPU_API_DBG_MLVEC_FUNC = (0x00010000);
+const int VPU_API_DBG_MLVEC_FLOW = (0x00020000);
 
 #define mlvec_dbg_func(fmt, ...) vpu_api_dbg_f(VPU_API_DBG_MLVEC_FUNC, fmt, ##__VA_ARGS__)
 #define mlvec_dbg_flow(fmt, ...) vpu_api_dbg_f(VPU_API_DBG_MLVEC_FLOW, fmt, ##__VA_ARGS__)
@@ -49,7 +49,7 @@ MPP_RET vpu_api_mlvec_init(VpuApiMlvec *ctx)
 
     mlvec_dbg_func("enter %p\n", ctx);
 
-    VpuApiMlvecImpl *impl = (VpuApiMlvecImpl*)mpp_osal_malloc(__FUNCTION__, sizeof(VpuApiMlvecImpl));
+    VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl*>(mpp_osal_malloc(__FUNCTION__, sizeof(VpuApiMlvecImpl)));
     if (impl == nullptr) {
         mpp_err_f("failed to create MLVEC context\n");
     }
@@ -130,9 +130,8 @@ MPP_RET vpu_api_mlvec_set_st_cfg(VpuApiMlvec ctx, VpuApiMlvecStaticCfg *cfg)
     /* update static configure */
     VpuApiMlvecImpl *impl = static_cast<VpuApiMlvecImpl *>(ctx);
 
-    RK_S32 sRet = memcpy_s(&impl->st_cfg, sizeof(VPUMemLinear_t), cfg, sizeof(impl->st_cfg));
-    if (sRet != EOK) {
-        mlvec_dbg_func("copy impl->st_cfg failed, error code: %{public}d", sRet);
+    if (memcpy_s(&impl->st_cfg, sizeof(VPUMemLinear_t), cfg, sizeof(impl->st_cfg)) != EOK) {
+        mlvec_dbg_func("copy impl->st_cfg failed, error code: %{public}d", ret);
         return MPP_NOK;
     }
     cfg = &impl->st_cfg;
@@ -407,7 +406,8 @@ void setTsvc(MppEncRefStFrmCfg *st_ref, RK_S32 &st_cfg_cnt, RK_S32 &tid0_loop, R
     }
 }
 
-MPP_RET setMppRefCfg(VpuApiMlvecImpl *impl, MppEncRefStFrmCfg *st_ref, MppEncRefLtFrmCfg *lt_ref, RK_S32 st_cfg_cnt, RK_S32 lt_cfg_cnt)
+MPP_RET setMppRefCfg(VpuApiMlvecImpl *impl, MppEncRefStFrmCfg *st_ref,
+                     MppEncRefLtFrmCfg *lt_ref, RK_S32 st_cfg_cnt, RK_S32 lt_cfg_cnt)
 {
     MPP_RET ret = MPP_OK;
 
@@ -452,14 +452,12 @@ MPP_RET vpu_api_mlvec_set_dy_max_tid(VpuApiMlvec ctx, RK_S32 max_tid)
     RK_S32 tid0_loop = 0;
     RK_S32 ltr_frames = impl->st_cfg.ltr_frames;
 
-    RK_S32 sRet = memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
-    if (sRet != EOK) {
-         mlvec_dbg_func("memset_s lt_ref failed, return %d", sRet);
-     }
-    sRet = memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref));
-    if (sRet != EOK) {
-        mlvec_dbg_func("memset_s st_ref failed, return %d", sRet);
-     }
+    if (memset_s(lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref)) != EOK) {
+        mlvec_dbg_func("memset_s lt_ref failed");
+    }
+    if (memset_s(st_ref, sizeof(st_ref), 0, sizeof(st_ref)) != EOK) {
+        mlvec_dbg_func("memset_s st_ref failed");
+    }
     mlvec_dbg_func("enter ctx %p max_tid %d ltr_frames %d\n", ctx, max_tid, ltr_frames);
 
     setTsvc(st_ref, st_cfg_cnt, tid0_loop, max_tid);

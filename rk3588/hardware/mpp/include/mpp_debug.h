@@ -86,11 +86,12 @@ inline void mpp_abort()
 {
     do {
         if (mpp_debug & MPP_ABORT) {
-            abort();
+            exit(EXIT_FAILURE);
         }
     } while (0);
 }
-inline void mpp_assert_func(bool cond, const char *cond_str) {
+inline void mpp_assert_func(bool cond, const char *cond_str)
+{
     do {
         if (!(cond)) {
             mpp_err("Assertion %s failed at %s:%d\n", cond_str, __FUNCTION__, __LINE__);

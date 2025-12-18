@@ -250,8 +250,7 @@ RK_S32 rk_list::flush()
             rk_list_node *node = head->next;
             rk_list_del_init(node);
             if (destroy) {
-                void *data_ptr =
-                    static_cast<void *>(static_cast<char *>(static_cast<void *>(node)) + sizeof(rk_list_node));
+                void *data_ptr = static_cast<void *>(node + 1);
                 destroy(data_ptr);
             }
             free(node);
