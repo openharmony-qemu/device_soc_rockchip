@@ -989,8 +989,6 @@ RK_S32 VpuApiLegacy::handleNonMjpegDecode(VpuCodecContext *ctx, VideoPacket_t *p
         mpp_packet_set_eos(*packet);
     }
 
-    // vpu_api_dbg_input("input size %-6d flag %x pts %lld\n", pkt->size, pkt->nFlags, pkt->pts);
-    
     ret = mpi->decode(mpp_ctx, *packet, mframe);
     if (MPP_OK == ret) {
         pkt->size = 0;
