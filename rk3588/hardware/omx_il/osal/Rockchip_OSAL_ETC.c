@@ -50,26 +50,21 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
     if (*ppLine == NULL) {
         *ppLine = (char *)malloc(defaultBufferSize);
         if (*ppLine == NULL) {
-            retSize = -1;
-            goto EXIT;
+            return -1;
         }
         *pLen = defaultBufferSize;
     } else {
         if (*pLen < defaultBufferSize) {
             newBuffer = (char *)malloc(defaultBufferSize);
             if (newBuffer == NULL) {
-                retSize = -1;
-                goto EXIT;
+                return -1;
             }
-
             size_t copySize = (*pLen < defaultBufferSize) ? *pLen : defaultBufferSize;
             if (copySize > 0) {
-                int32_t ret = memcpy_s(newBuffer, defaultBufferSize, *ppLine, copySize);
-                if (ret != EOK) {
-                    omx_info("%{public}s: copy output outBuffer failed, error code: %{public}d", __func__, ret);
+                if (memcpy_s(newBuffer, defaultBufferSize, *ppLine, copySize) != EOK) {
+                    omx_info("%{public}s: copy newBuffer failed", __func__);
                 }
             }
-
             free(*ppLine);
             *ppLine = newBuffer;
             *pLen = defaultBufferSize;
@@ -85,8 +80,7 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
 
         i = fread(pCurrentPointer, 1, chunk, pStream);
         if (i < chunk && ferror(pStream)) {
-            retSize = -1;
-            goto EXIT;
+            return -1;
         }
         while (j < i) {
             ++j;
@@ -94,8 +88,7 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
                 *pCurrentPointer = '\0';
                 if (j != i) {
                     if (fseek(pStream, j - i, SEEK_CUR)) {
-                        retSize = -1;
-                        goto EXIT;
+                        return -1;
                     }
                     if (feof(pStream)) {
                         clearerr(pStream);
@@ -114,8 +107,7 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
                 goto EXIT;
             }
             if (!i) {
-                retSize = -1;
-                goto EXIT;
+                return -1;
             }
         }
 
@@ -123,14 +115,12 @@ ssize_t getline(char **ppLine, size_t *pLen, FILE *pStream)
         if (i != *pLen) {
             newBuffer = (char *)malloc(i);
             if (newBuffer == NULL) {
-                retSize = -1;
-                goto EXIT;
+                return -1;
             }
 
             if (readByte > 0) {
-                int32_t ret = memcpy_s(newBuffer, readByte, *ppLine, readByte);
-                if (ret != EOK) {
-                    omx_info("%{public}s: copy output outBuffer failed, error code: %{public}d", __func__, ret);
+                if (memcpy_s(newBuffer, i, *ppLine, readByte) != EOK) {
+                    omx_info("%{public}s: copy output outBuffer failed", __func__);
                 }
             }
 
