@@ -111,6 +111,10 @@ int32_t HdiGfxComposition::SetLayers(std::vector<HdiLayer *> &layers, HdiLayer &
     mClientLayer = &clientLayer;
     mCompLayers.clear();
     for (auto &layer : layers) {
+		if (layer == nullptr) {
+            DISPLAY_LOGE("HdiGfxComposition::SetLayers layer is null");			
+		    return DISPLAY_FAILURE;
+		}		
         if (!CanHandle(*layer)) {
             continue;
         }
