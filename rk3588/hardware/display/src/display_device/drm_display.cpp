@@ -196,6 +196,7 @@ std::unique_ptr<HdiLayer> DrmDisplay::CreateHdiLayer(LayerType type)
 
 int32_t DrmDisplay::WaitForVBlank(uint64_t *ns)
 {
+#ifdef DRM_VBLANK
     int ret;
     constexpr uint64_t nPerS = 1000000000;
     constexpr uint64_t nPerUS = 1000;
@@ -204,10 +205,19 @@ int32_t DrmDisplay::WaitForVBlank(uint64_t *ns)
         .request.sequence = 0,
         .request.signal = 0,
     };
+#endif
     DISPLAY_CHK_RETURN((ns == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("in ns is nullptr"));
-    ret = drmWaitVBlank(mDrmDevice->GetDrmFd(), &vbl);
+#ifdef DRM_VBLANK
+	ret = drmWaitVBlank(mDrmDevice->GetDrmFd(), &vbl);
     DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE, DISPLAY_LOGE("wait vblank failed errno %{public}d", errno));
     *ns = static_cast<uint64_t>(vbl.reply.tval_sec * nPerS + vbl.reply.tval_usec * nPerUS);
+#else
+    const int SLEEP_TIME_MILLISECONDS = 20;
+    const int MILLISECONDS_TO_MICROSECONDS = 1000;
+    const int MILLISECONDS_TO_NANOSECONDS = 1000 * 1000;
+    usleep(SLEEP_TIME_MILLISECONDS * MILLISECONDS_TO_MICROSECONDS);
+    *ns = (SLEEP_TIME_MILLISECONDS * MILLISECONDS_TO_NANOSECONDS);
+#endif
     return DISPLAY_SUCCESS;
 }
 

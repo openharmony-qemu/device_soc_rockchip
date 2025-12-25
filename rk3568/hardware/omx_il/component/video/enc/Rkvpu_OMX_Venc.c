@@ -148,7 +148,8 @@ void UpdateFrameSize(OMX_COMPONENTTYPE *pOMXComponent)
     OMX_PARAM_PORTDEFINITIONTYPE* inputPortDefine = &rockchipInputPort->portDefinition;
     if ((outputPortDefine->format.video.nFrameWidth != inputPortDefine->format.video.nFrameWidth) ||
         (outputPortDefine->format.video.nFrameHeight != inputPortDefine->format.video.nFrameHeight)) {
-        OMX_U32 width = 0, height = 0;
+        OMX_U32 width = 0;
+        OMX_U32 height = 0;
         outputPortDefine->format.video.nFrameWidth = inputPortDefine->format.video.nFrameWidth;
         outputPortDefine->format.video.nFrameHeight = inputPortDefine->format.video.nFrameHeight;
         width = outputPortDefine->format.video.nStride = inputPortDefine->format.video.nStride;

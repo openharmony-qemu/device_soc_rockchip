@@ -23,8 +23,12 @@ namespace DISPLAY {
 struct PlaneMaskName planeMaskNames[] = {
     { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER0_MASK, "Cluster0" },
     { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER1_MASK, "Cluster1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER2_MASK, "Cluster2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_CLUSTER3_MASK, "Cluster3" },
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART0_MASK, "Esmart0" },
     { DrmPlaneType::DRM_PLANE_TYPE_ESMART1_MASK, "Esmart1" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART2_MASK, "Esmart2" },
+    { DrmPlaneType::DRM_PLANE_TYPE_ESMART3_MASK, "Esmart3" },
     { DrmPlaneType::DRM_PLANE_TYPE_SMART0_MASK, "Smart0" },
     { DrmPlaneType::DRM_PLANE_TYPE_SMART1_MASK, "Smart1" },
     { DrmPlaneType::DRM_PLANE_TYPE_Unknown, "unknown" },
@@ -36,7 +40,7 @@ DrmCrtc::DrmCrtc(drmModeCrtcPtr c, uint32_t pipe) : mId(c->crtc_id), mPipe(pipe)
 
 int32_t DrmCrtc::Init(DrmDevice &drmDevice)
 {
-    DISPLAY_LOGD();
+    DISPLAY_LOGE();
     int32_t ret;
     DrmProperty prop;
     ret = drmDevice.GetCrtcProperty(*this, PROP_MODEID, prop);
@@ -57,14 +61,14 @@ int32_t DrmCrtc::Init(DrmDevice &drmDevice)
     if (ret != DISPLAY_SUCCESS) {
         DISPLAY_LOGE("Failed to get plane_mask property");
     } else {
-        for (int i = 0; i < static_cast<int>(ARRAY_SIZE(planeMaskNames)); i++) {
-            for (auto &drmEnum : prop.enums) {
-                if (!strncmp(drmEnum.name.c_str(), (const char*)planeMaskNames[i].name,
-                             strlen(drmEnum.name.c_str())) && (prop.value & (1LL << drmEnum.value)) > 0) {
-                    mPlaneMask |=  static_cast<int>(planeMaskNames[i].mask);
-                    DISPLAY_LOGI("crtc id %{public}d, plane name %{public}s value %{public}llx",
-                                 GetId(), (const char*)planeMaskNames[i].name,
-                                 (long long)planeMaskNames[i].mask);
+        for (auto &drmEnum : prop.enums) {
+            for (auto &plane : drmDevice.GetPlanes()) {
+                if (!strncmp(drmEnum.name.c_str(), plane->GetName(), strlen(drmEnum.name.c_str()))
+                    && ((prop.value & (1LLU << drmEnum.value)) > 0)) {
+                    mPlaneMask |= (1 << drmEnum.value);
+                    plane->SetPlaneValue(1 << drmEnum.value);
+                    DISPLAY_LOGD("CHENYF get plane %{public}s mPlaneMask 0x%{public}x\n", plane->GetName(), mPlaneMask);
+                    break;
                 }
             }
         }

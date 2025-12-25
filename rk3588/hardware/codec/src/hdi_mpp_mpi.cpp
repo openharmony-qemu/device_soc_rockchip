@@ -23,7 +23,7 @@
 
 void *mLibHandle = NULL;
 
-char *mLibName = "librockchip_mpp.z.so";
+const char *mLibName = "librockchip_mpp.z.so";
 RKMppApi *GetPacketApi(RKMppApi *pMppApi)
 {
     pMppApi->HdiMppPacketNew = (hdiMppPacketNew)dlsym(mLibHandle, "mpp_packet_new");
@@ -123,7 +123,11 @@ int32_t GetMppApi(RKMppApi **mppApi)
     }
 
     RKMppApi *pMppApi = *mppApi;
-    memset_s(pMppApi, sizeof(RKMppApi), 0, sizeof(RKMppApi));
+    int32_t ret = memset_s(pMppApi, sizeof(RKMppApi), 0, sizeof(RKMppApi));
+    if (ret != EOK) {
+        HDF_LOGE("memset_s pMppApi error %{public}d", ret);
+        return ret;
+    }
 
     mLibHandle = dlopen(mLibName, RTLD_NOW);
     if (mLibHandle == NULL) {
@@ -156,7 +160,10 @@ int32_t GetMppApi(RKMppApi **mppApi)
 void ReleaseMppApi(RKMppApi *mppApi)
 {
     if (mppApi != NULL) {
-        memset_s(mppApi, sizeof(RKMppApi), 0, sizeof(RKMppApi));
+        int ret = memset_s(mppApi, sizeof(RKMppApi), 0, sizeof(RKMppApi));
+        if (ret != EOK) {
+            HDF_LOGE("memset_s mppApi error %{public}d", ret);
+        }
         free(mppApi);
     }
 }

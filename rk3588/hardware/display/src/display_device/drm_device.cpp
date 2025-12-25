@@ -179,6 +179,8 @@ void DrmDevice::FindAllCrtc(const drmModeResPtr &res)
             continue;
         }
         uint32_t crtc_id = crtc->crtc_id;
+        DISPLAY_LOGD("res->count_crtcs %{public}d, res->count_connectors %{public}d crtc id %{public}d",
+            res->count_crtcs, res->count_connectors, crtc_id);
         std::shared_ptr<DrmCrtc> drmCrtc = std::make_shared<DrmCrtc>(crtc, i);
         int ret = drmCrtc->Init(*this);
         drmModeFreeCrtc(crtc);
@@ -214,7 +216,7 @@ void DrmDevice::FindAllConnector(const drmModeResPtr &res)
     int ret;
     for (int i = 0; i < res->count_connectors; i++) {
         drmModeConnectorPtr connector = drmModeGetConnector(GetDrmFd(), res->connectors[i]);
-        if (!connector) {
+        if (!connector || (connector->connection != DRM_MODE_CONNECTED)) {
             DISPLAY_LOGE("can not get connector mode %{public}d", i);
             continue;
         }
@@ -272,11 +274,11 @@ std::shared_ptr<DrmCrtc> DrmDevice::GetDrmCrtcFromId(uint32_t id)
     return nullptr;
 }
 
-std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t pipe, uint32_t type)
+std::vector<std::shared_ptr<DrmPlane>> DrmDevice::GetDrmPlane(uint32_t plane_mask, uint32_t type)
 {
     std::vector<std::shared_ptr<DrmPlane>> planes;
     for (const auto &plane : mPlanes) {
-        if (plane->IsIdle() && ((1 << pipe) & plane->GetPossibleCrtcs()) && (type == plane->GetType())) {
+        if (plane->IsIdle() && ((int)plane->GetPlaneValue() & plane_mask) && (type == plane->GetType())) {
             planes.push_back(plane);
         }
     }
@@ -320,10 +322,10 @@ std::unordered_map<uint32_t, std::shared_ptr<HdiDisplay>> DrmDevice::DiscoveryDi
     drmModeResPtr res = drmModeGetResources(GetDrmFd());
     DISPLAY_CHK_RETURN((res == nullptr), mDisplays, DISPLAY_LOGE("can not get drm resource"));
     // discovery all drm resource
+    FindAllPlane();
     FindAllCrtc(res);
     FindAllEncoder(res);
     FindAllConnector(res);
-    FindAllPlane();
     DISPLAY_LOGD();
     // travel all connector
     for (auto &connectorPair : mConnectors) {

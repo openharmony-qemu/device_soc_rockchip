@@ -21,118 +21,47 @@
 
 #define MPP_TAG_SIZE            32
 
-#define MPP_ABS(x)              ((x) < (0) ? -(x) : (x))
-
-#define MPP_MAX(a, b)           ((a) > (b) ? (a) : (b))
-#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a,b),c)
-#define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
-
-#define MPP_MIN(a,b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN(a,b),c)
-#define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
-
-#define MPP_DIV(a, b)           ((b) ? (a) / (b) : (a))
-
-#define MPP_CLIP3(l, h, v)      ((v) < (l) ? (l) : ((v) > (h) ? (h) : (v)))
-#define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
-#define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
-
-#define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
-#define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
-#define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
-#define MPP_VSWAP(a, b)         { a ^= b; b ^= a; a ^= b; }
-
-#define MPP_RB16(x)  ((((const RK_U8*)(x))[0] << 8) | ((const RK_U8*)(x))[1])
-#define MPP_WB16(p, d) do { \
-        ((RK_U8*)(p))[1] = (d); \
-        ((RK_U8*)(p))[0] = (d)>>8; } while(0)
-
-#define MPP_RL16(x)  ((((const RK_U8*)(x))[1] << 8) | \
-                     ((const RK_U8*)(x))[0])
-#define MPP_WL16(p, d) do { \
-        ((RK_U8*)(p))[0] = (d); \
-        ((RK_U8*)(p))[1] = (d)>>8; } while(0)
-
-#define MPP_RB32(x)  ((((const RK_U8*)(x))[0] << 24) | \
-                     (((const RK_U8*)(x))[1] << 16) | \
-                     (((const RK_U8*)(x))[2] <<  8) | \
-                     ((const RK_U8*)(x))[3])
-#define MPP_WB32(p, d) do { \
-        ((RK_U8*)(p))[3] = (d); \
-        ((RK_U8*)(p))[2] = (d)>>8; \
-        ((RK_U8*)(p))[1] = (d)>>16; \
-        ((RK_U8*)(p))[0] = (d)>>24; } while(0)
-
-#define MPP_RL32(x) ((((const RK_U8*)(x))[3] << 24) | \
-                    (((const RK_U8*)(x))[2] << 16) | \
-                    (((const RK_U8*)(x))[1] <<  8) | \
-                    ((const RK_U8*)(x))[0])
-#define MPP_WL32(p, d) do { \
-        ((RK_U8*)(p))[0] = (d); \
-        ((RK_U8*)(p))[1] = (d)>>8; \
-        ((RK_U8*)(p))[2] = (d)>>16; \
-        ((RK_U8*)(p))[3] = (d)>>24; } while(0)
-
-#define MPP_RB64(x)  (((RK_U64)((const RK_U8*)(x))[0] << 56) | \
-                     ((RK_U64)((const RK_U8*)(x))[1] << 48) | \
-                     ((RK_U64)((const RK_U8*)(x))[2] << 40) | \
-                     ((RK_U64)((const RK_U8*)(x))[3] << 32) | \
-                     ((RK_U64)((const RK_U8*)(x))[4] << 24) | \
-                     ((RK_U64)((const RK_U8*)(x))[5] << 16) | \
-                     ((RK_U64)((const RK_U8*)(x))[6] <<  8) | \
-                     (RK_U64)((const RK_U8*)(x))[7])
-#define MPP_WB64(p, d) do { \
-        ((RK_U8*)(p))[7] = (d);     \
-        ((RK_U8*)(p))[6] = (d)>>8;  \
-        ((RK_U8*)(p))[5] = (d)>>16; \
-        ((RK_U8*)(p))[4] = (d)>>24; \
-        ((RK_U8*)(p))[3] = (d)>>32; \
-        ((RK_U8*)(p))[2] = (d)>>40; \
-        ((RK_U8*)(p))[1] = (d)>>48; \
-        ((RK_U8*)(p))[0] = (d)>>56; } while(0)
-
-#define MPP_RL64(x)  (((RK_U64)((const RK_U8*)(x))[7] << 56) | \
-                     ((RK_U64)((const RK_U8*)(x))[6] << 48) | \
-                     ((RK_U64)((const RK_U8*)(x))[5] << 40) | \
-                     ((RK_U64)((const RK_U8*)(x))[4] << 32) | \
-                     ((RK_U64)((const RK_U8*)(x))[3] << 24) | \
-                     ((RK_U64)((const RK_U8*)(x))[2] << 16) | \
-                     ((RK_U64)((const RK_U8*)(x))[1] <<  8) | \
-                     (RK_U64)((const RK_U8*)(x))[0])
-#define MPP_WL64(p, d) do { \
-        ((RK_U8*)(p))[0] = (d);     \
-        ((RK_U8*)(p))[1] = (d)>>8;  \
-        ((RK_U8*)(p))[2] = (d)>>16; \
-        ((RK_U8*)(p))[3] = (d)>>24; \
-        ((RK_U8*)(p))[4] = (d)>>32; \
-        ((RK_U8*)(p))[5] = (d)>>40; \
-        ((RK_U8*)(p))[6] = (d)>>48; \
-        ((RK_U8*)(p))[7] = (d)>>56; } while(0)
-
-#define MPP_RB24(x)  ((((const RK_U8*)(x))[0] << 16) | \
-                     (((const RK_U8*)(x))[1] <<  8) | \
-                     ((const RK_U8*)(x))[2])
-#define MPP_WB24(p, d) do { \
-        ((RK_U8*)(p))[2] = (d); \
-        ((RK_U8*)(p))[1] = (d)>>8; \
-        ((RK_U8*)(p))[0] = (d)>>16; } while(0)
-
-#define MPP_RL24(x)  ((((const RK_U8*)(x))[2] << 16) | \
-                     (((const RK_U8*)(x))[1] <<  8) | \
-                     ((const RK_U8*)(x))[0])
-
-#define MPP_WL24(p, d) do { \
-        ((RK_U8*)(p))[0] = (d); \
-        ((RK_U8*)(p))[1] = (d)>>8; \
-        ((RK_U8*)(p))[2] = (d)>>16; } while(0)
-
+inline RK_S32 MPP_ALIGN(RK_S32 x, RK_S32 a)
+{
+    return (((x) + (a) - 1) & ~((a) - 1));
+}
 #include <stdio.h>
+#if defined(_WIN32) && !defined(__MINGW32CE__)
+#define fseeko                  _fseeki64
+
+#include <direct.h>
+#include <io.h>
+#include <sys/stat.h>
+
+#define chdir                   _chdir
+#define mkdir                   _mkdir
+#define access                  _access
+#define off_t                   _off_t
+
+#define R_OK                    4 /* Test for read permission. */
+#define W_OK                    2 /* Test for write permission. */
+#define X_OK                    1 /* Test for execute permission. */
+#define F_OK                    0 /* Test for existence. */
+
+#elif defined(__MINGW32CE__)
+#define fseeko                  fseeko64
+#else
+#include <unistd.h>
+#include <stddef.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+inline int mkdir(const char *x)
+{
+    return mkdir(x, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+}
+#endif
 
 #define container_of(ptr, type, member) \
     ((type *)((char *)(ptr) - offsetof(type, member)))
 
-#define __RETURN                __Return
-#define __FAILED                __failed
+#define RETURN                Return
+#define FAILED                failed
 
 #define ARG_T(t)                t
 #define ARG_N(a,b,c,d,N,...)    N
@@ -159,6 +88,90 @@
 #define SZ_80M                  (SZ_1M*80)
 #define SZ_128M                 (SZ_1M*128)
 
+#define TSVC_MAX_TID_LEVEL_1    0
+#define TSVC_MAX_TID_LEVEL_2    1
+#define TSVC_MAX_TID_LEVEL_3    2
+#define TSVC_MAX_TID_LEVEL_4    3
+
+#define MJPEG_DEFAULT_QP        10
+#define H264_MIN_QP             10
+#define H264_MIN_QP_I           10
+#define H264_MAX_QP             51
+#define H264_MAX_QP_I           51
+#define H264_QP_STEP            4
+#define H264_QP_DELTA_IP        3
+#define VP8_DEFAULT_QP          56
+#define H264_DEFAULT_QP         26
+#define VP8_MAX_QP              127
+
+#define TEMPORAL_ID_LAYER_0     0
+#define TEMPORAL_ID_LAYER_1     1
+#define TEMPORAL_ID_LAYER_2     2
+#define TEMPORAL_ID_LAYER_3     3
+
+#define NO_REPETITION               0
+#define DEFAULT_REF_VALUE       0
+#define REF_ARG_VALUE_1         1
+
+#define STRIDE_MULTIPLIER_RGB565    2
+#define STRIDE_MULTIPLIER_BGR888    3
+#define STRIDE_MULTIPLIER_RGBA8888  4
+#define RGB565_PIXEL_SIZE_RATIO 3
+#define RGB101010_PIXEL_SIZE_RATIO  4
+#define YUV420_PIXEL_SIZE_RATIO_NUMERATOR 3
+#define YUV420_PIXEL_SIZE_RATIO_DENOMINATOR 2
+#define YUV420_PIXEL_RATIO_DENOMINATOR  2
+
+#define VPU_FLAG_DEFAULT    0
+#define IS_NON_REF_FALSE    0
+#define IS_NON_REF_TRUE     1
+
+#define BPP_RGB_16BIT_FORMATS 2  // For RGB444/555/565 formats
+#define BPP_DEFAULT_FORMATS   4  // For other formats
+
+typedef enum {
+    TSVC0_ST_0_INDEX = 0,
+    TSVC0_ST_COUNT = 1
+} Tsvc0ConfigIndex;
+
+/* TSVC2 配置索引 */
+typedef enum {
+    TSVC2_ST_0_INDEX = 0,
+    TSVC2_ST_1_INDEX,
+    TSVC2_ST_2_INDEX,
+    TSVC2_ST_COUNT = 3
+} Tsvc2ConfigIndex;
+
+/* TSVC3 配置索引 */
+typedef enum {
+    TSVC3_ST_0_INDEX = 0,
+    TSVC3_ST_1_INDEX,
+    TSVC3_ST_2_INDEX,
+    TSVC3_ST_3_INDEX,
+    TSVC3_ST_4_INDEX,
+    TSVC3_ST_COUNT = 5
+} Tsvc3ConfigIndex;
+
+/* TSVC4 配置索引 */
+typedef enum {
+    TSVC4_ST_0_INDEX = 0,
+    TSVC4_ST_1_INDEX,
+    TSVC4_ST_2_INDEX,
+    TSVC4_ST_3_INDEX,
+    TSVC4_ST_4_INDEX,
+    TSVC4_ST_5_INDEX,
+    TSVC4_ST_6_INDEX,
+    TSVC4_ST_7_INDEX,
+    TSVC4_ST_8_INDEX,
+    TSVC4_ST_COUNT = 9
+} Tsvc4ConfigIndex;
+
+#define MPP_REQ_WRITE_INDEX     0
+#define MPP_REQ_READ_INDEX      1
+#define MPP_REQ_PATCH_INDEX     2
+#define MPP_BASIC_REQ_COUNT     2
+#define MPP_FULL_REQ_COUNT      3
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -166,26 +179,56 @@ extern "C" {
 RK_S32 mpp_log2(RK_U32 v);
 RK_S32 mpp_log2_16bit(RK_U32 v);
 
-static __inline RK_S32 mpp_ceil_log2(RK_S32 x)
+static inline RK_S32 mpp_ceil_log2(RK_S32 x)
 {
     return mpp_log2((x - 1) << 1);
 }
 
-static __inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
+static inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
 {
-    if      (a < amin) return amin;
-    else if (a > amax) return amax;
-    else               return a;
+    if (a < amin) {
+        return amin;
+    } else if (a > amax) {
+        return amax;
+    } else {
+        return a;
+    }
 }
 
-static __inline RK_U32 mpp_is_32bit()
+static inline RK_U32 mpp_is_32bit()
 {
-    return ((sizeof(void *) == 4) ? (1) : (0));
+    const int IS_32BIT = 1;
+    const int IS_NOT_32BIT = 0;
+    const size_t SIZE_OF_UINT32 = sizeof(uint32_t);
+    return ((SIZE_OF_UINT32 == sizeof(void *)) ? (IS_32BIT) : (IS_NOT_32BIT));
+}
+
+static inline RK_S32 mpp_dup(RK_S32 fd)
+{
+    /* avoid stdin / stdout / stderr so start from 3 */
+    const int MINIMUM_SAFE_FD = 3;
+#ifdef F_DUPFD_CLOEXEC
+    return fcntl(fd, F_DUPFD_CLOEXEC, MINIMUM_SAFE_FD);
+#else
+    RK_S32 new_fd = -1;
+
+    new_fd = fcntl(fd, F_DUPFD, MINIMUM_SAFE_FD);
+    if (new_fd == -1)
+        return -1;
+
+    if (fcntl(new_fd, F_SETFD, FD_CLOEXEC) == -1)
+        return -1;
+
+    return new_fd;
+#endif
 }
 
 RK_S32 axb_div_c(RK_S32 a, RK_S32 b, RK_S32 c);
 RK_U32 mpp_align_16(RK_U32 val);
 RK_U32 mpp_align_64(RK_U32 val);
+RK_U32 mpp_align_128(RK_U32 val);
+RK_U32 mpp_align_256_odd(RK_U32 val);
+RK_U32 mpp_align_128_odd_plus_64(RK_U32 val);
 
 #ifdef __cplusplus
 }

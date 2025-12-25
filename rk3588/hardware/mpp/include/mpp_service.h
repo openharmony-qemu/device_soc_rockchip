@@ -26,9 +26,15 @@
 #define MAX_REQ_NUM                         16
 
 #if __SIZEOF_POINTER__ == 4
-#define REQ_DATA_PTR(ptr) ((RK_U32)ptr)
+inline RK_U32 REQ_DATA_PTR(void* ptr)
+{
+    return reinterpret_cast<RK_U32>(ptr);
+}
 #elif __SIZEOF_POINTER__ == 8
-#define REQ_DATA_PTR(ptr) ((RK_U64)ptr)
+inline RK_U64 REQ_DATA_PTR(void* ptr)
+{
+    return reinterpret_cast<RK_U64>(ptr);
+}
 #endif
 
 /* define flags for mpp_request */
@@ -88,7 +94,7 @@ typedef enum MppServiceCmdType_e {
     MPP_CMD_TRANS_FD_TO_IOVA        = MPP_CMD_CONTROL_BASE + 1,
     MPP_CMD_RELEASE_FD              = MPP_CMD_CONTROL_BASE + 2,
     MPP_CMD_SEND_CODEC_INFO         = MPP_CMD_CONTROL_BASE + 3,
-    MPP_CMD_BAT_CMD                 = MPP_CMD_CONTROL_BASE + 4,
+    MPP_CMD_SET_ERR_REF_HACK        = MPP_CMD_CONTROL_BASE + 4,
     MPP_CMD_CONTROL_BUTT,
 
     MPP_CMD_BUTT,

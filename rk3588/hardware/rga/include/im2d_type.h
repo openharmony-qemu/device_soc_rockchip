@@ -21,6 +21,30 @@
 
 #include <stdint.h>
 
+#include "rga.h"
+#include "im2d_version.h"
+
+#define IM_API /* define API export as needed */
+
+#ifdef __cplusplus
+#define IM_C_API extern "C"
+#define IM_EXPORT_API extern "C"
+#else
+#define IM_C_API
+#define IM_EXPORT_API
+#endif
+
+#ifdef __cplusplus
+#define DEFAULT_INITIALIZER(x) = x
+#else
+#define DEFAULT_INITIALIZER(x)
+#endif
+
+typedef uint32_t im_api_version_t;
+typedef uint32_t im_job_handle_t;
+typedef uint32_t im_ctx_id_t;
+typedef uint32_t rga_buffer_handle_t;
+
 typedef enum {
     /* Rotation */
     IM_HAL_TRANSFORM_ROT_90     = 1 << 0,
@@ -30,6 +54,8 @@ typedef enum {
     IM_HAL_TRANSFORM_FLIP_V     = 1 << 4,
     IM_HAL_TRANSFORM_FLIP_H_V   = 1 << 5,
     IM_HAL_TRANSFORM_MASK       = 0x3f,
+    IM_HAL_TRANSFORM_ROT_MASK   = 0x7,
+    IM_HAL_TRANSFORM_FLIP_MASK  = 0x38,
 
     /*
      * Blend
@@ -64,21 +90,29 @@ typedef enum {
     IM_MOSAIC                   = 1 << 27,
     IM_OSD                      = 1 << 28,
     IM_PRE_INTR                 = 1 << 29,
+    IM_ALPHA_BIT_MAP            = 1 << 30,
 } IM_USAGE;
 
 typedef enum {
     IM_RASTER_MODE              = 1 << 0,
-    IM_FBC_MODE                 = 1 << 1,
-    IM_TILE_MODE                = 1 << 2,
+    IM_AFBC16x16_MODE           = 1 << 1,
+    IM_TILE8x8_MODE             = 1 << 2,
+    IM_TILE4x4_MODE             = 1 << 3,
+    IM_RKFBC64x4_MODE           = 1 << 4,
+    IM_AFBC32x8_MODE            = 1 << 5,
+    /* legacy */
+    IM_FBC_MODE                 = IM_AFBC16x16_MODE,
+    IM_TILE_MODE                = IM_TILE8x8_MODE,
 } IM_RD_MODE;
 
 typedef enum {
     IM_SCHEDULER_RGA3_CORE0     = 1 << 0,
     IM_SCHEDULER_RGA3_CORE1     = 1 << 1,
     IM_SCHEDULER_RGA2_CORE0     = 1 << 2,
+    IM_SCHEDULER_RGA2_CORE1     = 1 << 3,
     IM_SCHEDULER_RGA3_DEFAULT   = IM_SCHEDULER_RGA3_CORE0,
     IM_SCHEDULER_RGA2_DEFAULT   = IM_SCHEDULER_RGA2_CORE0,
-    IM_SCHEDULER_MASK           = 0x7,
+    IM_SCHEDULER_MASK           = 0xf,
     IM_SCHEDULER_DEFAULT        = 0,
 } IM_SCHEDULER_CORE;
 
@@ -98,6 +132,12 @@ typedef enum {
     IM_MOSAIC_64                = 0x3,
     IM_MOSAIC_128               = 0x4,
 } IM_MOSAIC_MODE;
+
+typedef enum {
+    IM_BORDER_CONSTANT = 0,             /* iiiiii|abcdefgh|iiiiiii with some specified value 'i' */
+    IM_BORDER_REFLECT = 2,              /* fedcba|abcdefgh|hgfedcb */
+    IM_BORDER_WRAP = 3,                 /* cdefgh|abcdefgh|abcdefg */
+} IM_BORDER_TYPE;
 
 /* Status codes, returned by any blit function */
 typedef enum {
@@ -128,11 +168,25 @@ typedef enum {
     IM_DOWN_SCALE,
 } IM_SCALE;
 
+/* legacy */
 typedef enum {
     INTER_NEAREST,
     INTER_LINEAR,
     INTER_CUBIC,
 } IM_SCALE_MODE;
+
+typedef enum {
+    IM_INTERP_DEFAULT = 0,
+    IM_INTERP_LINEAR = 1,
+    IM_INTERP_CUBIC = 2,
+    IM_INTERP_AVERAGE = 3,
+
+    IM_INTERP_MASK = 0xf,
+    IM_INTERP_HORIZ_SHIFT = 0,
+    IM_INTERP_VERTI_SHIFT = 4,
+    IM_INTERP_HORIZ_FLAG = 0x1 << 8,
+    IM_INTERP_VERTI_FLAG = 0x1 << 9,
+} IM_INTER_MODE;
 
 typedef enum {
     IM_CONFIG_SCHEDULER_CORE,
@@ -229,10 +283,6 @@ typedef enum {
     IM_STATUS_FAILED            =  0,
 } IM_STATUS;
 
-typedef uint32_t im_api_version_t;
-typedef uint32_t im_ctx_id_t;
-typedef uint32_t rga_buffer_handle_t;
-
 /* Rectangle definition */
 typedef struct {
     int x;        /* upper-left x */
@@ -269,10 +319,16 @@ typedef struct {
     int format;                         /* format */
 
     int color_space_mode;               /* color_space_mode */
-    int global_alpha;                   /* global_alpha */
+    union {
+        int global_alpha;               /* global_alpha, the default should be 0xff */
+        struct {
+            uint16_t alpha0;
+            uint16_t alpha1;
+        } alpha_bit;                    /* alpha bit(e.g. RGBA5551), 0: alpha0, 1: alpha1 */
+    };
     int rd_mode;
 
-    /* legarcy */
+    /* legacy */
     int color;                          /* color, used by color fill */
     im_colorkey_range colorkey_range;   /* range value of color key */
     im_nn_t nn;
@@ -383,7 +439,7 @@ typedef struct im_intr_config {
 } im_intr_config_t;
 
 typedef struct im_opt {
-    im_api_version_t version;
+    im_api_version_t version DEFAULT_INITIALIZER(RGA_CURRENT_API_HEADER_VERSION);
 
     int color;                          /* color, used by color fill */
     im_colorkey_range colorkey_range;   /* range value of color key */
@@ -399,19 +455,19 @@ typedef struct im_opt {
 
     im_intr_config_t intr_config;
 
-    char reserve[128];
-} im_opt_t;
+    int interp;
 
-typedef struct im_context {
-    int priority;
-    IM_SCHEDULER_CORE core;
-    int check_mode;
-} im_context_t;
+    char reserve[124];
+} im_opt_t;
 
 typedef struct im_handle_param {
     uint32_t width;
     uint32_t height;
     uint32_t format;
-}im_handle_param_t;
+} im_handle_param_t;
+
+#define IM_INTERP_HORIZ(x) (((x) & IM_INTERP_MASK) << IM_INTERP_HORIZ_SHIFT | IM_INTERP_HORIZ_FLAG)
+#define IM_INTERP_VERTI(x) (((x) & IM_INTERP_MASK) << IM_INTERP_VERTI_SHIFT | IM_INTERP_VERTI_FLAG)
+#define IM_INTERP(h, v) (IM_INTERP_HORIZ(h) | IM_INTERP_VERTI(v))
 
 #endif /* _RGA_IM2D_TYPE_H_ */

@@ -43,6 +43,7 @@ int32_t GetDefaultHorStride(int32_t width, PixelFormat fmtHDI);
 int32_t SetParamWidth(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t SetParamHeight(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t SetParamPixelFmt(RKHdiBaseComponent *pBaseComponent, Param *param);
+int32_t SetParamStride(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t SetParamHorStride(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t SetParamVerStride(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t SetParamFps(RKHdiBaseComponent *pBaseComponent, Param *param);
@@ -70,5 +71,6 @@ int32_t GetParamCodecType(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t GetParamSplitParse(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t GetParamCodecFrameNum(RKHdiBaseComponent *pBaseComponent, Param *param);
 int32_t GetParamDrop(RKHdiBaseComponent *pBaseComponent, Param *param);
+int32_t ValidateEncSetup(RKHdiBaseComponent *pBaseComponent, Param *param);
 
 #endif // HDI_MPP_CONFIG_H

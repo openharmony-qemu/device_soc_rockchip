@@ -33,7 +33,7 @@
  * MppEncRefMode defined the way for user to reference the required frame.
  *
  * Normal reference mode without argument
- *  REF_TO_PREV_REF_FRM   - refer to previous reference frame in encode order (No matter Lt or St)
+ *  REF_MODE_TO_PREV_REF_FRM   - refer to previous reference frame in encode order (No matter Lt or St)
  *  REF_TO_PREV_ST_REF    - refer to previous short-term reference frame
  *  REF_TO_PREV_LT_REF    - refer to previous long-term reference frame
  *  REF_TO_PREV_INTRA     - refer to previous Intra / IDR frame
@@ -155,7 +155,7 @@ typedef enum MppEncRefMode_e {
     /* max 32 mode in 32-bit */
     /* for default ref global config */
     REF_MODE_GLOBAL,
-    REF_TO_PREV_REF_FRM                 = REF_MODE_GLOBAL,
+    REF_MODE_TO_PREV_REF_FRM                 = REF_MODE_GLOBAL,
     REF_TO_PREV_ST_REF,
     REF_TO_PREV_LT_REF,
     REF_TO_PREV_INTRA,

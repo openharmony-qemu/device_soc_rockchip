@@ -181,7 +181,17 @@
                 <filteritem type="filepath" name="rk3588/hardware/gpu/firmware/mali_csffw.bin" desc="gpu firmware"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/lib64/*" desc="gpb 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp/*" desc="isp lib and bin files"/>
+				<filteritem type="filepath" name="rk3588/hardware/isp/lib/librkaiq.z.so" desc="isp lib files"/>
+				<filteritem type="filepath" name="rk3588/hardware/isp/lib/librkaiq.z.so" desc="isp lib files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/lib/librkaiq.so" desc="isp lib 32bit files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/lib64/librkaiq.so" desc="isp lib 64bit files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin/ispserver" desc="isp bin files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin64/ispserver" desc="isp bin files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp/bin/ispserver" desc="isp bin files"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp/bin64/ispserver" desc="isp bin files"/>
                 <filteritem type="filepath" name="rk3588/hardware/mpp/lib64/*" desc="mpp 64bit libs file"/>
+                <filteritem type="filepath" name="rk3588/hardware/mpp/lib/librockchip_mpp.z.so" desc="lib files"/>
+                <filteritem type="filepath" name="rk3588/hardware/mpp/lib64/librockchip_mpp.z.so" desc="lib files"/>
                 <filteritem type="filepath" name="rk3588/hardware/display/lib/*" desc="display 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/display/lib64/*" desc="display 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/omx_il/lib/*" desc="omx 32bit libs file"/>

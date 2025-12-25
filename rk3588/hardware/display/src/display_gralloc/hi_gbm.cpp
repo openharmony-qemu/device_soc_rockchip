@@ -32,6 +32,23 @@ namespace DISPLAY {
 #define ROCKCHIP_BO_CONTIG (1 << 0)
 #endif
 
+/* memory type definitions. */
+enum drm_rockchip_gem_mem_type {
+    /* Physically Continuous memory. */
+    ROCKCHIP_BO_CONTIG  = 1 << 0,
+    /* cachable mapping. */
+    ROCKCHIP_BO_CACHABLE    = 1 << 1,
+    /* write-combine mapping. */
+    ROCKCHIP_BO_WC      = 1 << 2,
+    ROCKCHIP_BO_SECURE  = 1 << 3,
+    /* keep kmap for cma buffer or alloc kmap for other type memory */
+    ROCKCHIP_BO_ALLOC_KMAP  = 1 << 4,
+    /* alloc page with gfp_dma32 */
+    ROCKCHIP_BO_DMA32   = 1 << 5,
+    ROCKCHIP_BO_MASK    = ROCKCHIP_BO_CONTIG | ROCKCHIP_BO_CACHABLE |
+                ROCKCHIP_BO_WC | ROCKCHIP_BO_SECURE | ROCKCHIP_BO_ALLOC_KMAP |
+                ROCKCHIP_BO_DMA32,
+};
 using PlaneLayoutInfo = struct {
     uint32_t numPlanes;
     uint32_t radio[MAX_PLANES];
@@ -133,7 +150,7 @@ struct gbm_bo *hdi_gbm_bo_create(struct gbm_device *gbm, uint32_t width, uint32_
     // init create_dumb
     dumb.height = ALIGN_UP(AdjustStrideFromFormat(format, height), HEIGHT_ALIGN);
     dumb.width = ALIGN_UP(width, WIDTH_ALIGN);
-    dumb.flags = 0;
+    dumb.flags = ROCKCHIP_BO_DMA32;
     dumb.bpp = fmtInfo->bitsPerPixel;
     ret = drmIoctl(gbm->fd, DRM_IOCTL_MODE_CREATE_DUMB, &dumb);
     DISPLAY_LOGD("fmt 0x%{public}x create dumb width: %{public}d  height: %{public}d bpp: %{public}u pitch"

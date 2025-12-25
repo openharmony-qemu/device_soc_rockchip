@@ -36,7 +36,7 @@ struct mpp_list_node;
 class mpp_list : public MppMutexCond
 {
 public:
-    mpp_list(node_destructor func = NULL);
+    explicit  mpp_list(node_destructor func = NULL);
     ~mpp_list();
 
     // for FIFO or FILO implement
@@ -148,57 +148,57 @@ struct list_head {
          &pos->member != (head);                    \
          pos = n, n = list_prev_entry(n, type, member))
 
-static __inline void __list_add(struct list_head * _new,
-                                struct list_head * prev,
-                                struct list_head * next)
+static inline void list_add(struct list_head * new_entry,
+                            struct list_head * prev,
+                            struct list_head * next)
 {
-    next->prev = _new;
-    _new->next = next;
-    _new->prev = prev;
-    prev->next = _new;
+    next->prev = new_entry;
+    new_entry->next = next;
+    new_entry->prev = prev;
+    prev->next = new_entry;
 }
 
-static __inline void list_add(struct list_head *_new, struct list_head *head)
+static inline void list_add(struct list_head *new_entry, struct list_head *head)
 {
-    __list_add(_new, head, head->next);
+    list_add(new_entry, head, head->next);
 }
 
-static __inline void list_add_tail(struct list_head *_new, struct list_head *head)
+static inline void list_add_tail(struct list_head *new_entry, struct list_head *head)
 {
-    __list_add(_new, head->prev, head);
+    list_add(new_entry, head->prev, head);
 }
 
-static __inline void __list_del(struct list_head * prev, struct list_head * next)
+static inline void list_del(struct list_head * prev, struct list_head * next)
 {
     next->prev = prev;
     prev->next = next;
 }
 
-static __inline void list_del_init(struct list_head *entry)
+static inline void list_del_init(struct list_head *entry)
 {
-    __list_del(entry->prev, entry->next);
+    list_del(entry->prev, entry->next);
 
     INIT_LIST_HEAD(entry);
 }
 
-static __inline void list_move(struct list_head *list, struct list_head *head)
+static inline void list_move(struct list_head *list, struct list_head *head)
 {
-    __list_del(list->prev, list->next);
+    list_del(list->prev, list->next);
     list_add(list, head);
 }
 
-static __inline void list_move_tail(struct list_head *list, struct list_head *head)
+static inline void list_move_tail(struct list_head *list, struct list_head *head)
 {
-    __list_del(list->prev, list->next);
+    list_del(list->prev, list->next);
     list_add_tail(list, head);
 }
 
-static __inline int list_is_last(const struct list_head *list, const struct list_head *head)
+static inline int list_is_last(const struct list_head *list, const struct list_head *head)
 {
     return list->next == head;
 }
 
-static __inline int list_empty(struct list_head *head)
+static inline int list_empty(struct list_head *head)
 {
     return head->next == head;
 }
