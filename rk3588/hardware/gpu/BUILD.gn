@@ -33,10 +33,9 @@ ohos_prebuilt_shared_library("mali-g610-ohos") {
   }
 
   # [TODO]:decoupling system.img and vendor.img
-  # install_images = [ chipset_base_dir ]
-  # relative_install_dir = "chipsetsdk"
-  # revert
-  install_images = [ system_base_dir ]
+  install_images = [ chipset_base_dir ]
+  relative_install_dir = "chipsetsdk"
+  #install_images = [ system_base_dir ]
   subsystem_name = "rockchip_products"
   part_name = "rockchip_products"
   install_enable = true
