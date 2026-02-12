@@ -293,8 +293,12 @@ bool DrmConnector::HandleHotplug(IdMapPtr<DrmEncoder> &encoders,
         DISPLAY_LOGE("drm atomic alloc failed errno %{public}d", errno));
 
     drmModeConnectorPtr c = drmModeGetConnector(drmFd, mId);
-    DISPLAY_CHK_RETURN((c == nullptr), false, DISPLAY_LOGE("can not get connector"));
+    DISPLAY_CHK_RETURN((c == nullptr), false,
+        DISPLAY_LOGE("can not get connector");
+        drmModeAtomicFree(pset);
+    );
     if (mConnectState == c->connection) {
+        drmModeAtomicFree(pset);
         drmModeFreeConnector(c);
         return false;
     } else {
@@ -311,11 +315,17 @@ bool DrmConnector::HandleHotplug(IdMapPtr<DrmEncoder> &encoders,
         ret |= drmModeAtomicAddProperty(pset, crtc->GetId(), crtc->GetModePropId(), blob_id);
         ret |= drmModeAtomicAddProperty(pset, GetId(), GetPropCrtcId(), crtc_id);
         DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE,
-            DISPLAY_LOGE("can not add the crtc id prop %{public}d", errno));
+            DISPLAY_LOGE("can not add the crtc id prop %{public}d", errno);
+            drmModeAtomicFree(pset);
+            drmModeFreeConnector(c);
+        );
 
         ret = drmModeAtomicCommit(drmFd, pset, DRM_MODE_ATOMIC_ALLOW_MODESET, nullptr);
         DISPLAY_CHK_RETURN((ret < 0), DISPLAY_FAILURE,
-            DISPLAY_LOGE("can not add the crtc id prop %{public}d", errno));
+            DISPLAY_LOGE("can not add the crtc id prop %{public}d", errno);
+            drmModeAtomicFree(pset);
+            drmModeFreeConnector(c);
+        );
         drmModeAtomicFree(pset);
 
         mConnectState = c->connection;
