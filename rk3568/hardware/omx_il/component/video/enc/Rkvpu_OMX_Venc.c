@@ -682,7 +682,7 @@ OMX_BOOL Rkvpu_SendInputData(OMX_COMPONENTTYPE *pOMXComponent)
             }
             aInput.size = inputUseBuffer->dataLen;
             aInput.timeUs = inputUseBuffer->timeStamp;
-            if (pVideoEnc->fp_enc_in) {
+            if (pVideoEnc->fp_enc_in && aInput.buf) {
                 fwrite(aInput.buf, 1, inputUseBuffer->dataLen, pVideoEnc->fp_enc_in);
                 fflush(pVideoEnc->fp_enc_in);
             }
