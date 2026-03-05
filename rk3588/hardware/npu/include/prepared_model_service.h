@@ -20,6 +20,19 @@
 #include "ashmem.h"
 #include "nnrt/v2_0/iprepared_model.h"
 
+#define TENSOR_DIM_INDEX_0    0   // 张量维度索引0（如批次/Batch）
+#define TENSOR_DIM_INDEX_1    1   // 张量维度索引1（如通道/Channel）
+#define TENSOR_DIM_INDEX_2    2   // 张量维度索引2（如高度/Height）
+#define TENSOR_DIM_INDEX_3    3   // 张量维度索引3（如宽度/Width）
+
+#define RKNN_WANT_FLOAT_ENABLE        1       // RKNN输出启用浮点格式
+#define RKNN_WANT_FLOAT_DISABLE       0       // RKNN输出禁用浮点格式
+#define RKNN_IS_PREALLOC_DISABLE      0       // RKNN输出禁用预分配缓冲区
+#define OUTPUT_LOG_PRINT_LENGTH       32      // 输出数据日志打印的最大长度（字节）
+#define FLOAT32_BYTE_SIZE             4       // 32位浮点数据的字节长度
+#define MEM_WRITE_OFFSET_ZERO         0       // 内存写入的起始偏移量
+#define RKNN_ATTR_INDEX_BASE          0       // RKNN张量属性索引起始值
+
 namespace OHOS {
 namespace HDI {
 namespace Nnrt {

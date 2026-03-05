@@ -58,30 +58,36 @@ static unsigned char* load_model(const char* filename, int* model_size)
 {
     int ret = 0;
     FILE*          fp;
-    unsigned char* data = NULL;
+    unsigned char* data = nullptr;
     HDF_LOGI("load_model %{public}s", filename);
 
     fp = fopen(filename, "rb");
-    if (NULL == fp) {
+    if (nullptr == fp) {
         HDF_LOGE("load_model: Open file %{public}s failed", filename);
-        return NULL;
+        return nullptr;
     }
 
     fseek(fp, 0, SEEK_END);
     int size = ftell(fp);
     HDF_LOGI("load_model: file size %d", size);
 
+    if (size <= 0) {
+        fclose(fp);
+        HDF_LOGE("load_model: invalid file size %d (must be > 0)", size);
+        return nullptr;
+    }
+
     ret = fseek(fp, 0, SEEK_SET);
     if (ret != 0) {
         fclose(fp);
         HDF_LOGE("load_model: blob seek failure");
-        return NULL;
+        return nullptr;
     }
     data = (unsigned char*)malloc(size);
-    if (data == NULL) {
+    if (data == nullptr) {
         fclose(fp);
         HDF_LOGE("load_model: buffer malloc failure");
-        return NULL;
+        return nullptr;
     }
     ret = fread(data, 1, size, fp);
 
@@ -95,9 +101,11 @@ static void dump_tensor_attr(rknn_tensor_attr* attr)
 {
     HDF_LOGI("dump_tensor_attr: index=%d, name=%{public}s, n_dims=%d, dims=[%d, %d, %d, %d],\
         n_elems=%d, size=%d, fmt=%{public}s, type=%{public}s, qnt_type=%{public}s, zp=%d, scale=%f",
-        attr->index, attr->name, attr->n_dims, attr->dims[0], attr->dims[1], attr->dims[2], attr->dims[3],
+        attr->index, attr->name, attr->n_dims, 
+        attr->dims[TENSOR_DIM_INDEX_0], attr->dims[TENSOR_DIM_INDEX_1], 
+        attr->dims[TENSOR_DIM_INDEX_2], attr->dims[TENSOR_DIM_INDEX_3],
         attr->n_elems, attr->size, get_format_string(attr->fmt), get_type_string(attr->type),
-         get_qnt_type_string(attr->qnt_type), attr->zp, attr->scale);
+        get_qnt_type_string(attr->qnt_type), attr->zp, attr->scale);
 }
 
 DataType get_data_type(rknn_tensor_type rknn_data_type)
@@ -214,7 +222,6 @@ int32_t PreparedModelService::ExportModelCache(std::vector<SharedBuffer>& modelC
 int32_t PreparedModelService::GetInputDimRanges(std::vector<std::vector<uint32_t>>& minInputDims,
     std::vector<std::vector<uint32_t>>& maxInputDims)
 {
-    // HDF_LOGI("PreparedModelService::GetInputDimRanges enter");
     if (m_inputDims.empty()) {
         HDF_LOGE("GetInputDimRanges: Model has not been prepared yet.");
         return HDF_ERR_INVALID_PARAM;
@@ -279,9 +286,6 @@ int32_t PreparedModelService::Run(const std::vector<IOTensor>& inputs, const std
 int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
     std::vector<std::vector<int32_t>>& outputsDims, bool& isOutputBufferEnough)
 {
-    // HDF_LOGI("UpdateOutput: m_io_num.n_output %u, outputs.size %zu", 
-    //     m_io_num.n_output, outputs.size());
-
     if (outputs.size() != m_io_num.n_output) {
         HDF_LOGE("outputs size is invalid. expect: \
             %u, actual: %{public}zu", m_io_num.n_output, outputs.size());
@@ -289,7 +293,11 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
     }
 
     rknn_output rknn_outputs[m_io_num.n_output];
-    memset(rknn_outputs, 0, sizeof(rknn_outputs));
+    errno_t err = memset_s(rknn_outputs, sizeof(rknn_outputs), 0, sizeof(rknn_outputs));
+    if (err != 0) {
+        HDF_LOGE("memset_s rknn_outputs failed, err=%{public}d", err);
+        return HDF_ERR_IO;
+    }
     for (size_t i = 0; i < m_io_num.n_output; i++) {
         if (outputs[i].dataType == DATA_TYPE_FLOAT32 || outputs[i].dataType == DATA_TYPE_FLOAT16) {
             rknn_outputs[i].want_float = 1;
@@ -297,14 +305,7 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
         rknn_outputs[i].is_prealloc = 0;
         HDF_LOGI("outputs[%zu].dataType=%d,rknn_outputs[%zu].want_float=%d", i, outputs[i].dataType, i, rknn_outputs[i].want_float);
     }  
-    rknn_outputs_get(m_ctx, m_io_num.n_output, rknn_outputs, NULL);
-
-    HDF_LOGI("--------------------------");
-    char *p = (char*)rknn_outputs[0].buf;
-    for (uint32_t i = 0; i < 32 /*rknn_outputs[0].size*/; i += 4) {
-        HDF_LOGI("output:0x %02x %02x %02x %02x fp32:%.06f", p[i], p[i+1], p[i+2], p[i+3], *(float*)(p + i));
-    }
-    HDF_LOGI("--------------------------");
+    rknn_outputs_get(m_ctx, m_io_num.n_output, rknn_outputs, nullptr);
 
     isOutputBufferEnough = true;
     for (size_t i = 0; i < m_io_num.n_output; i++) {
@@ -315,8 +316,6 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
                 dataSize, output.data.bufferSize);
             isOutputBufferEnough = false;
         }
-        // HDF_LOGI("UpdateOutput: i=%zu, output-buf-size %u, actual data size %u", 
-        // i, output.data.bufferSize, dataSize);
 
         if (isOutputBufferEnough) {
             SharedBuffer buffer = output.data;
@@ -337,9 +336,12 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
     }
     rknn_outputs_release(m_ctx, m_io_num.n_output, rknn_outputs);  
 
-    // HDF_LOGI("UpdateOutput: update tensor attr");
     rknn_tensor_attr output_attrs[m_io_num.n_output];
-    memset(output_attrs, 0, sizeof(output_attrs));
+    err = memset_s(output_attrs, sizeof(output_attrs), 0, sizeof(output_attrs));
+    if (err != 0) {
+        HDF_LOGE("memset_s output_attrs failed, err=%{public}d", err);
+        return HDF_ERR_IO;
+    }
     for (size_t i = 0; i < m_io_num.n_output; i++) {
         output_attrs[i].index = i;
         int ret = rknn_query(m_ctx, RKNN_QUERY_OUTPUT_ATTR, &(output_attrs[i]), sizeof(rknn_tensor_attr));
@@ -349,29 +351,32 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
         }
         
         dump_tensor_attr(&(output_attrs[i]));
-        // HDF_LOGE("UpdateOutput output attr %zuth, output attr dim num=%u", i, output_attrs[i].n_dims);
         std::vector<int32_t> dim;
         for (uint32_t j = 0; j < output_attrs[i].n_dims; ++j) {
             dim.push_back(output_attrs[i].dims[j]);
-            // HDF_LOGE("UpdateOutput output attr dim=%u", output_attrs[i].dims[j]);
         }
         outputsDims.push_back(dim);
     }
 
-    // HDF_LOGI("UpdateOutput: update tensor success");
     return HDF_SUCCESS;
 }
 
 int PreparedModelService::SetInputs(const std::vector<IOTensor>& inputs)
 {
-    // HDF_LOGI("SetInputs m_io_num.n_input %u, inputs size %zu",
-    //     m_io_num.n_input, inputs.size());
-
     sptr<Ashmem> ashptr[m_io_num.n_input];
     rknn_input rknn_inputs[m_io_num.n_input];
     rknn_tensor_attr input_attrs[m_io_num.n_input];
-    memset(input_attrs, 0, sizeof(input_attrs));
-    memset(rknn_inputs, 0, sizeof(rknn_inputs));
+    errno_t err = memset_s(input_attrs, sizeof(input_attrs), 0, sizeof(input_attrs));
+    if (err != 0) {
+        HDF_LOGE("memset_s input_attrs failed, err=%{public}d", err);
+        return HDF_ERR_IO;
+    }
+
+    err = memset_s(rknn_inputs, sizeof(rknn_inputs), 0, sizeof(rknn_inputs));
+    if (err != 0) {
+        HDF_LOGE("memset_s rknn_inputs failed, err=%{public}d", err);
+        return HDF_ERR_IO;
+    }
     for (size_t i = 0; i < m_io_num.n_input; i++) {
         auto& input = inputs[i];
         SharedBuffer buffer = input.data;
@@ -384,9 +389,6 @@ int PreparedModelService::SetInputs(const std::vector<IOTensor>& inputs)
             HDF_LOGE("SetInputs: Map ashmem failed i=%zu.", i);
             return HDF_ERR_INVALID_PARAM;
         }
-
-        // HDF_LOGI("SetInputs: i=%zu data-size %d, input-datatype %d, input-format %d",
-        //     i, input.data.dataSize, input.dataType, input.format);
 
         auto data = const_cast<void*>(ashptr[i]->ReadFromAshmem(input.data.dataSize, 0));
         int fd = open("/data/_input.rgb", O_CREAT| O_WRONLY);
@@ -420,7 +422,6 @@ int PreparedModelService::SetInputs(const std::vector<IOTensor>& inputs)
         return ret;
     }
 
-    // HDF_LOGI("SetInputs success!");
     return HDF_SUCCESS;
 }
 
@@ -444,8 +445,6 @@ void PreparedModelService::ResetInputAndOutput(void)
 
 sptr<Ashmem> PreparedModelService::ParseBuffer(const SharedBuffer& buffer)
 {
-    // HDF_LOGI("PreparedModelService::ParseBuffer enter");
-
     if (buffer.fd == -1) {
         HDF_LOGE("ParseBuffer: Invalid buffer fd, it cannot be -1.");
         return nullptr;
@@ -462,8 +461,6 @@ sptr<Ashmem> PreparedModelService::ParseBuffer(const SharedBuffer& buffer)
         return nullptr;
     }
 
-    // HDF_LOGI("PreparedModelService::ParseBuffer buffer size %d, data size %d, offset %d",
-    //     buffer.bufferSize, buffer.dataSize, buffer.offset);
     const void* data = ashptr->ReadFromAshmem(buffer.dataSize, buffer.offset);
     if (data == nullptr) {
         HDF_LOGE("ParseBuffer: Get data address failed.");
@@ -486,19 +483,15 @@ void PreparedModelService::SaveInputDims(const rknn_tensor_attr* attr)
 {
     vector<uint32_t> shape;
     for (size_t i = 0; i < attr->n_dims; i++) {
-        // HDF_LOGI("SaveInputDims: i %zu, dims %u", i, attr->dims[i]);
         shape.push_back(attr->dims[i]);
     }
 
     m_inputDims.push_back(std::move(shape));
-    // HDF_LOGI("PreparedModelService::SaveInputDims m_inputDims size %zu", m_inputDims.size());
     return;
 }
 
 int PreparedModelService::Compile(const void* modelBuffer, size_t length)
 {
-    // HDF_LOGI("PreparedModelService::Compile enter");
-
     if (modelBuffer == nullptr || length == 0) {
         HDF_LOGE("ModelBuffer cannot be nullptr and length cannot be zero.");
         return HDF_FAILURE;
@@ -506,9 +499,8 @@ int PreparedModelService::Compile(const void* modelBuffer, size_t length)
     int fd = open("/data/_model.rknn", O_CREAT| O_WRONLY);
     write(fd, modelBuffer, length);
     close(fd);
-    
-    // HDF_LOGI("PreparedModelService::Compile rknn_init length %zu", length);
-    int ret = rknn_init(&m_ctx, (void*)modelBuffer, length, RKNN_FLAG_COLLECT_PERF_MASK, NULL);
+
+    int ret = rknn_init(&m_ctx, (void*)modelBuffer, length, RKNN_FLAG_COLLECT_PERF_MASK, nullptr);
     if (ret < 0) {
         HDF_LOGE("rknn_init fail! ret=%d", ret);
         return ret;
@@ -529,12 +521,13 @@ int PreparedModelService::Compile(const void* modelBuffer, size_t length)
         HDF_LOGE("rknn_query input-output info fail! ret=%d", ret);
         return ret;
     }
-    // HDF_LOGI("PreparedModelService::Compile rknn_query input-num %u, output-num %u",
-    //     m_io_num.n_input, m_io_num.n_output);
-
     ClearInputDims();
     rknn_tensor_attr input_attrs[m_io_num.n_input];
-    memset(input_attrs, 0, sizeof(input_attrs));
+    errno_t err = memset_s(input_attrs, sizeof(input_attrs), 0, sizeof(input_attrs));
+    if (err != 0) {
+        HDF_LOGE("memset_s input_attrs failed, err=%{public}d", err);
+        return HDF_ERR_IO;
+    }
     for (size_t i = 0; i < m_io_num.n_input; i++) {
         input_attrs[i].index = i;
         ret = rknn_query(m_ctx, RKNN_QUERY_INPUT_ATTR, &(input_attrs[i]), sizeof(rknn_tensor_attr));
@@ -546,14 +539,11 @@ int PreparedModelService::Compile(const void* modelBuffer, size_t length)
         SaveInputDims(&(input_attrs[i]));
     }
 
-    // HDF_LOGI("PreparedModelService::Compile success");
     return HDF_SUCCESS;
 }
 
 int PreparedModelService::init(const char* filename)
 {
-    // HDF_LOGI("PreparedModelService::init enter");
-
     int model_data_size {0};
     m_model_data = load_model(filename, &model_data_size);
     if (m_model_data == nullptr) {

@@ -84,39 +84,10 @@ ohos_shared_library("libnpu_vdi_impl") {
   part_name = "rockchip_products"
 }
 
-ohos_executable("rknn_create_mem_demo") {
-  sources = [ "rknn_demo/rknn_create_mem_demo.cpp" ]
-  include_dirs = [ "include" ]
-  deps = [ ":librknnrt" ]
-  external_deps = [ "c_utils:utils" ]
-  
-  install_enable = true
-  install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
-}
-
-ohos_executable("rknn_yolov5_demo") {
-  sources = [ 
-    "rknn_demo/rknn_yolov5_demo.cc",
-    "rknn_demo/postprocess/postprocess.cc",
-   ]
-  include_dirs = [ "include" ]
-  deps = [ ":librknnrt" ]
-  external_deps = [ "c_utils:utils" ]
-  
-  install_enable = true
-  install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
-}
-
 group("npu") {
   deps = [ 
-    ":librknnrt", 
+    ":librknnrt",
     ":libcxx_shared.so",
-    ":libnpu_vdi_impl", 
-    ":rknn_create_mem_demo", 
-    ":rknn_yolov5_demo", 
+    ":libnpu_vdi_impl",
   ]
 }

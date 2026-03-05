@@ -20,11 +20,10 @@
 #ifndef _RKNN_API_H
 #define _RKNN_API_H
 
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
 
 /*
     Definition of extended flag for rknn_init.
@@ -68,28 +67,28 @@ extern "C" {
 /*
     Error code returned by the RKNN API.
 */
-#define RKNN_SUCC                               0       /* execute succeed. */
-#define RKNN_ERR_FAIL                           -1      /* execute failed. */
-#define RKNN_ERR_TIMEOUT                        -2      /* execute timeout. */
-#define RKNN_ERR_DEVICE_UNAVAILABLE             -3      /* device is unavailable. */
-#define RKNN_ERR_MALLOC_FAIL                    -4      /* memory malloc fail. */
-#define RKNN_ERR_PARAM_INVALID                  -5      /* parameter is invalid. */
-#define RKNN_ERR_MODEL_INVALID                  -6      /* model is invalid. */
-#define RKNN_ERR_CTX_INVALID                    -7      /* context is invalid. */
-#define RKNN_ERR_INPUT_INVALID                  -8      /* input is invalid. */
-#define RKNN_ERR_OUTPUT_INVALID                 -9      /* output is invalid. */
-#define RKNN_ERR_DEVICE_UNMATCH                 -10     /* the device is unmatch, please update rknn sdk
+#define RKNN_SUCC                               (0)       /* execute succeed. */
+#define RKNN_ERR_FAIL                           (-1)      /* execute failed. */
+#define RKNN_ERR_TIMEOUT                        (-2)      /* execute timeout. */
+#define RKNN_ERR_DEVICE_UNAVAILABLE             (-3)      /* device is unavailable. */
+#define RKNN_ERR_MALLOC_FAIL                    (-4)      /* memory malloc fail. */
+#define RKNN_ERR_PARAM_INVALID                  (-5)      /* parameter is invalid. */
+#define RKNN_ERR_MODEL_INVALID                  (-6)      /* model is invalid. */
+#define RKNN_ERR_CTX_INVALID                    (-7)      /* context is invalid. */
+#define RKNN_ERR_INPUT_INVALID                  (-8)      /* input is invalid. */
+#define RKNN_ERR_OUTPUT_INVALID                 (-9)      /* output is invalid. */
+#define RKNN_ERR_DEVICE_UNMATCH                 (-10)     /* the device is unmatch, please update rknn sdk
                                                            and npu driver/firmware. */
-#define RKNN_ERR_INCOMPATILE_PRE_COMPILE_MODEL  -11     /* This RKNN model use pre_compile mode, but not compatible with current driver. */
-#define RKNN_ERR_INCOMPATILE_OPTIMIZATION_LEVEL_VERSION  -12     /* This RKNN model set optimization level, but not compatible with current driver. */
-#define RKNN_ERR_TARGET_PLATFORM_UNMATCH        -13     /* This RKNN model set target platform, but not compatible with current platform. */
+#define RKNN_ERR_INCOMPATILE_PRE_COMPILE_MODEL  (-11)     /* This RKNN model use pre_compile mode, but not compatible with current driver. */
+#define RKNN_ERR_INCOMPATILE_OPTIMIZATION_LEVEL_VERSION  (-12)     /* This RKNN model set optimization level, but not compatible with current driver. */
+#define RKNN_ERR_TARGET_PLATFORM_UNMATCH        (-13)     /* This RKNN model set target platform, but not compatible with current platform. */
 
 /*
     Definition for tensor
 */
-#define RKNN_MAX_DIMS                           16      /* maximum dimension of tensor. */
-#define RKNN_MAX_NUM_CHANNEL                    15      /* maximum channel number of input tensor. */
-#define RKNN_MAX_NAME_LEN                       256     /* maximum name lenth of tensor. */
+#define RKNN_MAX_DIMS                           (16)      /* maximum dimension of tensor. */
+#define RKNN_MAX_NUM_CHANNEL                    (15)      /* maximum channel number of input tensor. */
+#define RKNN_MAX_NAME_LEN                       (256)     /* maximum name lenth of tensor. */
 
 
 #ifdef __arm__
@@ -178,11 +177,11 @@ typedef enum _rknn_tensor_qnt_type {
 
 inline static const char* get_qnt_type_string(rknn_tensor_qnt_type type)
 {
-    switch(type) {
-    case RKNN_TENSOR_QNT_NONE: return "NONE";
-    case RKNN_TENSOR_QNT_DFP: return "DFP";
-    case RKNN_TENSOR_QNT_AFFINE_ASYMMETRIC: return "AFFINE";
-    default: return "UNKNOW";
+    switch (type) {
+        case RKNN_TENSOR_QNT_NONE: return "NONE";
+        case RKNN_TENSOR_QNT_DFP: return "DFP";
+        case RKNN_TENSOR_QNT_AFFINE_ASYMMETRIC: return "AFFINE";
+        default: return "UNKNOW";
     }
 }
 
