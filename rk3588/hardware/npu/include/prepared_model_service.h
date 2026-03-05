@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef OHOS_HDI_NNRT_V2_0_PREPARED_MODEL_VDI_IMPL_H
+#define OHOS_HDI_NNRT_V2_0_PREPARED_MODEL_VDI_IMPL_H
+
+#include "rknn_api.h"
+#include "ashmem.h"
+#include "nnrt/v2_0/iprepared_model.h"
+
+namespace OHOS {
+namespace HDI {
+namespace Nnrt {
+namespace V2_0 {
+class PreparedModelService  : public IPreparedModel {
+public:
+    PreparedModelService ();
+    ~PreparedModelService ();
+
+    int32_t ExportModelCache(std::vector<SharedBuffer>& modelCache) override;
+
+    int32_t GetInputDimRanges(std::vector<std::vector<uint32_t>>& minInputDims,
+         std::vector<std::vector<uint32_t>>& maxInputDims) override;
+
+    int32_t Run(const std::vector<IOTensor>& inputs, const std::vector<IOTensor>& outputs,
+         std::vector<std::vector<int32_t>>& outputDims) override;
+
+    int init(const char* filename);
+
+    int Compile(const void* modelBuffer, size_t length);
+
+    sptr<Ashmem> ParseBuffer(const SharedBuffer& buffer);
+
+private:
+    int SetInputs(const std::vector<IOTensor>& inputs);
+    int SetOutputs(const std::vector<IOTensor>& outputs);
+    int GetMSInputsAndOutputs();
+    int UpdateOutput(const std::vector<IOTensor>& outputs,
+        std::vector<std::vector<int32_t>>& outputsDims, bool& isOutputBufferEnough);
+    void ResetInputAndOutput();
+    void ClearInputDims(void);
+    void SaveInputDims(const rknn_tensor_attr* attr);
+private:
+    unsigned char* m_model_data {nullptr};
+    rknn_context m_ctx {0};
+    rknn_input_output_num m_io_num {0};
+    std::vector<std::vector<uint32_t>> m_inputDims;
+};
+} // V2_0
+} // Nnrt
+} // HDI
+} // OHOS
+
+#endif // OHOS_HDI_NNRT_V2_0_PREPARED_MODEL_VDI_IMPL_H
