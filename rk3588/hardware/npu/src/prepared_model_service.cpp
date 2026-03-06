@@ -39,7 +39,7 @@ namespace V2_0 {
 constexpr uint32_t MIN_DIM = 1;
 constexpr uint32_t MAX_DIM = 100000;
 
-PreparedModelService::PreparedModelService() 
+PreparedModelService::PreparedModelService()
 {
 }
 
@@ -57,17 +57,23 @@ PreparedModelService::~PreparedModelService()
 static unsigned char* load_model(const char* filename, int* model_size)
 {
     int ret = 0;
-    FILE*          fp;
+    FILE* fp;
     unsigned char* data = nullptr;
     HDF_LOGI("load_model %{public}s", filename);
 
     fp = fopen(filename, "rb");
-    if (nullptr == fp) {
+    if (fp == nullptr) {
         HDF_LOGE("load_model: Open file %{public}s failed", filename);
         return nullptr;
     }
 
-    fseek(fp, 0, SEEK_END);
+    ret = fseek(fp, 0, SEEK_END);
+    if (ret != 0) {
+        fclose(fp);
+        HDF_LOGE("load_model: blob seek failure");
+        return nullptr;
+    }
+
     int size = ftell(fp);
     HDF_LOGI("load_model: file size %d", size);
 
@@ -97,6 +103,23 @@ static unsigned char* load_model(const char* filename, int* model_size)
     return data;
 }
 
+static const char* get_type_string(rknn_tensor_type type)
+{
+    switch (type) {
+        case RKNN_TENSOR_FLOAT32: return "FP32";
+        case RKNN_TENSOR_FLOAT16: return "FP16";
+        case RKNN_TENSOR_INT8: return "INT8";
+        case RKNN_TENSOR_UINT8: return "UINT8";
+        case RKNN_TENSOR_INT16: return "INT16";
+        case RKNN_TENSOR_UINT16: return "UINT16";
+        case RKNN_TENSOR_INT32: return "INT32";
+        case RKNN_TENSOR_UINT32: return "UINT32";
+        case RKNN_TENSOR_INT64: return "INT64";
+        case RKNN_TENSOR_BOOL: return "BOOL";
+        default: return "UNKNOW";
+    }
+}
+
 static void dump_tensor_attr(rknn_tensor_attr* attr)
 {
     HDF_LOGI("dump_tensor_attr: index=%d, name=%{public}s, n_dims=%d, dims=[%d, %d, %d, %d],\
@@ -114,39 +137,39 @@ DataType get_data_type(rknn_tensor_type rknn_data_type)
 
     DataType data_type = DATA_TYPE_UNKNOWN;
     switch (rknn_data_type) {
-    case RKNN_TENSOR_BOOL :
-        data_type = DATA_TYPE_BOOL;
-        break;
-    case RKNN_TENSOR_INT8 :
-        data_type = DATA_TYPE_INT8;
-        break;
-    case RKNN_TENSOR_INT16:
-        data_type = DATA_TYPE_INT16;
-        break;
-    case RKNN_TENSOR_INT32:
-        data_type = DATA_TYPE_INT32;
-        break;
-    case RKNN_TENSOR_INT64:
-        data_type = DATA_TYPE_INT64;
-        break;
-    case RKNN_TENSOR_UINT8:
-        data_type = DATA_TYPE_UINT8;
-        break;
-    case RKNN_TENSOR_UINT16:
-        data_type = DATA_TYPE_UINT16;
-        break;
-    case RKNN_TENSOR_UINT32:
-        data_type = DATA_TYPE_UINT32;
-        break;
-    case RKNN_TENSOR_FLOAT16:
-        data_type = DATA_TYPE_FLOAT16;
-        break;
-    case RKNN_TENSOR_FLOAT32:
-        data_type = DATA_TYPE_FLOAT32;
-        break;
-    case RKNN_TENSOR_TYPE_MAX:
-    default:
-        break;
+        case RKNN_TENSOR_BOOL :
+            data_type = DATA_TYPE_BOOL;
+            break;
+        case RKNN_TENSOR_INT8 :
+            data_type = DATA_TYPE_INT8;
+            break;
+        case RKNN_TENSOR_INT16:
+            data_type = DATA_TYPE_INT16;
+            break;
+        case RKNN_TENSOR_INT32:
+            data_type = DATA_TYPE_INT32;
+            break;
+        case RKNN_TENSOR_INT64:
+            data_type = DATA_TYPE_INT64;
+            break;
+        case RKNN_TENSOR_UINT8:
+            data_type = DATA_TYPE_UINT8;
+            break;
+        case RKNN_TENSOR_UINT16:
+            data_type = DATA_TYPE_UINT16;
+            break;
+        case RKNN_TENSOR_UINT32:
+            data_type = DATA_TYPE_UINT32;
+            break;
+        case RKNN_TENSOR_FLOAT16:
+            data_type = DATA_TYPE_FLOAT16;
+            break;
+        case RKNN_TENSOR_FLOAT32:
+            data_type = DATA_TYPE_FLOAT32;
+            break;
+        case RKNN_TENSOR_TYPE_MAX:
+        default:
+            break;
     }
 
     return data_type;
@@ -158,42 +181,42 @@ rknn_tensor_type get_rknn_tensor_type(DataType dataType)
 
     rknn_tensor_type rknn_data_type = RKNN_TENSOR_TYPE_MAX; 
     switch (dataType) {
-    case DATA_TYPE_UNKNOWN:
-        break; 
-    case DATA_TYPE_BOOL :
-        rknn_data_type = RKNN_TENSOR_BOOL;
-        break;
-    case DATA_TYPE_INT8 :
-        rknn_data_type = RKNN_TENSOR_UINT8;
-        break;
-    case DATA_TYPE_INT16:
-        rknn_data_type = RKNN_TENSOR_INT16;
-        break;
-    case DATA_TYPE_INT32:
-        rknn_data_type = RKNN_TENSOR_INT32;
-        break;
-    case DATA_TYPE_INT64:
-        rknn_data_type = RKNN_TENSOR_INT64;
-        break;
-    case DATA_TYPE_UINT8:
-        rknn_data_type = RKNN_TENSOR_UINT8;
-        break;
-    case DATA_TYPE_UINT16:
-        rknn_data_type = RKNN_TENSOR_UINT16;
-        break;
-    case DATA_TYPE_UINT32:
-        rknn_data_type = RKNN_TENSOR_UINT32;
-        break;
-    case DATA_TYPE_UINT64:
-        break;
-    case DATA_TYPE_FLOAT16:
-        rknn_data_type = RKNN_TENSOR_FLOAT16;
-        break;
-    case DATA_TYPE_FLOAT32:
-        rknn_data_type = RKNN_TENSOR_FLOAT32;
-        break;
-    case DATA_TYPE_FLOAT64:
-        break;
+        case DATA_TYPE_UNKNOWN:
+            break; 
+        case DATA_TYPE_BOOL :
+            rknn_data_type = RKNN_TENSOR_BOOL;
+            break;
+        case DATA_TYPE_INT8 :
+            rknn_data_type = RKNN_TENSOR_UINT8;
+            break;
+        case DATA_TYPE_INT16:
+            rknn_data_type = RKNN_TENSOR_INT16;
+            break;
+        case DATA_TYPE_INT32:
+            rknn_data_type = RKNN_TENSOR_INT32;
+            break;
+        case DATA_TYPE_INT64:
+            rknn_data_type = RKNN_TENSOR_INT64;
+            break;
+        case DATA_TYPE_UINT8:
+            rknn_data_type = RKNN_TENSOR_UINT8;
+            break;
+        case DATA_TYPE_UINT16:
+            rknn_data_type = RKNN_TENSOR_UINT16;
+            break;
+        case DATA_TYPE_UINT32:
+            rknn_data_type = RKNN_TENSOR_UINT32;
+            break;
+        case DATA_TYPE_UINT64:
+            break;
+        case DATA_TYPE_FLOAT16:
+            rknn_data_type = RKNN_TENSOR_FLOAT16;
+            break;
+        case DATA_TYPE_FLOAT32:
+            rknn_data_type = RKNN_TENSOR_FLOAT32;
+            break;
+        case DATA_TYPE_FLOAT64:
+            break;
     }
 
     return rknn_data_type;
@@ -246,7 +269,7 @@ int32_t PreparedModelService::GetInputDimRanges(std::vector<std::vector<uint32_t
 }
 
 int32_t PreparedModelService::Run(const std::vector<IOTensor>& inputs, const std::vector<IOTensor>& outputs,
-     std::vector<std::vector<int32_t>>& outputDims)
+    std::vector<std::vector<int32_t>>& outputDims)
 {
     HDF_LOGI("Run: 1 SetInputs");
 
@@ -258,7 +281,7 @@ int32_t PreparedModelService::Run(const std::vector<IOTensor>& inputs, const std
 
     HDF_LOGI("Run 2 rknn_run");
     ret = rknn_run(m_ctx, nullptr);
-    if (ret != 0){
+    if (ret != 0) {
         HDF_LOGE("Run: run RKNN model failed!");
         return HDF_FAILURE;
     }
@@ -303,8 +326,9 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
             rknn_outputs[i].want_float = 1;
         }
         rknn_outputs[i].is_prealloc = 0;
-        HDF_LOGI("outputs[%zu].dataType=%d,rknn_outputs[%zu].want_float=%d", i, outputs[i].dataType, i, rknn_outputs[i].want_float);
-    }  
+        HDF_LOGI("outputs[%zu].dataType=%d,rknn_outputs[%zu].want_float=%d", i, outputs[i].dataType,
+                 i, rknn_outputs[i].want_float);
+    }
     rknn_outputs_get(m_ctx, m_io_num.n_output, rknn_outputs, nullptr);
 
     isOutputBufferEnough = true;
@@ -411,9 +435,6 @@ int PreparedModelService::SetInputs(const std::vector<IOTensor>& inputs)
             input_attrs[i].fmt  == rknn_inputs[i].fmt) {
             rknn_inputs[i].pass_through = 1;
         }
-
-        HDF_LOGI("model SetInputs: rknn input index=%u size %d, type %d, format %d (0-NCHW,1-NHWC),input_attrs[i].type=%d",
-            rknn_inputs[i].index, rknn_inputs[i].size, rknn_inputs[i].type, rknn_inputs[i].fmt, input_attrs[i].type);
     }
 
     int ret = rknn_inputs_set(m_ctx, m_io_num.n_input, rknn_inputs);
