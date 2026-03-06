@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: GPL-2.0
+/* SPDX-License-Identifier: GPL-2.0 */
 /*
- * Copyright (C) 2022 Shenzhen Kaihong Digital Industry Development Co., Ltd. All rights reserved.
+ * Copyright (C) 2021 Huawei Technologies Co., Ltd. All rights reserved.
  */
 
 #include <linux/blackbox.h>
