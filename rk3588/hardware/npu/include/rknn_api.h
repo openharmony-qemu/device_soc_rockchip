@@ -119,11 +119,19 @@ typedef enum _rknn_query_cmd {
     RKNN_QUERY_NATIVE_INPUT_ATTR = 8,                       /* query the attribute of native input tensor. */
     RKNN_QUERY_NATIVE_OUTPUT_ATTR = 9,                      /* query the attribute of native output tensor. */
 
-    RKNN_QUERY_NATIVE_NC1HWC2_INPUT_ATTR = 8,               /* query the attribute of native NC1HWC2 input tensor. */
-    RKNN_QUERY_NATIVE_NC1HWC2_OUTPUT_ATTR = 9,              /* query the attribute of native NC1HWC2 output tensor. */
+    RKNN_QUERY_NATIVE_NC1HWC2_INPUT_ATTR = 8,               /* query the attribute of native NC1HWC2
+                                                               (NC1-Height-Width-Channels2, RK proprietary layout)
+                                                               input tensor. */
+    RKNN_QUERY_NATIVE_NC1HWC2_OUTPUT_ATTR = 9,              /* query the attribute of native NC1HWC2
+                                                               (NC1-Height-Width-Channels2, RK proprietary layout)
+                                                               output tensor. */
 
-    RKNN_QUERY_NATIVE_NHWC_INPUT_ATTR = 10,                 /* query the attribute of native NHWC (Batch-Height-Width-Channels, industry standard) input tensor. */
-    RKNN_QUERY_NATIVE_NHWC_OUTPUT_ATTR = 11,                /* query the attribute of native NHWC output tensor. */
+    RKNN_QUERY_NATIVE_NHWC_INPUT_ATTR = 10,                 /* query the attribute of native NHWC
+                                                               (Batch-Height-Width-Channels, industry standard)
+                                                               input tensor. */
+    RKNN_QUERY_NATIVE_NHWC_OUTPUT_ATTR = 11,                /* query the attribute of native NHWC
+                                                               (Batch-Height-Width-Channels, industry standard)
+                                                               output tensor. */
 
     RKNN_QUERY_DEVICE_MEM_INFO = 12,                        /* query the attribute of rknn memory information. */
 
@@ -197,14 +205,16 @@ typedef enum _rknn_core_mask {
 inline static const char* get_format_string(rknn_tensor_format fmt)
 {
     switch (fmt) {
-        case RKNN_TENSOR_NCHW: return "NCHW";
-        case RKNN_TENSOR_NHWC: return "NHWC";
-        case RKNN_TENSOR_NC1HWC2: return "NC1HWC2";               /*Rockchip custom: N-C1-H-W-C2 */
+        case RKNN_TENSOR_NCHW: return "NCHW";                     /* Industry standard: N-Batch, C-Channels,
+                                                                     H-Height, W-Width */
+        case RKNN_TENSOR_NHWC: return "NHWC";                     /* Industry standard: N-Batch, H-Height,
+                                                                     W-Width, C-Channels */
+        case RKNN_TENSOR_NC1HWC2: return "NC1HWC2";               /* Rockchip custom: N-Batch, C1-Channels1,
+                                                                     H-Height, W-Width, C2-Channels2 */
         case RKNN_TENSOR_UNDEFINED: return "UNDEFINED";
         default: return "UNKNOWN";
     }
 }
-
 /*
     the information for RKNN_QUERY_IN_OUT_NUM.
 */
