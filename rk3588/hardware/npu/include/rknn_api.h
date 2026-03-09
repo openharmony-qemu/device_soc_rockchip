@@ -122,8 +122,8 @@ typedef enum _rknn_query_cmd {
     RKNN_QUERY_NATIVE_NC1HWC2_INPUT_ATTR = 8,               /* query the attribute of native NC1HWC2 input tensor. */
     RKNN_QUERY_NATIVE_NC1HWC2_OUTPUT_ATTR = 9,              /* query the attribute of native NC1HWC2 output tensor. */
 
-    RKNN_QUERY_NATIVE_NHWC_INPUT_ATTR = 10,                 /* query the attribute of native input tensor. */
-    RKNN_QUERY_NATIVE_NHWC_OUTPUT_ATTR = 11,                /* query the attribute of native output tensor. */
+    RKNN_QUERY_NATIVE_NHWC_INPUT_ATTR = 10,                 /* query the attribute of native NHWC (Batch-Height-Width-Channels, industry standard) input tensor. */
+    RKNN_QUERY_NATIVE_NHWC_OUTPUT_ATTR = 11,                /* query the attribute of native NHWC output tensor. */
 
     RKNN_QUERY_DEVICE_MEM_INFO = 12,                        /* query the attribute of rknn memory information. */
 
@@ -174,7 +174,7 @@ inline static const char* get_qnt_type_string(rknn_tensor_qnt_type type)
 */
 typedef enum _rknn_tensor_format {
     RKNN_TENSOR_NCHW = 0, /* data format is NCHW (Batch-Channels-Height-Width). */
-    RKNN_TENSOR_NHWC, /* data format is NHWC (Batch-Height-Width-Channels). */
+    RKNN_TENSOR_NHWC, /* data format is NHWC (Batch-Height-Width-Channels, industry standard). */
     RKNN_TENSOR_NC1HWC2, /* Rockchip custom tensor data format: NC1HWC2 (Batch-Channels1-Height-Width-Channels2). */
     RKNN_TENSOR_UNDEFINED,
     RKNN_TENSOR_FORMAT_MAX
@@ -199,7 +199,7 @@ inline static const char* get_format_string(rknn_tensor_format fmt)
     switch (fmt) {
         case RKNN_TENSOR_NCHW: return "NCHW";
         case RKNN_TENSOR_NHWC: return "NHWC";
-        case RKNN_TENSOR_NC1HWC2: return "NC1HWC2";
+        case RKNN_TENSOR_NC1HWC2: return "NC1HWC2";               /*Rockchip custom: N-C1-H-W-C2 */
         case RKNN_TENSOR_UNDEFINED: return "UNDEFINED";
         default: return "UNKNOWN";
     }

@@ -25,7 +25,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "rknn_api.h"
 
 #define HDF_LOG_TAG    prepared_model_service
 
@@ -54,6 +53,17 @@ PreparedModelService::~PreparedModelService()
     }
 }
 
+void SafeFclose(FILE*& ptr)
+{
+    if (ptr != nullptr) {
+        int closeRet = fclose(ptr);
+        if (closeRet == EOF) {
+            HDF_LOGE("load_model: fclose file failed");
+        }
+        ptr = nullptr;
+    }
+}
+
 static unsigned char* load_model(const char* filename, int* model_size)
 {
     int ret = 0;
@@ -69,7 +79,7 @@ static unsigned char* load_model(const char* filename, int* model_size)
 
     ret = fseek(fp, 0, SEEK_END);
     if (ret != 0) {
-        SAFE_FCLOSE(fp);
+        SafeFclose(fp);
         HDF_LOGE("load_model: blob seek failure");
         return nullptr;
     }
@@ -78,26 +88,26 @@ static unsigned char* load_model(const char* filename, int* model_size)
     HDF_LOGI("load_model: file size %d", size);
 
     if (size <= 0) {
-        SAFE_FCLOSE(fp);
+        SafeFclose(fp);
         HDF_LOGE("load_model: invalid file size %d (must be > 0)", size);
         return nullptr;
     }
 
     ret = fseek(fp, 0, SEEK_SET);
     if (ret != 0) {
-        SAFE_FCLOSE(fp);
+        SafeFclose(fp);
         HDF_LOGE("load_model: blob seek failure");
         return nullptr;
     }
     data = (unsigned char*)malloc(size);
     if (data == nullptr) {
-        SAFE_FCLOSE(fp);
+        SafeFclose(fp);
         HDF_LOGE("load_model: buffer malloc failure");
         return nullptr;
     }
     ret = fread(data, 1, size, fp);
 
-    SAFE_FCLOSE(fp);
+    SafeFclose(fp);
 
     *model_size = size;
     return data;
@@ -228,9 +238,7 @@ rknn_tensor_format get_rknn_fmt(Format format)
 
     if (format == FORMAT_NCHW) {
         return RKNN_TENSOR_NCHW;
-    }
-
-    else if (format == FORMAT_NHWC) {
+    } else if (format == FORMAT_NHWC) {
         return RKNN_TENSOR_NHWC;
     }
 
@@ -434,8 +442,13 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor>& outputs,
     return HDF_SUCCESS;
 }
 
-static int ProcessSingleInput(size_t i, const IOTensor& input, rknn_tensor_attr& input_attr,
-                             rknn_input& rknn_input, sptr<Ashmem>& ashptr, rknn_context ctx) {
+static int ProcessSingleInput(const SingleInputParam& param, const IOTensor& input, sptr<Ashmem>& ashptr)
+{
+    size_t i = param.i;
+    rknn_tensor_attr& input_attr = *param.input_attr;
+    rknn_input& rknn_input = *param.rknn_input;
+    rknn_context ctx = param.ctx;
+
     SharedBuffer buffer = input.data;
     ashptr = new (std::nothrow) Ashmem(buffer.fd, buffer.bufferSize);
     if (ashptr == nullptr) {
@@ -448,7 +461,7 @@ static int ProcessSingleInput(size_t i, const IOTensor& input, rknn_tensor_attr&
     }
 
     auto data = const_cast<void*>(ashptr->ReadFromAshmem(input.data.dataSize, 0));
-    int fd = open("/data/_input.rgb", O_CREAT| O_WRONLY);
+    int fd = open("/data/_input.rgb", O_CREAT | O_WRONLY);
     write(fd, data, input.data.dataSize);
     close(fd);
 
@@ -489,7 +502,13 @@ int PreparedModelService::SetInputs(const std::vector<IOTensor>& inputs)
     }
 
     for (size_t i = 0; i < m_io_num.n_input; i++) {
-        int ret = ProcessSingleInput(i, inputs[i], input_attrs[i], rknn_inputs[i], ashptr[i], m_ctx);
+        SingleInputParam param = {
+            .i = i,
+            .input_attr = &input_attrs[i],
+            .rknn_input = &rknn_inputs[i],
+            .ctx = m_ctx
+        };
+        int ret = ProcessSingleInput(param, inputs[i], ashptr[i]);
         if (ret != HDF_SUCCESS) {
             return ret;
         }

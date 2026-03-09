@@ -33,15 +33,12 @@
 #define MEM_WRITE_OFFSET_ZERO         0       // 内存写入的起始偏移量
 #define RKNN_ATTR_INDEX_BASE          0       // RKNN张量属性索引起始值
 
-#define SAFE_FCLOSE(fp_ptr) do { \
-    if (fp_ptr != nullptr) { \
-        int close_ret = fclose(fp_ptr); \
-        if (close_ret == EOF) { \
-            HDF_LOGE("load_model: fclose file %{public}s failed", filename); \
-        } \
-        fp_ptr = nullptr; \
-    } \
-} while (0)
+struct SingleInputParam {
+    size_t i;                  // 输入索引
+    rknn_tensor_attr* input_attr; // 输入属性
+    rknn_input* rknn_input;    // rknn输入结构体
+    rknn_context ctx;          // rknn上下文
+};
 
 namespace OHOS {
 namespace HDI {
