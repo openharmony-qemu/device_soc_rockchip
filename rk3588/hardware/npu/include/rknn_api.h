@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
 #ifndef _RKNN_API_H
 #define _RKNN_API_H
 
@@ -84,7 +81,7 @@ extern "C" {
 
 #define RKNN_ERR_INCOMPATILE_OPTIMIZATION_LEVEL_VERSION  (-12)     /* This RKNN model set optimization level,
                                                                      but not compatible with current driver.*/
-#define RKNN_ERR_TARGET_PLATFORM_UNMATCH        (-13)     /* This RKNN model set target platform, 
+#define RKNN_ERR_TARGET_PLATFORM_UNMATCH        (-13)     /* This RKNN model set target platform,
                                                             but not compatible with current platform. */
 
 /*
@@ -122,8 +119,8 @@ typedef enum _rknn_query_cmd {
     RKNN_QUERY_NATIVE_INPUT_ATTR = 8,                       /* query the attribute of native input tensor. */
     RKNN_QUERY_NATIVE_OUTPUT_ATTR = 9,                      /* query the attribute of native output tensor. */
 
-    RKNN_QUERY_NATIVE_NC1HWC2_INPUT_ATTR = 8,               /* query the attribute of native input tensor. */
-    RKNN_QUERY_NATIVE_NC1HWC2_OUTPUT_ATTR = 9,              /* query the attribute of native output tensor. */
+    RKNN_QUERY_NATIVE_NC1HWC2_INPUT_ATTR = 8,               /* query the attribute of native NC1HWC2 input tensor. */
+    RKNN_QUERY_NATIVE_NC1HWC2_OUTPUT_ATTR = 9,              /* query the attribute of native NC1HWC2 output tensor. */
 
     RKNN_QUERY_NATIVE_NHWC_INPUT_ATTR = 10,                 /* query the attribute of native input tensor. */
     RKNN_QUERY_NATIVE_NHWC_OUTPUT_ATTR = 11,                /* query the attribute of native output tensor. */
@@ -176,11 +173,10 @@ inline static const char* get_qnt_type_string(rknn_tensor_qnt_type type)
     the tensor data format.
 */
 typedef enum _rknn_tensor_format {
-    RKNN_TENSOR_NCHW = 0,                               /* data format is NCHW. */
-    RKNN_TENSOR_NHWC,                                   /* data format is NHWC. */
-    RKNN_TENSOR_NC1HWC2,                                /* data format is NC1HWC2. */
+    RKNN_TENSOR_NCHW = 0, /* data format is NCHW (Batch-Channels-Height-Width). */
+    RKNN_TENSOR_NHWC, /* data format is NHWC (Batch-Height-Width-Channels). */
+    RKNN_TENSOR_NC1HWC2, /* Rockchip custom tensor data format: NC1HWC2 (Batch-Channels1-Height-Width-Channels2). */
     RKNN_TENSOR_UNDEFINED,
-
     RKNN_TENSOR_FORMAT_MAX
 } rknn_tensor_format;
 
@@ -205,7 +201,7 @@ inline static const char* get_format_string(rknn_tensor_format fmt)
         case RKNN_TENSOR_NHWC: return "NHWC";
         case RKNN_TENSOR_NC1HWC2: return "NC1HWC2";
         case RKNN_TENSOR_UNDEFINED: return "UNDEFINED";
-        default: return "UNKNOW";
+        default: return "UNKNOWN";
     }
 }
 
@@ -243,15 +239,15 @@ typedef struct _rknn_tensor_attr {
     uint32_t size_with_stride;                          /* the bytes size of tensor with stride. */
 
     uint8_t pass_through;                               /* pass through mode, for rknn_set_io_mem interface.
-                                                           if TRUE, the buf data is passed directly to the input 
-                                                                    node of the rknn model without any conversion. 
+                                                           if TRUE, the buf data is passed directly to the input
+                                                                    node of the rknn model without any conversion.
                                                                     the following variables do not need to be set.
-                                                           if FALSE, the buf data is converted into an input 
-                                                                     consistent with the model according to the 
-                                                                     following type and fmt. so the following 
+                                                           if FALSE, the buf data is converted into an input
+                                                                     consistent with the model according to the
+                                                                     following type and fmt. so the following
                                                                      variables need to be set.*/
     uint32_t h_stride;                                  /* the stride along the height dimention of input,
-                                                           Note: it is write-only, if it was set to 0, 
+                                                           Note: it is write-only, if it was set to 0,
                                                            h_stride = height. */
 } rknn_tensor_attr;
 
@@ -259,7 +255,7 @@ typedef struct _rknn_tensor_attr {
     the information for RKNN_QUERY_PERF_DETAIL.
 */
 typedef struct _rknn_perf_detail {
-    char* perf_data;                                    /* the string pointer of perf detail. 
+    char* perf_data;                                    /* the string pointer of perf detail.
                                                            don't need free it by user. */
     uint64_t data_len;                                  /* the string length. */
 } rknn_perf_detail;
@@ -302,17 +298,17 @@ typedef struct _rknn_custom_string {
    The flags of rknn_tensor_mem.
 */
 typedef enum _rknn_tensor_mem_flags {
-    RKNN_TENSOR_MEMORY_FLAGS_ALLOC_INSIDE = 1,           /*Used to mark in rknn_destroy_mem() whether it is 
+    RKNN_TENSOR_MEMORY_FLAGS_ALLOC_INSIDE = 1,           /*Used to mark in rknn_destroy_mem() whether it is
                                                          necessary to release the "mem" pointer itself.
-                                                         If the flag RKNN_TENSOR_MEMORY_FLAGS_ALLOC_INSIDE is set, 
+                                                         If the flag RKNN_TENSOR_MEMORY_FLAGS_ALLOC_INSIDE is set,
                                                          rknn_destroy_mem() will call free(mem).*/
     RKNN_TENSOR_MEMORY_FLAGS_FROM_FD      = 2,           /*Used to mark in rknn_create_mem_from_fd() whether it is
                                                          necessary to release the "mem" pointer itself.
-                                                         If the flag RKNN_TENSOR_MEMORY_FLAGS_FROM_FD is set, 
+                                                         If the flag RKNN_TENSOR_MEMORY_FLAGS_FROM_FD is set,
                                                          rknn_destroy_mem() will call free(mem).*/
     RKNN_TENSOR_MEMORY_FLAGS_FROM_PHYS    = 3,           /*Used to mark in rknn_create_mem_from_phys() whether it is
                                                          necessary to release the "mem" pointer itself.
-                                                         If the flag RKNN_TENSOR_MEMORY_FLAGS_FROM_PHYS is set, 
+                                                         If the flag RKNN_TENSOR_MEMORY_FLAGS_FROM_PHYS is set,
                                                          rknn_destroy_mem() will call free(mem).*/
     RKNN_TENSOR_MEMORY_FLAGS_UNKNOWN
 } rknn_tensor_mem_flags;
@@ -338,18 +334,18 @@ typedef struct _rknn_input {
     void* buf;                                          /* the input buf for index. */
     uint32_t size;                                      /* the size of input buf. */
     uint8_t pass_through;                               /* pass through mode.
-                                                           if TRUE, the buf data is passed directly to 
+                                                           if TRUE, the buf data is passed directly to
                                                                     the input node of the rknn model
                                                                     without any conversion. the following
                                                                     variables do not need to be set.
-                                                           if FALSE, the buf data is converted into an 
+                                                           if FALSE, the buf data is converted into an
                                                                      input consistent with the model
-                                                                     according to the following type 
+                                                                     according to the following type
                                                                      and fmt. so the following variables
                                                                      need to be set.*/
     rknn_tensor_type type;                              /* the data type of input buf. */
     rknn_tensor_format fmt;                             /* the data format of input buf.
-                                                           currently the internal input format of 
+                                                           currently the internal input format of
                                                            NPU is NCHW by default.
                                                            so entering NCHW data can avoid the format
                                                            conversion in the driver. */
@@ -377,7 +373,7 @@ typedef struct _rknn_init_extend {
     rknn_context ctx;                                    /* rknn context */
     int32_t      real_model_offset;                      /* real rknn model file offset, only valid when init
                                                             context with rknn file path */
-    uint32_t     real_model_size;                        /* real rknn model file size, only valid when init 
+    uint32_t     real_model_size;                        /* real rknn model file size, only valid when init
                                                             context with rknn file path */
     uint8_t      reserved[120];                          /* reserved */
 } rknn_init_extend;
@@ -396,7 +392,7 @@ typedef struct _rknn_run_extend {
     the extend information for rknn_outputs_get.
 */
 typedef struct _rknn_output_extend {
-    uint64_t frame_id;                                  /* output parameter, indicate the frame id of outputs, 
+    uint64_t frame_id;                                  /* output parameter, indicate the frame id of outputs,
                                                            corresponds tostruct rknn_run_extend.frame_id.*/
 } rknn_output_extend;
 

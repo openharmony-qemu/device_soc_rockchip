@@ -33,6 +33,16 @@
 #define MEM_WRITE_OFFSET_ZERO         0       // 内存写入的起始偏移量
 #define RKNN_ATTR_INDEX_BASE          0       // RKNN张量属性索引起始值
 
+#define SAFE_FCLOSE(fp_ptr) do { \
+    if (fp_ptr != nullptr) { \
+        int close_ret = fclose(fp_ptr); \
+        if (close_ret == EOF) { \
+            HDF_LOGE("load_model: fclose file %{public}s failed", filename); \
+        } \
+        fp_ptr = nullptr; \
+    } \
+} while (0)
+
 namespace OHOS {
 namespace HDI {
 namespace Nnrt {
@@ -65,6 +75,12 @@ private:
     void ResetInputAndOutput();
     void ClearInputDims(void);
     void SaveInputDims(const rknn_tensor_attr* attr);
+    int GetRknnOutputs(const std::vector<IOTensor>& outputs,
+                       rknn_output* rknn_outputs, bool& isOutputBufferEnough);
+    int CopyOutputsToSharedMemory(const std::vector<IOTensor>& outputs,
+                                  const rknn_output* rknn_outputs);
+    int QueryOutputAttributes(std::vector<std::vector<int32_t>>& outputsDims);
+
 private:
     unsigned char* m_model_data {nullptr};
     rknn_context m_ctx {0};
