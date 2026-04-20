@@ -1,0 +1,93 @@
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+root_path = "../../../../../../"
+
+#config("libnpu") {
+#  include_dirs = [ "include" ]
+#  cflags = [
+#    "-Wno-incompatible-pointer-types",
+#    "-Werror",
+#    "-Wimplicit-function-declaration",
+#    "-Wno-error=unused-variable",
+#  ]
+#}
+
+ohos_prebuilt_shared_library("librknnrt") {
+  if (target_cpu == "arm") {
+    source = "lib/librknnrt_v1.6.0_ohos_arm64.so"
+  } else if (target_cpu == "arm64") {
+    source = "lib64/librknnrt_v1.6.0_ohos_arm64.so"
+  }
+
+  # decoupling system.img and vendor.img
+  install_images = [ chipset_base_dir ]
+  subsystem_name = "rockchip_products"
+  part_name = "rockchip_products"
+  install_enable = true
+  symlink_target_name = [
+    "librknnrt.so",
+    "librknnrt.so.1",
+  ]
+}
+
+ohos_prebuilt_shared_library("libcxx_shared.so") {
+  if (target_cpu == "arm") {
+    source = "//prebuilts/clang/ohos/linux-x86_64/libcxx-ndk/lib/arm-linux-ohos/c++/libc++_shared.so"
+  } else if (target_cpu == "arm64") {
+    source = "//prebuilts/clang/ohos/linux-x86_64/libcxx-ndk/lib/aarch64-linux-ohos/c++/libc++_shared.so"
+  }
+  install_images = [ chipset_base_dir ]
+  subsystem_name = "rockchip_products"
+  part_name = "rockchip_products"
+  install_enable = true
+}
+
+ohos_shared_library("libnpu_vdi_impl") {
+  sources = [ 
+    "src/nnrt_device_vdi_impl.cpp",
+    "src/prepared_model_service.cpp",
+  ]
+  include_dirs = [
+    "include",
+    "${root_path}drivers/peripheral/nnrt/v2_0/include",
+  ]
+
+  deps = [ ":librknnrt", ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hdf_core:libhdf_ipc_adapter",
+    "hdf_core:libhdf_utils",
+    "hdf_core:libhdi",
+    "drivers_interface_nnrt:nnrt_idl_headers",
+    "drivers_interface_nnrt:libnnrt_stub_2.0",
+    "hilog:libhilog",
+    "ipc:ipc_single",
+  ]
+
+  install_enable = true
+  install_images = [ chipset_base_dir ]
+  subsystem_name = "rockchip_products"
+  part_name = "rockchip_products"
+}
+
+group("npu") {
+  deps = [ 
+    ":librknnrt",
+    ":libcxx_shared.so",
+    ":libnpu_vdi_impl",
+  ]
+}

@@ -63,6 +63,8 @@
                 <filteritem type="filepath" name="rk3588/hardware/camera_adapter/lib/*" desc="libcamera 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/gra/lib/*" desc="gra 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/gra/lib64/*" desc="gra 64bit libs file"/>
+                <filteritem type="filepath" name="rk3588/hardware/npu/lib/*" desc="npu 32bit libs file"/>
+                <filteritem type="filepath" name="rk3588/hardware/npu/lib64/*" desc="npu 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/lib/*" desc="gpb 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/lib64/*" desc="gpb 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/wifi/proc/sys/net/ipv4/ping_group_range/*" desc="project configuration file"/>

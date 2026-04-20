@@ -1,0 +1,9 @@
+{
+   "file_format_version": "1.0.1",
+   "ICD": {
+      "library_path": "libmali-g610-ohos.so",
+      "api_version": "1.4.309",
+      "library_arch": "64",
+      "is_portability_driver": false
+   }
+}

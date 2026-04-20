@@ -49,6 +49,14 @@ ohos_prebuilt_shared_library("mali-g610-ohos") {
   ]
 }
 
+ohos_prebuilt_etc("mali.json") {
+  source = "etc/mali.json"
+  module_install_dir = "etc/vulkan/icd.d"
+  install_images = [ chipset_base_dir, system_base_dir ]
+  part_name = "rockchip_products"
+  install_enable = true
+}
+
 ohos_prebuilt_shared_library("firmware") {
   source = "firmware/mali_csffw.bin"
   module_install_dir = "lib/firmware/"
