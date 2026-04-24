@@ -301,7 +301,8 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
 {
     MpiEncTestData *p = NULL;
     MPP_RET ret = MPP_OK;
-    const int YUV420_CHANNEL_RATIO = 3 / 2;
+    const int nYuv420Channel = 3;
+    const int nYuv420Ratio = 2;
     if (!data || !cmd) {
         mpp_err_f("invalid input data %p cmd %p\n", data, cmd);
         return MPP_ERR_NULL_PTR;
@@ -319,7 +320,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         case MPP_FMT_YUV420SP:
         case MPP_FMT_YUV420P: {
             p->frame_size = MPP_ALIGN(p->hor_stride, (RK_U32)MPP_ALIGNMENT_SIZE) *
-                MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * YUV420_CHANNEL_RATIO;
+                MPP_ALIGN(p->ver_stride, (RK_U32)MPP_ALIGNMENT_SIZE) * nYuv420Channel / nYuv420Ratio;
             break;
         }
         case MPP_FMT_YUV422_YUYV:
