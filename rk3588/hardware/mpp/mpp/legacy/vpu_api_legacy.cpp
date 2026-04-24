@@ -32,9 +32,10 @@
 #include "mpp_compat.h"
 
 const int VPU_API_ENC_INPUT_TIMEOUT = 100;
-const int BPS_MIN_CBR = 15 / 16;
-const int BPS_MIN_VBR = 1 / 16;
-const int BPS_MAX_MULTIPLIER = 17 / 16;
+const int BPS_DEN = 16;
+const int BPS_CBR_NUM = 15;
+const int BPS_VBR_NUM = 1;
+const int BPS_MAX_MULTIPLIER = 17;
 const int HORIZONTAL_ALIGNMENT = 16;
 const int BPP_BGR555 = 2;
 const int BPP_RGB888_BGR888 = 3;
@@ -200,9 +201,7 @@ RK_S32 VpuApiLegacy::vpu_api_set_enc_cfg(MppCodingType coding, MppFrameFormat fm
     mpp_log("setup encoder stream feature config:\n");
     mpp_log("profile %d level %d cabac %d\n", cfg->profileIdc, cfg->levelIdc, cfg->enableCabac);
 
-    mpp_assert(cfg->width);
-    mpp_assert(cfg->height);
-    mpp_assert(qp);
+    int nBpsMin = cfg->bitRate * (cfg->rc_mode ? BPS_CBR_NUM : BPS_VBR_NUM) / BPS_DEN;
 
     mpp_enc_cfg_set_s32(enc_cfg, "prep:width", cfg->width);
     mpp_enc_cfg_set_s32(enc_cfg, "prep:height", cfg->height);
@@ -213,8 +212,8 @@ RK_S32 VpuApiLegacy::vpu_api_set_enc_cfg(MppCodingType coding, MppFrameFormat fm
     mpp_enc_cfg_set_s32(enc_cfg, "rc:mode",
         is_fix_qp ? MPP_ENC_RC_MODE_FIXQP : (cfg->rc_mode ? MPP_ENC_RC_MODE_CBR : MPP_ENC_RC_MODE_VBR));
     mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_target", cfg->bitRate);
-    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_max", cfg->bitRate * BPS_MAX_MULTIPLIER);
-    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_min", cfg->rc_mode ? cfg->bitRate * BPS_MIN_CBR : cfg->bitRate * BPS_MIN_VBR);
+    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_max", cfg->bitRate * BPS_MAX_MULTIPLIER / BPS_DEN);
+    mpp_enc_cfg_set_s32(enc_cfg, "rc:bps_min", nBpsMin);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_flex", 0);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_num", cfg->framerate);
     mpp_enc_cfg_set_s32(enc_cfg, "rc:fps_in_denom", 1);
@@ -865,7 +864,8 @@ RK_S32 VpuApiLegacy::importMjpegInputBuffer(VideoPacket_t *pkt, MppBuffer *str_b
 
 RK_S32 VpuApiLegacy::importMjpegOutputBuffer(VpuCodecContext *ctx, DecoderOut_t *aDecOut, MppBuffer *pic_buf)
 {
-    const int YUV420P_PIXEL_SIZE = 3 / 2;
+    const int nYuv420Channel = 3;
+    const int nYuv420Ratio = 2;
     RK_S32 fd = (RK_S32)(aDecOut->timeUs & 0xffffffff);
     RK_S32 ret = 0;
 
@@ -881,7 +881,7 @@ RK_S32 VpuApiLegacy::importMjpegOutputBuffer(VpuCodecContext *ctx, DecoderOut_t 
         }
         outputCommit.type = MPP_BUFFER_TYPE_ION;
         outputCommit.fd = fd;
-        outputCommit.size = ctx->width * ctx->height * YUV420P_PIXEL_SIZE;
+        outputCommit.size = ctx->width * ctx->height * nYuv420Channel / nYuv420Ratio;
         outputCommit.ptr = (void *)aDecOut->data;
 
         ret = mpp_buffer_import(pic_buf, &outputCommit);
@@ -891,7 +891,7 @@ RK_S32 VpuApiLegacy::importMjpegOutputBuffer(VpuCodecContext *ctx, DecoderOut_t 
     } else {
         RK_U32 hor_stride = MPP_ALIGN(ctx->width, (RK_U32)16);
         RK_U32 ver_stride = MPP_ALIGN(ctx->height, (RK_U32)16);
-        ret = mpp_buffer_get(memGroup, pic_buf, hor_stride * ver_stride * YUV420P_PIXEL_SIZE);
+        ret = mpp_buffer_get(memGroup, pic_buf, hor_stride * ver_stride * nYuv420Channel / nYuv420Ratio);
         if (ret) {
             mpp_err_f("allocate output stream buffer failed\n");
         }
@@ -952,19 +952,20 @@ RK_S32 VpuApiLegacy::execMjpegDecodeTask(MppPacket packet, MppFrame mframe)
 
 RK_S32 VpuApiLegacy::handleMjpegOutputFrame(VpuCodecContext *ctx, MppFrame mframe, DecoderOut_t *aDecOut)
 {
-    const int YUV420P_PIXEL_SIZE = 3 / 2;
+    const int nYuv420Channel = 3;
+    const int nYuv420Ratio = 2;
     RK_S32 ret = MPP_OK;
 
     if (mframe != nullptr) {
         MppBuffer buf_out = mpp_frame_get_buffer(mframe);
         size_t len = mpp_buffer_get_size(buf_out);
-        size_t size = sizeof(RK_U8) * ctx->width * ctx->height * YUV420P_PIXEL_SIZE;
+        size_t size = sizeof(RK_U8) * ctx->width * ctx->height * nYuv420Channel / nYuv420Ratio;
         aDecOut->size = len;
 
         if (fd_output) {
             mpp_log_f("fd for output is invalid!\n");
             aDecOut->data = static_cast<RK_U8*>(mpp_osal_malloc(__FUNCTION__, size));
-            ret = memcpy_s(aDecOut->data, aDecOut->size, (RK_U8 *)mpp_buffer_get_ptr(buf_out), aDecOut->size);
+            ret = memcpy_s(aDecOut->data, size, (RK_U8 *)mpp_buffer_get_ptr(buf_out), aDecOut->size);
             if (ret != EOK) {
                 mpp_err("%s: copy frame data failed, error code: %d", __func__, ret);
                 ret = MPP_NOK;
@@ -1478,12 +1479,12 @@ RK_S32 VpuApiLegacy::encodeCopyOutputBuffer(VpuCodecContext *ctx, EncoderOut_t *
         if (ctx->videoCoding == OMX_RK_VIDEO_CodingAVC) {
             // remove first 00 00 00 01
             length -= AVC_HEADER_SIZE;
-            if (memcpy_s(aEncOut->data, aEncOut->size, src + START_OFFSET, length) != EOK) {
+            if (memcpy_s(aEncOut->data, size, src + START_OFFSET, length) != EOK) {
                 mpp_err("%{public}s: copy aEncOut->data failed", __func__);
                 return MPP_NOK;
             }
         } else {
-            if (memcpy_s(aEncOut->data, aEncOut->size, src, length) != EOK) {
+            if (memcpy_s(aEncOut->data, size, src, length) != EOK) {
                 mpp_err("%{public}s: copy aEncOut->data failed", __func__);
                 return MPP_NOK;
             }
@@ -1660,7 +1661,7 @@ RK_S32 VpuApiLegacy::frameInit(VpuCodecContext *ctx, MppFrame &frame, EncInputSt
     RK_U32 ver_stride = MPP_ALIGN(ctx->height, (RK_U32)8);
     
     ret = mpp_frame_init(&frame);
-    if (ret != MPP_NOK) {
+    if (ret != MPP_OK) {
         mpp_err_f("mpp_frame_init failed\n");
         return ret;
     }
@@ -1758,12 +1759,12 @@ RK_S32 VpuApiLegacy::encoder_getstream(VpuCodecContext *ctx, EncoderOut_t *aEncO
             length = (length > offset) ? (length - offset) : 0;
         }
         aEncOut->data = nullptr;
+        size_t size = MPP_ALIGN(length + ALIGNMENT_OFFSET, (size_t)SZ_4K);
         if (length > 0) {
-            size_t size = MPP_ALIGN(length + ALIGNMENT_OFFSET, (size_t)SZ_4K);
             aEncOut->data = static_cast<RK_U8*>(mpp_osal_malloc(__FUNCTION__, size));
         }
         if (aEncOut->data) {
-            if (memcpy_s(aEncOut->data, aEncOut->size, src + offset, length) != EOK) {
+            if (memcpy_s(aEncOut->data, size, src + offset, length) != EOK) {
                 mpp_err("%{public}s: copy aEncOut->data failed", __func__);
                 goto FUNC_RET;
             }
