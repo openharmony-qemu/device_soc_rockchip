@@ -296,7 +296,7 @@ static int32_t i2cdrv_transfer(struct I2cCntlr *cntlr, struct I2cMsg *msgs, int1
 
         if (msg->flags == I2C_FLAG_READ) {
             addr = (unsigned short)(msg->addr);
-            *buf = (unsigned char *)(msg->buf);
+            buf = (unsigned char *)(msg->buf);
             buf_len = (unsigned short)(msg->len);
 
             ret = LzI2cRead(i2cBusId, addr, buf, buf_len);
