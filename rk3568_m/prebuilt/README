@@ -1,0 +1,60 @@
+# Prebuilt libmetal / open-amp archives (SoC repo)
+
+The third-party archives + the upstream header trees (../include) + the
+license texts live in this repo (device_soc_rockchip); the kernel repo
+(kernel/liteos_m/components/openamp) only references them from its build
+files - no third-party text or binaries are stored there. The
+self-developed libmica tree (kernel/liteos_m/compat/mcs/mica) and the
+libmetal "liteos" system backend source (../include/libmetal/system/liteos/
+metal_sys.c, part of this repo's header tree) are compiled from source by
+the kernel repo's openamp component - no archive is shipped for them.
+
+Upstream provenance (vanilla snapshots, unmodified upstream sources):
+
+| archive        | upstream   | objects (link order)                                            |
+|----------------|------------|-----------------------------------------------------------------|
+| `libmetal.a`   | v1.3.0     | init, device, io, log                                           |
+| `openamp.a`    | v1.3.1     | virtio, virtqueue, remoteproc_virtio, rpmsg, rpmsg_virtio      |
+
+Toolchain/flags used to build them (must match to regenerate bit-identical
+objects):
+
+    aarch64-liteos-clang (OHOS clang 15.0.4, prebuilts/clang/ohos/linux-x86_64/llvm)
+    --target=aarch64-linux-ohos -mcpu=cortex-a55 -mgeneral-regs-only
+    -ffreestanding -nostdlib -O2 -fdata-sections -ffunction-sections
+    -fno-builtin -fsigned-char -std=c99
+    include: ../include/libmetal  + generated metal/system/liteos backend
+
+## Why prebuilt
+
+The third_party source snapshots (third_party/libmetal, third_party/open-amp)
+are not shipped: introducing third-party source requires a separate
+review/approval. The compiled objects plus the public headers are sufficient
+for the rk3568_m AMP build; everything else (the libmetal liteos system
+backend, the self-developed libmica) is compiled from source by
+kernel/liteos_m/components/openamp.
+
+## Regeneration recipe
+
+- libmetal v1.3.0 core headers : ../include/libmetal/ (top-level + compiler/gcc
+  + processor/aarch64 + system/liteos backend incl. metal_sys.c)
+- open-amp v1.3.1 headers      : ../include/open-amp/
+- libmica (self-developed)     : kernel/liteos_m/compat/mcs/mica/
+  (sources + platform headers, compiled from source - no archive)
+
+To regenerate the archives: build rk3568_m with a kernel_liteos_m
+components/openamp/BUILD.gn that compiles libmetal/open-amp from source
+(e.g. the revision before the prebuilt switch), and re-archive from out/
+keeping the exact member order recorded at the top of this file.
+
+## Header trees
+
+- The public header trees live in this repo at
+  //device/soc/rockchip/rk3568_m/include/{libmetal,open-amp} (same upstream
+  provenance: libmetal v1.3.0 lib/ .h subset, open-amp v1.3.1 lib/include).
+  The kernel repo's build references them there (see
+  kernel/liteos_m/components/openamp/{BUILD.gn,mcs_includes.gni}).
+
+Licenses: BSD-3-Clause (libmetal) / BSD-2-Clause with parts BSD-3-Clause
+(open-amp) - the license texts live next to the headers:
+//device/soc/rockchip/rk3568_m/include/LICENSE.{libmetal,open-amp}.
