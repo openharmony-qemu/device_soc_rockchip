@@ -1,0 +1,10 @@
+config SOC_SERIES_RK3568
+    bool "Rockchip RK3568 Series"
+    depends on PLATFORM_RK3568_M
+    select ARCH_CORTEX_A55
+    help
+        Rockchip RK3568 SoC (4x Cortex-A55, GICv3, AArch64).
+
+config SOC_COMPANY
+    string
+    default "rockchip" if PLATFORM_RK3568_M

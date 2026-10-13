@@ -21,5 +21,8 @@ if (ohos_kernel_type == "liteos_m") {
     if (defined(LOSCFG_SOC_SERIES_RK22XX)) {
       modules += [ "rk2206" ]
     }
+    if (device_name == "rk3568_m") {
+      modules += [ "rk3568_m" ]
+    }
   }
 }
