@@ -1,0 +1,22 @@
+--- a/lib/remoteproc/elf_loader.c	2026-09-13 22:32:45.684449849 +0800
++++ b/lib/remoteproc/elf_loader.c	2026-09-13 22:32:45.697034649 +0800
+@@ -573,8 +573,17 @@
+ 					     noffset, &nsize, &nsegmsize);
+ 		if (!phdr) {
+ 			metal_log(METAL_LOG_DEBUG, "cannot find more segment\r\n");
+-			*load_state = (*load_state & (~ELF_NEXT_SEGMENT_MASK)) |
+-				      (nsegment & ELF_NEXT_SEGMENT_MASK);
++			/* No more PT_LOAD segment. elf_parse_segment() has
++			 * already overwritten *da with the p_paddr of the
++			 * skipped trailing non-LOAD segment (e.g. PT_GNU_STACK,
++			 * usually 0x0). Clear the load fields and mark the
++			 * load complete, otherwise the caller tries to mmap
++			 * the skipped segment address and fails the load. */
++			*da = RPROC_LOAD_ANYADDR;
++			*nlen = 0;
++			*nmemsize = 0;
++			*load_state = (*load_state & (~RPROC_LOADER_MASK)) |
++				      RPROC_LOADER_LOAD_COMPLETE;
+ 			return *load_state;
+ 		}
+ 		*nlen = nsize;
