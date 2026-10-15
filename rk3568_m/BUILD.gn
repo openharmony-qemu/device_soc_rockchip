@@ -18,5 +18,6 @@ if (ohos_kernel_type == "liteos_m") {
     # real-time NIC (GMAC1) data-plane driver for the AMP slave core
     # (pulled by kernel/liteos_m board module deps as well)
     modules = [ "driver/net" ]
+    modules += [ "driver/can" ]
   }
 }

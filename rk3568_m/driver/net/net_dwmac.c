@@ -551,12 +551,23 @@ int NetInit(const NetConfig *cfg, NetDevice **dev)
                  DMA_SYS_BUS_MODE_FB | DMA_SYS_BUS_BLEN4 | DMA_SYS_BUS_BLEN8 |
                  DMA_SYS_BUS_BLEN16 | DMA_SYS_BUS_BLEN32);
 
-    /* --- MAC static config: GMII mode (speed via PHY/RGMII), rx filter
-     *     per config: promiscuous (sniffer/ECAT) or DA0+multicast --- */
+    /* --- MAC static config: the MAC speed class must track the PHY:
+     *     RGMII runs 125 MHz only for 1000M and drops to 25/2.5 MHz for
+     *     100/10M, so a forced 100/10M link requires MII mode (PS) with
+     *     FES selecting 100M; rx filter per config: promiscuous
+     *     (sniffer/ECAT) or DA0+multicast. Autoneg keeps GMII mode: the
+     *     link partner negotiated here is expected to be 1000M-capable. */
     val = net_reg_read(GMAC_CONFIG);
     val &= ~(GMAC_CONFIG_PS | GMAC_CONFIG_FES | GMAC_CONFIG_TE | GMAC_CONFIG_RE);
     val |= GMAC_CONFIG_DM | GMAC_CONFIG_JD | GMAC_CONFIG_BE |
            GMAC_CONFIG_DCRS;
+    if (cfg->autoneg == 0) {
+        if (cfg->speed_mbps == 100) {
+            val |= GMAC_CONFIG_PS | GMAC_CONFIG_FES;  /* MII, 100M */
+        } else {
+            val |= GMAC_CONFIG_PS;                    /* MII, 10M */
+        }
+    }
     net_reg_write(GMAC_CONFIG, val);
 
     if (cfg->promisc != 0) {
