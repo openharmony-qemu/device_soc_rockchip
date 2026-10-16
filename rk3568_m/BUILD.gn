@@ -15,9 +15,13 @@ if (ohos_kernel_type == "liteos_m") {
   import("//kernel/liteos_m/liteos.gni")
   module_name = get_path_info(rebase_path("."), "name")
   module_group(module_name) {
-    # real-time NIC (GMAC1) data-plane driver for the AMP slave core
-    # (pulled by kernel/liteos_m board module deps as well)
-    modules = [ "driver/net" ]
-    modules += [ "driver/can" ]
+    # The real-time NIC (GMAC1) and CAN data-plane drivers previously
+    # aggregated here moved to the liteos-m target board
+    # (kernel/liteos_m/targets/rk3568_m/liteos_m/board/net and
+    # .../board/can) and are compiled into the board module directly.
+    # This repo now ships the prebuilt libmetal/open-amp blobs
+    # (prebuilt/), their headers (include/) and the SoC Kconfig
+    # fragments only.
+    modules = []
   }
 }
