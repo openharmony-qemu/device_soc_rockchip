@@ -1,3 +1,5 @@
+#ifndef ROCKCHIP_HEADER_GUARD
+#define ROCKCHIP_HEADER_GUARD
 /*
  * Copyright 2021 Rockchip Electronics Co. LTD
  *
@@ -45,3 +47,4 @@ MPP_RET mpp_enc_roi_setup_meta(MppEncRoiCtx ctx, MppMeta meta);
 #ifdef __cplusplus
 }
 #endif
+#endif // ROCKCHIP_HEADER_GUARD

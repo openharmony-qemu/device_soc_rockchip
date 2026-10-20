@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_FRAME_H__
-#define __MPP_FRAME_H__
+#ifndef MPP_FRAME_H
+#define MPP_FRAME_H
 
 #include "mpp_buffer.h"
 #include "mpp_meta.h"
@@ -57,6 +46,12 @@ typedef enum {
 } MppFrameColorRange;
 
 typedef enum {
+    MPP_FRAME_CHROMA_DOWN_SAMPLE_MODE_NONE,
+    MPP_FRAME_CHORMA_DOWN_SAMPLE_MODE_AVERAGE,
+    MPP_FRAME_CHORMA_DOWN_SAMPLE_MODE_DISCARD,
+} MppFrameChromaDownSampleMode;
+
+typedef enum {
     MPP_FRAME_VIDEO_FMT_COMPONEMT   = 0,
     MPP_FRAME_VIDEO_FMT_PAL         = 1,
     MPP_FRAME_VIDEO_FMT_NTSC        = 2,
@@ -78,10 +73,10 @@ typedef enum {
     MPP_FRAME_PRI_BT470M        = 4,    ///< also FCC Title 47 Code of Federal Regulations 73.682 (a)(20)
 
     MPP_FRAME_PRI_BT470BG       = 5,    ///< also ITU-R BT601-6 625 / ITU-R BT1358 625 / ITU-R BT1700 625 PAL & SECAM
-    MPP_FRAME_PRI_SMPTE170M     = 6,    ///< also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC
-    MPP_FRAME_PRI_SMPTE240M     = 7,    ///< functionally identical to above
+    MPP_FRAME_PRI_SMPTE170M     = 6,    ///< also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC/SMPTE ST 170 (2004)
+    MPP_FRAME_PRI_SMPTE240M     = 7,    ///< functionally identical to above/SMPTE ST 240
     MPP_FRAME_PRI_FILM          = 8,    ///< colour filters using Illuminant C
-    MPP_FRAME_PRI_BT2020        = 9,    ///< ITU-R BT2020
+    MPP_FRAME_PRI_BT2020        = 9,    ///< ITU-R BT2020 / ITU-R BT.2100-2
     MPP_FRAME_PRI_SMPTEST428_1  = 10,   ///< SMPTE ST 428-1 (CIE 1931 XYZ)
     MPP_FRAME_PRI_SMPTE431      = 11,   ///< SMPTE ST 431-2 (2011) / DCI P3
     MPP_FRAME_PRI_SMPTE432      = 12,   ///< SMPTE ST 432-1 (2010) / P3 D65 / Display P3
@@ -163,7 +158,35 @@ typedef enum {
     MPP_CHROMA_LOC_NB,                  ///< Not part of ABI
 } MppFrameChromaLocation;
 
+typedef enum {
+    MPP_CHROMA_UNSPECIFIED,
+    MPP_CHROMA_400,
+    MPP_CHROMA_410,
+    MPP_CHROMA_411,
+    MPP_CHROMA_420,
+    MPP_CHROMA_422,
+    MPP_CHROMA_440,
+    MPP_CHROMA_444,
+} MppFrameChromaFormat;
+
+/*
+ * MppFrameFormat bit flag:
+ *
+ *  +-----------------------------------------------+
+ *  | 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 |
+ *  +-----------------------------------------------+
+ *  bit  0 ~ 15: YUV / RGB format value
+ *  bit 16 ~ 19: YUV / RGB flag    0 - YUV; 1 - RGB;
+ *  bit 20 ~ 23: Frame Buffer Compression (FBC) flag, 0 - No FBC; 1 - FBCv1; 2 - FBCv2;
+ *  bit 24     : Big / little end flag,               0 - big end; 1 - little end;
+ *  bit 25     : Tile format flag,                    0 - No tile; 1 - tile format;
+ *  bit 26 ~ 27: High Dynamic Range (HDR) flag,       0 - Standard Dynamic Range (SDR); 1 - HDR;
+ *
+ *  NOTE: FBC format and tile format can not exist at the same time.
+ */
+
 #define MPP_FRAME_FMT_MASK          (0x000fffff)
+#define MPP_FRAME_FMT_PROP_MASK     (0x0ff00000)
 
 #define MPP_FRAME_FMT_COLOR_MASK    (0x000f0000)
 #define MPP_FRAME_FMT_YUV           (0x00000000)
@@ -171,6 +194,14 @@ typedef enum {
 
 #define MPP_FRAME_FBC_MASK          (0x00f00000)
 #define MPP_FRAME_FBC_NONE          (0x00000000)
+#define MPP_FRAME_FBC_SHIFT         (20)
+
+#define MPP_FRAME_HDR_MASK          (0x0c000000)
+#define MPP_FRAME_HDR_NONE          (0x00000000)
+#define MPP_FRAME_HDR               (0x04000000)
+
+#define MPP_FRAME_TILE_FLAG         (0x02000000)
+
 /*
  * AFBC_V1 is for ISP output.
  * It has default payload offset to be calculated * from width and height:
@@ -184,26 +215,45 @@ typedef enum {
  */
 #define MPP_FRAME_FBC_AFBC_V2       (0x00200000)
 
+/*
+* RKFBC is for video decoder output and video encoder Input.
+* It has default header stride to be calculated * from width and height:
+* Header stride = MPP_ALIGN(width, 64) / 64 * 16
+* Payload offset is always set to zero.
+*/
+#define MPP_FRAME_FBC_RKFBC         (0x00400000)
+
 #define MPP_FRAME_FMT_LE_MASK       (0x01000000)
 
 #define MPP_FRAME_FMT_IS_YUV(fmt)   (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) && \
                                      ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT))
+#define MPP_FRAME_FMT_IS_YUV_10BIT(fmt) ((fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV420SP_10BIT || \
+                                        (fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV422SP_10BIT || \
+                                        (fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV444SP_10BIT)
 #define MPP_FRAME_FMT_IS_RGB(fmt)   (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) && \
                                      ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT))
 
 /*
  * For MPP_FRAME_FBC_AFBC_V1 the 16byte aligned stride is used.
  */
-#define MPP_FRAME_FMT_IS_FBC(fmt)   (fmt & MPP_FRAME_FBC_MASK)
+#define MPP_FRAME_FMT_IS_FBC(fmt)     (fmt & MPP_FRAME_FBC_MASK)
+#define MPP_FRAME_FMT_IS_AFBC(fmt)    (fmt & (MPP_FRAME_FBC_AFBC_V1 | MPP_FRAME_FBC_AFBC_V2))
+#define MPP_FRAME_FMT_IS_AFBC_V1(fmt) (fmt & MPP_FRAME_FBC_AFBC_V1)
+#define MPP_FRAME_FMT_IS_AFBC_V2(fmt) (fmt & MPP_FRAME_FBC_AFBC_V2)
+#define MPP_FRAME_FMT_IS_RKFBC(fmt)   (fmt & MPP_FRAME_FBC_RKFBC)
+
+#define MPP_FRAME_FMT_IS_HDR(fmt)   (fmt & MPP_FRAME_HDR_MASK)
 
 #define MPP_FRAME_FMT_IS_LE(fmt)    ((fmt & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK)
 #define MPP_FRAME_FMT_IS_BE(fmt)    ((fmt & MPP_FRAME_FMT_LE_MASK) == 0)
+
+#define MPP_FRAME_FMT_IS_TILE(fmt)  (fmt & MPP_FRAME_TILE_FLAG)
 
 /* mpp color format index definition */
 typedef enum {
     MPP_FMT_YUV420SP        = (MPP_FRAME_FMT_YUV + 0),  /* YYYY... UV... (NV12)     */
     /*
-     * A rockchip specific pixel format, without gap between pixel aganist
+     * A rockchip specific pixel format, without gap between pixel against
      * the P010_10LE/P010_10BE
      */
     MPP_FMT_YUV420SP_10BIT  = (MPP_FRAME_FMT_YUV + 1),
@@ -222,6 +272,9 @@ typedef enum {
     MPP_FMT_YUV411SP        = (MPP_FRAME_FMT_YUV + 14), /* YYYY... UV...            */
     MPP_FMT_YUV444SP        = (MPP_FRAME_FMT_YUV + 15), /* YYYY... UVUVUVUV...      */
     MPP_FMT_YUV444P         = (MPP_FRAME_FMT_YUV + 16), /* YYYY... UUUU... VVVV...  */
+    MPP_FMT_YUV444SP_10BIT  = (MPP_FRAME_FMT_YUV + 17),
+    MPP_FMT_AYUV2BPP        = (MPP_FRAME_FMT_YUV + 18), /* YYYY... UVUVUVUV...      */
+    MPP_FMT_AYUV1BPP        = (MPP_FRAME_FMT_YUV + 19),
     MPP_FMT_YUV_BUTT,
 
     MPP_FMT_RGB565          = (MPP_FRAME_FMT_RGB + 0),  /* 16-bit RGB               */
@@ -238,10 +291,21 @@ typedef enum {
     MPP_FMT_ABGR8888        = (MPP_FRAME_FMT_RGB + 11), /* 32-bit RGB               */
     MPP_FMT_BGRA8888        = (MPP_FRAME_FMT_RGB + 12), /* 32-bit RGB               */
     MPP_FMT_RGBA8888        = (MPP_FRAME_FMT_RGB + 13), /* 32-bit RGB               */
+    MPP_FMT_ARGB4444        = (MPP_FRAME_FMT_RGB + 14), /* 16-bit RGB               */
+    MPP_FMT_ARGB1555        = (MPP_FRAME_FMT_RGB + 15), /* 2-bit RGB                */
     MPP_FMT_RGB_BUTT,
 
     MPP_FMT_BUTT,
 } MppFrameFormat;
+
+typedef enum MppFmtLayout_e {
+    MPP_FMT_RASTER,
+    MPP_FMT_AFBC16X16,
+    MPP_FMT_AFBC32X8,
+    MPP_FMT_RKFBC64X4,
+    MPP_FMT_TILE4X4,
+    MPP_FMT_BUT,
+} MppFmtLayout;
 
 /**
  * Rational number (pair of numerator and denominator).
@@ -263,10 +327,41 @@ typedef struct MppFrameContentLightMetadata {
     RK_U16 MaxFALL;
 } MppFrameContentLightMetadata;
 
-typedef enum {
+typedef struct MppFrameHdrDynamicMeta {
+    RK_U32 hdr_fmt;
+    RK_U32 size;
+    RK_U8 data[0];
+} MppFrameHdrDynamicMeta;
+
+typedef enum MppFrameError {
+    /* General error not specified */
     MPP_FRAME_ERR_UNKNOW           = 0x0001,
+
+    /* Critical error for decoder not support error */
     MPP_FRAME_ERR_UNSUPPORT        = 0x0002,
-} MPP_FRAME_ERR;
+
+    /*
+     * Fatal error for decoder can not parse a valid frame for hardware.
+     * the pixel data is all invalid.
+     */
+    MPP_FRAME_ERR_DEC_INVALID      = 0x0010,
+
+    /*
+     * Normal error for decoder found hardware error on decoding.
+     */
+    MPP_FRAME_ERR_DEC_HW_ERR       = 0x0100,
+
+    /*
+     * Normal error for decoder found missing reference frame on decoding.
+     */
+    MPP_FRAME_ERR_DEC_MISS_REF     = 0x0200,
+} MppFrameError;
+
+typedef enum {
+    MPP_FRAME_THUMBNAIL_NONE,
+    MPP_FRAME_THUMBNAIL_MIXED,
+    MPP_FRAME_THUMBNAIL_ONLY,
+} MppFrameThumbnailMode;
 
 #ifdef __cplusplus
 extern "C" {
@@ -338,6 +433,9 @@ RK_U32  mpp_frame_get_errinfo(const MppFrame frame);
 void    mpp_frame_set_errinfo(MppFrame frame, RK_U32 errinfo);
 size_t  mpp_frame_get_buf_size(const MppFrame frame);
 void    mpp_frame_set_buf_size(MppFrame frame, size_t buf_size);
+void    mpp_frame_set_thumbnail_en(MppFrame frame, RK_U32 thumbnail_en);
+RK_U32  mpp_frame_get_thumbnail_en(const MppFrame frame);
+
 /*
  * flow control parmeter
  */
@@ -374,12 +472,20 @@ MppFrameChromaLocation mpp_frame_get_chroma_location(const MppFrame frame);
 void    mpp_frame_set_chroma_location(MppFrame frame, MppFrameChromaLocation chroma_location);
 MppFrameFormat mpp_frame_get_fmt(MppFrame frame);
 void    mpp_frame_set_fmt(MppFrame frame, MppFrameFormat fmt);
+MppFmtLayout mpp_frame_get_fmt_layout(const MppFrame frame);
+void    mpp_frame_set_fmt_layout(MppFrame frame, MppFmtLayout data_layout);
+RK_U32 mpp_frame_get_fbc_uncompress(const MppFrame frame);
+void    mpp_frame_set_fbc_uncompress(MppFrame frame, RK_U32 fbc_uncompress);
+RK_U32 mpp_frame_get_fbc_sparse(const MppFrame frame);
+void    mpp_frame_set_fbc_sparse(MppFrame frame, RK_U32 fbc_sparse);
 MppFrameRational mpp_frame_get_sar(const MppFrame frame);
 void    mpp_frame_set_sar(MppFrame frame, MppFrameRational sar);
 MppFrameMasteringDisplayMetadata mpp_frame_get_mastering_display(const MppFrame frame);
 void    mpp_frame_set_mastering_display(MppFrame frame, MppFrameMasteringDisplayMetadata mastering_display);
 MppFrameContentLightMetadata mpp_frame_get_content_light(const MppFrame frame);
 void    mpp_frame_set_content_light(MppFrame frame, MppFrameContentLightMetadata content_light);
+MppFrameHdrDynamicMeta* mpp_frame_get_hdr_dynamic_meta(const MppFrame frame);
+void    mpp_frame_set_hdr_dynamic_meta(MppFrame frame, MppFrameHdrDynamicMeta *vivi_data);
 
 /*
  * HDR parameter
@@ -389,4 +495,4 @@ void    mpp_frame_set_content_light(MppFrame frame, MppFrameContentLightMetadata
 }
 #endif
 
-#endif /*__MPP_FRAME_H__*/
+#endif /* MPP_FRAME_H */

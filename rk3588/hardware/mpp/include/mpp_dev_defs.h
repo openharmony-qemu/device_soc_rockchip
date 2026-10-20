@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2020 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_DEV_DEFS_H__
-#define __MPP_DEV_DEFS_H__
+#ifndef MPP_DEV_DEFS_H
+#define MPP_DEV_DEFS_H
 
 #include "rk_type.h"
 
@@ -38,12 +27,19 @@ typedef enum MppClientType_e {
     VPU_CLIENT_VEPU1        = 17,   /* 0x00020000 */
     VPU_CLIENT_VEPU2        = 18,   /* 0x00040000 */
     VPU_CLIENT_VEPU2_JPEG   = 19,   /* 0x00080000 */
+    VPU_CLIENT_JPEG_ENC     = 20,   /* 0x00100000 */
+
     VPU_CLIENT_VEPU22       = 24,   /* 0x01000000 */
 
     IEP_CLIENT_TYPE         = 28,   /* 0x10000000 */
+    VDPP_CLIENT_TYPE        = 29,   /* 0x20000000 */
 
     VPU_CLIENT_BUTT,
 } MppClientType;
+
+#define CLIENT_TYPE_MASK_DEC    0x0000ffff
+#define CLIENT_TYPE_MASK_ENC    0x0fff0000
+#define CLIENT_TYPE_MASK_VPROC  0xf0000000
 
 /* RK combined codec */
 #define HAVE_VDPU1          (1 << VPU_CLIENT_VDPU1)         /* 0x00000001 */
@@ -61,14 +57,15 @@ typedef enum MppClientType_e {
 #define HAVE_VEPU1          (1 << VPU_CLIENT_VEPU1)         /* 0x00020000 */
 #define HAVE_VEPU2          (1 << VPU_CLIENT_VEPU2)         /* 0x00040000 */
 #define HAVE_VEPU2_JPEG     (1 << VPU_CLIENT_VEPU2_JPEG)    /* 0x00080000 */
+#define HAVE_JPEG_ENC       (1 << VPU_CLIENT_JPEG_ENC)      /* 0x00100000 */
 /* External encoder */
 #define HAVE_VEPU22         (1 << VPU_CLIENT_VEPU22)        /* 0x01000000 */
 /* RK Image Enhance Processor for deinterlacing */
 #define HAVE_IEP            (1 << IEP_CLIENT_TYPE)          /* 0x10000000 */
+/* RK Image Enhance Processor for dispaly */
+#define HAVE_VDPP           (1 << VDPP_CLIENT_TYPE)         /* 0x20000000 */
 
 /* Platform image process hardware feature */
 #define HAVE_IPP            (0x00000001)
-#define HAVE_RGA            (0x00000002)
-#define HAVE_RGA2           (0x00000004)
 
-#endif /*__MPP_DEV_DEFS_H__*/
+#endif /* MPP_DEV_DEFS_H */

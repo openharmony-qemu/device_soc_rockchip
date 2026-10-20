@@ -1,25 +1,21 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2020 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_DEVICE_H__
-#define __MPP_DEVICE_H__
+#ifndef MPP_DEVICE_H
+#define MPP_DEVICE_H
 
 #include "mpp_err.h"
+#include "mpp_list.h"
+#include "mpp_mem_pool.h"
+
 #include "mpp_dev_defs.h"
 #include "mpp_callback.h"
+
+#define MPP_MAX_REG_TRANS_NUM   80
+
+typedef void* MppDev;
 
 typedef enum MppDevIoctlCmd_e {
     /* device batch mode config */
@@ -35,6 +31,12 @@ typedef enum MppDevIoctlCmd_e {
     MPP_DEV_REG_OFFS,
     MPP_DEV_RCB_INFO,
     MPP_DEV_SET_INFO,
+    MPP_DEV_SET_ERR_REF_HACK,
+    MPP_DEV_SET_FLAG,
+    MPP_DEV_LOCK_MAP,
+    MPP_DEV_UNLOCK_MAP,
+    MPP_DEV_ATTACH_FD,
+    MPP_DEV_DETACH_FD,
 
     MPP_DEV_CMD_SEND,
     MPP_DEV_CMD_POLL,
@@ -66,7 +68,7 @@ typedef struct MppDevRegOffsetCfg_t {
 typedef struct MppDevRegOffsCfg_t {
     RK_S32  size;
     RK_S32  count;
-    MppDevRegOffsetCfg cfgs[];
+    MppDevRegOffsetCfg cfgs[0];
 } MppDevRegOffCfgs;
 
 /* for MPP_DEV_RCB_INFO */
@@ -82,12 +84,35 @@ typedef struct MppDevSetInfoCfg_t {
     RK_U64  data;
 } MppDevInfoCfg;
 
+/*
+ * VEPU_5XX Slice Info Register Structure
+ *
+ * Different VEPU versions have different bitfield layouts:
+ * - VEPU580/541:  25-bit length + 7-bit reserved
+ * - VEPU510:      31-bit length + 1-bit last flag
+ * - VEPU511/511A: 30-bit length + 1-bit last + 1-bit stream_id
+ */
 typedef union MppDevPollEncSliceInfo_u {
     RK_U32  val;
+
+    /* Generic access - compatible with VEPU580/VEPU541 */
     struct {
         RK_U32  length  : 31;
         RK_U32  last    : 1;
     };
+
+    /* VEPU510 specific access */
+    struct {
+        RK_U32  sli_len : 31;
+        RK_U32  sli_lst : 1;
+    } vepu510;
+
+    /* VEPU511/511A specific access */
+    struct {
+        RK_U32  sli_len : 30;
+        RK_U32  sli_lst : 1;
+        RK_U32  sli_sid : 1;  /* stream id */
+    } vepu511;
 } MppDevPollEncSliceInfo;
 
 /* for MPP_DEV_POLL */
@@ -96,8 +121,24 @@ typedef struct MppDevPollCfg_t {
     RK_S32  poll_ret;
     RK_S32  count_max;
     RK_S32  count_ret;
-    MppDevPollEncSliceInfo slice_info[];
+    MppDevPollEncSliceInfo slice_info[0];
 } MppDevPollCfg;
+
+typedef struct MppDevBufMapNode_t {
+    /* data write by buffer function */
+    struct list_head    list_buf;
+    pthread_mutex_t     *lock_buf;
+    MppBuffer           buffer;
+    MppDev              dev;
+    MppMemPool          pool;
+    RK_S32              buf_fd;
+
+    /* data write by device function */
+    struct list_head    list_dev;
+    pthread_mutex_t     *lock_dev;
+    RK_S32              dev_fd;
+    RK_U32              iova;
+} MppDevBufMapNode;
 
 typedef struct MppDevApi_t {
     const char  *name;
@@ -118,6 +159,14 @@ typedef struct MppDevApi_t {
     MPP_RET     (*reg_offs)(void *ctx, MppDevRegOffCfgs *cfg);
     MPP_RET     (*rcb_info)(void *ctx, MppDevRcbInfoCfg *cfg);
     MPP_RET     (*set_info)(void *ctx, MppDevInfoCfg *cfg);
+    MPP_RET     (*set_err_ref_hack)(void *ctx, RK_U32 *enable);
+    MPP_RET     (*set_flag)(void *ctx, RK_U32 *flag);
+
+    /* buffer attach / detach */
+    MPP_RET     (*lock_map)(void *ctx);
+    MPP_RET     (*unlock_map)(void *ctx);
+    MPP_RET     (*attach_fd)(void *ctx, MppDevBufMapNode *node);
+    MPP_RET     (*detach_fd)(void *ctx, MppDevBufMapNode *node);
 
     /* send cmd to hardware */
     MPP_RET     (*cmd_send)(void *ctx);
@@ -125,8 +174,6 @@ typedef struct MppDevApi_t {
     /* poll cmd from hardware */
     MPP_RET     (*cmd_poll)(void *ctx, MppDevPollCfg *cfg);
 } MppDevApi;
-
-typedef void* MppDev;
 
 #ifdef __cplusplus
 extern "C" {
@@ -151,4 +198,4 @@ MPP_RET mpp_dev_multi_offset_update(MppDevRegOffCfgs *cfgs, RK_S32 index, RK_U32
 }
 #endif
 
-#endif /* __MPP_DEVICE_H__ */
+#endif /* MPP_DEVICE_H */

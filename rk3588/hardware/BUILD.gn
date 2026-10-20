@@ -13,13 +13,19 @@
 
 import("//build/ohos.gni")
 
+if (linux_kernel_version == "linux-6.6") {
+  ISP_VERSION_DIR =
+      "//device/soc/rockchip/rk3588/hardware/isp-$linux_kernel_version:isp"
+} else {
+  ISP_VERSION_DIR = "//device/soc/rockchip/rk3588/hardware/isp:isp"
+}
+
 group("hardware_group") {
   deps = [
-    "//device/soc/rockchip/rk3588/hardware/gpu:firmware",
-    "//device/soc/rockchip/rk3588/hardware/gpu:mali-g610-ohos",
-    "//device/soc/rockchip/rk3588/hardware/isp:isp",
+    "//device/soc/rockchip/rk3588/hardware/gpu:gpu",
     "//device/soc/rockchip/rk3588/hardware/mpp:mpp",
     "//device/soc/rockchip/rk3588/hardware/rga:rga",
     "//device/soc/rockchip/rk3588/hardware/wifi:ap6xxx",
+    ISP_VERSION_DIR,
   ]
 }

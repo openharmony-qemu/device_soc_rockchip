@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef __MPP_COMPAT_H__
-#define __MPP_COMPAT_H__
+#ifndef MPP_COMPAT_H
+#define MPP_COMPAT_H
 
 #include "rk_type.h"
 #include "mpp_err.h"
@@ -23,6 +23,7 @@
 typedef enum MppCompatId_e {
     MPP_COMPAT_INC_FBC_BUF_SIZE,
     MPP_COMPAT_ENC_ASYNC_INPUT,
+    MPP_COMPAT_DEC_FBC_HDR_256_ODD,
     MPP_COMPAT_BUTT,
 } MppCompatId;
 
@@ -58,4 +59,4 @@ void mpp_compat_show(void);
 }
 #endif
 
-#endif /*__MPP_COMPAT_H__*/
+#endif /* MPP_COMPAT_H */

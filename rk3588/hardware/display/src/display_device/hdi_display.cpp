@@ -184,7 +184,7 @@ int32_t HdiDisplay::PrepareDisplayLayers(bool *needFlushFb)
     // get the change layers
     for (auto &layer : layers) {
         if (layer->GetDeviceSelect() != layer->GetCompositionType()) {
-            DISPLAY_LOGD("layer change");
+            DISPLAY_LOGD("layer change to %{public}d", layer->GetDeviceSelect());
             layer->SetLayerCompositionType(layer->GetDeviceSelect());
         }
         mChangeLayers.push_back(layer);

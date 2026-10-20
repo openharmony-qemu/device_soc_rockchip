@@ -24,6 +24,7 @@
 #ifdef DUMP_FILE
 #include <fstream>
 #endif
+#include <securec.h>
 namespace OHOS {
 namespace VDI {
 namespace JPEG {
@@ -87,7 +88,6 @@ int32_t CodecJpegDecoder::DeCode(BufferHandle *buffer, BufferHandle *outBuffer, 
 
 MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, BufferHandle* buffer, BufferHandle *outHandle)
 {
-    CODEC_LOGI("enter");
     MppBuffer pktBuf = nullptr;
     MppBuffer frmBuf = nullptr;
     OHOS::CodecScopeGuard scope([&] {
@@ -102,7 +102,9 @@ MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, Buffe
     });
     ResetMppBuffer();
     MppBufferInfo info;
-    memset(&info, 0, sizeof(MppBufferInfo));
+    if (memset_s(&info, sizeof(MppBufferInfo), 0, sizeof(MppBufferInfo)) != MPP_OK) {
+        CODEC_LOGE("memset_s info error ");
+    }
     info.type = MPP_BUFFER_TYPE_DRM;
     info.fd =  buffer->fd;
     info.size = buffer->size;
@@ -118,7 +120,9 @@ MPP_RET CodecJpegDecoder::SendData(const struct CodecJpegDecInfo &decInfo, Buffe
     mppApi_->HdiMppFrameInit(&frame_);
 #ifndef USE_RGA
     MppBufferInfo outputCommit;
-    memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit));
+    if (memset_s(&outputCommit, sizeof(outputCommit), 0, sizeof(outputCommit)) != MPP_OK) {
+        CODEC_LOGE("memset_s outputCommit error");
+    }
     outputCommit.type = MPP_BUFFER_TYPE_DRM;
     outputCommit.size = outHandle->size;
     outputCommit.fd = outHandle->fd;
@@ -178,7 +182,7 @@ MPP_RET CodecJpegDecoder::GetFrame()
         return ret;
     }
 
-    MppFrame frameOut = NULL;
+    MppFrame frameOut = nullptr;
     mppApi_->HdiMppTaskMetaGetFrame(task, KEY_OUTPUT_FRAME, &frameOut);
     if (frameOut != frame_) {
         CODEC_LOGE("frameOut is not match with frame_ %{public}d", ret);

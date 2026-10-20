@@ -1,21 +1,12 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2022 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2022 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_LOG_H__
-#define __MPP_LOG_H__
+#ifndef MPP_LOG_H
+#define MPP_LOG_H
+
+#include <stdarg.h>
 
 #include "rk_type.h"
 #include "mpp_log_def.h"
@@ -36,12 +27,12 @@
  * mpp_logv is for verbose logging
  */
 
-#define mpp_logf(fmt, ...)  _mpp_log_l(MPP_LOG_FATAL,   MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
-#define mpp_loge(fmt, ...)  _mpp_log_l(MPP_LOG_ERROR,   MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
-#define mpp_logw(fmt, ...)  _mpp_log_l(MPP_LOG_WARN,    MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
-#define mpp_logi(fmt, ...)  _mpp_log_l(MPP_LOG_INFO,    MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
-#define mpp_logd(fmt, ...)  _mpp_log_l(MPP_LOG_DEBUG,   MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
-#define mpp_logv(fmt, ...)  _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+#define mpp_logf(fmt, ...)  _mpp_log_l(MPP_LOG_FATAL,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_loge(fmt, ...)  _mpp_log_l(MPP_LOG_ERROR,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_logw(fmt, ...)  _mpp_log_l(MPP_LOG_WARN,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_logi(fmt, ...)  _mpp_log_l(MPP_LOG_INFO,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_logd(fmt, ...)  _mpp_log_l(MPP_LOG_DEBUG,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_logv(fmt, ...)  _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 
 #define mpp_logf_f(fmt, ...)  _mpp_log_l(MPP_LOG_FATAL,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 #define mpp_loge_f(fmt, ...)  _mpp_log_l(MPP_LOG_ERROR,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
@@ -49,6 +40,18 @@
 #define mpp_logi_f(fmt, ...)  _mpp_log_l(MPP_LOG_INFO,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 #define mpp_logd_f(fmt, ...)  _mpp_log_l(MPP_LOG_DEBUG,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 #define mpp_logv_f(fmt, ...)  _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+
+// #define mpp_logf(fmt, ...) HDF_LOGI(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_loge(fmt, ...) HDF_LOGE(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_logw(fmt, ...) HDF_LOGW(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_logi(fmt, ...) HDF_LOGI(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_logd(fmt, ...) HDF_LOGD(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+// #define mpp_logf_f(fmt, ...) HDF_LOGI(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_loge_f(fmt, ...) HDF_LOGE(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_logw_f(fmt, ...) HDF_LOGW(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_logi_f(fmt, ...) HDF_LOGI(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+// #define mpp_logd_f(fmt, ...) HDF_LOGD(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define mpp_logf_c(cond, fmt, ...)  do { if (cond) mpp_logf(fmt, ## __VA_ARGS__); } while (0)
 #define mpp_loge_c(cond, fmt, ...)  do { if (cond) mpp_loge(fmt, ## __VA_ARGS__); } while (0)
@@ -88,6 +91,9 @@ void _mpp_log_l(int level, const char *tag, const char *fmt, const char *func, .
 void mpp_set_log_level(int level);
 int mpp_get_log_level(void);
 
+typedef void (*MppLogCb)(void *ctx, int level, const char *tag, const char *fmt, const char *func, va_list args);
+int mpp_set_log_callback(void *ctx, MppLogCb cb);
+
 /* deprecated function */
 void _mpp_log(const char *tag, const char *fmt, const char *func, ...);
 void _mpp_err(const char *tag, const char *fmt, const char *func, ...);
@@ -96,4 +102,4 @@ void _mpp_err(const char *tag, const char *fmt, const char *func, ...);
 }
 #endif
 
-#endif /*__MPP_LOG_H__*/
+#endif /* MPP_LOG_H */

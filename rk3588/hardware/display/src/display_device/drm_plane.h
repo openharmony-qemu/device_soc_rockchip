@@ -17,6 +17,7 @@
 #define DRM_PLANE_H
 #include <cinttypes>
 #include <string>
+#include "securec.h"
 #include <vector>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -34,39 +35,28 @@ enum class DrmPropertyType {
 };
 
 enum class DrmPlaneType {
-    DRM_PLANE_TYPE_CLUSTER0_WIN0 = 1 << 0,
-    DRM_PLANE_TYPE_CLUSTER0_WIN1 = 1 << 1,
+    DRM_PLANE_TYPE_CLUSTER0_WIN0 = 0x1,
+    DRM_PLANE_TYPE_CLUSTER1_WIN0 = 0x4,
+    DRM_PLANE_TYPE_CLUSTER2_WIN0 = 0x10,
+    DRM_PLANE_TYPE_CLUSTER3_WIN0 = 0x40,
 
-    DRM_PLANE_TYPE_CLUSTER1_WIN0 = 1 << 2,
-    DRM_PLANE_TYPE_CLUSTER1_WIN1 = 1 << 3,
+    DRM_PLANE_TYPE_ESMART0_WIN0 = 0x100,
+    DRM_PLANE_TYPE_ESMART1_WIN0 = 0x400,
+    DRM_PLANE_TYPE_ESMART2_WIN0 = 0x200,
+    DRM_PLANE_TYPE_ESMART3_WIN0 = 0x800,
 
-    DRM_PLANE_TYPE_ESMART0_WIN0 = 1 << 4,
-    DRM_PLANE_TYPE_ESMART0_WIN1 = 1 << 5,
-    DRM_PLANE_TYPE_ESMART0_WIN2 = 1 << 6,
-    DRM_PLANE_TYPE_ESMART0_WIN3 = 1 << 7,
+    DRM_PLANE_TYPE_CLUSTER0_MASK = 0x1,
+    DRM_PLANE_TYPE_CLUSTER1_MASK = 0x4,
+    DRM_PLANE_TYPE_CLUSTER2_MASK = 0x10,
+    DRM_PLANE_TYPE_CLUSTER3_MASK = 0x40,
 
-    DRM_PLANE_TYPE_ESMART1_WIN0 = 1 << 8,
-    DRM_PLANE_TYPE_ESMART1_WIN1 = 1 << 9,
-    DRM_PLANE_TYPE_ESMART1_WIN2 = 1 << 10,
-    DRM_PLANE_TYPE_ESMART1_WIN3 = 1 << 11,
+    DRM_PLANE_TYPE_ESMART0_MASK = 0x100,
+    DRM_PLANE_TYPE_ESMART1_MASK = 0x400,
+    DRM_PLANE_TYPE_ESMART2_MASK = 0x200,
+    DRM_PLANE_TYPE_ESMART3_MASK = 0x800,
 
-    DRM_PLANE_TYPE_SMART0_WIN0 = 1 << 12,
-    DRM_PLANE_TYPE_SMART0_WIN1 = 1 << 13,
-    DRM_PLANE_TYPE_SMART0_WIN2 = 1 << 14,
-    DRM_PLANE_TYPE_SMART0_WIN3 = 1 << 15,
-
-    DRM_PLANE_TYPE_SMART1_WIN0 = 1 << 16,
-    DRM_PLANE_TYPE_SMART1_WIN1 = 1 << 17,
-    DRM_PLANE_TYPE_SMART1_WIN2 = 1 << 18,
-    DRM_PLANE_TYPE_SMART1_WIN3 = 1 << 19,
-
-    DRM_PLANE_TYPE_CLUSTER0_MASK = 0x3,
-    DRM_PLANE_TYPE_CLUSTER1_MASK = 0xc,
-    DRM_PLANE_TYPE_CLUSTER_MASK = 0xf,
-    DRM_PLANE_TYPE_ESMART0_MASK = 0xf0,
-    DRM_PLANE_TYPE_ESMART1_MASK = 0xf00,
-    DRM_PLANE_TYPE_SMART0_MASK  = 0xf000,
-    DRM_PLANE_TYPE_SMART1_MASK  = 0xf0000,
+    DRM_PLANE_TYPE_SMART0_MASK  = 0x10,
+    DRM_PLANE_TYPE_SMART1_MASK  = 0x20,
     DRM_PLANE_TYPE_Unknown      = 0xffffffff,
 };
 
@@ -186,13 +176,18 @@ public:
     {
         return mPipe;
     }
-    DrmPlaneType GetWinType()
-    {
-        return mWinType;
-    }
-    std::string GetName()
+
+    char *GetName()
     {
         return mName;
+    }
+    uint64_t GetPlaneValue()
+    {
+        return mPlane_value;
+    }
+    void SetPlaneValue(uint64_t value)
+    {
+        mPlane_value = value;
     }
 private:
     uint32_t mId = 0;
@@ -201,8 +196,8 @@ private:
     uint32_t mPropFbId = 0;
     uint32_t mPropFenceInId = 0;
     uint32_t mPropCrtcId = 0;
-    DrmPlaneType mWinType = DrmPlaneType::DRM_PLANE_TYPE_Unknown;
-    std::string mName;
+    uint64_t mPlane_value;
+    char mName[100];
 
     uint32_t mPropCrtc_xId = 0;
     uint32_t mPropCrtc_yId = 0;

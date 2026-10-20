@@ -77,6 +77,7 @@ public:
     int32_t Init() override;
     void DeInit() override;
     bool HandleHotplug(uint32_t dispId, bool plugIn) override;
+    std::vector<std::shared_ptr<DrmPlane>> GetPlanes() {return mPlanes;}
 
 private:
     static FdPtr mDrmFd;
