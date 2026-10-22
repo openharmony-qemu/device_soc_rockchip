@@ -1,0 +1,142 @@
+diff -Naur a/cmake/depends.cmake b/cmake/depends.cmake
+--- a/cmake/depends.cmake	2026-09-12 20:30:15.713725589 +0800
++++ b/cmake/depends.cmake	2026-10-06 10:04:40.922257131 +0800
+@@ -14,9 +14,12 @@
+     add_definitions(-DHAVE_HUGETLBFS_H)
+   endif(HUGETLBFS_FOUND)
+ 
+-  find_package (LibSysFS REQUIRED)
+-  collect (PROJECT_INC_DIRS "${LIBSYSFS_INCLUDE_DIR}")
+-  collect (PROJECT_LIB_DEPS "${LIBSYSFS_LIBRARIES}")
++  if (WITH_LIBSYSFS)
++    find_package (LibSysFS REQUIRED)
++    collect (PROJECT_INC_DIRS "${LIBSYSFS_INCLUDE_DIR}")
++    collect (PROJECT_LIB_DEPS "${LIBSYSFS_LIBRARIES}")
++    add_definitions (-DMETAL_HAVE_LIBSYSFS)
++  endif (WITH_LIBSYSFS)
+ 
+   find_package(Threads REQUIRED)
+   collect (PROJECT_LIB_DEPS "${CMAKE_THREAD_LIBS_INIT}")
+diff -Naur a/cmake/options.cmake b/cmake/options.cmake
+--- a/cmake/options.cmake	2026-09-12 20:30:15.714809589 +0800
++++ b/cmake/options.cmake	2026-10-06 10:04:40.922205431 +0800
+@@ -58,6 +58,7 @@
+ if ("${PROJECT_SYSTEM}" STREQUAL "linux")
+   option (WITH_SHARED_LIB "Build with a shared library" ON)
+   option (WITH_TESTS      "Install test applications" ON)
++  option (WITH_LIBSYSFS   "Build the sysfs-based device layer (requires sysfsutils)" ON)
+ endif ("${PROJECT_SYSTEM}" STREQUAL "linux")
+ 
+ if (WITH_TESTS AND (${_host} STREQUAL ${_target}))
+diff -Naur a/lib/system/linux/device.c b/lib/system/linux/device.c
+--- a/lib/system/linux/device.c	2026-09-12 20:30:15.768938689 +0800
++++ b/lib/system/linux/device.c	2026-10-06 10:04:40.922584631 +0800
+@@ -14,6 +14,34 @@
+ #include <metal/utilities.h>
+ #include <metal/irq.h>
+ 
++#ifndef METAL_HAVE_LIBSYSFS
++
++/*
++ * Sysfs device layer disabled (built with WITH_LIBSYSFS=OFF): the Linux
++ * backend still provides the generic device entry point referenced by
++ * the core (lib/device.c) and the device-property helper declared in
++ * this backend's sys.h. They are only meaningful for sysfs-enumerated
++ * devices, so property lookups report the lack of support.
++ */
++int metal_generic_dev_sys_open(struct metal_device *dev)
++{
++	(void)dev;
++	return 0;
++}
++
++int metal_linux_get_device_property(struct metal_device *device,
++				    const char *property_name,
++				    void *output, int len)
++{
++	(void)device;
++	(void)property_name;
++	(void)output;
++	(void)len;
++	return -ENOSYS;
++}
++
++#else	/* METAL_HAVE_LIBSYSFS */
++
+ #define MAX_DRIVERS	64
+ 
+ struct linux_bus;
+@@ -676,3 +704,5 @@
+ 	return status < 0 ? -errno : 0;
+ }
+ 
++#endif	/* METAL_HAVE_LIBSYSFS */
++
+diff -Naur a/lib/system/linux/init.c b/lib/system/linux/init.c
+--- a/lib/system/linux/init.c	2026-09-12 20:30:15.769112889 +0800
++++ b/lib/system/linux/init.c	2026-10-06 10:04:40.922462831 +0800
+@@ -109,13 +109,14 @@
+ 
+ int metal_sys_init(const struct metal_init_params *params)
+ {
+-	static char sysfs_path[SYSFS_PATH_MAX];
++	static char sysfs_path[PATH_MAX];
+ 	const char *tmp_path;
+ 	unsigned int seed;
+ 	FILE *urandom;
+ 	int result;
+ 
+ 	/* Determine sysfs mount point. */
++#ifdef METAL_HAVE_LIBSYSFS
+ 	result = sysfs_get_mnt_path(sysfs_path, sizeof(sysfs_path));
+ 	if (result) {
+ 		metal_log(METAL_LOG_ERROR, "failed to get sysfs path (%s)\n",
+@@ -123,6 +124,12 @@
+ 		return result;
+ 	}
+ 	_metal.sysfs_path = sysfs_path;
++#else
++	/* Sysfs device layer disabled (WITH_LIBSYSFS=OFF): /sys is the
++	 * standard sysfs mount point on Linux. */
++	strncpy(sysfs_path, "/sys", sizeof(sysfs_path));
++	_metal.sysfs_path = sysfs_path;
++#endif
+ 
+ 	/* Find the temporary directory location. */
+ 	tmp_path = getenv("TMPDIR");
+@@ -147,9 +154,11 @@
+ 	if (result < 0)
+ 		return result;
+ 
++#ifdef METAL_HAVE_LIBSYSFS
+ 	result = metal_linux_bus_init();
+ 	if (result < 0)
+ 		return result;
++#endif
+ 
+ 	result = open("/proc/self/pagemap", O_RDONLY | O_CLOEXEC);
+ 	if (result < 0) {
+@@ -170,7 +179,9 @@
+ 
+ 	/* Shutdown IRQ handling */
+ 	metal_linux_irq_shutdown();
++#ifdef METAL_HAVE_LIBSYSFS
+ 	metal_linux_bus_finish();
++#endif
+ 	close(_metal.pagemap_fd);
+ 
+ }
+diff -Naur a/lib/system/linux/sys.h b/lib/system/linux/sys.h
+--- a/lib/system/linux/sys.h	2026-09-12 20:30:15.770356489 +0800
++++ b/lib/system/linux/sys.h	2026-10-06 10:04:40.922302331 +0800
+@@ -34,7 +34,10 @@
+ #include <unistd.h>
+ 
+ #include <linux/futex.h>
++#include <string.h>
++#ifdef METAL_HAVE_LIBSYSFS
+ #include <sysfs/libsysfs.h>
++#endif
+ #ifdef HAVE_HUGETLBFS_H
+ #include <hugetlbfs.h>
+ #endif
