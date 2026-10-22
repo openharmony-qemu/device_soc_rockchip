@@ -21,7 +21,7 @@ ohos_prebuilt_shared_library("librkaiq") {
     source = "$ISP_DIR/lib64/librkaiq.so"
   }
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
   install_enable = true
 }
 
@@ -29,7 +29,7 @@ ohos_prebuilt_etc("ov13855_CMK-OT2016-FV1_default") {
   source = "$ISP_DIR/etc/iqfiles/ov13855_CMK-OT2016-FV1_default.json"
   relative_install_dir = "iqfiles"
   install_images = [ chipset_base_dir ]
-  part_name = "rockchip_products"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
@@ -41,7 +41,7 @@ ohos_prebuilt_executable("ispserver") {
     source = "$ISP_DIR/bin64/ispserver"
   }
   install_images = [ chipset_base_dir ]
-  part_name = "rockchip_products"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 

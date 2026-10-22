@@ -60,8 +60,8 @@ ohos_shared_library("libdisplay_buffer_vdi_impl") {
   install_enable = true
   install_images = [ chipset_base_dir ]
   innerapi_tags = [ "passthrough" ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_shared_library("libdisplay_buffer_vendor") {
@@ -98,8 +98,8 @@ ohos_shared_library("libdisplay_buffer_vendor") {
   install_enable = true
   install_images = [ chipset_base_dir ]
   innerapi_tags = [ "passthrough" ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_static_library("libhigbm_vendor") {
@@ -154,8 +154,8 @@ ohos_shared_library("libdisplay_composer_vdi_impl") {
 
   install_enable = true
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_shared_library("display_composer_vendor") {
@@ -210,8 +210,8 @@ ohos_shared_library("display_composer_vendor") {
   ]
   install_enable = true
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_shared_library("display_gfx") {
@@ -238,6 +238,6 @@ ohos_shared_library("display_gfx") {
 
   install_enable = true
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }

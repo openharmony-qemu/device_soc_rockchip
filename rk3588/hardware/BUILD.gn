@@ -26,6 +26,12 @@ group("hardware_group") {
     "//device/soc/rockchip/rk3588/hardware/mpp:mpp",
     "//device/soc/rockchip/rk3588/hardware/rga:rga",
     "//device/soc/rockchip/rk3588/hardware/wifi:ap6xxx",
+    "//device/soc/rockchip/rk3588/hardware/display:display_buffer_model",
+    "//device/soc/rockchip/rk3588/hardware/display:display_composer_model",
+    "//device/soc/rockchip/rk3588/hardware/codec:codec_oem_interface",
+    "//device/soc/rockchip/rk3588/hardware/omx_il:lib_omx",
+    "//device/soc/rockchip/rk3588/hardware/nnrt:nnrt_entry",
+    "//device/soc/rockchip/rk3588/hardware/npu:npu",
     ISP_VERSION_DIR,
   ]
 }

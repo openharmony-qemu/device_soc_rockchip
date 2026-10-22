@@ -18,8 +18,8 @@ ohos_prebuilt_shared_library("libomxvpu_dec") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_prebuilt_shared_library("libomxvpu_enc") {
@@ -27,8 +27,8 @@ ohos_prebuilt_shared_library("libomxvpu_enc") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_prebuilt_shared_library("libOMX_Core") {
@@ -36,8 +36,8 @@ ohos_prebuilt_shared_library("libOMX_Core") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_prebuilt_shared_library("libOMX_Pluginhw") {
@@ -45,8 +45,8 @@ ohos_prebuilt_shared_library("libOMX_Pluginhw") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_prebuilt_shared_library("libRkOMX_Resourcemanager") {
@@ -54,8 +54,8 @@ ohos_prebuilt_shared_library("libRkOMX_Resourcemanager") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 group("lib_omx") {

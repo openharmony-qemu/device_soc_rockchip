@@ -19,8 +19,8 @@ ohos_prebuilt_shared_library("libmpp") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 ohos_prebuilt_shared_library("libvpu") {
@@ -28,8 +28,8 @@ ohos_prebuilt_shared_library("libvpu") {
 
   innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 group("mpp") {

@@ -25,8 +25,8 @@ ohos_prebuilt_shared_library("mali-g7p0-ohos") {
   install_images = [ chipset_base_dir ]
   relative_install_dir = "chipsetsdk"
   #install_images = [ system_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
   install_enable = true
   symlink_target_name = [
     "libEGL_impl.so",
@@ -42,7 +42,7 @@ ohos_prebuilt_etc("mali.json") {
   source = "etc/mali.json"
   module_install_dir = "etc/vulkan/icd.d"
   install_images = [ system_base_dir ]
-  part_name = "rockchip_products"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
@@ -50,8 +50,8 @@ ohos_prebuilt_etc("firmware") {
   source = "firmware/mali_csffw.bin"
   module_install_dir = "lib/firmware/"
   install_images = [ system_base_dir ]
-  subsystem_name = "rockchip_products"
-  part_name = "rockchip_products"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
