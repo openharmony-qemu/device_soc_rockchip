@@ -1,0 +1,9 @@
+choice
+    prompt "RK3588 series SoC"
+    depends on SOC_SERIES_RK3588
+
+config SOC_RK3588
+    bool "SoC RK3588"
+    default y
+
+endchoice
