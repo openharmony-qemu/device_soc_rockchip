@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <syslog.h>
 #include <time.h>
+#include <string.h>
+#include <unistd.h>
 #include <metal/alloc.h>
 #include <metal/cache.h>
 #include <metal/io.h>
@@ -52,7 +54,35 @@ static int pipe_fd[2];
 /* shared memory pool size: 128 K */
 #define SHM_POOL_SIZE      0x20000
 
+/* maxcpus=N keeps extra cores present-but-offline; musl's
+ * _SC_NPROCESSORS_CONF reads online, so count /sys/.../present instead. */
+static int mica_count_present_cpus(void)
+{
+	FILE *f = fopen("/sys/devices/system/cpu/present", "r");
+	int max_cpu = -1;
+
+	if (f) {
+		char buf[64];
+		char *tok;
+
+		if (fgets(buf, sizeof(buf), f)) {
+			for (tok = strtok(buf, ","); tok; tok = strtok(NULL, ",")) {
+				int lo, hi;
+
+				if (sscanf(tok, "%d-%d", &lo, &hi) == 2) {
+					if (hi > max_cpu) max_cpu = hi;
+				} else if (sscanf(tok, "%d", &lo) == 1) {
+					if (lo > max_cpu) max_cpu = lo;
+				}
+			}
+		}
+		fclose(f);
+	}
+	return max_cpu + 1;
+}
+
 static atomic_bool notifier;
+static pthread_t notifier_thr;
 
 static void rproc_notify_all(void)
 {
@@ -77,17 +107,25 @@ static void *rproc_wait_event(void *arg)
 		{ .fd = pipe_fd[PIPE_READ_END], .events = POLLIN, }
 	};
 
-	notifier = true;
-
+	/*
+	 * notifier is set by the creator before pthread_create(),
+	 * the thread only reads it.
+	 */
 	while (notifier) {
 		ret = poll(fds, 2, -1);
 		if (ret == -1) {
+			if (errno == EINTR)
+				continue;
 			syslog(LOG_ERR, "%s failed: %s\n", __func__, strerror(errno));
 			break;
 		}
 
 		if (fds[0].revents & POLLIN)
 			rproc_notify_all();
+
+		/* pipe fd used to exit the wait_event */
+		if (fds[1].revents & POLLIN)
+			break;
 	}
 
 	pthread_exit(NULL);
@@ -96,7 +134,6 @@ static void *rproc_wait_event(void *arg)
 static int rproc_register_notifier(void)
 {
 	int ret = 0;
-	pthread_t thread;
 
 	/*
 	 * For bare-metal, we only need to register one notifier.
@@ -110,13 +147,17 @@ static int rproc_register_notifier(void)
 		return ret;
 	}
 
-	ret = pthread_create(&thread, NULL, rproc_wait_event, NULL);
-	if (ret)
-		goto err;
+	/*
+	 * Set the flag before creating the thread so the entry always
+	 * observes a true flag; the thread never writes it. This closes
+	 * the race where mica_remove() cleared the flag before the
+	 * freshly created thread ran its first instruction.
+	 */
+	notifier = true;
 
-	ret = pthread_detach(thread);
+	ret = pthread_create(&notifier_thr, NULL, rproc_wait_event, NULL);
 	if (ret) {
-		pthread_cancel(thread);
+		notifier = false;
 		goto err;
 	}
 
@@ -143,7 +184,7 @@ static struct remoteproc *rproc_init(struct remoteproc *rproc,
 
 	/* parse cpu_id for baremetal */
 	ret = strtoul(client->ped_setup.cpu_str, NULL, 0);
-	if (ret < 0 || ret >= sysconf(_SC_NPROCESSORS_CONF)) {
+	if (ret < 0 || ret >= mica_count_present_cpus()) {
 		syslog(LOG_ERR, "Invalid CPUID: %s, should be only one cpu_id within range(0-%ld)",
 			client->ped_setup.cpu_str, sysconf(_SC_NPROCESSORS_CONF) - 1);
 		goto err;
@@ -492,6 +533,12 @@ static void rproc_remove(struct remoteproc *rproc)
 	notifier = find ? true : false;
 	if (!notifier) {
 		(void)!write(pipe_fd[PIPE_WRITE_END], &find, sizeof(find));
+		/*
+		 * Wait for the thread to observe the flag and exit before
+		 * closing the fds it polls, otherwise the thread stays alive
+		 * spinning on POLLNVAL while the flag says it is running.
+		 */
+		pthread_join(notifier_thr, NULL);
 		close(mcs_fd);
 		close(pipe_fd[PIPE_READ_END]);
 		close(pipe_fd[PIPE_WRITE_END]);

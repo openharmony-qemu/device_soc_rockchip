@@ -17,6 +17,7 @@ int handle_mica_rsc(struct remoteproc *rproc, void *rsc, size_t len)
 {
 	int i;
 	uint32_t rsc_type;
+	struct mica_client *client = metal_container_of(rproc, struct mica_client, rproc);
 
 	rsc_type = ((struct fw_rsc_vendor *)rsc)->type;
 	switch (rsc_type) {
@@ -28,7 +29,7 @@ int handle_mica_rsc(struct remoteproc *rproc, void *rsc, size_t len)
 		for (i = 0; i < ept_rsc->num_of_epts; i++) {
 			ept = &ept_rsc->endpoints[i];
 			if (ept->addr != 0)
-				register_remote_ept(ept->name, ept->addr, ept->dest_addr);
+				register_remote_ept(client, ept->name, ept->addr, ept->dest_addr);
 		}
 		break;
 	}

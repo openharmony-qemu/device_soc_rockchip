@@ -18,6 +18,7 @@ struct remote_ept {
 	char              name[RPMSG_NAME_SIZE];
 	uint32_t          addr;
 	uint32_t          dest_addr;
+	struct mica_client *client;
 	struct metal_list node;
 };
 
@@ -74,6 +75,10 @@ int mica_register_service(struct mica_client *client, struct mica_service *svc)
 	/* check if the service is registered by rpmsg name service */
 	metal_list_for_each(&remote_ept_list, node) {
 		r_ept = metal_container_of(node, struct remote_ept, node);
+
+		/* only consume announcements queued for this client */
+		if (r_ept->client != client)
+			continue;
 
 		if (new_svc->rpmsg_ns_match(client->rdev, r_ept->name, r_ept->addr, r_ept->dest_addr, new_svc->priv)) {
 			new_svc->rpmsg_ns_bind_cb(client->rdev, r_ept->name, r_ept->addr, r_ept->dest_addr, new_svc->priv);
@@ -160,11 +165,12 @@ void mica_ns_bind_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest)
 
 	r_ept->addr = dest;
 	r_ept->dest_addr = RPMSG_ADDR_ANY;
+	r_ept->client = client;
 	strlcpy(r_ept->name, name, RPMSG_NAME_SIZE);
 	metal_list_add_tail(&remote_ept_list, &r_ept->node);
 }
 
-void register_remote_ept(const char *name, uint32_t addr, uint32_t dest_addr)
+void register_remote_ept(struct mica_client *client, const char *name, uint32_t addr, uint32_t dest_addr)
 {
 	struct remote_ept *r_ept;
 
@@ -177,6 +183,24 @@ void register_remote_ept(const char *name, uint32_t addr, uint32_t dest_addr)
 	DEBUG_PRINT("restore endpoint: %s, addr:%d, dest_addr: %d", name, addr, dest_addr);
 	r_ept->addr = addr;
 	r_ept->dest_addr = dest_addr;
+	r_ept->client = client;
 	strlcpy(r_ept->name, name, RPMSG_NAME_SIZE);
 	metal_list_add_tail(&remote_ept_list, &r_ept->node);
+}
+
+/* drop announcements queued by a client that is being destroyed */
+void clear_remote_epts(struct mica_client *client)
+{
+	struct metal_list *node, *tmp_node;
+	struct remote_ept *r_ept;
+
+	metal_list_for_each(&remote_ept_list, node) {
+		r_ept = metal_container_of(node, struct remote_ept, node);
+		if (r_ept->client != client)
+			continue;
+		tmp_node = node;
+		node = tmp_node->prev;
+		metal_list_del(tmp_node);
+		metal_free_memory(r_ept);
+	}
 }

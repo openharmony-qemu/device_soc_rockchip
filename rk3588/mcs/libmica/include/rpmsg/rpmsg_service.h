@@ -8,6 +8,7 @@
 #define RPMSG_MODULE_H
 
 #include <openamp/rpmsg.h>
+#include <mica/mica.h>
 
 #if defined __cplusplus
 extern "C" {
@@ -17,7 +18,10 @@ extern "C" {
 void mica_ns_bind_cb(struct rpmsg_device *rdev, const char *name, uint32_t dest);
 
 /* register a remote endpoint */
-void register_remote_ept(const char *name, uint32_t addr, uint32_t dest_addr);
+void register_remote_ept(struct mica_client *client, const char *name, uint32_t addr, uint32_t dest_addr);
+
+/* drop queued name-service announcements of a destroyed client */
+void clear_remote_epts(struct mica_client *client);
 
 #if defined __cplusplus
 }
