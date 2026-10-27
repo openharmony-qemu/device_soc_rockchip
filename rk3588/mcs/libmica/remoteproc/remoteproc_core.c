@@ -168,13 +168,16 @@ int load_client_image(struct mica_client *client)
 	}
 	store_close(&store);
 
-	/* If the remote is already in a running state, skip the load */
-	if (rproc->rsc_table && rproc->state == RPROC_READY) {
-		DEBUG_PRINT("remote is ready, no need to load it");
-		return ret;
-	}
-
+	/* Always load: remoteproc_config() sets state to RPROC_READY on
+	 * success, so the previous "state == RPROC_READY means already
+	 * loaded" check was always true and skipped the segment copy,
+	 * booting stale DDR residue. remoteproc_load() re-opens the image
+	 * itself (store_ops->open), so passing the closed store is fine. */
 	ret = remoteproc_load(rproc, client->path, &store, &mem_image_store_ops, NULL);
+	if (ret) {
+		syslog(LOG_ERR, "remoteproc load failed, ret:%d", ret);
+		return -EINVAL;
+	}
 	if (!rproc->rsc_table) {
 		syslog(LOG_ERR, "failed to parse rsc table, please check the rsctable\n");
 		return -EINVAL;

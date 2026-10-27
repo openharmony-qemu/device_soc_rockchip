@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build libmica.a + libmica.so (master side, baremetal pedestal only) with OH
-# clang + musl sysroot. Source: libmica/ in this module (vanilla
-# snapshot of the openEuler mcs `library/` subtree + build-time patches/).
+# clang + musl sysroot. Source: libmica/ in this module (openEuler mcs
+# `library/` subtree with local fixes applied in-tree).
 # Self-managed — this script does not read the openEuler repo.
 # Objects are compiled -fPIC so the same set feeds both the static archive
 # and the shared object; libmica.so embeds the pedestal_compat shims (the
@@ -53,18 +53,12 @@ STAGING=$OUT/staging
 LOGS=$OUT/logs
 TFLAGS="--target=aarch64-linux-ohos --sysroot=$MUSL -I$MUSL/include/aarch64-linux-ohos -B$MUSL/lib/aarch64-linux-ohos -L$MUSL/lib/aarch64-linux-ohos"
 
-# work-dir copy: package source stays vanilla/pristine
+# work-dir copy: keep the package source tree untouched while building
 WORK=/tmp/libmica-oh-build
 rm -rf $WORK && mkdir -p $WORK
 cp -a "$ROOT/libmica" $WORK/libmica
 
-# apply patches/ (kept as files; snapshot stays vanilla)
-for p in "$ROOT"/libmica/patches/*.patch; do
-  echo "[libmica] applying $(basename $p)"
-  patch -d $WORK/libmica -p1 -s < "$p"
-done
-
-mkdir -p $LOGS
+mkdir -p $LOGS $STAGING/lib
 cd $WORK/libmica
 rm -f /tmp/libmica_*.o
 OBJS=""

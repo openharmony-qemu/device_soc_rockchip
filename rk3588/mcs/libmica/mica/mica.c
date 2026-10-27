@@ -10,6 +10,7 @@
 #include "mica/mica.h"
 #include "remoteproc/remoteproc_module.h"
 #include "rpmsg/rpmsg_vdev.h"
+#include "rpmsg/rpmsg_service.h"
 #include "rbuf_device/rbuf_dev.h"
 
 int mica_create(struct mica_client *client)
@@ -89,12 +90,20 @@ int mica_remove(struct mica_client *client)
 			return ret;
 	}
 
-	if (client->gdb_server_thread) {
-		pthread_cancel(client->gdb_server_thread);
+	/*
+	 * OH musl does not implement pthread_cancel, and this port never
+	 * spawns the gdb server thread (baremetal pedestal, no gdb stub).
+	 * When gdb support is added, enable MICA_GDB_SERVER and make the
+	 * server loop watch a stop event (pipe/eventfd) so it exits by
+	 * itself; pthread_join() then reaps it.
+	 */
+#ifdef MICA_GDB_SERVER
+	if (client->gdb_server_thread)
 		pthread_join(client->gdb_server_thread, NULL);
-	}
-		
+#endif
 
+	/* drop name-service announcements queued by this client */
+	clear_remote_epts(client);
 	destory_client(client);
 	return 0;
 }

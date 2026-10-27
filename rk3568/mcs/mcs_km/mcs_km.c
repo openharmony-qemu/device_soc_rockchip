@@ -112,6 +112,8 @@ struct mcs_rproc_mem {
 };
 static struct mcs_rproc_mem baremetal_mem[RPROC_MEM_MAX];
 static struct mcs_rproc_mem riscv_mem[RPROC_MEM_MAX];
+/* independent copy-msg region (optional dts property oh_rt,copy-mem-region) */
+static struct mcs_rproc_mem copy_msg_mem;
 
 static bool has_baremetal_irq = false;
 static bool has_riscv_irq = false;
@@ -549,31 +551,50 @@ static long mcs_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 	break;
 
 	case IOC_GET_COPY_MSG_MEM:
-		if (copy_mem_info.instance_id > RPROC_MEM_MAX) {
-						pr_err("GET_COPY_MSG_MEM failed: The required instance_id max to %d, your instance_id:%d\n", RPROC_MEM_MAX, copy_mem_info.instance_id);
+		if (copy_mem_info.instance_id >= RPROC_MEM_MAX) {
+						pr_err("GET_COPY_MSG_MEM failed: The required instance_id max to %d, your instance_id:%d\n", RPROC_MEM_MAX - 1, copy_mem_info.instance_id);
 						return -EINVAL;
 		}
-		copy_mem_offset = copy_mem_info.instance_id * INSTANCE_SIZE + OPENAMP_SHM_SIZE - OPENAMP_SHM_COPY_SIZE * 3;  /* 使用2M。 1M 用来发送， 1M用来接收 尾部1M gap */
-		switch (priv->ped_type) {
-		case MCS_KM_PED_RISCV:
-			copy_mem_info.phy_addr = riscv_mem[0].phy_addr + copy_mem_offset;
-			pr_info("GET_COPY_MSG_MEM riscv_mem phy_addr: 0x%lx\n", copy_mem_info.phy_addr);
-			if (copy_mem_info.phy_addr  > (riscv_mem[0].phy_addr + riscv_mem[0].size)) {
-				pr_err("GET_COPY_MSG_MEM failed: The required memory is out of mcs reserved memory, instance_id:%d\n", copy_mem_info.instance_id);
-				return -EINVAL;
-			}
-			break;
-		case MCS_KM_PED_BAREMETAL:
-		default:
-			copy_mem_info.phy_addr = baremetal_mem[0].phy_addr + copy_mem_offset;
-			pr_info("GET_COPY_MSG_MEM baremetal_mem phy_addr: 0x%lx\n", copy_mem_info.phy_addr);
-			if (copy_mem_info.phy_addr  > (baremetal_mem[0].phy_addr + baremetal_mem[0].size)) {
-				pr_err("GET_COPY_MSG_MEM failed: The required memory is out of mcs reserved memory, instance_id:%d\n", copy_mem_info.instance_id);
-				return -EINVAL;
-			}
-			break;
-		}
 		copy_mem_info.size = OPENAMP_SHM_COPY_SIZE * 2;  /* 使用2M。1M 用来发送， 1M用来接收 */
+
+		if (copy_msg_mem.phy_addr != 0) {
+			/* dedicated copy region: 2M per instance, no gap needed */
+			copy_mem_info.phy_addr = copy_msg_mem.phy_addr +
+				(u64)copy_mem_info.instance_id * copy_mem_info.size;
+			pr_info("GET_COPY_MSG_MEM copy_msg_mem phy_addr: 0x%llx (instance %d)\n",
+				copy_mem_info.phy_addr, copy_mem_info.instance_id);
+			if (copy_mem_info.phy_addr < copy_msg_mem.phy_addr ||
+			    copy_mem_info.phy_addr + copy_mem_info.size >
+			    copy_msg_mem.phy_addr + copy_msg_mem.size) {
+				pr_err("GET_COPY_MSG_MEM failed: The required memory is out of copy_msg_mem, instance_id:%d\n", copy_mem_info.instance_id);
+				return -EINVAL;
+			}
+		} else {
+			/* legacy layout: single big openamp shm region, copy mem
+			 * = region[0] + 36M*instance + 13M (16M - 3M tail gap) */
+			struct mcs_rproc_mem *rmem;
+
+			copy_mem_offset = copy_mem_info.instance_id * INSTANCE_SIZE + OPENAMP_SHM_SIZE - OPENAMP_SHM_COPY_SIZE * 3;
+			switch (priv->ped_type) {
+			case MCS_KM_PED_RISCV:
+				rmem = &riscv_mem[0];
+				break;
+			case MCS_KM_PED_BAREMETAL:
+			default:
+				rmem = &baremetal_mem[0];
+				break;
+			}
+			copy_mem_info.phy_addr = rmem->phy_addr + copy_mem_offset;
+			pr_info("GET_COPY_MSG_MEM %s phy_addr: 0x%llx\n",
+				priv->ped_type == MCS_KM_PED_RISCV ? "riscv_mem" : "baremetal_mem",
+				copy_mem_info.phy_addr);
+			if (rmem->phy_addr == 0 || copy_mem_info.phy_addr < rmem->phy_addr ||
+			    copy_mem_info.phy_addr + copy_mem_info.size >
+			    rmem->phy_addr + rmem->size) {
+				pr_err("GET_COPY_MSG_MEM failed: The required memory is out of mcs reserved memory, instance_id:%d\n", copy_mem_info.instance_id);
+				return -EINVAL;
+			}
+		}
 		if (copy_to_user((void __user *)arg, &copy_mem_info, sizeof(copy_mem_info)))
 			return -EFAULT;
 		break;
@@ -633,6 +654,12 @@ static int mcs_mmap(struct file *file, struct vm_area_struct *vma)
 		}
 		break;
 	}
+
+	/* dedicated copy-msg region is mappable for both pedestal types */
+	if (found == 0 && copy_msg_mem.phy_addr != 0 &&
+	    offset >= copy_msg_mem.phy_addr &&
+	    offset + size <= copy_msg_mem.phy_addr + copy_msg_mem.size)
+		found = 1;
 
 	if (found == 0) {
 		pr_err("mmap failed: mmap memory is not in mcs reserved memory for ped_type %d\n", priv->ped_type);
@@ -784,6 +811,31 @@ static int init_ped_rsv_mem(const char *compatible_node, struct mcs_rproc_mem *m
 		n++;
 	}
 
+	/* optional dedicated copy-msg region: oh_rt,copy-mem-region = <&phandle>.
+	 * when present, IOC_GET_COPY_MSG_MEM serves 2M per instance from it;
+	 * when absent the legacy layout (region[0] + 36M*id + 13M) is kept. */
+	if (copy_msg_mem.phy_addr == 0) {
+		struct device_node *cnode = of_parse_phandle(np, "oh_rt,copy-mem-region", 0);
+
+		if (cnode) {
+			struct resource cres;
+
+			if (of_address_to_resource(cnode, 0, &cres)) {
+				pr_err("unable to resolve mcs_copy_msg_mem region, fallback to legacy layout\n");
+			} else if (!request_mem_region(cres.start, resource_size(&cres), "mcs_copy_msg_mem")) {
+				pr_err("Can not request mcs_copy_msg_mem, 0x%llx-0x%llx, fallback to legacy layout\n",
+					(unsigned long long)cres.start, (unsigned long long)cres.end);
+			} else {
+				copy_msg_mem.phy_addr = cres.start;
+				copy_msg_mem.size = resource_size(&cres);
+				pr_info("mcs_km: copy_msg_mem region: 0x%llx - 0x%llx (%llu MB)\n",
+					(unsigned long long)cres.start, (unsigned long long)cres.end,
+					(unsigned long long)(resource_size(&cres) >> 20));
+			}
+			of_node_put(cnode);
+		}
+	}
+
 out:
 	of_node_put(np);
 	return ret;
@@ -844,6 +896,12 @@ static void release_reserved_mem(void)
 		release_mem_region(riscv_mem[i].phy_addr, riscv_mem[i].size);
 		riscv_mem[i].phy_addr = 0;
 		riscv_mem[i].size = 0;
+	}
+
+	if (copy_msg_mem.phy_addr != 0) {
+		release_mem_region(copy_msg_mem.phy_addr, copy_msg_mem.size);
+		copy_msg_mem.phy_addr = 0;
+		copy_msg_mem.size = 0;
 	}
 }
 
