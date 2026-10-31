@@ -28,11 +28,8 @@ ohos_prebuilt_shared_library("librknnrt") {
 }
 
 ohos_prebuilt_shared_library("libcxx_shared.so") {
-  if (target_cpu == "arm") {
-    source = "//prebuilts/clang/ohos/linux-x86_64/libcxx-ndk/lib/arm-linux-ohos/c++/libc++_shared.so"
-  } else if (target_cpu == "arm64") {
-    source = "//prebuilts/clang/ohos/linux-x86_64/libcxx-ndk/lib/aarch64-linux-ohos/c++/libc++_shared.so"
-  }
+  source = "//prebuilts/clang/ohos/linux-x86_64/libcxx-ndk/lib/aarch64-linux-ohos/c++/libc++_shared.so"
+
   install_images = [ chipset_base_dir ]
   subsystem_name = "soc_rk3588"
   part_name = "soc_rk3588"

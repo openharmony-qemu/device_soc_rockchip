@@ -15,11 +15,8 @@ import("//build/ohos.gni")
 import("//build/ohos/ndk/ndk.gni")
 
 ohos_prebuilt_shared_library("librga") {
-  if (target_cpu == "arm") {
-    source = "lib/librga.z.so"
-  } else if (target_cpu == "arm64") {
-    source = "lib64/librga.z.so"
-  }
+  source = "lib64/librga.z.so"
+
   install_images = [ chipset_base_dir ]
   subsystem_name = "soc_rk3588"
   part_name = "soc_rk3588"

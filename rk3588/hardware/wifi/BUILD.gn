@@ -23,14 +23,6 @@ ohos_prebuilt_etc("clm_bcm43752a2_ag.blob") {
   install_enable = true
 }
 
-ohos_prebuilt_etc("fw_bcm43752a2_ag_apsta.bin") {
-  source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_pcie_ag_apsta.bin"
-  install_images = [ chipset_base_dir ]
-  relative_install_dir = "firmware"
-  part_name = "soc_rk3588"
-  install_enable = true
-}
-
 ohos_prebuilt_etc("fw_bcm43752a2_ag.bin") {
   source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_pcie_ag.bin"
   install_images = [ chipset_base_dir ]
@@ -39,7 +31,7 @@ ohos_prebuilt_etc("fw_bcm43752a2_ag.bin") {
   install_enable = true
 }
 
-ohos_prebuilt_etc("nvram_ap6275s.txt") {
+ohos_prebuilt_etc("nvram_ap6275p.txt") {
   source = "$AP6XXX_ETC_DIR/nvram_ap6275p.txt"
   install_images = [ chipset_base_dir ]
   relative_install_dir = "firmware"
@@ -58,8 +50,7 @@ group("ap6xxx") {
   deps = [
     ":clm_bcm43752a2_ag.blob",
     ":fw_bcm43752a2_ag.bin",
-    ":fw_bcm43752a2_ag_apsta.bin",
-    ":nvram_ap6275s.txt",
+    ":nvram_ap6275p.txt",
     ":resolv.conf",
   ]
 }

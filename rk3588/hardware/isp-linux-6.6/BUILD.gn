@@ -15,11 +15,7 @@ import("//build/ohos.gni")
 ISP_DIR = "//device/soc/rockchip/rk3588/hardware/isp-$linux_kernel_version"
 
 ohos_prebuilt_shared_library("librkaiq") {
-  if (target_cpu == "arm") {
-    source = "$ISP_DIR/lib/librkaiq.so"
-  } else {
-    source = "$ISP_DIR/lib64/librkaiq.so"
-  }
+  source = "$ISP_DIR/lib64/librkaiq.so"
   install_images = [ chipset_base_dir ]
   subsystem_name = "soc_rk3588"
   install_enable = true
@@ -35,11 +31,7 @@ ohos_prebuilt_etc("ov13855_CMK-OT2016-FV1_default") {
 
 #system_base_dir
 ohos_prebuilt_executable("ispserver") {
-  if (target_cpu == "arm") {
-    source = "$ISP_DIR/bin/ispserver"
-  } else {
-    source = "$ISP_DIR/bin64/ispserver"
-  }
+  source = "$ISP_DIR/bin64/ispserver"
   install_images = [ chipset_base_dir ]
   part_name = "soc_rk3588"
   install_enable = true
