@@ -308,7 +308,7 @@ static MPP_RET test_ctx_init(MpiEncTestData **data, MpiEncTestArgs *cmd)
         return MPP_ERR_NULL_PTR;
     }
 
-    p = static_cast<MpiEncTestData*>(mpp_osal_malloc(__FUNCTION__, sizeof(MpiEncTestData)));
+    p = static_cast<MpiEncTestData*>(mpp_osal_calloc(__FUNCTION__, sizeof(MpiEncTestData)));
     if (!p) {
         mpp_err_f("create MpiEncTestData failed\n");
         *data = p;
@@ -596,7 +596,7 @@ MPP_RET setCfgToMpp(MppCtx ctx, MpiEncTestData *p, MppEncCfg *cfg)
     setCfgQpByType(p, cfg);
 
     /* setup codec  */
-    mpp_enc_cfg_set_s32(cfg, "codec:type", p->type);
+    mpp_enc_cfg_set_s32(*cfg, "codec:type", p->type);
     setCfgCodecByType(p, cfg);
 
     mpp_env_get_u32("split_mode", &p->split_mode, MPP_ENC_SPLIT_NONE);
