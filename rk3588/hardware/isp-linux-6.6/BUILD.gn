@@ -29,12 +29,34 @@ ohos_prebuilt_etc("ov13855_CMK-OT2016-FV1_default") {
   install_enable = true
 }
 
-#system_base_dir
-ohos_prebuilt_executable("ispserver") {
-  source = "$ISP_DIR/bin64/ispserver"
+ohos_executable("ispserver") {
+  sources = [
+    "src/ispserver.cpp",
+    "src/mediactl.c",
+  ]
+
+  include_dirs = [
+    "include",
+    "include/algos",
+    "include/common",
+    "include/iq_parser_v2",
+    "include/isp",
+  ]
+  defines = [ "ISP_HW_V30" ]
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Wno-unused-parameter",
+  ]
+  cflags_c = [ "-std=gnu11" ]
+  cflags_cc = [ "-std=c++11" ]
+
+  deps = [ ":librkaiq" ]
+
   install_images = [ chipset_base_dir ]
-  part_name = "soc_rk3588"
   install_enable = true
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 group("isp") {
