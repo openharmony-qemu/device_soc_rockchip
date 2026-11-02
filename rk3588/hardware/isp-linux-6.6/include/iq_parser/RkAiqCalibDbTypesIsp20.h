@@ -12,7 +12,6 @@
 #define CALIBDB_NR_SHARP_SETTING_LEVEL 6
 #define CALIBDB_MAX_MODE_NUM 5
 #define CALIBDB_MAX_MODE_NAME_LENGTH (20)
-//TODO: define max size as 256 temporarily
 #define CALIBDB_ZOOM_FOCUS_TBL_SIZE 256
 #define CALIBDB_DEGAMMA_CRUVE_KNOTS 17
 
@@ -263,7 +262,6 @@ typedef struct CalibDb_ExpInitExp_s {
 } CalibDb_ExpInitExp_t;
 
 typedef struct CalibDb_AeAttr_s {
-
     CalibDb_AeSpeed_t stAeSpeed;
     //DelayFrmNum
     uint8_t BlackDelayFrame;
@@ -274,7 +272,6 @@ typedef struct CalibDb_AeAttr_s {
     CalibDb_HdrAeRange_t stHdrAeRange;
     //Auto/Fixed fps
     CalibDb_AeFrmRateAttr_t stFrmRate;
-
 } CalibDb_AeAttr_t;
 //manual exposure
 typedef struct CalibDb_LinMeAttr_s {
@@ -417,9 +414,7 @@ typedef struct CalibDb_AecCommon_Attr_s {
     int DayWeightNum;
     Cam15x15UCharMatrix_t NightGridWeights;
     int NightWeightNum;
-
     CalibDb_AecIrisCtrl_t stIris;
-
     CalibDb_AeSyncTest_t stSyncTest;
     //envlv calibration
     CalibDb_AeEnvLvCalib_t stEnvLvCalib;
@@ -475,7 +470,6 @@ typedef struct CalibDb_AecOverExpCtrl_s {
     Cam1x6FloatMatrix_t OEpdf;
     Cam1x6FloatMatrix_t LowLightWeight;
     Cam1x6FloatMatrix_t HighLightWeight;
-
 } CalibDb_AecOverExpCtrl_t;
 
 typedef struct CalibDb_LinearAE_Attr_s {
@@ -488,7 +482,6 @@ typedef struct CalibDb_LinearAE_Attr_s {
     CalibDb_AeStrategyMode_t StrategyMode;
     bool DySetPointEn;
     CalibDb_AecDynamicSetpoint_t DySetpoint[AEC_DNMODE_MAX];
-
     CalibDb_AecBacklight_t BackLightConf;
     CalibDb_AecOverExpCtrl_t OverExpCtrl;
 } CalibDb_LinearAE_Attr_t;
@@ -535,12 +528,10 @@ typedef struct CalibDb_HdrAE_Attr_s {
     Cam1x6FloatMatrix_t L2MRatioFix;
     Cam1x6FloatMatrix_t M2SRatioMax;
     Cam1x6FloatMatrix_t L2MRatioMax;
-
     float LumaDistTh;  //used for area-growing
     CalibDb_LFrameCtrl_t LframeCtrl;
     CalibDb_MFrameCtrl_t MframeCtrl;
     CalibDb_SFrameCtrl_t SframeCtrl;
-
 } CalibDb_HdrAE_Attr_t;
 
 /*****************************************************************************/
@@ -586,7 +577,6 @@ typedef struct CalibDb_Sensor_Para_s {
     CalibDb_AeRange_t CISExtraAgainRange;  //add for HDR-DCG MODE, HCG range
     CalibDb_AeRange_t CISDgainRange;       //sensor Dgain
     CalibDb_AeRange_t CISIspDgainRange;    //Isp Dgain
-
     //bit 0: for hdr gain should use the same value;
     //bit 1: support use different gain value
     uint8_t CISHdrGainIndSetEn;  //only used for hdr-stagger mode
@@ -749,7 +739,6 @@ typedef struct CalibDb_Awb_Calib_Para_V200_s {
     CalibDb_UV_Range_Ill_t uvRange_param_small[CALD_AWB_LS_NUM_MAX];
     CalibDb_tcs_range_ill_t xyRangeLight[CALD_AWB_LS_NUM_MAX];
     CalibDb_Yuv3D_Range_Ill_t yuv3DRange_param[CALD_AWB_LS_NUM_MAX];
-
     unsigned short multiwindow[CALD_AWB_WINDOW_NUM_MAX][4];  //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
     //several winow in uv or xy domain
     CalibDb_ExcRange_t excludeWpRange[CALD_AWB_EXCRANGE_NUM_MAX];
@@ -822,7 +811,6 @@ typedef struct CalibDb_Awb_XyReionSelect_WpNumTh_s {
     float lumaValue[CALD_AWB_LV_NUM_MAX];
     float wpNumThForBigType[CALD_AWB_LV_NUM_MAX];
     float wpNumThForExtraType[CALD_AWB_LV_NUM_MAX];
-
 } CalibDb_Awb_XyReionSelect_WpNumTh_t;
 
 typedef struct CalibDb_Awb_Adjust_Para_s {
@@ -845,7 +833,6 @@ typedef struct CalibDb_Awb_Adjust_Para_s {
     float dFMax;
     int LvIIRsize;
     float LvVarTh;
-
     int LV_NUM;
     unsigned int LVMatrix[CALD_AWB_LV_NUM_MAX];
     unsigned int LV_THL;
@@ -865,25 +852,19 @@ typedef struct CalibDb_Awb_Adjust_Para_s {
         [CALD_AWB_TEMPORAL_GAIN_SIZE_MAX];
     float wpNumPercTh;  //ÎÞÐ§°×µããÐÖµ£¬°×µãÊýÁ¿ÉÙÊ±ÈÏÎª¸Ã°×µãÎÞÐ§
     unsigned char tempWeight[CALD_AWB_LV_NUM_MAX];
-
     //color adaptation
     float ca_LACalcFactor;
-
     //wb gain shift 2 //to do  from xml
     int cct_lut_cfg_num;
     CalibDb_Awb_Cct_Lut_Cfg_Lv_t cct_lut_cfg[CALD_AWB_CT_LV_NUM_MAX];
     CalibDb_Awb_gain_offset_cfg_t wbGainOffset;
-
     float convergedVarTh;
-
     //make  xyTypeSelect stable
     int xyTypeListSize;  // xyTypeListSize ==0 will disable this function
     float varianceLumaTh;
     CalibDb_Awb_XyReionSelect_WpNumTh_t wpNumTh;
     CalibDb_Awb_Light_Info2_t awb_light_info[CALD_AWB_LS_NUM_MAX];
-
     bool xyType2ForColBalEnable;  // to do for awb2.1
-
     CalibDb_Awb_Remosaic_Para_t remosaic_cfg;
 } CalibDb_Awb_Adjust_Para_t;
 
@@ -1187,17 +1168,14 @@ typedef struct CalibDb_LscTableProfile_s {
     CalibDb_ResolutionName_t resolution;     /**< resolution link */
     CalibDb_IlluminationName_t illumination; /**< illumination link */
     float vignetting;                        /**< vignetting value */
-
     uint16_t LscSectors;
     uint16_t LscNo;
     uint16_t LscXo;
     uint16_t LscYo;
-
     uint16_t LscXGradTbl[LSC_GRAD_TBL_SIZE_ISP20];
     uint16_t LscYGradTbl[LSC_GRAD_TBL_SIZE_ISP20];
     uint16_t LscXSizeTbl[CIFISP_LSC_SIZE_TBL_SIZE_ISP20];
     uint16_t LscYSizeTbl[CIFISP_LSC_SIZE_TBL_SIZE_ISP20];
-
     Cam17x17UShortMatrix_t LscMatrix[CAM_4CH_COLOR_COMPONENT_MAX]; /**< matrix for different color channels */
 } CalibDb_LscTableProfile_t;
 
@@ -1790,7 +1768,6 @@ typedef struct CalibDb_Dehaze_ModeCell_v20_s {
 typedef struct CalibDb_Dehaze_s {
     CalibDb_Dehaze_ModeCell_v20_t calib_v20[CALIBDB_MAX_MODE_NUM];
     CalibDb_Dehaze_ModeCell_v20_t tuning_v20[CALIBDB_MAX_MODE_NUM];
-
 } CalibDb_Dehaze_t;
 
 typedef enum CalibDb_Af_SearchDir_s {
@@ -1820,30 +1797,23 @@ typedef struct CalibDb_Af_Contrast_s {
     unsigned short AdaptRangeTbl[65]; /**< adaptive range search table*/
     float TrigThers;                  /**< AF trigger threshold */
     float LumaTrigThers;
-
     float StableThers;           /**< AF stable threshold */
     unsigned short StableFrames; /**< AF stable  status must hold frames */
     unsigned short StableTime;   /**< AF stable status must hold time */
-
     unsigned char SceneDiffEnable;
     float SceneDiffThers;
     unsigned short SceneDiffBlkThers;
     float CenterSceneDiffThers;
-
     float ValidMaxMinRatio;
     float ValidValueThers;
-
     float OutFocusValue;        /**< out of focus vlaue*/
     unsigned short OutFocusPos; /**< out of focus position*/
-
     unsigned char WeightEnable;
     unsigned short Weight[225]; /**< weight */
-
     unsigned char SearchPauseLumaEnable;
     float SearchPauseLumaThers;
     unsigned short SearchLumaStableFrames;
     float SearchLumaStableThers;
-
     float FlatValue;
 } CalibDb_Af_Contrast_t;
 
@@ -1921,7 +1891,6 @@ typedef struct CalibDb_FEC_s {
 
 typedef struct CalibDb_EIS_s {
     unsigned char eis_en;
-    // TODO(Cody): Add EIS specific calib data
 } CalibDb_EIS_t;
 
 typedef struct CalibDb_LDCH_s {
@@ -2001,7 +1970,6 @@ typedef struct {
 #define HDR_MODE_3_LINE_STR "MODE_3_LINE"
 #define HDR_LINE_MODE_DCG_STR "DCG"
 #define HDR_LINE_MODE_STAGGER_STR "STAGGER"
-
     unsigned char hdr_en;
     rk_aiq_isp_hdr_mode_t hdr_mode;
     rk_aiq_sensor_hdr_line_mode_t line_mode;
@@ -2075,5 +2043,4 @@ typedef struct CamCalibDbContextIsp20_s {
 } CamCalibDbContextIsp20_t;
 
 #pragma pack()
-
 #endif

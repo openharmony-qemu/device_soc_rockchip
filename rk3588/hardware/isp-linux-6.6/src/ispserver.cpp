@@ -74,7 +74,7 @@ static int Xioctl(int fh, int request, void *arg)
     return r;
 }
 
-static int rkaiq_get_devname(struct media_device *device, const char *name, char *devName)
+static int RkaiqGetDevname(struct media_device *device, const char *name, char *devName)
 {
     const char *devname;
     struct media_entity *entity = nullptr;
@@ -100,7 +100,7 @@ static int rkaiq_get_devname(struct media_device *device, const char *name, char
     return 0;
 }
 
-int rkaiq_get_media_info(struct rkaiq_media_info *mediaInfo)
+int RkaiqGetMediaInfo(struct rkaiq_media_info *mediaInfo)
 {
     struct media_device *device = nullptr;
     const char *sensorName;
@@ -117,10 +117,10 @@ int rkaiq_get_media_info(struct rkaiq_media_info *mediaInfo)
     }
     if (!ret) {
         /* Try rkisp */
-        ret = rkaiq_get_devname(device, "rkisp-isp-subdev", mediaInfo->sdIspPath);
-        ret |= rkaiq_get_devname(device, "rkisp-input-params", mediaInfo->vdParamsPath);
-        ret |= rkaiq_get_devname(device, "rkisp-statistics", mediaInfo->vdStatsPath);
-        ret |= rkaiq_get_devname(device, "rkisp_mainpath", mediaInfo->mainpath);
+        ret = RkaiqGetDevname(device, "rkisp-isp-subdev", mediaInfo->sdIspPath);
+        ret |= RkaiqGetDevname(device, "rkisp-input-params", mediaInfo->vdParamsPath);
+        ret |= RkaiqGetDevname(device, "rkisp-statistics", mediaInfo->vdStatsPath);
+        ret |= RkaiqGetDevname(device, "rkisp_mainpath", mediaInfo->mainpath);
     }
     if (ret) {
         fprintf(stderr, "Cound not find rkisp dev names, skipped %s\n", mediaInfo->mdevPath);
@@ -146,7 +146,7 @@ int rkaiq_get_media_info(struct rkaiq_media_info *mediaInfo)
     return ret;
 }
 
-static void init_engine(struct rkaiq_media_info *mediaInfo)
+static void InitEngine(struct rkaiq_media_info *mediaInfo)
 {
     mediaInfo->aiq_ctx = rk_aiq_uapi2_sysctl_init(mediaInfo->sensorEntityName, IQ_PATH, nullptr, nullptr);
     /* 3A server has listened stream events already */
@@ -161,7 +161,7 @@ static void init_engine(struct rkaiq_media_info *mediaInfo)
     }
 }
 
-static void start_engine(struct rkaiq_media_info *mediaInfo)
+static void StartEngine(struct rkaiq_media_info *mediaInfo)
 {
     DBG("device manager start\n");
     rk_aiq_uapi2_sysctl_start(mediaInfo->aiq_ctx);
@@ -173,21 +173,23 @@ static void start_engine(struct rkaiq_media_info *mediaInfo)
     }
 }
 
-static void stop_engine(struct rkaiq_media_info *mediaInfo)
+static void StopEngine(struct rkaiq_media_info *mediaInfo)
 {
     rk_aiq_uapi2_sysctl_stop(mediaInfo->aiq_ctx, false);
 }
 
-static void deinit_engine(struct rkaiq_media_info *mediaInfo)
+static void DeinitEngine(struct rkaiq_media_info *mediaInfo)
 {
     rk_aiq_uapi2_sysctl_deinit(mediaInfo->aiq_ctx);
 }
 
 // blocked func
-static int wait_stream_event(int fd, unsigned int event_type, int timeOutMs)
+static int wait_stream_event(int fd, unsigned int eventType, int timeOutMs)
 {
     int ret;
     struct v4l2_event event = {};
+
+    bool event_matched = false;
 
     do {
         /*
@@ -201,13 +203,12 @@ static int wait_stream_event(int fd, unsigned int event_type, int timeOutMs)
             ERR("dequeue stream event failed: %s\n", strerror(errno));
             return ret;
         }
-        if (event.type == event_type) {
-            return 0;
-        }
-    } while (true);
+        event_matched = (event.type == eventType);
+    } while (!event_matched);
+    return 0;
 }
 
-static int subscrible_stream_event(struct rkaiq_media_info *mediaInfo, int fd, bool subs)
+static int SubscribleStreamEvent(struct rkaiq_media_info *mediaInfo, int fd, bool subs)
 {
     struct v4l2_event_subscription sub = {};
     int ret = 0;
@@ -265,7 +266,7 @@ void ParseArgs(int argc, char **argv)
             exit(-1);
 
         default:
-            ERR("?? getopt returned character code %c ??\n", c);
+            ERR("?? getopt returned character code %d ??\n", c);
         }
     }
 }
@@ -283,29 +284,30 @@ void *EngineThread(void *arg)
         return nullptr;
     }
 
-    init_engine(mediaInfo);
-    subscrible_stream_event(mediaInfo, ispFd, true);
+    InitEngine(mediaInfo);
+    SubscribleStreamEvent(mediaInfo, ispFd, true);
 
-    for (;;) {
+    int stream_event_ret = 0;
+    while (stream_event_ret == 0) {
         DBG("%s: wait stream start event...\n", mediaInfo->mdevPath);
-        if (wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1) != 0) {
+        stream_event_ret = wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1);
+        if (stream_event_ret != 0) {
             break;
         }
         DBG("%s: wait stream start event success ...\n", mediaInfo->mdevPath);
-        start_engine(mediaInfo);
+        StartEngine(mediaInfo);
 
         DBG("%s: wait stream stop event...\n", mediaInfo->mdevPath);
-        if (wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1) != 0) {
-            stop_engine(mediaInfo);
+        stream_event_ret = wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
+        StopEngine(mediaInfo);
+        if (stream_event_ret != 0) {
             break;
         }
         DBG("%s: wait stream stop event success ...\n", mediaInfo->mdevPath);
-
-        stop_engine(mediaInfo);
     }
 
-    subscrible_stream_event(mediaInfo, ispFd, false);
-    deinit_engine(mediaInfo);
+    SubscribleStreamEvent(mediaInfo, ispFd, false);
+    DeinitEngine(mediaInfo);
     close(ispFd);
 
     return nullptr;
@@ -330,7 +332,7 @@ int main(int argc, char **argv)
             ERR("Failed to format media device path for index %d\n", i);
             continue;
         }
-        if (rkaiq_get_media_info(&g_mediaInfos[i])) {
+        if (RkaiqGetMediaInfo(&g_mediaInfos[i])) {
             ERR("Bad media topology for: %s\n", g_mediaInfos[i].mdevPath);
             g_mediaInfos[i].available = 0;
             continue;

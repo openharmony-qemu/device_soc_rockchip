@@ -30,7 +30,6 @@ typedef struct detailsHighLight_s {
     float *EnvLv;
     float Tolerance;
     float *DetailsHighLight;
-
 } detailsHighLight_t;
 
 typedef struct detailsLowLight_s {
@@ -41,7 +40,6 @@ typedef struct detailsLowLight_s {
     float *ISO;  //use long frame
     float Tolerance;
     float *DetailsLowLight;
-
 } detailsLowLight_t;
 
 typedef struct localtmo_s {
@@ -226,7 +224,6 @@ typedef struct PredictKPara_s {
     float Hdr3xLongPercent;
     float UseLongUpTh;
     float UseLongLowTh;
-
 } PredictKPara_t;
 
 typedef struct TmoFlickerPara_s {
@@ -253,5 +250,4 @@ typedef struct RkAiqAtmoProcResult_s {
     TmoFlickerPara_t TmoFlicker;
     PredictPara_t Predict;
 } RkAiqAtmoProcResult_t;
-
 #endif

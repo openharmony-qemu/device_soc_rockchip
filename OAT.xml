@@ -246,6 +246,8 @@
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/lib64/librkaiq.so" desc="Rockchip prebuilt ISP library"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin64/ispserver" desc="Existing Rockchip prebuilt ISP server"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libOMX_Pluginhw.z.so" desc="Rockchip prebuilt OMX plugin library"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libomxvpu_dec.z.so" desc="Rockchip prebuilt OMX video decoder library"/>
                 <filteritem type="filepath" name="rk3588/hardware/npu/lib64/librknnrt_v2.4.1b0_ohos_arm64.so" desc="Rockchip prebuilt NPU runtime"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/firmware/mali_csffw.bin" desc="gpu firmware"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/lib64/*" desc="gpb 64bit libs file"/>

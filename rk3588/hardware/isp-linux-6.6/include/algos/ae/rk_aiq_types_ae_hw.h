@@ -36,7 +36,6 @@ typedef enum WinSplitMode_s {
     LEFT_AND_RIGHT_MODE = 0,
     LEFT_MODE,
     RIGHT_MODE,
-
     TOP_AND_BOTTOM_MODE = 0,
     TOP_MODE,
     BOTTOM_MODE,
@@ -143,7 +142,6 @@ typedef struct sihst_cfg {
 typedef struct rk_aiq_ae_meas_params_s {
     bool ae_meas_en;
     bool ae_meas_update;
-
 #if ISP_HW_V20
     rawaelite_meas_cfg_t rawae0;
     rawaebig_meas_cfg_t rawae1;
@@ -170,7 +168,6 @@ typedef struct rk_aiq_ae_meas_params_s {
     rawaebig_meas_cfg_t rawae0;
     rawaebig_meas_cfg_t rawae3;
 #endif
-
 } rk_aiq_ae_meas_params_t;
 
 /* Differentiate structure according to hardware version */
@@ -179,7 +176,6 @@ typedef struct rk_aiq_hist_meas_params_s {
     bool hist_meas_update;
     unsigned char ae_swap;  // used to choose LITE & BIG
     unsigned char ae_sel;   // used for rawae3 & rawhist3
-
 #if ISP_HW_V20
     rawhistlite_cfg_t rawhist0;
     rawhistbig_cfg_t rawhist1;
@@ -206,7 +202,6 @@ typedef struct rk_aiq_hist_meas_params_s {
     rawhistbig_cfg_t rawhist0;
     rawhistbig_cfg_t rawhist3;
 #endif
-
 } rk_aiq_hist_meas_params_t;
 
 /*****************************************************************************/
@@ -298,22 +293,16 @@ typedef struct CISFeature_s {
 typedef struct RkAiqExpRealParam_s {
     // M4_NUMBER_DESC("CISTime", "f32", M4_RANGE(0,1), "0", M4_DIGIT(6))
     float integration_time;
-
     // M4_NUMBER_DESC("CISGain", "f32", M4_RANGE(0,4096), "0", M4_DIGIT(3))
     float analog_gain;
-
     // M4_NUMBER_DESC("digital_gain", "f32", M4_RANGE(0,4096), "0", M4_DIGIT(3),M4_HIDE(1))
     float digital_gain;
-
     // M4_NUMBER_DESC("isp_dgain", "f32", M4_RANGE(0,256), "0", M4_DIGIT(3),M4_HIDE(1))
     float isp_dgain;
-
     // M4_NUMBER_DESC("iso", "s32", M4_RANGE(0,524288), "0", M4_DIGIT(0),M4_HIDE(1))
     int iso;
-
     // M4_NUMBER_DESC("DcgMode", "s32", M4_RANGE(-1,1), "0", M4_DIGIT(0))
     int dcg_mode;
-
     // M4_NUMBER_DESC("longfrm_mode", "s32", M4_RANGE(0,1), "0", M4_DIGIT(0),M4_HIDE(1))
     int longfrm_mode;
 } RkAiqExpRealParam_t;
@@ -321,16 +310,12 @@ typedef struct RkAiqExpRealParam_s {
 typedef struct RkAiqExpSensorParam_s {
     // M4_NUMBER_DESC("fine_integration_time", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int fine_integration_time;
-
     // M4_NUMBER_DESC("coarse_integration_time", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int coarse_integration_time;
-
     // M4_NUMBER_DESC("analog_gain_code_global", "u32", M4_RANGE(0,524288), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int analog_gain_code_global;
-
     // M4_NUMBER_DESC("digital_gain_global", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int digital_gain_global;
-
     // M4_NUMBER_DESC("isp_digital_gain", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int isp_digital_gain;
 } RkAiqExpSensorParam_t;
@@ -339,32 +324,24 @@ typedef struct RkAiqExpSensorParam_s {
 typedef struct RKAiqExpI2cParam_s {
     // M4_BOOL_DESC("bValid", "0",M4_HIDE(1))
     bool bValid;
-
     // M4_NUMBER_DESC("nNumRegs", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int nNumRegs;
-
     // M4_ARRAY_DESC("RegAddr", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
     unsigned int RegAddr[MAX_I2CDATA_LEN];
-
     // M4_ARRAY_DESC("AddrByteNum", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
     unsigned int AddrByteNum[MAX_I2CDATA_LEN];
-
     // M4_ARRAY_DESC("RegValue", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
     unsigned int RegValue[MAX_I2CDATA_LEN];
-
     // M4_ARRAY_DESC("ValueByteNum", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),
     // M4_HIDE(1))
     unsigned int ValueByteNum[MAX_I2CDATA_LEN];
-
     // M4_ARRAY_DESC("DelayFrames", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
     unsigned int DelayFrames[MAX_I2CDATA_LEN];
-
 } RKAiqExpI2cParam_t;
 
 typedef struct {
     // M4_STRUCT_DESC("RealPara", "normal_ui_style")
     RkAiqExpRealParam_t exp_real_params;  //real value
-
     // M4_STRUCT_DESC("RegPara", "normal_ui_style",M4_HIDE(1))
     RkAiqExpSensorParam_t exp_sensor_params;  //reg value
 } RkAiqExpParamComb_t;
@@ -408,22 +385,16 @@ typedef struct {
 typedef struct RKAiqAecExpInfo_s {
     // M4_STRUCT_DESC("LinearExp", "normal_ui_style")
     RkAiqExpParamComb_t LinearExp;
-
     // M4_STRUCT_LIST_DESC("HdrExp", M4_SIZE(1,3), "normal_ui_style")
     RkAiqExpParamComb_t HdrExp[3];
-
     // M4_STRUCT_DESC("Iris", "normal_ui_style",M4_HIDE(1))
     RkAiqIrisParamComb_t Iris;
-
     // M4_NUMBER_DESC("LineLengthPixels(hts)", "u16", M4_RANGE(0,65535), "0", M4_DIGIT(0))
     uint16_t line_length_pixels;
-
     // M4_NUMBER_DESC("FrameLengthLines(vts)", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0))
     uint32_t frame_length_lines;
-
     // M4_NUMBER_DESC("PixelClockFreqMhz", "f32", M4_RANGE(0,65535), "0", M4_DIGIT(2))
     float pixel_clock_freq_mhz;
-
     // M4_STRUCT_DESC("CISFeature_t", "normal_ui_style",M4_HIDE(1))
     CISFeature_t CISFeature;
 } RKAiqAecExpInfo_t;
@@ -448,5 +419,4 @@ typedef struct RKAiqAecStats_s {
 } RKAiqAecStats_t;
 
 typedef RkAiqAecHwConfig_t html_aec_para_t;
-
 #endif /*__RK_AIQ_TYPES_AE_HW_H__*/

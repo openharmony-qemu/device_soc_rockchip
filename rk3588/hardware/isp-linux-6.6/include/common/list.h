@@ -200,7 +200,7 @@ static inline int list_empty(const struct list_head *head)
  * in the process of modifying either member (next or prev)
  *
  * NOTE: using list_empty_careful() without synchronization
- * can only be safe if the only activity that can happen
+ * can only be safe if the only operation that can happen
  * to the list entry is list_del_init(). Eg. it cannot be used
  * if another CPU could re-list_add() it.
  */
@@ -250,7 +250,7 @@ static inline void list_prepare_item(void *p_item)
  * param:   node1  One item in the list
  * param:   node2  Tne another adjacent item in the list
  */
-static inline void list_swap_item(struct list_head *node1, struct list_head *node2)
+static void list_swap_item(struct list_head *node1, struct list_head *node2)
 {
     // input list
     //     |------------|
@@ -279,11 +279,9 @@ static inline void list_swap_item(struct list_head *node1, struct list_head *nod
  */
 AIQ_MAYBE_UNUSED static int get_list_num(const struct list_head *head)
 {
-    struct list_head *p = head->next;
     int num = 0;
-    while (p != head) {
+    for (struct list_head *p = head->next; p != head; p = p->next) {
         num++;
-        p = p->next;
     }
     return (num);
 }
@@ -294,10 +292,8 @@ AIQ_MAYBE_UNUSED static int get_list_num(const struct list_head *head)
  */
 AIQ_MAYBE_UNUSED static void print_list(struct list_head *head)
 {
-    struct list_head *p = head->next;
-    while (p != head) {
+    for (struct list_head *p = head->next; p != head; p = p->next) {
         printf("%p ", p);
-        p = p->next;
     }
     printf("\n");
 }
