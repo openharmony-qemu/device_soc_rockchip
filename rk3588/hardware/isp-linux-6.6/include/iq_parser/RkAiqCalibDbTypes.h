@@ -13,11 +13,6 @@
 typedef void CamCalibDbContext_t;
 #endif
 
-#if 0
-#define RKAIQ_CALIB_GET_HW_VER(ctx) \
-        ((CalibDb_Header_t*)(ctx))->isp_hw_version
-#endif
-
 #define TO_CALIBDBV1_ISP20(ctx) \
         ((CamCalibDbContextIsp20_t*)ctx)
 
@@ -146,10 +141,10 @@ static calibdb_ctx_infos_t info_CamCalibDbContext_array[] = {
 };
 #pragma GCC diagnostic pop
 
-static inline void*
-calibdb_get_module_ptr(void* ctx,
+static inline void* calibdb_get_module_ptr(void* ctx,
                        calibdb_ctx_infos_t* info_array,
-                       const char* module_name) {
+                       const char* module_name)
+{
     calibdb_ctx_infos_t* ctx_info = NULL;
     int i;
     for (i = 0; info_array[i].offset_info != NULL; i++) {
@@ -179,3 +174,4 @@ calibdb_get_module_ptr(void* ctx,
 #pragma pack()
 
 #endif
+

@@ -52,8 +52,7 @@ struct _raw_format
     unsigned char byte_order;
 }__attribute__ ((packed));
 
-typedef struct rk_aiq_frame_info_s
-{
+typedef struct rk_aiq_frame_info_s {
     unsigned short tag;
     unsigned int size;
     unsigned short vesrion;

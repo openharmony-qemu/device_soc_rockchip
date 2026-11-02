@@ -25,9 +25,11 @@
 
 // rgbir v10
 typedef struct Rgbir_lum2scale_table_v10_s {
-    // M4_ARRAY_MARK_DESC("hw_rgbir_remosaic_lum2scale_idx", "u16", M4_SIZE(1,17),  M4_RANGE(0, 1024), "[800, 808, 816, 824, 832, 840, 848, 880, 912, 944, 976, 984, 992, 1000, 1008, 1016, 1024]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("hw_rgbir_remosaic_lum2scale_idx", "u16", M4_SIZE(1,17),  M4_RANGE(0, 1024), "[800, 808, 816,
+    // 824, 832, 840, 848, 880, 912, 944, 976, 984, 992, 1000, 1008, 1016, 1024]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
     unsigned short hw_rgbir_remosaic_lum2scale_idx[ARGBIR_LUM2SCALE_TABLE_LEN];
-    // M4_ARRAY_MARK_DESC("hw_rgbir_remosaic_lum2scale_val", "u16", M4_SIZE(1,17),  M4_RANGE(0, 256), "[256,253,245,232,215,195,173,87,31,8,1,1,1,0,0,0,0]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("hw_rgbir_remosaic_lum2scale_val", "u16", M4_SIZE(1,17),  M4_RANGE(0, 256),
+    // "[256,253,245,232,215,195,173,87,31,8,1,1,1,0,0,0,0]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
     unsigned short hw_rgbir_remosaic_lum2scale_val[ARGBIR_LUM2SCALE_TABLE_LEN];
 } Rgbir_lum2scale_table_v10_t;
 

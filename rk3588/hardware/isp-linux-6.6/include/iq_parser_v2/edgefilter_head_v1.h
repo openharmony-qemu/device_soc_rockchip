@@ -27,15 +27,20 @@ RKAIQ_BEGIN_DECLARE
 ///////////////////////////edgefilter v1//////////////////////////////////////
 
 typedef struct CalibDbV2_Edgefilter_Luma_s {
-    // M4_ARRAY_DESC("luma_point", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[0,16,32,64,96,160,224,256]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("luma_point", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[0,16,32,64,96,160,224,256]", M4_DIGIT(2),
+    // M4_DYNAMIC(0))
     float luma_point[8];
-    // M4_ARRAY_DESC("noise_clip", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[2.0000,6.0000,8.0000,10.0000,16.0000,16.0000,14.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("noise_clip", "f32", M4_SIZE(1, 8), M4_RANGE(0,255),
+    // "[2.0000,6.0000,8.0000,10.0000,16.0000,16.0000,14.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float noise_clip[8];
-    // M4_ARRAY_DESC("dog_clip_pos", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[10.0000,12.0000,12.0000,16.0000,16.0000,12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_clip_pos", "f32", M4_SIZE(1, 8), M4_RANGE(0,255),
+    // "[10.0000,12.0000,12.0000,16.0000,16.0000,12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float dog_clip_pos[8];
-    // M4_ARRAY_DESC("dog_clip_neg", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[10.0000,12.0000,12.0000,16.0000,16.0000,12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_clip_neg", "f32", M4_SIZE(1, 8), M4_RANGE(0,255),
+    // "[10.0000,12.0000,12.0000,16.0000,16.0000,12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float dog_clip_neg[8];
-    // M4_ARRAY_DESC("dog_alpha", "f32", M4_SIZE(1, 8), M4_RANGE(0,3), "[0.1000,0.2000,0.2000,0.2000,0.2000,0.2000,0.2000,0.1000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_alpha", "f32", M4_SIZE(1, 8), M4_RANGE(0,3),
+    // "[0.1000,0.2000,0.2000,0.2000,0.2000,0.2000,0.2000,0.1000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float dog_alpha[8];
 } CalibDbV2_Edgefilter_Luma_t;
 
@@ -54,7 +59,8 @@ typedef struct CalibDbV2_Edgefilter_T_ISO_s {
     float global_alpha;
     // M4_NUMBER_DESC("dog_kernel_percent", "f32", M4_RANGE(0, 1.0), "0.5", M4_DIGIT(2))
     float dog_kernel_percent;
-    // M4_ARRAY_DESC("direct_filter_coeff", "f32", M4_SIZE(1, 5), M4_RANGE(0,1), "[0.1000,0.2000,0.4000,0.2000,0.1000]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("direct_filter_coeff", "f32", M4_SIZE(1, 5), M4_RANGE(0,1), "[0.1000,0.2000,0.4000,0.2000,0.1000]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float direct_filter_coeff[5];
     // M4_ARRAY_TABLE_DESC("luma_para", "array_table_ui", "none")
     CalibDbV2_Edgefilter_Luma_t luma_para;
@@ -72,9 +78,13 @@ typedef struct CalibDbV2_Edgefilter_T_Set_s {
 } CalibDbV2_Edgefilter_T_Set_t;
 
 typedef struct CalibDbV2_Edgefilter_Kernel_s {
-    // M4_ARRAY_DESC("dog_kernel_l", "f32", M4_SIZE(5,5), M4_RANGE(0,1), "[-0.0026,-0.1699,-0.6814,-0.1699,-0.0026,-0.1699,0.1134,0.4547,0.1134,-0.1699,-0.6814,0.4547,1.8234,0.4547,-0.6814,-0.1699,0.1134,0.4547,0.1134,-0.1699,-0.0026,-0.1699,-0.6814,-0.1699,-0.0026]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_kernel_l", "f32", M4_SIZE(5,5), M4_RANGE(0,1), "[-0.0026,-0.1699,-0.6814,-0.1699,-0.0026,
+    // -0.1699,0.1134,0.4547,0.1134,-0.1699,-0.6814,0.4547,1.8234,0.4547,-0.6814,-0.1699,0.1134,0.4547,0.1134,-0.1699,
+    // -0.0026,-0.1699,-0.6814,-0.1699,-0.0026]", M4_DIGIT(6), M4_DYNAMIC(0))
     float dog_kernel_l[25];
-    // M4_ARRAY_DESC("dog_kernel_h", "f32", M4_SIZE(5,5), M4_RANGE(0,1), "[-0.0026,-0.1699,-0.6814,-0.1699,-0.0026,-0.1699,0.1134,0.4547,0.1134,-0.1699,-0.6814,0.4547,1.8234,0.4547,-0.6814,-0.1699,0.1134,0.4547,0.1134,-0.1699,-0.0026,-0.1699,-0.6814,-0.1699,-0.0026]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_kernel_h", "f32", M4_SIZE(5,5), M4_RANGE(0,1), "[-0.0026,-0.1699,-0.6814,-0.1699,-0.0026,
+    // -0.1699,0.1134,0.4547,0.1134,-0.1699,-0.6814,0.4547,1.8234,0.4547,-0.6814,-0.1699,0.1134,0.4547,0.1134,-0.1699,
+    // -0.0026,-0.1699,-0.6814,-0.1699,-0.0026]", M4_DIGIT(6), M4_DYNAMIC(0))
     float dog_kernel_h[25];
 } CalibDbV2_Edgefilter_Kernel_t;
 

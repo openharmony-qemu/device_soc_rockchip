@@ -225,7 +225,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
     RK_S32 st_cnt = 8;
     RK_S32 pos = 0;
     MPP_RET ret = MPP_OK;
-    const int MIN_REPEAT = 2;
+    const int minRepeat = 2;
 
     errno_t eok = memset_s(&lt_ref, sizeof(lt_ref), 0, sizeof(lt_ref));
     if (eok != EOK) {
@@ -263,7 +263,7 @@ static MPP_RET mpi_enc_gen_smart_gop_ref_cfg(MppEncRefCfg ref, RK_S32 gop_len, R
         st_ref[pos].temporal_id = 1;
         st_ref[pos].ref_mode = REF_MODE_TO_PREV_REF_FRM;
         st_ref[pos].ref_arg = 0;
-        st_ref[pos].repeat = vi_len - MIN_REPEAT;
+        st_ref[pos].repeat = vi_len - minRepeat;
         pos++;
     }
 
@@ -719,7 +719,7 @@ static void test_mpp_ctx_cleanup(MpiEncTestData *p)
     test_ctx_deinit(&p);
 }
 
-int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
+int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *bufSize)
 {
     int ret;
     MppApi *mpi;
@@ -758,7 +758,7 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
 
     void *ptr = mpp_packet_get_pos(packet);
     size_t len = mpp_packet_get_length(packet);
-    if (*buf_size < len) {
+    if (*bufSize < len) {
         mpp_err("mpi buffer size too small\n");
         ret = MPP_NOK;
         mpp_packet_deinit(&packet);
@@ -771,7 +771,7 @@ int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *buf_size)
         return MPP_NOK;
     }
 
-    *buf_size = len;
+    *bufSize = len;
 
     ret = MPP_OK;
     mpp_packet_deinit(&packet);
@@ -883,7 +883,7 @@ MPP_RET encodeGetPacket(MpiEncTestData *p, MppBuffer *cam_buf, MppPacket *packet
     return MPP_OK;
 }
 
-int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
+int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *bufSize)
 {
     if (!ctx) {
         mpp_err("memset_s failed\n");
@@ -909,7 +909,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
         return MPP_NOK;
     }
     size_t len = mpp_packet_get_length(packet);
-    if (*buf_size < len) {
+    if (*bufSize < len) {
         mpp_err("mpi buffer size too small\n");
         if (cam_buf) {
             mpp_buffer_put(cam_buf);
@@ -922,7 +922,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *buf_size)
         mpp_err("memcpy_s failed\n");
     }
 
-    *buf_size = len;
+    *bufSize = len;
     if (cam_buf) {
         mpp_buffer_put(cam_buf);
     }

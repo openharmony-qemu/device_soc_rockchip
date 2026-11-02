@@ -31,23 +31,23 @@ class NnrtDeviceVdiImpl : public INnrtDeviceVdi {
 public:
     ~NnrtDeviceVdiImpl();
 
-    int32_t GetDeviceName(std::string& name) override; 
-    int32_t GetVendorName(std::string& name) override; 
-    int32_t GetDeviceType(DeviceType& deviceType) override; 
-    int32_t GetDeviceStatus(DeviceStatus& status) override; 
-    int32_t GetSupportedOperation(const Model& model, std::vector<bool>& ops) override; 
-    int32_t IsFloat16PrecisionSupported(bool& isSupported) override; 
-    int32_t IsPerformanceModeSupported(bool& isSupported) override; 
-    int32_t IsPrioritySupported(bool& isSupported) override; 
-    int32_t IsDynamicInputSupported(bool& isSupported) override; 
+    int32_t GetDeviceName(std::string& name) override;
+    int32_t GetVendorName(std::string& name) override;
+    int32_t GetDeviceType(DeviceType& deviceType) override;
+    int32_t GetDeviceStatus(DeviceStatus& status) override;
+    int32_t GetSupportedOperation(const Model& model, std::vector<bool>& ops) override;
+    int32_t IsFloat16PrecisionSupported(bool& isSupported) override;
+    int32_t IsPerformanceModeSupported(bool& isSupported) override;
+    int32_t IsPrioritySupported(bool& isSupported) override;
+    int32_t IsDynamicInputSupported(bool& isSupported) override;
     int32_t PrepareModel(const Model& model, const ModelConfig& config,
-                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel) override; 
-    int32_t IsModelCacheSupported(bool& isSupported) override; 
+                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel) override;
+    int32_t IsModelCacheSupported(bool& isSupported) override;
     int32_t PrepareModelFromModelCache(const std::vector<SharedBuffer>& modelCache, const ModelConfig& config,
-                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel) override; 
+                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel) override;
     int32_t PrepareOfflineModel(const std::vector<SharedBuffer>& offlineModels, const ModelConfig& config,
-                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel) override; 
-    int32_t AllocateBuffer(uint32_t length, SharedBuffer& buffer) override; 
+                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel) override;
+    int32_t AllocateBuffer(uint32_t length, SharedBuffer& buffer) override;
     int32_t ReleaseBuffer(const SharedBuffer& buffer) override;
 
 private:

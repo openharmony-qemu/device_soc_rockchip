@@ -69,15 +69,17 @@ typedef struct CalibDbV2_UVNR_T_Set_s {
     // M4_STRUCT_LIST_DESC("Tuning_ISO", M4_SIZE_DYNAMIC, "double_index_list")
     CalibDbV2_UVNR_T_ISO_t *Tuning_ISO;
     int Tuning_ISO_len;
-
 } CalibDbV2_UVNR_T_Set_t;
 
 typedef struct CalibDbV2_UVNR_Kernel_s {
-    // M4_ARRAY_DESC("kernel_3x3", "f32", M4_SIZE(1,3), M4_RANGE(0,1), "[1.0000,0.8825,0.7788]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("kernel_3x3", "f32", M4_SIZE(1,3), M4_RANGE(0,1), "[1.0000,0.8825,0.7788]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     float kernel_3x3[3];
-    // M4_ARRAY_DESC("kernel_5x5", "f32", M4_SIZE(1,5), M4_RANGE(0,1), "[1.0000,0.8825,0.7788,0.6065,0.3679]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("kernel_5x5", "f32", M4_SIZE(1,5), M4_RANGE(0,1), "[1.0000,0.8825,0.7788,0.6065,0.3679]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float kernel_5x5[5];
-    // M4_ARRAY_DESC("kernel_9x9", "f32", M4_SIZE(1,8), M4_RANGE(0,1), "[1.0000,0.8825,0.7788,0.6065,0.3679,0.1969,0.1353,0.0439]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("kernel_9x9", "f32", M4_SIZE(1,8), M4_RANGE(0,1),
+    // "[1.0000,0.8825,0.7788,0.6065,0.3679,0.1969,0.1353,0.0439]", M4_DIGIT(6), M4_DYNAMIC(0))
     float kernel_9x9[8];
     // M4_NUMBER_DESC("kernel_9x9_num", "s32", M4_RANGE(0, 3), "0", M4_DIGIT(0))
     int kernel_9x9_num;
@@ -105,3 +107,4 @@ typedef struct CalibDbV2_UVNR_s {
 RKAIQ_END_DECLARE
 
 #endif
+

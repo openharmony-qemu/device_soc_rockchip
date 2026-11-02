@@ -1,11 +1,9 @@
 #ifndef __RKAIQ_TYPES_AMD_ALGO_H__
 #define __RKAIQ_TYPES_AMD_ALGO_H__
-//#include "media_buffer/media_buffer_pool.h"
 
 struct MediaBuffer_s;
 
-typedef struct _MotionBufMetaData_t
-{
+typedef struct _MotionBufMetaData_t {
     uint32_t frame_id;
     //to do: add more for future
     //var1
@@ -20,4 +18,4 @@ typedef struct rk_aiq_amd_params_s {
     struct MediaBuffer_s* st_ratio;
 } rk_aiq_amd_params_t;
 
-#endif//__RKAIQ_TYPES_AMD_ALGO_H__
+#endif //__RKAIQ_TYPES_AMD_ALGO_H__

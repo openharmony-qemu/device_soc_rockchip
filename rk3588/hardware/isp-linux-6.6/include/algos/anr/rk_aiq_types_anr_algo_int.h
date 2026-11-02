@@ -63,7 +63,6 @@ RKAIQ_BEGIN_DECLARE
 #define MFNR_F_INTE_SIGMA           6
 
 
-
 /************ynr***************/
 #define ISO_CURVE_POINT_BIT             4
 #define ISO_CURVE_POINT_NUM             ((1 << ISO_CURVE_POINT_BIT)+1)
@@ -73,7 +72,6 @@ RKAIQ_BEGIN_DECLARE
 #define GAIN_YNR_ENABLE_FLG             (GAIN_ENABLE_FLG & 1)
 #define GAIN_YNR_FIX_BITS_DECI          4
 #define GAIN_YUVNR_SOURCE_FLG           0
-
 
 
 typedef struct RKAnr_Bayernr_Params_s
@@ -119,7 +117,6 @@ typedef struct RKAnr_Bayernr_Params_s
     float sw_bayernr_filter_soft_threshold_ratio[MAX_ISO_STEP];
     float sw_bayernr_filter_out_wgt[MAX_ISO_STEP];
 } RKAnr_Bayernr_Params_t;
-
 
 
 typedef struct RKAnr_Bayernr_Params_Select_s
@@ -207,7 +204,7 @@ typedef struct RKAnr_Mfnr_Params_s
 
     double noise_sigma  [MAX_ISO_STEP][1 << Y_CALIBRATION_BITS];
     float mfnr_sigma_scale[MAX_ISO_STEP];
-	int motion_detection_enable;
+    int motion_detection_enable;
     char mfnr_ver_char;
 } RKAnr_Mfnr_Params_t;
 
@@ -490,7 +487,7 @@ typedef enum ANROPMode_e {
 } ANROPMode_t;
 
 typedef enum ANRParamMode_e {
-	ANR_PARAM_MODE_INVALID           = 0, 
+    ANR_PARAM_MODE_INVALID           = 0,
     ANR_PARAM_MODE_NORMAL          = 1,                   /**< initialization value */
     ANR_PARAM_MODE_HDR              = 2,                   /**< instance is created, but not initialized */
     ANR_PARAM_MODE_GRAY            = 3,                   /**< instance is confiured (ready to start) or stopped */
@@ -498,12 +495,12 @@ typedef enum ANRParamMode_e {
 } ANRParamMode_t;
 
 typedef struct RKAnr_Mfnr_Dynamic_s {
-	int enable;
-	float lowth_iso;
-	float lowth_time;
-	float highth_iso;
-	float highth_time;
-	int mfnr_enable_state;
+    int enable;
+    float lowth_iso;
+    float lowth_time;
+    float highth_iso;
+    float highth_time;
+    int mfnr_enable_state;
 }RKAnr_Mfnr_Dynamic_t;
 
 typedef struct ANR_Manual_Attr_s
@@ -523,8 +520,7 @@ typedef struct ANR_Manual_Attr_s
 
 } ANR_Manual_Attr_t;
 
-typedef struct ANR_Auto_Attr_s
-{
+typedef struct ANR_Auto_Attr_s {
     //all ISO params and select param
     //bayernr
     int bayernrEn;
@@ -602,48 +598,47 @@ typedef struct ANRExpInfo_s {
     int   arIso[3];
     int   arDcgMode[3];
     int   cur_snr_mode;
-	int   snr_mode;
+    int   snr_mode;
 
-	float preTime[3];
-	float preAGain[3];
-	float preDGain[3];
-	int preIso[3];
-	int   preDcgMode[3];
+    float preTime[3];
+    float preAGain[3];
+    float preDGain[3];
+    int preIso[3];
+    int   preDcgMode[3];
     int pre_snr_mode;
 
-	int mfnr_mode_3to1;
+    int mfnr_mode_3to1;
 } ANRExpInfo_t;
 
 
-typedef enum rk_aiq_nr_module_e{
+typedef enum rk_aiq_nr_module_e {
     ANR_MODULE_BAYERNR      = 0,                   /**< instance is created, but not initialized */
     ANR_MODULE_MFNR         = 1,                   /**< instance is confiured (ready to start) or stopped */
     ANR_MODULE_UVNR         = 2,                   /**< instance is running (processes frames) */
-    ANR_MODULE_YNR          = 3,                   /**< instance is locked (for taking snapshots) */               /**< max */
+    ANR_MODULE_YNR          = 3,                   /**< instance is locked (for taking snapshots) */ /**< max */
 } rk_aiq_nr_module_t;
 
 
 typedef struct rk_aiq_nr_IQPara_s {
-    int module_bits;//judge by bits
+    int module_bits; //judge by bits
 	
-	CalibDb_BayerNr_t stBayernrPara;
-	CalibDb_MFNR_t stMfnrPara;
-	CalibDb_UVNR_t stUvnrPara;
-	CalibDb_YNR_t stYnrPara;
+    CalibDb_BayerNr_t stBayernrPara;
+    CalibDb_MFNR_t stMfnrPara;
+    CalibDb_UVNR_t stUvnrPara;
+    CalibDb_YNR_t stYnrPara;
     
 } rk_aiq_nr_IQPara_t;
 
 
 typedef struct rk_aiq_nr_JsonPara_s {
-    int module_bits;//judge by bits
+    int module_bits; //judge by bits
 	
-	CalibDbV2_BayerNrV1_t bayernr_v1;
-	CalibDbV2_MFNR_t mfnr_v1;
-	CalibDbV2_UVNR_t uvnr_v1;
-	CalibDbV2_YnrV1_t ynr_v1;
+    CalibDbV2_BayerNrV1_t bayernr_v1;
+    CalibDbV2_MFNR_t mfnr_v1;
+    CalibDbV2_UVNR_t uvnr_v1;
+    CalibDbV2_YnrV1_t ynr_v1;
     
 } rk_aiq_nr_JsonPara_t;
-
 
 
 RKAIQ_END_DECLARE

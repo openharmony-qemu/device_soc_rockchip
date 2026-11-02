@@ -37,9 +37,6 @@
 #define ISP32_LDCH_BIC_NUM		36
 #endif
 
-// typedef struct rk_aiq_isp_blc_v32_s {
-// } rk_aiq_isp_blc_v32_t;
-
 typedef RkAiqAmergeProcResult_t rk_aiq_isp_merge_v32_t;
 
 typedef RkAiqAdrcProcResult_t rk_aiq_isp_drc_v32_t;
@@ -82,3 +79,4 @@ typedef rk_aiq_wb_gain_v32_t rk_aiq_isp_wb_gain_v32_t;
 typedef rk_aiq_ccm_cfg_v2_t rk_aiq_isp_ccm_v32_t;
 
 #endif
+

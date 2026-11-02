@@ -26,7 +26,8 @@ typedef struct CalibDb_CISTimeSet_s {
     Cam2x1FloatMatrix_t     CISHdrTimeRegSumFac;
     Cam2x1FloatMatrix_t     CISLinTimeRegMaxFac;
     uint16_t                CISTimeRegMin;
-    Cam1x3ShortMatrix_t     CISTimeRegMax; //specially for Hdr that has limit on sframe/mframe, requiring max time line.value 0: no limit
+    Cam1x3ShortMatrix_t     CISTimeRegMax;
+    //specially for Hdr that has limit on sframe/mframe, requiring max time line.value 0: no limit
     Cam2x1FloatMatrix_t     CISTimeRegOdevity;
     uint8_t                 CISTimeRegUnEqualEn;
 } CalibDb_CISTimeSet_t;
@@ -96,7 +97,7 @@ typedef struct CalibDb_Awb_Calib_Para_V201_s {
     unsigned char       lightNum;
     char                lightName[CALD_AWB_LS_NUM_MAX][CALD_AWB_ILLUMINATION_NAME];
     unsigned char       doorType[CALD_AWB_LS_NUM_MAX];
-    float               standardGainValue[CALD_AWB_LS_NUM_MAX][4];//rggb
+    float               standardGainValue[CALD_AWB_LS_NUM_MAX][4]; //rggb
     CalibDb_limit_range_t limitRange;
     CalibDb_Rgb2TcsParam_t     rgb2tcs_param;
     float               rgb2RYuv_matrix[16];
@@ -105,20 +106,20 @@ typedef struct CalibDb_Awb_Calib_Para_V201_s {
     CalibDb_tcs_range_ill_t xyRangeLight[CALD_AWB_LS_NUM_MAX];
     CalibDb_Yuv3D_2_Range_Ill_t yuv3D2Range_param[CALD_AWB_LS_NUM_MAX];
 
-    unsigned short multiwindow[CALD_AWB_WINDOW_NUM_MAX][4];//8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
+    unsigned short multiwindow[CALD_AWB_WINDOW_NUM_MAX][4]; //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
     //several winow in uv or xy domain
     CalibDb_ExcRange_t excludeWpRange[CALD_AWB_EXCRANGE_NUM_MAX];
     //with differernt luma ,the different weight in WP sum
     float wpDiffNoTh;
     unsigned int   wpDiffLvValueTh;
     unsigned char wpDiffwei_y[9];
-    unsigned char  perfectBin[8];// ture means the luma is appropriate
+    unsigned char  perfectBin[8]; // ture means the luma is appropriate
     float wpDiffweiSet_w_LvValueTh[2];
     float wpDiffWeiRatioTh[3];
     float wpDiffweiSet_w_HigLV[3][9];
     float wpDiffweiSet_w_LowLV[3][9];
     unsigned short blkWeight[CALD_AWB_GRID_NUM_TOTAL];
-    float spatialGain_H[4];//spatial gain
+    float spatialGain_H[4]; //spatial gain
     float spatialGain_L[4];
     float temporalDefaultGain[4];
     float ca_targetGain[4];
@@ -145,25 +146,25 @@ typedef struct CalibDb_Awb_Para_Isp21_s
 
 typedef struct CalibDb_Drc_ModeCell_s {
     char scene[CALIBDB_MAX_MODE_NAME_LENGTH];
-    int sw_drc_offset_pow2;//
+    int sw_drc_offset_pow2; //
     int sw_drc_position;
     int sw_drc_hpdetail_ratio;
     int sw_drc_lpdetail_ratio;
-    int sw_drc_weicur_pix;//
-    int sw_drc_weipre_frame;//
-    int sw_drc_force_sgm_inv0;//
-    int sw_drc_motion_scl;//
-    int sw_drc_edge_scl;//
-    int sw_drc_space_sgm_inv1;//
-    int sw_drc_space_sgm_inv0;//
-    int sw_drc_range_sgm_inv1;//
-    int sw_drc_range_sgm_inv0;//
-    int sw_drc_weig_maxl;//
-    int sw_drc_weig_bilat;//
-    int sw_drc_scale_y[ISP21_DRC_Y_NUM];//
+    int sw_drc_weicur_pix; //
+    int sw_drc_weipre_frame; //
+    int sw_drc_force_sgm_inv0; //
+    int sw_drc_motion_scl; //
+    int sw_drc_edge_scl; //
+    int sw_drc_space_sgm_inv1; //
+    int sw_drc_space_sgm_inv0; //
+    int sw_drc_range_sgm_inv1; //
+    int sw_drc_range_sgm_inv0; //
+    int sw_drc_weig_maxl; //
+    int sw_drc_weig_bilat; //
+    int sw_drc_scale_y[ISP21_DRC_Y_NUM]; //
     int sw_drc_iir_frame;
     int sw_drc_gain;
-    int sw_drc_min_ogain;//
+    int sw_drc_min_ogain; //
 } CalibDb_Drc_ModeCell_t;
 
 typedef struct CalibDb_Adrc_Para_s {
@@ -455,9 +456,7 @@ typedef struct Calibdb_Cnr_V1_s {
     struct list_head listHead;
 } Calibdb_Cnr_V1_t;
 
-
-typedef struct Calibdb_Sharp_params_V3_s
-{
+typedef struct Calibdb_Sharp_params_V3_s {
     struct list_head listItem;
     char snr_mode[64];
     char sensor_mode[64];
@@ -620,3 +619,4 @@ typedef struct CamCalibDbContextIsp21_s {
 #pragma pack()
 
 #endif
+

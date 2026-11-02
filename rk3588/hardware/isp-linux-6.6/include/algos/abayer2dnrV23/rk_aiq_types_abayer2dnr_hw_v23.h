@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 
-
 typedef struct RK_Bayer2dnr_Fix_V23_s {
     /* BAYNR_CTRL */
     uint8_t bay3d_gain_en;
@@ -61,8 +60,5 @@ typedef struct RK_Bayer2dnr_Fix_V23_s {
 } RK_Bayer2dnr_Fix_V23_t;
 
 
-
 #endif
-
-
 

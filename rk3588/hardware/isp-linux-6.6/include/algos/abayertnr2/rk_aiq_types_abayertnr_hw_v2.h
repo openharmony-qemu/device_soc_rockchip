@@ -22,8 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 
-
-
 typedef struct RK_Bayertnr_Fix_V2_s {
 
     // BAY3D_BAY3D_CTRL 0x2c00
@@ -82,14 +80,9 @@ typedef struct RK_Bayertnr_Fix_V2_s {
     uint8_t sw_bay3d_mi2cur_linecnt;
 
 
-
-
-
 } RK_Bayertnr_Fix_V2_t;
 
 
 
 #endif
-
-
 

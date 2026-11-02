@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 
-
 typedef struct RKAnr_Bayernr_Fix_V1_s {
     unsigned char rawnr_en;
     unsigned char gauss_en;
@@ -65,9 +64,5 @@ typedef struct RKAnr_Bayernr_Fix_V1_s {
 } RK_Bayernr_Fix_V1_t;
 
 
-
-
 #endif
-
-
 

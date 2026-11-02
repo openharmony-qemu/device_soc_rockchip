@@ -24,7 +24,6 @@
 #define __RK_AIQ_TYPE_AWB_STAT_V2XX_H__
 
 #include "common/rk_aiq_comm.h"
-//#define TIME_SHARE_TEST
 #define TIME_SHARE_MODE
 #define RK_AIQ_AWB_STAT_YUV_ILL_OFF 7
 #define RK_AIQ_AWB_MAX_WHITEREGIONS_NUM       7
@@ -59,8 +58,8 @@ typedef struct rk_aiq_rgb2xy_para_s {
     short rotationMat[9];
 } rk_aiq_rgb2xy_para_t;
 typedef struct rk_aiq_awb_xy_range_para_s {
-    int NorrangeX[2];//left right
-    int NorrangeY[2];//top bottom
+    int NorrangeX[2]; //left right
+    int NorrangeY[2]; //top bottom
     int SperangeX[2];
     int SperangeY[2];
     int SmalrangeX[2];
@@ -68,9 +67,9 @@ typedef struct rk_aiq_awb_xy_range_para_s {
 } rk_aiq_awb_xy_range_para_t;
 
 typedef struct rk_aiq_awb_uv_range_para_s {
-    unsigned short pu_region[5];//9 bit
+    unsigned short pu_region[5]; //9 bit
     unsigned short pv_region[5];
-    int slope_inv[4];//10+10 signed 1/k
+    int slope_inv[4]; //10+10 signed 1/k
 } rk_aiq_awb_uv_range_para_t;
 
 typedef struct rk_aiq_awb_3dyuv_range_para_s {
@@ -81,15 +80,15 @@ typedef struct rk_aiq_awb_3dyuv_range_para_s {
     int b_ydis;            //17+0s
     unsigned char ref_u;   //8u
     unsigned char ref_v;   //8u
-    unsigned short dis[6];//8+4 u
+    unsigned short dis[6]; //8+4 u
     unsigned char th[6]; //8u
 } rk_aiq_awb_3dyuv_range_para_t;
 
 typedef struct rk_aiq_awb_rt3dyuv_range_para_s {
-    unsigned char thcurve_u[6];//0bit fracitonal+8bit integer+0s
-    unsigned short thcure_th[6];//4bit fractional+8bit integer+0s
-    unsigned short lineP1[3];//4bit fractional+8bit integer+0s
-    short vP1P2[3];//4bit fractional+8bit integer+1s
+    unsigned char thcurve_u[6]; //0bit fracitonal+8bit integer+0s
+    unsigned short thcure_th[6]; //4bit fractional+8bit integer+0s
+    unsigned short lineP1[3]; //4bit fractional+8bit integer+0s
+    short vP1P2[3]; //4bit fractional+8bit integer+1s
     unsigned char  disP1P2;// /0bit fractional+5bit integer+0s  distance is 2^disP1P2;
 } rk_aiq_awb_rt3dyuv_range_para_t;
 

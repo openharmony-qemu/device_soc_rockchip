@@ -96,7 +96,8 @@ typedef struct mEnhanceDataV11_s {
 typedef struct mEnhance_setting_v11_s {
     // M4_BOOL_DESC("en", "1")
     bool en;
-    // M4_ARRAY_DESC("enhance_curve", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1024), "[0,64,128,192,256,320,384,448,512,576,640,704,768,832,896,960,1023]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("enhance_curve", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1024),
+    // "[0,64,128,192,256,320,384,448,512,576,640,704,768,832,896,960,1023]", M4_DIGIT(0), M4_DYNAMIC(0))
     float enhance_curve[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
     // M4_STRUCT_DESC("EnhanceData", "normal_ui_style")
     mEnhanceDataV11_t EnhanceData;
@@ -159,9 +160,11 @@ typedef struct mDehazeAttrInfoV11_s {
 } mDehazeAttrInfoV11_t;
 
 typedef struct mEnhanceDataV12_s {
-    // M4_ARRAY_DESC("enhance_curve", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0,64,128,192,256,320,384,448,512,576,640,704,768,832,896,960,1023]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("enhance_curve", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1023),
+    // "[0,64,128,192,256,320,384,448,512,576,640,704,768,832,896,960,1023]", M4_DIGIT(0), M4_DYNAMIC(0))
     float enhance_curve[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
-    // M4_ARRAY_DESC("enh_luma", "f32", M4_SIZE(1,17),	M4_RANGE(0, 16), "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("enh_luma", "f32", M4_SIZE(1,17),	M4_RANGE(0, 16), "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]",
+    // M4_DIGIT(2), M4_DYNAMIC(0))
     float enh_luma[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
     // M4_NUMBER_DESC("enhance_value", "f32", M4_RANGE(0,32), "1", M4_DIGIT(4))
     float enhance_value;
@@ -181,9 +184,11 @@ typedef struct mEnhance_setting_v12_s {
 } mEnhance_setting_v12_t;
 
 typedef struct mManual_curve_s {
-    // M4_ARRAY_MARK_DESC("curve_x", "u32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("curve_x", "u32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192, 256, 320, 384, 448,
+    // 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
     int curve_x[DHAZ_V12_HIST_WR_CURVE_NUM];
-    // M4_ARRAY_MARK_DESC("curve_y", "u32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("curve_y", "u32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192, 256, 320, 384, 448,
+    // 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
     int curve_y[DHAZ_V12_HIST_WR_CURVE_NUM];
 } mManual_curve_t;
 
@@ -301,9 +306,11 @@ typedef struct mDehaze_setting_v14_s {
 } mDehaze_setting_v14_t;
 
 typedef struct mEnhanceDataV14_s {
-    // M4_ARRAY_MARK_DESC("hw_enhance_loLumaConvert_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("hw_enhance_loLumaConvert_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192,
+    // 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
     float hw_enhance_loLumaConvert_val[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
-    // M4_ARRAY_MARK_DESC("sw_enhance_luma2strg_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16), "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("sw_enhance_luma2strg_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16),
+    // "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float sw_enhance_luma2strg_val[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
     // M4_NUMBER_DESC("sw_enhance_contrast_strg", "f32", M4_RANGE(0,16), "1", M4_DIGIT(4))
     float sw_enhance_contrast_strg;
@@ -325,17 +332,21 @@ typedef struct mEnhance_setting_v14_s {
 typedef struct mHistDataV14_s {
     // M4_ARRAY_DESC("sw_hist_mapUserSet", "f32", M4_SIZE(1,1), M4_RANGE(0,32), "2",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_hist_mapUserSet;
-    // M4_ARRAY_DESC("hw_histc_noiseCount_offset", "u8", M4_SIZE(1,1), M4_RANGE(0,255), "64",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("hw_histc_noiseCount_offset", "u8", M4_SIZE(1,1), M4_RANGE(0,255), "64",M4_DIGIT(4), M4_DYNAMIC(0),
+    // 0)
     uint8_t hw_histc_noiseCount_offset;
     // M4_ARRAY_DESC("sw_histc_noiseCount_scale", "f32", M4_SIZE(1,1), M4_RANGE(0,8), "2",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_histc_noiseCount_scale;
-    // M4_ARRAY_DESC("sw_histc_countWgt_minLimit", "f32", M4_SIZE(1,1), M4_RANGE(0,2), "0.015",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("sw_histc_countWgt_minLimit", "f32", M4_SIZE(1,1), M4_RANGE(0,2), "0.015",M4_DIGIT(4),
+    // M4_DYNAMIC(0), 0)
     float sw_histc_countWgt_minLimit;
-    // M4_ARRAY_DESC("sw_hist_mapCount_scale", "f32", M4_SIZE(1,1), M4_RANGE(0,32), "0.09",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("sw_hist_mapCount_scale", "f32", M4_SIZE(1,1), M4_RANGE(0,32), "0.09",M4_DIGIT(4), M4_DYNAMIC(0),
+    // 0)
     float sw_hist_mapCount_scale;
     // M4_ARRAY_DESC("sw_hist_mapMerge_alpha", "f32", M4_SIZE(1,1), M4_RANGE(0,32), "2",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_hist_mapMerge_alpha;
-    // M4_ARRAY_MARK_DESC("sw_dehaze_outputMerge_alpha", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16), "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("sw_dehaze_outputMerge_alpha", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16),
+    // "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float sw_dehaze_outputMerge_alpha[HIST_V14_OUTMERGE_ALPHA_NUM];
 } mHistDataV14_t;
 

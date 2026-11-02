@@ -41,8 +41,5 @@ typedef struct RK_GAIN_Fix_V2_s {
 } RK_GAIN_Fix_V2_t;
 
 
-
 #endif
-
-
 

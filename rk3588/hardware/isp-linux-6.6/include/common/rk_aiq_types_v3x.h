@@ -80,9 +80,6 @@
 #include "common/rk_aiq_comm.h"
 #include "rk_aiq_mems_sensor.h"
 
-//typedef struct rk_aiq_isp_blc_v3x_s {
-//} rk_aiq_isp_blc_v3x_t;
-
 //typedef rk_aiq_isp_blc_v21_t rk_aiq_isp_blc_v3x_t;
 
 typedef AgammaProcRes_t rk_aiq_isp_goc_v3x_t;
@@ -127,3 +124,4 @@ typedef struct rk_aiq_isp_dehaze_stats_v3x_s {
 } rk_aiq_isp_dehaze_stats_v3x_t;
 
 #endif
+

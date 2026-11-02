@@ -172,8 +172,7 @@ typedef struct CalibDbTmoV20_s
     float damp;
 } CalibDbTmoV20_t;
 
-typedef struct CalibDbV2_tmo_s
-{
+typedef struct CalibDbV2_tmo_s {
     // M4_STRUCT_DESC("TmoTuningPara", "normal_ui_style")
     CalibDbTmoV20_t TmoTuningPara;
 } CalibDbV2_tmo_t;
@@ -182,3 +181,4 @@ typedef struct CalibDbV2_tmo_s
 RKAIQ_END_DECLARE
 
 #endif
+

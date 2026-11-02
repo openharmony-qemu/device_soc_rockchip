@@ -81,8 +81,5 @@ typedef struct RK_CNR_Fix_V30_s {
 } RK_CNR_Fix_V30_t;
 
 
-
 #endif
-
-
 

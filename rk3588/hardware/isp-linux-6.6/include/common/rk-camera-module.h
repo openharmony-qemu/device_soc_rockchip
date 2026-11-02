@@ -334,7 +334,7 @@ struct rkmodule_pdaf_inf {
 	__u32 dccmap_height;
 	__u32 dcc_mode;
 	__u32 dcc_dir;
-	__u32 pd_offset;
+    __u32 pd_offset;
 	__u16 gainmap[RKMODULE_PADF_GAINMAP_LEN];
 	__u16 dccmap[RKMODULE_PDAF_DCCMAP_LEN];
 } __attribute__ ((packed));
@@ -432,12 +432,12 @@ enum rkmodule_hdr_mode {
  * data_compr: compressed data.
  */
 struct rkmodule_hdr_compr {
-	__u8 point;
-	__u8 src_bit;
+    __u8 point;
+    __u8 src_bit;
 	__u8 k_shift;
-	__u16 data_compr[HDR_COMPR_POINT_MAX];
-	__u32 data_src[HDR_COMPR_POINT_MAX];
-	__u32 slope_k[HDR_COMPR_POINT_MAX];
+    __u16 data_compr[HDR_COMPR_POINT_MAX];
+    __u32 data_src[HDR_COMPR_POINT_MAX];
+    __u32 slope_k[HDR_COMPR_POINT_MAX];
 };
 
 /**
@@ -455,7 +455,7 @@ enum hdr_esp_mode {
  * CSI/DSI input select IOCTL
  */
 enum rkmodule_csi_dsi_seq {
-	RKMODULE_CSI_INPUT = 0,
+    RKMODULE_CSI_INPUT = 0,
 	RKMODULE_DSI_INPUT,
 };
 
@@ -629,7 +629,7 @@ enum rkmodule_start_stream_seq {
  * HDMI to MIPI-CSI MODE IOCTL
  */
 enum rkmodule_hdmiin_mode_seq {
-	RKMODULE_HDMIIN_DEFAULT = 0,
+    RKMODULE_HDMIIN_DEFAULT = 0,
 	RKMODULE_HDMIIN_MODE,
 };
 /*
@@ -770,13 +770,13 @@ struct rkmodule_csi_dphy_param {
 };
 
 struct rkmodule_sensor_fmt {
-	__u32 sensor_index;
-	__u32 sensor_width;
-	__u32 sensor_height;
+    __u32 sensor_index;
+    __u32 sensor_width;
+    __u32 sensor_height;
 };
 
 struct rkmodule_sensor_infos {
-	struct rkmodule_sensor_fmt sensor_fmt[RKMODULE_MAX_SENSOR_NUM];
+    struct rkmodule_sensor_fmt sensor_fmt[RKMODULE_MAX_SENSOR_NUM];
 };
 
 enum rkmodule_capture_mode {
@@ -816,3 +816,4 @@ struct rkmodule_capture_info {
 
 
 #endif /* _UAPI_RKMODULE_CAMERA_H */
+

@@ -66,7 +66,6 @@ typedef struct RKAnr_Bayernr_Fix_s {
 } RKAnr_Bayernr_Fix_t;
 
 
-
 typedef struct RKAnr_Uvnr_Fix_s {
     unsigned char uvnr_en;
     unsigned char uvnr_step1_en;
@@ -97,7 +96,6 @@ typedef struct RKAnr_Uvnr_Fix_s {
 } RKAnr_Uvnr_Fix_t;
 
 
-
 typedef struct RKAnr_Ynr_Fix_s {
     unsigned char ynr_en;
     unsigned char ynr_sgm_dx[16];
@@ -125,7 +123,6 @@ typedef struct RKAnr_Ynr_Fix_s {
     unsigned short ynr_hstv_y[17];
     unsigned short ynr_st_scale[3];
 } RKAnr_Ynr_Fix_t;
-
 
 
 typedef struct RKAnr_Mfnr_Fix_s {
@@ -205,6 +202,4 @@ typedef struct RKAnr_Gain_Fix_s {
 RKAIQ_END_DECLARE
 
 #endif
-
-
 

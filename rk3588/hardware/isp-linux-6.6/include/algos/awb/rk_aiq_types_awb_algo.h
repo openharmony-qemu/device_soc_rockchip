@@ -38,8 +38,8 @@ typedef struct rk_aiq_wb_gain_s {
     float bgain;
 } rk_aiq_wb_gain_t;
 
-typedef enum rk_aiq_wb_gapin_aplly_pos_s{
-    IN_AWBGAIN0 =0,
+typedef enum rk_aiq_wb_gapin_aplly_pos_s {
+    IN_AWBGAIN0 = 0,
     IN_AWBGAIN1
 }rk_aiq_wb_gapin_aplly_pos_e;
 

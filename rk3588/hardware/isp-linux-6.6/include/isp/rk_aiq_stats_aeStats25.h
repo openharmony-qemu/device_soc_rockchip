@@ -723,7 +723,8 @@ typedef struct aeStats_entityGrpStats_s {
          M4_HIDE_EX(0),
          M4_RO(0),
          M4_ORDER(22),
-         M4_NOTES(It is only valid in aeStats_entity0_wkOnly_mode | aeStats_entity3_wkOnly_mode | aeStats_entity03_indWk_mode mode))  */
+         M4_NOTES(It is only valid in aeStats_entity0_wkOnly_mode | aeStats_entity3_wkOnly_mode |
+         aeStats_entity03_indWk_mode mode))  */
     aeStats_entitiesStats_t entities;
 } aeStats_entityGrpStats_t;
 

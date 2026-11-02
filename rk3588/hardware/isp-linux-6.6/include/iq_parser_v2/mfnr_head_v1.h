@@ -29,17 +29,23 @@ typedef struct CalibDbV2_MFNR_C_ISO_s {
     // M4_NUMBER_MARK_DESC("iso", "f32", M4_RANGE(50, 204800), "50", M4_DIGIT(1), "index2")
     float iso;
 
-    // M4_ARRAY_DESC("noise_curve", "f32", M4_SIZE(1,5), M4_RANGE(-65535,65535), "[-8.4303162971622996e-013,7.9640341802261105e-009,-2.6912484620871701e-005,3.3049135399760801e-002,1.8211244079810101e+001]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("noise_curve", "f32", M4_SIZE(1,5), M4_RANGE(-65535,65535), "[-8.4303162971622996e-013,
+    // 7.9640341802261105e-009,-2.6912484620871701e-005,3.3049135399760801e-002,1.8211244079810101e+001]", M4_DIGIT(6),
+    //  M4_DYNAMIC(0))
     float noise_curve[5];
     // M4_NUMBER_DESC("noise_curve_x00", "f32", M4_RANGE(0.0, 4095), "3647", M4_DIGIT(0))
     float noise_curve_x00;
-    // M4_ARRAY_DESC("y_lo_noiseprofile", "f32", M4_SIZE(1,4), M4_RANGE(0,1), "[1.00000,0.68993,0.41986,0.24798]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lo_noiseprofile", "f32", M4_SIZE(1,4), M4_RANGE(0,1), "[1.00000,0.68993,0.41986,0.24798]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float y_lo_noiseprofile[4];
-    // M4_ARRAY_DESC("y_hi_noiseprofile", "f32", M4_SIZE(1,4), M4_RANGE(0,1), "[0.77114,0.62293,0.46145,0.00000]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_hi_noiseprofile", "f32", M4_SIZE(1,4), M4_RANGE(0,1), "[0.77114,0.62293,0.46145,0.00000]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float y_hi_noiseprofile[4];
-    // M4_ARRAY_DESC("uv_lo_noiseprofile", "f32", M4_SIZE(1,3), M4_RANGE(0,1), "[1.00000,0.68993,0.41986]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_lo_noiseprofile", "f32", M4_SIZE(1,3), M4_RANGE(0,1), "[1.00000,0.68993,0.41986]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     float uv_lo_noiseprofile[3];
-    // M4_ARRAY_DESC("uv_hi_noiseprofile", "f32", M4_SIZE(1,3), M4_RANGE(0,1), "[0.77114,0.62293,0.35740]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_hi_noiseprofile", "f32", M4_SIZE(1,3), M4_RANGE(0,1), "[0.77114,0.62293,0.35740]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     float uv_hi_noiseprofile[3];
 } CalibDbV2_MFNR_C_ISO_t;
 
@@ -60,58 +66,80 @@ typedef struct CalibDbV2_MFNR_Calib_s {
 } CalibDbV2_MFNR_Calib_t;
 
 typedef struct CalibDbV2_MFNR_Luma_s {
-    // M4_ARRAY_DESC("y_lumanrpoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256), "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lumanrpoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256),
+    // "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
     float y_lumanrpoint[6];
-    // M4_ARRAY_DESC("y_lumanrcurve", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), "[1.0,1.0,1.0,1.0,1.0,1.0]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lumanrcurve", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), "[1.0,1.0,1.0,1.0,1.0,1.0]", M4_DIGIT(2),
+    // M4_DYNAMIC(0))
     float y_lumanrcurve[6];
-    // M4_ARRAY_DESC("uv_lumanrpoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256), "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_lumanrpoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256),
+    // "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
     float uv_lumanrpoint[6];
-    // M4_ARRAY_DESC("uv_lumanrcurve", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), "[1.0,1.0,1.0,1.0,1.0,1.0]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_lumanrcurve", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), "[1.0,1.0,1.0,1.0,1.0,1.0]", M4_DIGIT(2),
+    // M4_DYNAMIC(0))
     float uv_lumanrcurve[6];
 } CalibDbV2_MFNR_Luma_t;
 
 typedef struct CalibDbV2_MFNR_Ygfdelta_s {
-    // M4_ARRAY_DESC("y_lo_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lo_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
     float y_lo_lvl0_gfdelta[6];
-    // M4_ARRAY_DESC("y_hi_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_hi_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
     float y_hi_lvl0_gfdelta[6];
-    // M4_ARRAY_DESC("y_lo_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lo_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    //  M4_DIGIT(6), M4_DYNAMIC(0))
     float y_lo_lvl1_gfdelta[3];
-    // M4_ARRAY_DESC("y_hi_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_hi_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    //  M4_DIGIT(6), M4_DYNAMIC(0))
     float y_hi_lvl1_gfdelta[3];
-    // M4_ARRAY_DESC("y_lo_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lo_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    //  M4_DIGIT(6), M4_DYNAMIC(0))
     float y_lo_lvl2_gfdelta[3];
-    // M4_ARRAY_DESC("y_hi_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_hi_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    //  M4_DIGIT(6), M4_DYNAMIC(0))
     float y_hi_lvl2_gfdelta[3];
-    // M4_ARRAY_DESC("y_lo_lvl3_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_lo_lvl3_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    //  M4_DIGIT(6), M4_DYNAMIC(0))
     float y_lo_lvl3_gfdelta[3];
-    // M4_ARRAY_DESC("y_hi_lvl3_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_hi_lvl3_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    //  M4_DIGIT(6), M4_DYNAMIC(0))
     float y_hi_lvl3_gfdelta[3];
 } CalibDbV2_MFNR_Ygfdelta_t;
 
 typedef struct CalibDbV2_MFNR_UVgfdelta_s {
-    // M4_ARRAY_DESC("uv_lo_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_lo_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
     float uv_lo_lvl0_gfdelta[6];
-    // M4_ARRAY_DESC("uv_hi_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_hi_lvl0_gfdelta", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
     float uv_hi_lvl0_gfdelta[6];
-    // M4_ARRAY_DESC("uv_lo_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_lo_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float uv_lo_lvl1_gfdelta[3];
-    // M4_ARRAY_DESC("uv_hi_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_hi_lvl1_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float uv_hi_lvl1_gfdelta[3];
-    // M4_ARRAY_DESC("uv_lo_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_lo_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float uv_lo_lvl2_gfdelta[3];
-    // M4_ARRAY_DESC("uv_hi_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("uv_hi_lvl2_gfdelta", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]",
+    // M4_DIGIT(6), M4_DYNAMIC(0))
     float uv_hi_lvl2_gfdelta[3];
 } CalibDbV2_MFNR_UVgfdelta_t;
 
 typedef struct CalibDbV2_MFNR_gfsigma_s {
-    // M4_ARRAY_DESC("lvl0_gfsigma", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("lvl0_gfsigma", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[0.06250,0.03906,0.03906,0.03906,0.03906,0.03906]", M4_DIGIT(6), M4_DYNAMIC(0))
     float lvl0_gfsigma[6];
-    // M4_ARRAY_DESC("lvl1_gfsigma", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("lvl1_gfsigma", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     float lvl1_gfsigma[3];
-    // M4_ARRAY_DESC("lvl2_gfsigma", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("lvl2_gfsigma", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     float lvl2_gfsigma[3];
-    // M4_ARRAY_DESC("lvl3_gfsigma", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("lvl3_gfsigma", "f32", M4_SIZE(1,3), M4_RANGE(0,1.0), "[0.12500,0.10938,0.10938]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     float lvl3_gfsigma[3];
 } CalibDbV2_MFNR_gfsigma_t;
 
@@ -195,7 +223,6 @@ typedef struct CalibDbV2_MFNR_T_ISO_s {
     CalibDbV2_MFNR_UVgfdelta_t uv_gfdelta_para;
     // M4_ARRAY_TABLE_DESC("gfsigma_para", "array_table_ui", "none", M4_HIDE(1))
     CalibDbV2_MFNR_gfsigma_t gfsigma_para;
-
 } CalibDbV2_MFNR_T_ISO_t;
 
 

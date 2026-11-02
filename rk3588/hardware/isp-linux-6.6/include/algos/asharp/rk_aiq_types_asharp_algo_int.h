@@ -65,7 +65,7 @@ RKAIQ_BEGIN_DECLARE
 
 //edgefilter
 #define RK_EDGEFILTER_LUMA_POINT_NUM                    8
-#define RK_EDGEFILTER_PARAMS_NUM                        15//21
+#define RK_EDGEFILTER_PARAMS_NUM                        15 //21
 #define RKEDGEFILTER_LUMA_GAU_DIAM                      3
 #define RKEDGEFILTER_DIR_SMTH_DIAM                      5
 #define RKEDGEFILTER_GAUS_DIAM                          5
@@ -142,7 +142,6 @@ typedef struct RKAsharp_Sharp_HW_Params_Select_s
     float kernel_mbf    [RKSHAPRENHW_MBF_DIAM_Y * RKSHAPRENHW_MBF_DIAM_X];
     float h_rf_h        [RKSHAPRENHW_HRF_DIAM * RKSHAPRENHW_HRF_DIAM];
     float kernel_hbf    [RKSHAPRENHW_HBF_DIAM * RKSHAPRENHW_HBF_DIAM];
-
 
 
 } RKAsharp_Sharp_HW_Params_Select_t;
@@ -331,10 +330,9 @@ typedef enum AsharpParamMode_e {
     ASHARP_PARAM_MODE_INVALID           = 0,                   /**< initialization value */
     ASHARP_PARAM_MODE_NORMAL               = 1,                   /**< instance is created, but not initialized */
     ASHARP_PARAM_MODE_HDR             = 2,                   /**< instance is confiured (ready to start) or stopped */
-    ASHARP_PARAM_MODE_GRAY            =3,                          /**< max */
+    ASHARP_PARAM_MODE_GRAY            = 3,                          /**< max */
     ASHARP_PARAM_MODE_MAX
 } AsharpParamMode_t;
-
 
 
 typedef struct Asharp_Manual_Attr_s
@@ -347,8 +345,7 @@ typedef struct Asharp_Manual_Attr_s
 
 } Asharp_Manual_Attr_t;
 
-typedef struct Asharp_Auto_Attr_s
-{
+typedef struct Asharp_Auto_Attr_s {
     //all ISO params and select param
     //sharp
     int sharpEn;
@@ -396,36 +393,36 @@ typedef struct AsharpExpInfo_s {
     int   arIso[3];
     int   arDcgMode[3];
     int   cur_snr_mode;
-	int   snr_mode;
+    int   snr_mode;
 
-	float preTime[3];
-	float preAGain[3];
-	float preDGain[3];
-	int preIso[3];
-	int preDcgMode[3];
+    float preTime[3];
+    float preAGain[3];
+    float preDGain[3];
+    int preIso[3];
+    int preDcgMode[3];
     int pre_snr_mode;
 	
-	int mfnr_mode_3to1;
+    int mfnr_mode_3to1;
 } AsharpExpInfo_t;
 
-typedef enum rk_aiq_sharp_module_e{
+typedef enum rk_aiq_sharp_module_e {
     ASHARP_MODULE_SHARP     	= 0,          /**< instance is created, but not initialized */
     ASHARP_MODULE_EDGEFILTER    = 1,          /**< instance is confiured (ready to start) or stopped */
 } rk_aiq_sharp_module_t;
 
 
-typedef struct rk_aiq_sharp_IQpara_s{
+typedef struct rk_aiq_sharp_IQpara_s {
 	int module_bits;
 	
-	CalibDb_Sharp_t stSharpPara;
+    CalibDb_Sharp_t stSharpPara;
     CalibDb_EdgeFilter_t stEdgeFltPara;
 }rk_aiq_sharp_IQpara_t;
 
 
-typedef struct rk_aiq_sharp_JsonPara_s{
-	int module_bits;
+typedef struct rk_aiq_sharp_JsonPara_s {
+    int module_bits;
 	
-	CalibDbV2_SharpV1_t sharp_v1;
+    CalibDbV2_SharpV1_t sharp_v1;
     CalibDbV2_Edgefilter_t edgefilter_v1;
 }rk_aiq_sharp_JsonPara_t;
 
@@ -433,5 +430,4 @@ typedef struct rk_aiq_sharp_JsonPara_s{
 RKAIQ_END_DECLARE
 
 #endif
-
 

@@ -41,7 +41,7 @@ typedef struct detailsLowLight_s
     float* FocusLuma;
     int len;
     float* DarkPdf;
-    float* ISO;//use long frame
+    float* ISO; //use long frame
     float Tolerance;
     float* DetailsLowLight;
 
@@ -245,7 +245,6 @@ typedef struct PredictKPara_s
     float Hdr3xLongPercent;
     float UseLongUpTh;
     float UseLongLowTh;
-
 } PredictKPara_t;
 
 typedef struct TmoFlickerPara_s
@@ -263,8 +262,7 @@ typedef struct TmoFlickerPara_s
     PredictKPara_t PredictK;
 } TmoFlickerPara_t;
 
-typedef struct RkAiqAtmoProcResult_s
-{
+typedef struct RkAiqAtmoProcResult_s {
     TmoProcRes_t Res;
     tmoAttr_t hdrAttr;
     bool LongFrameMode;

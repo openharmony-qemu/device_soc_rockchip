@@ -17,7 +17,6 @@
 #include <message_parcel.h>
 #include <securec.h>
 
-// #define HDF_LOG_TAG    nnrt_device_service
 
 namespace OHOS {
 namespace HDI {
@@ -96,7 +95,7 @@ int32_t NnrtDeviceVdiImpl::IsDynamicInputSupported(bool& isSupported)
 }
 
 int32_t NnrtDeviceVdiImpl::PrepareModel(const Model& model, const ModelConfig& config,
-     sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
+    sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
 {
     HDF_LOGI("NnrtDeviceVdiImpl::PrepareModel enter %{public}s.", model.name.c_str());
 
@@ -125,7 +124,7 @@ int32_t NnrtDeviceVdiImpl::IsModelCacheSupported(bool& isSupported)
 }
 
 int32_t NnrtDeviceVdiImpl::PrepareModelFromModelCache(const std::vector<SharedBuffer>& modelCache,
-     const ModelConfig& config, sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
+    const ModelConfig& config, sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
 {
     HDF_LOGI("PrepareModelFromModelCache start");
 
@@ -175,7 +174,7 @@ int32_t NnrtDeviceVdiImpl::PrepareModelFromModelCache(const std::vector<SharedBu
 }
 
 int32_t NnrtDeviceVdiImpl::PrepareOfflineModel(const std::vector<SharedBuffer>& offlineModels,
-     const ModelConfig& config, sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
+    const ModelConfig& config, sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
 {
     HDF_LOGI("NnrtDeviceVdiImpl::PrepareOfflineModel enter");
     auto ret = PrepareModelFromModelCache(offlineModels, config, preparedModel);

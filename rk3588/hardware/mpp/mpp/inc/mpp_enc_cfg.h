@@ -20,8 +20,15 @@
  *
  * For normal user rc and prep config are enough.
  */
-#define POS_TO_FLAG(p, pos) ((rk_u8*)(p) + ((rk_u32)(pos) & 0xffff))
-#define POS_TO_ELEM(p, pos) ((rk_u8*)(p) + ((rk_u32)(pos) >> 16))
+static inline rk_u8 *POS_TO_FLAG(void *p, rk_u32 pos)
+{
+    return (rk_u8 *)p + (pos & 0xffffU);
+}
+
+static inline rk_u8 *POS_TO_ELEM(void *p, rk_u32 pos)
+{
+    return (rk_u8 *)p + (pos >> 16);
+}
 
 typedef struct MppEncCfgSet_t {
     MppEncBaseCfg       base;

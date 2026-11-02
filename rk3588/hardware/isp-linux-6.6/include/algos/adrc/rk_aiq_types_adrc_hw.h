@@ -18,8 +18,8 @@
  */
 #include "iq_parser_v2/adrc_head.h"
 
-#ifndef _RK_AIQ_ALGO_ADRC_HW_H_
-#define _RK_AIQ_ALGO_ADRC_HW_H_
+#ifndef RK_AIQ_ALGO_ADRC_HW_H_
+#define RK_AIQ_ALGO_ADRC_HW_H_
 
 #define DRC_V10_Y_NUM 17
 #define DRC_V11_Y_NUM DRC_V10_Y_NUM
@@ -168,4 +168,4 @@ typedef struct RkAiqAdrcProcResult_s {
     DrcProcRes_t DrcProcRes;
 } RkAiqAdrcProcResult_t;
 
-#endif  //_RK_AIQ_ALGO_ADRC_HW_H_
+#endif  //RK_AIQ_ALGO_ADRC_HW_H_

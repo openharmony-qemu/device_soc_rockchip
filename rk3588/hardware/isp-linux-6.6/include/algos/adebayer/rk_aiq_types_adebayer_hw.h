@@ -179,4 +179,4 @@ typedef struct AdebayerHwConfigV3_s {
     unsigned char bf_curwgt;
 } AdebayerHwConfigV3_t;
 
-#endif//_RK_AIQ_TYPES_ADEBAYER_HW_H_
+#endif //_RK_AIQ_TYPES_ADEBAYER_HW_H_

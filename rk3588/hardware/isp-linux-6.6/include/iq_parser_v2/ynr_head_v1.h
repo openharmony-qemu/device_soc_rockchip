@@ -29,15 +29,20 @@ RKAIQ_BEGIN_DECLARE
 typedef struct CalibDbV2_YnrV1_C_ISO_s {
     // M4_NUMBER_MARK_DESC("iso", "f32", M4_RANGE(50, 204800), "50", M4_DIGIT(1), "index2")
     float iso;
-    // M4_ARRAY_DESC("sigma_curve", "f32", M4_SIZE(1,5), M4_RANGE(-65535.0, 65535), "[2.0,2.0,1.2,1.2]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("sigma_curve", "f32", M4_SIZE(1,5), M4_RANGE(-65535.0, 65535), "[2.0,2.0,1.2,1.2]", M4_DIGIT(6),
+    // M4_DYNAMIC(0))
     double sigma_curve[5];
-    // M4_ARRAY_DESC("ynr_lci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.9332,0.6865,0.4320,0.2739]", M4_DIGIT(4), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("ynr_lci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.9332,0.6865,0.4320,0.2739]", M4_DIGIT(4),
+    // M4_DYNAMIC(0))
     float ynr_lci[4];
-    // M4_ARRAY_DESC("ynr_lhci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.8322,0.9514,0.7381,0.4824]", M4_DIGIT(4), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("ynr_lhci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.8322,0.9514,0.7381,0.4824]", M4_DIGIT(4),
+    // M4_DYNAMIC(0))
     float ynr_lhci[4];
-    // M4_ARRAY_DESC("ynr_hlci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.8451,0.9787,0.7649,0.5108]", M4_DIGIT(4), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("ynr_hlci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.8451,0.9787,0.7649,0.5108]", M4_DIGIT(4),
+    // M4_DYNAMIC(0))
     float ynr_hlci[4];
-    // M4_ARRAY_DESC("ynr_hhci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.6986,1.4097,1.2535,0.8366]", M4_DIGIT(4), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("ynr_hhci", "f32", M4_SIZE(1,4), M4_RANGE(0.0, 16.0), "[0.6986,1.4097,1.2535,0.8366]", M4_DIGIT(4),
+    // M4_DYNAMIC(0))
     float ynr_hhci[4];
 } CalibDbV2_YnrV1_C_ISO_t;
 
@@ -58,26 +63,35 @@ typedef struct CalibDbV2_YnrV1_Calib_s {
 } CalibDbV2_YnrV1_Calib_t;
 
 typedef struct CalibDbV2_YnrV1_Luma_s {
-    // M4_ARRAY_DESC("lo_lumaPoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256), "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("lo_lumaPoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256),
+    // "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
     float lo_lumaPoint[6];
-    // M4_ARRAY_DESC("lo_lumaRatio", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), ""[1.0,1.0,1.0,1.0,1.0,1.0]"", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("lo_lumaRatio", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), ""[1.0,1.0,1.0,1.0,1.0,1.0]"", M4_DIGIT(2),
+    // M4_DYNAMIC(0))
     float lo_lumaRatio[6];
-    // M4_ARRAY_DESC("hi_lumaPoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256), "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hi_lumaPoint", "f32", M4_SIZE(1,6), M4_RANGE(0,256),
+    // "[0.0000,32.0000,64.0000,128.0000,192.0000,256.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
     float hi_lumaPoint[6];
-    // M4_ARRAY_DESC("hi_lumaRatio", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), ""[1.0,1.0,1.0,1.0,1.0,1.0]"", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hi_lumaRatio", "f32", M4_SIZE(1,6), M4_RANGE(0,2.0), ""[1.0,1.0,1.0,1.0,1.0,1.0]"", M4_DIGIT(2),
+    // M4_DYNAMIC(0))
     float hi_lumaRatio[6];
 } CalibDbV2_YnrV1_Luma_t;
 
 typedef struct CalibDbV2_YnrV1_Hgrad_s {
-    // M4_ARRAY_DESC("y_luma_point", "f32", M4_SIZE(1,6), M4_RANGE(0,512), "[64.0000,128.0000,192.0000,256.0000,384.0000,512.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("y_luma_point", "f32", M4_SIZE(1,6), M4_RANGE(0,512),
+    // "[64.0000,128.0000,192.0000,256.0000,384.0000,512.0000]", M4_DIGIT(0), M4_DYNAMIC(0))
     float y_luma_point[6];
-    // M4_ARRAY_DESC("hgrad_y_level1", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[1.0000,0.6700,0.6700,0.6700,0.6700,0.6700]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hgrad_y_level1", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[1.0000,0.6700,0.6700,0.6700,0.6700,0.6700]", M4_DIGIT(0), M4_DYNAMIC(0))
     float hgrad_y_level1[6];
-    // M4_ARRAY_DESC("hgrad_y_level2", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[1.0000,0.6700,0.6700,0.6700,0.6700,0.6700]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hgrad_y_level2", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[1.0000,0.6700,0.6700,0.6700,0.6700,0.6700]", M4_DIGIT(0), M4_DYNAMIC(0))
     float hgrad_y_level2[6];
-    // M4_ARRAY_DESC("hgrad_y_level3", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[1.0000,0.5700,0.5700,0.5700,0.5700,0.5700]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hgrad_y_level3", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[1.0000,0.5700,0.5700,0.5700,0.5700,0.5700]", M4_DIGIT(0), M4_DYNAMIC(0))
     float hgrad_y_level3[6];
-    // M4_ARRAY_DESC("hgrad_y_level4", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0), "[1.0000,0.5000,0.5000,0.4000,0.3000,0.2000]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hgrad_y_level4", "f32", M4_SIZE(1,6), M4_RANGE(0,1.0),
+    // "[1.0000,0.5000,0.5000,0.4000,0.3000,0.2000]", M4_DIGIT(0), M4_DYNAMIC(0))
     float hgrad_y_level4[6];
 } CalibDbV2_YnrV1_Hgrad_t;
 
@@ -142,7 +156,8 @@ typedef struct CalibDbV2_YnrV1_T_ISO_s {
     float hi_denoiseStrength;
     // M4_NUMBER_DESC("hi_detailMinAdjDnW", "f32", M4_RANGE(0.0, 1.9), "0.2", M4_DIGIT(2))
     float hi_detailMinAdjDnW;
-    // M4_ARRAY_DESC("hwith_d", "f32", M4_SIZE(1,4), M4_RANGE(0,15.9), "[2.0,2.0,1.2,1.2]", M4_DIGIT(6), M4_DYNAMIC(0), M4_HIDE(1))
+    // M4_ARRAY_DESC("hwith_d", "f32", M4_SIZE(1,4), M4_RANGE(0,15.9), "[2.0,2.0,1.2,1.2]", M4_DIGIT(6), M4_DYNAMIC(0),
+    // M4_HIDE(1))
     float hwith_d[4];
 
     // M4_ARRAY_TABLE_DESC("luma_para", "array_table_ui", "none")
@@ -183,3 +198,4 @@ typedef struct CalibDbV2_YnrV1_s {
 RKAIQ_END_DECLARE
 
 #endif
+

@@ -21,8 +21,8 @@
 #define _RK_AIQ_TYPE_AGAIN_HW_V1_H_
 #include "common/rk_aiq_comm.h"
 
-typedef struct RK_GAIN_Fix_V1_s{
-	unsigned char gain_table_en;
+typedef struct RK_GAIN_Fix_V1_s {
+    unsigned char gain_table_en;
     unsigned char dhaz_en;
     unsigned char wdr_en;
     unsigned char tmo_en;
@@ -35,8 +35,5 @@ typedef struct RK_GAIN_Fix_V1_s{
 }RK_GAIN_Fix_V1_t;
 
 
-
 #endif
-
-
 

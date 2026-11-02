@@ -13,7 +13,6 @@
 #define CALIBDB_MAX_MODE_NUM 5
 #define CALIBDB_MAX_MODE_NAME_LENGTH (20)
 //TODO: define max size as 256 temporarily
-//#define CALIBDB_ZOOM_FOCUS_TBL_SIZE 10240
 #define CALIBDB_ZOOM_FOCUS_TBL_SIZE 256
 #define CALIBDB_DEGAMMA_CRUVE_KNOTS 17
 
@@ -24,16 +23,16 @@
  */
 /*****************************************************************************/
 
-#define AEC_ECM_SCHEME_NAME         ( 20U )
+#define AEC_ECM_SCHEME_NAME         (20U)
 typedef char                        AecEcmSchemeName_t[AEC_ECM_SCHEME_NAME];
 
-#define AEC_ECM_PROFILE_NAME        ( 20U )
+#define AEC_ECM_PROFILE_NAME        (20U)
 typedef char                        AecEcmProfileName_t[AEC_ECM_PROFILE_NAME];
 
-#define AEC_DYNAMIC_SETPOINT_NAME   ( 20U )
+#define AEC_DYNAMIC_SETPOINT_NAME   (20U)
 typedef char                        AecDynamicSetpointName_t[AEC_DYNAMIC_SETPOINT_NAME];
 
-#define AEC_EXP_SEPARATE_NAME       ( 20U )
+#define AEC_EXP_SEPARATE_NAME       (20U)
 typedef char                        AecExpSeparateName_t[AEC_EXP_SEPARATE_NAME];
 
 #define AEC_RAWAEBIG_WIN_NUM (15*15)
@@ -196,7 +195,6 @@ typedef struct CalibDb_AeEnvLvCalib_s {
     float RealFN;
     Cam2x1FloatMatrix_t Curve;
 } CalibDb_AeEnvLvCalib_t;
-
 
 //2). Auto exposure
 typedef struct CalibDb_AeSpeed_s {
@@ -454,7 +452,6 @@ typedef struct CalibDb_AecDynamicSetpoint_s {
     int   array_size;
 } CalibDb_AecDynamicSetpoint_t;
 
-
 typedef struct CalibDb_AecBacklight_s {
     uint8_t                     enable;
     float                       StrBias;
@@ -480,7 +477,6 @@ typedef struct CalibDb_AecOverExpCtrl_s {
     Cam1x6FloatMatrix_t         HighLightWeight;
 
 } CalibDb_AecOverExpCtrl_t;
-
 
 typedef struct CalibDb_LinearAE_Attr_s {
     uint8_t                 RawStatsEn;
@@ -615,8 +611,8 @@ typedef struct CalibDb_Module_Info_s {
 #define CALD_AWB_RRES_NUM_MAX 5
 #define CALD_AWB_LV_NUM_MAX 16
 #define CALD_AWB_SGC_NUM_MAX 16
-#define CALD_AWB_ILLUMINATION_NAME       ( 20U )
-#define CALD_AWB_RES_NAME       ( 20U )
+#define CALD_AWB_ILLUMINATION_NAME       (20U)
+#define CALD_AWB_RES_NAME       (20U)
 #define CALD_AWB_TEMPORAL_GAIN_SIZE_MAX 4
 #define CALD_AWB_XY_TYPE_MAX_V201 2
 #define CALD_AWB_GRID_NUM_TOTAL 225
@@ -628,10 +624,10 @@ typedef struct CalibDb_Module_Info_s {
 #define CALD_AWB_LV_NUM_FOR_RUNINTERVAL 8
 
 typedef struct _CalibDb_ExcRange_s {
-    unsigned char domain;/*0uv domain,1 xy domain*/
+    unsigned char domain; /*0uv domain,1 xy domain*/
     unsigned char mode;
-    int xu[2];//left right
-    int yv[2];//top bottom
+    int xu[2]; //left right
+    int yv[2]; //top bottom
 } CalibDb_ExcRange_t;
 
 typedef struct _CalibDb_Rgb2TcsParam_s {
@@ -647,7 +643,7 @@ typedef struct CalibDb_Yuv3D_Range_Ill_s {
     int b_ydis;         //17+0s
     unsigned char ref_u;          //8u
     unsigned char ref_v;            //8u
-    unsigned short  dis[6];//8+4 u
+    unsigned short  dis[6]; //8+4 u
     unsigned char th[6]; //8u
 } CalibDb_Yuv3D_Range_Ill_t;
 
@@ -655,8 +651,6 @@ typedef struct CalibDb_Yuv3D_2_Range_Ill_s {
     float thcurve_u[6];
     float thcure_th[6];
     float line[6];
-    //float lineP1[3];
-    //float lineP2[3];
 } CalibDb_Yuv3D_2_Range_Ill_t;
 
 typedef struct CalibDb_UV_Range_Ill_s {
@@ -685,8 +679,8 @@ typedef struct CalibDb_Awb_Light_Info_s {
 typedef struct CalibDb_Awb_Light_Info2_s {
     char light_name[CALD_AWB_ILLUMINATION_NAME];
     unsigned char staWeight[CALD_AWB_LV_NUM_MAX];
-    unsigned int spatialGain_LV_THH;//threshold for  spatial gain calculation in different illuminant
-    unsigned int spatialGain_LV_THL;//
+    unsigned int spatialGain_LV_THH; //threshold for  spatial gain calculation in different illuminant
+    unsigned int spatialGain_LV_THL; //
     unsigned char xyType2Enable;
     float weightCurve_ratio[4];
     float weightCurve_weight[4];
@@ -699,8 +693,8 @@ typedef struct CalibDb_StatWindow_s {
     uint16_t window[CALD_AWB_RRES_NUM_MAX][4];
 } CalibDb_StatWindow_t;
 typedef struct CalibDb_tcs_range_ill_s {
-    float NorrangeX[2];//left right
-    float NorrangeY[2];//top bottom
+    float NorrangeX[2]; //left right
+    float NorrangeY[2]; //top bottom
     float SperangeX[2];
     float SperangeY[2];
     float SmalrangeX[2];
@@ -739,7 +733,7 @@ typedef struct CalibDb_Awb_Calib_Para_V200_s {
     bool                wpDiffWeiEnable;
     bool                wbGainClipEn;
     bool                wbGainDaylightClipEn;
-    bool                blkWeightEnable;//the different weight in WP sum
+    bool                blkWeightEnable; //the different weight in WP sum
     bool                blkStatisticsEnable;
     int                 lsUsedForYuvDetNum;
     char                lsUsedForYuvDet[CALD_AWB_LS_NUM_MAX][CALD_AWB_ILLUMINATION_NAME];
@@ -750,26 +744,19 @@ typedef struct CalibDb_Awb_Calib_Para_V200_s {
     unsigned char       lightNum;
     char                lightName[CALD_AWB_LS_NUM_MAX][CALD_AWB_ILLUMINATION_NAME];
     unsigned char       doorType[CALD_AWB_LS_NUM_MAX];
-    float               standardGainValue[CALD_AWB_LS_NUM_MAX][4];//rggb
+    float               standardGainValue[CALD_AWB_LS_NUM_MAX][4]; //rggb
     CalibDb_limit_range_t limitRange;
-    //uv_range_ill_t        uvRange_param[7];//big range
-    //uv_range_ill_t        uvRange_param_small[7];//small range
     CalibDb_Rgb2TcsParam_t     rgb2tcs_param;
-    //tcs_range_ill_t     xyRangeLight[7];//HZ A TL84 CWF D50 D65 D75
-    //yuv3d_range_ill_t yuv3DRange_param[7];
-    //yuv3d_2_range_ill_t yuv3D2Range_param[7];
     //several window in pixel domain
-    //CalibDb_Awb_Light_Info_t    awb_light_info[CALD_AWB_LS_NUM_MAX];
     CalibDb_UV_Range_Ill_t uvRange_param[CALD_AWB_LS_NUM_MAX];
     CalibDb_UV_Range_Ill_t uvRange_param_small[CALD_AWB_LS_NUM_MAX];
     CalibDb_tcs_range_ill_t xyRangeLight[CALD_AWB_LS_NUM_MAX];
     CalibDb_Yuv3D_Range_Ill_t   yuv3DRange_param[CALD_AWB_LS_NUM_MAX];
 
-
-    unsigned short multiwindow[CALD_AWB_WINDOW_NUM_MAX][4];//8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
+    unsigned short multiwindow[CALD_AWB_WINDOW_NUM_MAX][4]; //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
     //several winow in uv or xy domain
     CalibDb_ExcRange_t excludeWpRange[CALD_AWB_EXCRANGE_NUM_MAX];
-    float spatialGain_H[4];//spatial gain
+    float spatialGain_H[4]; //spatial gain
     float spatialGain_L[4];
     float temporalDefaultGain[4];
     float ca_targetGain[4];
@@ -788,7 +775,6 @@ typedef struct CalibDb_Awb_Calib_Para_V200_s {
     CalibDb_Awb_Cct_Clip_Cfg_t cct_clip_cfg;
 } CalibDb_Awb_Calib_Para_V200_t;
 
-
 typedef struct CalibDb_Awb_line_s {
     float a;
     float b;
@@ -799,12 +785,11 @@ typedef struct CalibDb_Awb_Cct_Lut_Cfg_Lv_s {
     float lv;
     int ct_grid_num;
     int cri_grid_num;
-    float ct_range[2];//min,max, equal distance sapmle
-    float cri_range[2];//min,max
+    float ct_range[2]; //min,max, equal distance sapmle
+    float cri_range[2]; //min,max
     float ct_lut_out[CALD_AWB_CT_GRID_NUM_MAX * CALD_AWB_CRI_GRID_NUM_MAX];
     float cri_lut_out[CALD_AWB_CT_GRID_NUM_MAX * CALD_AWB_CRI_GRID_NUM_MAX];
 }  CalibDb_Awb_Cct_Lut_Cfg_Lv_t;
-
 
 typedef struct CalibDb_Awb_gain_offset_cfg_s {
     bool enable;
@@ -844,7 +829,6 @@ typedef struct CalibDb_Awb_XyReionSelect_WpNumTh_s {
 
 }  CalibDb_Awb_XyReionSelect_WpNumTh_t;
 
-
 typedef struct CalibDb_Awb_Adjust_Para_s {
     struct list_head           listHead;
     char                scene[CALIBDB_MAX_SCENE_NAME_LENGTH];
@@ -857,7 +841,7 @@ typedef struct CalibDb_Awb_Adjust_Para_s {
     //multiwindow
     unsigned char multiwindowMode;
     bool uvRange_small_enable;
-    CalibDb_Awb_tolerance_t tolerance;//wb gain diff th for awb gain update, set 0 to disable this function
+    CalibDb_Awb_tolerance_t tolerance; //wb gain diff th for awb gain update, set 0 to disable this function
     CalibDb_Awb_runinterval_t runInterval;
     //wbgain damp
     float dFStep;
@@ -875,41 +859,36 @@ typedef struct CalibDb_Awb_Adjust_Para_s {
     CalibDb_Awb_Wp_Th_t WP_TH;
     float proDis_THL; //threshold for distance probality calculation
     float proDis_THH;
-    unsigned int proLV_Indoor_THL;// threshold for luminance probality calculation
+    unsigned int proLV_Indoor_THL; // threshold for luminance probality calculation
     unsigned int proLV_Indoor_THH;
     unsigned int proLV_Outdoor_THL;
     unsigned int proLV_Outdoor_THH;
     unsigned char temporalCalGainSetSize;
-    unsigned char temporalGainSetWeight[CALD_AWB_TEMPORAL_GAIN_SIZE_MAX];//ËÄÖ¡µÄ±ÈÀý0-100×ÜºÍÎª100//gainPer[0]Îª-1Ö¡£¬gainPer[1]is -2,gainPer[2] is -3 gainPer[3] is -4
-    float  wpNumPercTh;//ÎÞÐ§°×µããÐÖµ£¬°×µãÊýÁ¿ÉÙÊ±ÈÏÎª¸Ã°×µãÎÞÐ§
+    unsigned char temporalGainSetWeight[CALD_AWB_TEMPORAL_GAIN_SIZE_MAX];
+    //ËÄÖ¡µÄ±ÈÀý0-100×ÜºÍÎª100 //gainPer[0]Îª-1Ö¡£¬gainPer[1]is -2,gainPer[2] is -3 gainPer[3] is -4
+    float  wpNumPercTh; //ÎÞÐ§°×µããÐÖµ£¬°×µãÊýÁ¿ÉÙÊ±ÈÏÎª¸Ã°×µãÎÞÐ§
     unsigned char tempWeight[CALD_AWB_LV_NUM_MAX];
-
 
     //color adaptation
     float ca_LACalcFactor;
-
 
     //wb gain shift 2 //to do  from xml
     int cct_lut_cfg_num;
     CalibDb_Awb_Cct_Lut_Cfg_Lv_t cct_lut_cfg[CALD_AWB_CT_LV_NUM_MAX];
     CalibDb_Awb_gain_offset_cfg_t wbGainOffset;
 
-
     float convergedVarTh;
 
-
-
     //make  xyTypeSelect stable
-    int xyTypeListSize;// xyTypeListSize ==0 will disable this function
+    int xyTypeListSize; // xyTypeListSize ==0 will disable this function
     float varianceLumaTh;
     CalibDb_Awb_XyReionSelect_WpNumTh_t wpNumTh;
     CalibDb_Awb_Light_Info2_t    awb_light_info[CALD_AWB_LS_NUM_MAX];
 
-    bool xyType2ForColBalEnable;// to do for awb2.1
+    bool xyType2ForColBalEnable; // to do for awb2.1
 
     CalibDb_Awb_Remosaic_Para_t remosaic_cfg;
 } CalibDb_Awb_Adjust_Para_t;
-
 
 typedef struct CalibDb_Awb_Para_s
 {
@@ -999,8 +978,6 @@ typedef struct CalibDb_Atmo_Para_s {
     GlobaTMO_t GlobaTMO[CALIBDB_MAX_MODE_NUM];
     float damp;
 } CalibDb_Atmo_Para_t;
-
-
 
 typedef struct CalibDb_Blc_ModeCell_s {
     char name[CALIBDB_MAX_MODE_NAME_LENGTH];
@@ -1156,7 +1133,6 @@ typedef struct CalibDb_BayerNr_2_s {
     int mode_num;
 } CalibDb_BayerNr_2_t;
 
-
 #define CIFISP_LSC_DATA_TBL_SIZE_ISP20  289
 #define CIFISP_LSC_GRAD_TBL_SIZE_ISP20  8
 #define CIFISP_LSC_SIZE_TBL_SIZE_ISP20  8
@@ -1170,17 +1146,17 @@ typedef enum  CalibDb_Used_For_Case_e {
     USED_FOR_CASE_MAX
 } CalibDb_Used_For_Case_t;
 
-#define LSC_RESOLUTION_NAME         ( 15U )
+#define LSC_RESOLUTION_NAME         (15U)
 typedef char                        CalibDb_ResolutionName_t[LSC_RESOLUTION_NAME];
-#define LSC_PROFILE_NAME            ( 25U )
+#define LSC_PROFILE_NAME            (25U)
 typedef char                        CalibDb_Lsc_ProfileName_t[LSC_PROFILE_NAME];
-#define LSC_ILLUMINATION_NAME       ( 20U )
+#define LSC_ILLUMINATION_NAME       (20U)
 typedef char                        CalibDb_IlluminationName_t[LSC_ILLUMINATION_NAME];
 #ifndef LSC_PROFILES_NUM_MAX
-#define LSC_PROFILES_NUM_MAX         ( 5 )
+#define LSC_PROFILES_NUM_MAX         (5)
 #endif
 #ifndef LSC_RESOLUTIONS_NUM_MAX
-#define LSC_RESOLUTIONS_NUM_MAX      ( 4 )
+#define LSC_RESOLUTIONS_NUM_MAX      (4)
 #endif
 typedef enum Cam4ChColorComponent_e
 {
@@ -1212,12 +1188,11 @@ typedef struct CalibDb_AlscCof_ill_s {
 
 typedef struct CalibDb_AlscCof_s {
     int   lscResNum;
-    CalibDb_ResolutionName_t  lscResName[LSC_RESOLUTIONS_NUM_MAX];// type CalibDb_ResolutionName_t
+    CalibDb_ResolutionName_t  lscResName[LSC_RESOLUTIONS_NUM_MAX]; // type CalibDb_ResolutionName_t
     int   illuNum[USED_FOR_CASE_MAX];
     CalibDb_AlscCof_ill_t illAll[USED_FOR_CASE_MAX][LSC_ILLUMINATION_MAX];
     int usedForCaseAll[USED_FOR_CASE_MAX * LSC_ILLUMINATION_MAX]; //for write xml
 } CalibDb_AlscCof_t;
-
 
 typedef struct CalibDb_LscTableProfile_s {
     CalibDb_Lsc_ProfileName_t     name;                                   /**< profile name */
@@ -1246,7 +1221,6 @@ typedef struct CalibDb_Lsc_s {
     CalibDb_LscTableProfile_t *tableAll; //type  CalibDb_LscTableProfile_t;
 } CalibDb_Lsc_t;
 
-
 typedef struct CalibDb_RKDM_s {
     unsigned char debayer_en;
     signed char debayer_filter1[5];
@@ -1267,13 +1241,12 @@ typedef struct CalibDb_RKDM_s {
 } CalibDb_RKDM_t;
 
 #define CCM_ILLUMINATION_MAX         9
-#define CCM_PROFILE_NAME            ( 25U )
+#define CCM_PROFILE_NAME            (25U)
 typedef char                        CalibDb_Ccm_ProfileName_t[CCM_PROFILE_NAME];
-#define CCM_ILLUMINATION_NAME       ( 20U )
-// typedef char                        CalibDb_IlluminationName_t[CCM_ILLUMINATION_NAME];
-#define CCM_PROFILES_NUM_MAX         ( 5 )
-#define CCM_RESOLUTIONS_NUM_MAX      ( 4 )
-#define CALIBDB_ISO_NUM              ( 9 )
+#define CCM_ILLUMINATION_NAME       (20U)
+#define CCM_PROFILES_NUM_MAX         (5)
+#define CCM_RESOLUTIONS_NUM_MAX      (4)
+#define CALIBDB_ISO_NUM              (9)
 typedef enum Cam3ChColorComponent_e
 {
     CAM_3CH_COLOR_COMPONENT_RED     = 0,
@@ -1284,7 +1257,7 @@ typedef enum Cam3ChColorComponent_e
 
 typedef struct CamSaturationCurve_s {
     uint16_t    arraySize;
-    float      pSensorGain[4];//change to pointer
+    float      pSensorGain[4]; //change to pointer
     float      pSaturation[4];
 } CamSaturationCurve_t;
 
@@ -1301,8 +1274,7 @@ typedef struct CalibDb_AccmCof_s {
     CalibDb_AccmCof_ill_t illAll[CCM_ILLUMINATION_MAX];
 } CalibDb_AccmCof_t;
 
-typedef struct CalibDb_CcmMatrixProfile_s
-{
+typedef struct CalibDb_CcmMatrixProfile_s {
     CalibDb_Ccm_ProfileName_t  name;                   /**< profile name */
     CalibDb_IlluminationName_t illumination;
     float                   saturation;             /**< saturation value */
@@ -1315,7 +1287,7 @@ typedef struct CalibDb_LUMA_CCM_s {
     float low_bound_pos_bit;
     float y_alpha_curve[17];
     int gain_scale_cure_size;
-    float alpha_gain[9];//change to pointer
+    float alpha_gain[9]; //change to pointer
     float alpha_scale[9];
 } CalibDb_LUMA_CCM_t;
 
@@ -1326,7 +1298,8 @@ typedef struct CalibDb_Ccm_ModeCell_s {
     CalibDb_AccmCof_t aCcmCof;
     CalibDb_LUMA_CCM_t   luma_ccm;
     int matrixAllNum;
-    CalibDb_CcmMatrixProfile_t matrixAll[CCM_RESOLUTIONS_NUM_MAX * CCM_ILLUMINATION_MAX * CCM_PROFILES_NUM_MAX]; //type  CalibDb_CcmMatrixProfile_t;
+    CalibDb_CcmMatrixProfile_t matrixAll[CCM_RESOLUTIONS_NUM_MAX * CCM_ILLUMINATION_MAX * CCM_PROFILES_NUM_MAX];
+    //type  CalibDb_CcmMatrixProfile_t;
 } CalibDb_Ccm_ModeCell_t;
 
 typedef enum  CalibDb_CcmHdrNormalMode_e {
@@ -1334,7 +1307,6 @@ typedef enum  CalibDb_CcmHdrNormalMode_e {
     CCM_FOR_MODE_HDR,
     CCM_FOR_MODE_MAX,
 } CalibDb_CcmHdrNormalMode_t;
-
 
 typedef struct CalibDb_Ccm_s {
     int modecellNum;
@@ -1415,7 +1387,6 @@ typedef struct CalibDb_UVNR_2_s {
     int mode_num;
 } CalibDb_UVNR_2_t;
 
-
 typedef struct CalibDb_Gamma_s {
     unsigned char gamma_en;
     unsigned char gamma_out_segnum;
@@ -1491,7 +1462,6 @@ typedef struct CalibDb_YNR_2_s {
     CalibDb_YNR_ModeCell_t *mode_cell;
     int mode_num;
 } CalibDb_YNR_2_t;
-
 
 typedef struct CalibDb_Gic_setting_v20_s {
     float iso[CALIBDB_ISO_NUM];
@@ -1658,7 +1628,6 @@ typedef struct CalibDb_MFNR_2_s {
     int mode_num;
 } CalibDb_MFNR_2_t;
 
-
 struct CalibDb_Sharp_ISO_s {
     float iso;
     float hratio;
@@ -1694,12 +1663,6 @@ typedef struct CalibDb_Sharp_ModeCell_s {
     char name[CALIBDB_MAX_MODE_NAME_LENGTH];
     float gauss_luma_coeff[9];
     float mbf_coeff[221];
-#if 0
-    float pbf_coeff[9];
-    float rf_m_coeff[25];
-    float rf_h_coeff[25];
-    float hbf_coeff[9];
-#else
     //v2
     float pbf_coeff_l[9];
     float pbf_coeff_h[9];
@@ -1709,7 +1672,6 @@ typedef struct CalibDb_Sharp_ModeCell_s {
     float rf_h_coeff_h[25];
     float hbf_coeff_l[9];
     float hbf_coeff_h[9];
-#endif
     CalibDb_Sharp_Setting_t setting[CALIBDB_NR_SHARP_SETTING_LEVEL];
 } CalibDb_Sharp_ModeCell_t;
 
@@ -1727,7 +1689,6 @@ typedef struct CalibDb_Sharp_2_s {
     CalibDb_Sharp_ModeCell_t* mode_cell;
     int mode_num;
 } CalibDb_Sharp_2_t;
-
 
 struct CalibDb_EdgeFilter_ISO_s {
     float iso;
@@ -2075,7 +2036,6 @@ typedef struct CalibDb_ColorAsGrey_s {
     int enable;
 } CalibDb_ColorAsGrey_t;
 
-
 typedef struct CalibDb_cProc_s {
     uint8_t enable;
     uint8_t brightness;
@@ -2130,3 +2090,4 @@ typedef struct CamCalibDbContextIsp20_s {
 #pragma pack()
 
 #endif
+

@@ -27,7 +27,7 @@ typedef struct {
     int buf_fd[16];
     int buf_idx[16];
     int buf_num;
-	void *buf_map;
+    void *buf_map;
 } rk_aiq_orb_algo_stat_t;
 
 typedef struct {

@@ -86,7 +86,6 @@ typedef struct RK_SHARP_Fix_V33_s {
 
     uint16_t sharp_ehf_th[8];
     uint16_t sharp_clip_neg[8];
-
 } RK_SHARP_Fix_V33_t;
 
 #endif

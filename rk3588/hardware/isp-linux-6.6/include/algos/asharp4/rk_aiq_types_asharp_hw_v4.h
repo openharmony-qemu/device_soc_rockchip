@@ -21,8 +21,7 @@
 #define _RK_AIQ_TYPE_ASHARP_HW_V4_H_
 #include "common/rk_aiq_comm.h"
 
-typedef struct RK_SHARP_Fix_V4_s
-{
+typedef struct RK_SHARP_Fix_V4_s {
     // SHARP_SHARP_EN (0x0000)
     uint8_t sharp_clk_dis;
     uint8_t sharp_exgain_bypass;
@@ -68,6 +67,4 @@ typedef struct RK_SHARP_Fix_V4_s
 
 
 #endif
-
-
 

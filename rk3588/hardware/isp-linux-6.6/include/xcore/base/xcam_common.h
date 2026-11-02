@@ -80,29 +80,30 @@ int xcam_device_ioctl (int fd, unsigned long cmd, void *arg);
 const char *xcam_fourcc_to_string (uint32_t fourcc);
 
 static inline uint32_t
-xcam_ceil (uint32_t value, const uint32_t align) {
+xcam_ceil (uint32_t value, const uint32_t align)
+{
     return (value + align - 1) / align * align;
 }
 
 static inline uint32_t
-xcam_around (uint32_t value, const uint32_t align) {
+xcam_around (uint32_t value, const uint32_t align)
+{
     return (value + align / 2) / align * align;
 }
 
-static inline uint32_t
-xcam_floor (uint32_t value, const uint32_t align) {
+static inline uint32_t xcam_floor (uint32_t value, const uint32_t align)
+{
     return value / align * align;
 }
 
 // return true or false
-static inline int
-xcam_ret_is_ok (XCamReturn err) {
+static inline int xcam_ret_is_ok (XCamReturn err)
+{
     return err >= XCAM_RETURN_NO_ERROR;
 }
 
 //format to [0 ~ 360]
-static inline float
-format_angle (float angle)
+static inline float format_angle (float angle)
 {
     if (angle < 0.0f)
         angle += 360.0f;
@@ -113,7 +114,8 @@ format_angle (float angle)
     return angle;
 }
 
-static inline void xcam_to_lowercase(const char* src, char* dst) {
+static inline void xcam_to_lowercase(const char* src, char* dst)
+{
     for (int i = 0; src[i] != '\0'; i++)
         dst[i] = tolower((unsigned char)src[i]);
 }

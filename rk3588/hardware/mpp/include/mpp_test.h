@@ -155,7 +155,7 @@ typedef struct MppTestCase_t {
     rk_s32      (*func)(void *ctx);
 } MppTestCase;
 
-#define _MPP_TEST_CALC_WIDTH(cases, start, end) \
+#define MPP_TEST_CALC_WIDTH(cases, start, end) \
 do { \
     rk_s32 _w; \
     for (_w = (start); _w <= (end); _w++) { \
@@ -164,7 +164,7 @@ do { \
     } \
 } while (0)
 
-#define _MPP_TEST_RUN_ONE(ctx, cases, idx, max) \
+#define MPP_TEST_RUN_ONE(ctx, cases, idx, max) \
 do { \
     rk_s32 _r = (cases)[(idx)].func(ctx); \
     char _line[256]; \
@@ -178,9 +178,9 @@ do { \
 do { \
     rk_u32 _i; \
     rk_s32 _max = 0; \
-    _MPP_TEST_CALC_WIDTH(cases, 0, (rk_s32)(n) - 1); \
+    MPP_TEST_CALC_WIDTH(cases, 0, (rk_s32)(n) - 1); \
     for (_i = 0; _i < (n); _i++) \
-        _MPP_TEST_RUN_ONE(ctx, cases, _i, _max); \
+        MPP_TEST_RUN_ONE(ctx, cases, _i, _max); \
 } while (0)
 
 #define MPP_TEST_RUN_RANGE(ctx, cases, n, start, end) \
@@ -190,9 +190,9 @@ do { \
         rk_s32 _s = MPP_MAX(0, MPP_MIN((start), _n - 1)); \
         rk_s32 _e = MPP_MAX(_s, MPP_MIN((end), _n - 1)); \
         rk_s32 _i, _max = 0; \
-        _MPP_TEST_CALC_WIDTH(cases, _s, _e); \
+        MPP_TEST_CALC_WIDTH(cases, _s, _e); \
         for (_i = _s; _i <= _e; _i++) \
-            _MPP_TEST_RUN_ONE(ctx, cases, _i, _max); \
+            MPP_TEST_RUN_ONE(ctx, cases, _i, _max); \
     } \
 } while (0)
 

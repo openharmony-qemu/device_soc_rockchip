@@ -14,7 +14,7 @@
 #include "mediactl/mediactl.h"
 
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
-#define DBG(...) do { if(!silent) printf("DBG: " __VA_ARGS__);} while(0)
+#define DBG(...) do { if (!g_silent) printf("DBG: " __VA_ARGS__);} while (0)
 #define ERR(...) do { fprintf(stderr, "ERR: " __VA_ARGS__); } while (0)
 
 
@@ -32,34 +32,34 @@
 
 #define IQ_PATH "/vendor/etc/iqfiles/"
 
-static int silent = 0;
-static int width = 2688;
-static int height = 1520;
-static int has_mul_cam = 0;
+static int g_silent = 0;
+static int g_width = 2688;
+static int g_height = 1520;
+static int g_hasMulCam = 0;
 
 struct rkaiq_media_info {
-    char sd_isp_path[RKAIQ_FILE_PATH_LEN];
-    char vd_params_path[RKAIQ_FILE_PATH_LEN];
-    char vd_stats_path[RKAIQ_FILE_PATH_LEN];
+    char sdIspPath[RKAIQ_FILE_PATH_LEN];
+    char vdParamsPath[RKAIQ_FILE_PATH_LEN];
+    char vdStatsPath[RKAIQ_FILE_PATH_LEN];
     char mainpath[RKAIQ_FILE_PATH_LEN];
-    char sensor_entity_name[32];
+    char sensorEntityName[32];
 
-    char mdev_path[32];
+    char mdevPath[32];
     int available;
     rk_aiq_sys_ctx_t* aiq_ctx;
 
     pthread_t pid;
 };
 
-static struct rkaiq_media_info media_infos[MAX_MEDIA_NODES];
+static struct rkaiq_media_info g_mediaInfos[MAX_MEDIA_NODES];
 
-static void errno_exit(const char *s)
+static void ErrnoExit(const char *s)
 {
     ERR("%s error %d, %s\n", s, errno, strerror(errno));
     exit(EXIT_FAILURE);
 }
 
-static int xioctl(int fh, int request, void *arg)
+static int Xioctl(int fh, int request, void *arg)
 {
     int r;
 
@@ -71,36 +71,36 @@ static int xioctl(int fh, int request, void *arg)
 }
 
 
-static int rkaiq_get_devname(struct media_device *device, const char *name, char *dev_name)
+static int rkaiq_get_devname(struct media_device *device, const char *name, char *devName)
 {
     const char *devname;
-    struct media_entity *entity =  NULL;
+    struct media_entity *entity = nullptr;
 
     entity = media_get_entity_by_name(device, name, strlen(name));
     if (!entity)
         return -1;
 
     devname = media_entity_get_devname(entity);
-
     if (!devname) {
         fprintf(stderr, "can't find %s device path!", name);
         return -1;
     }
 
-    strncpy(dev_name, devname, RKAIQ_FILE_PATH_LEN);
+    strncpy(devName, devname, RKAIQ_FILE_PATH_LEN - 1);
+    devName[RKAIQ_FILE_PATH_LEN - 1] = '\0';
 
-    DBG("get %s devname: %s\n", name, dev_name);
+    DBG("get %s devname: %s\n", name, devName);
 
     return 0;
 }
 
-int rkaiq_get_media_info(struct rkaiq_media_info *media_info)
+int rkaiq_get_media_info(struct rkaiq_media_info *mediaInfo)
 {
-    struct media_device *device = NULL;
-    const char *sensor_name;
+    struct media_device *device = nullptr;
+    const char *sensorName;
     int ret;
 
-    device = media_device_new (media_info->mdev_path);
+    device = media_device_new (mediaInfo->mdevPath);
     if (!device)
         return -ENOMEM;
     /* Enumerate entities, pads and links. */
@@ -110,55 +110,56 @@ int rkaiq_get_media_info(struct rkaiq_media_info *media_info)
     if (!ret) {
         /* Try rkisp */
         ret = rkaiq_get_devname(device, "rkisp-isp-subdev",
-                                media_info->sd_isp_path);
+                                mediaInfo->sdIspPath);
         ret |= rkaiq_get_devname(device, "rkisp-input-params",
-                                media_info->vd_params_path);
+                                mediaInfo->vdParamsPath);
         ret |= rkaiq_get_devname(device, "rkisp-statistics",
-                                media_info->vd_stats_path);
+                                mediaInfo->vdStatsPath);
         ret |= rkaiq_get_devname(device, "rkisp_mainpath",
-                                media_info->mainpath);
+                                mediaInfo->mainpath);
     }
     if (ret) {
-        fprintf(stderr, "Cound not find rkisp dev names, skipped %s\n", media_info->mdev_path);
+        fprintf(stderr, "Cound not find rkisp dev names, skipped %s\n", mediaInfo->mdevPath);
         media_device_unref (device);
         return ret;
     }
 
-    sensor_name = rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd(media_info->mainpath);
-    if (sensor_name == NULL || strlen(sensor_name) == 0) {
-        fprintf(stderr, "ERR: No sensor attached to %s\n", media_info->mdev_path);
+    sensorName = rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd(mediaInfo->mainpath);
+    if (sensorName == nullptr || strlen(sensorName) == 0) {
+        fprintf(stderr, "ERR: No sensor attached to %s\n", mediaInfo->mdevPath);
         media_device_unref (device);
         return -EINVAL;
     }
 
-    strcpy(media_info->sensor_entity_name, sensor_name);
+    strncpy(mediaInfo->sensorEntityName, sensorName, sizeof(mediaInfo->sensorEntityName) - 1);
+    mediaInfo->sensorEntityName[sizeof(mediaInfo->sensorEntityName) - 1] = '\0';
 
     media_device_unref (device);
 
     return ret;
 }
 
-static void init_engine(struct rkaiq_media_info *media_info)
+static void init_engine(struct rkaiq_media_info *mediaInfo)
 {
-    media_info->aiq_ctx = rk_aiq_uapi2_sysctl_init(media_info->sensor_entity_name,
+    mediaInfo->aiq_ctx = rk_aiq_uapi2_sysctl_init(mediaInfo->sensorEntityName,
                                                   IQ_PATH, NULL, NULL);
     /* 3A server has listened stream events already */
-    rk_aiq_uapi2_sysctl_setListenStrmStatus(media_info->aiq_ctx, false);
-    if (has_mul_cam)
-        rk_aiq_uapi2_sysctl_setMulCamConc(media_info->aiq_ctx, 1);
+    rk_aiq_uapi2_sysctl_setListenStrmStatus(mediaInfo->aiq_ctx, false);
+    if (g_hasMulCam)
+        rk_aiq_uapi2_sysctl_setMulCamConc(mediaInfo->aiq_ctx, 1);
 
-    if (rk_aiq_uapi2_sysctl_prepare(media_info->aiq_ctx,
-            width, height, RK_AIQ_WORKING_MODE_NORMAL)) {
+    if (rk_aiq_uapi2_sysctl_prepare(mediaInfo->aiq_ctx,
+            g_width, g_height, RK_AIQ_WORKING_MODE_NORMAL)) {
         ERR("rkaiq engine prepare failed !\n");
         exit(-1);
     }
 }
 
-static void start_engine(struct rkaiq_media_info *media_info)
+static void start_engine(struct rkaiq_media_info *mediaInfo)
 {
     DBG("device manager start\n");
-    rk_aiq_uapi2_sysctl_start(media_info->aiq_ctx);
-    if (media_info->aiq_ctx == NULL) {
+    rk_aiq_uapi2_sysctl_start(mediaInfo->aiq_ctx);
+    if (mediaInfo->aiq_ctx == NULL) {
         ERR("rkisp_init engine failed\n");
         exit(-1);
     } else {
@@ -166,18 +167,18 @@ static void start_engine(struct rkaiq_media_info *media_info)
     }
 }
 
-static void stop_engine(struct rkaiq_media_info *media_info)
+static void stop_engine(struct rkaiq_media_info *mediaInfo)
 {
-    rk_aiq_uapi2_sysctl_stop(media_info->aiq_ctx, false);
+    rk_aiq_uapi2_sysctl_stop(mediaInfo->aiq_ctx, false);
 }
 
-static void deinit_engine(struct rkaiq_media_info *media_info)
+static void deinit_engine(struct rkaiq_media_info *mediaInfo)
 {
-    rk_aiq_uapi2_sysctl_deinit(media_info->aiq_ctx);
+    rk_aiq_uapi2_sysctl_deinit(mediaInfo->aiq_ctx);
 }
 
 // blocked func
-static int wait_stream_event(int fd, unsigned int event_type, int time_out_ms)
+static int wait_stream_event(int fd, unsigned int event_type, int timeOutMs)
 {
     int ret;
     struct v4l2_event event;
@@ -186,121 +187,120 @@ static int wait_stream_event(int fd, unsigned int event_type, int time_out_ms)
 
     do {
         /*
-         * xioctl instead of poll.
+         * Xioctl instead of poll.
          * Since poll() cannot wait for input before stream on,
          * it will return an error directly. So, use ioctl to
          * dequeue event and block until sucess.
          */
-        ret = xioctl(fd, VIDIOC_DQEVENT, &event);
+        ret = Xioctl(fd, VIDIOC_DQEVENT, &event);
         if (ret == 0 && event.type == event_type)
             return 0;
     } while (true);
 
     return -1;
-
 }
 
-static int subscrible_stream_event(struct rkaiq_media_info *media_info, int fd, bool subs)
+static int subscrible_stream_event(struct rkaiq_media_info *mediaInfo, int fd, bool subs)
 {
     struct v4l2_event_subscription sub;
     int ret = 0;
 
     CLEAR(sub);
     sub.type = CIFISP_V4L2_EVENT_STREAM_START;
-    ret = xioctl(fd,
+    ret = Xioctl(fd,
                  subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
                  &sub);
     if (ret) {
-        ERR("can't subscribe %s start event!\n", media_info->vd_params_path);
+        ERR("can't subscribe %s start event!\n", mediaInfo->vdParamsPath);
         exit(EXIT_FAILURE);
     }
 
     CLEAR(sub);
     sub.type = CIFISP_V4L2_EVENT_STREAM_STOP;
-    ret = xioctl(fd,
+    ret = Xioctl(fd,
                  subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
                  &sub);
     if (ret) {
-        ERR("can't subscribe %s stop event!\n", media_info->vd_params_path);
+        ERR("can't subscribe %s stop event!\n", mediaInfo->vdParamsPath);
     }
 
-    DBG("subscribe events from %s success !\n", media_info->vd_params_path);
+    DBG("subscribe events from %s success !\n", mediaInfo->vdParamsPath);
 
     return 0;
 }
 
-void parse_args(int argc, char **argv)
+void ParseArgs(int argc, char **argv)
 {
-   int c;
+    int c;
 
-   while (1) {
-       int option_index = 0;
-       static struct option long_options[] = {
-           {"silent",    no_argument,       0, 's' },
-           {"help",      no_argument,       0, 'h' },
-           {0,           0,                 0,  0  }
-       };
+    while (1) {
+        int optionIndex = 0;
+        static struct option longOptions[] = {
+            {"silent",    no_argument,       nullptr, 's' },
+            {"help",      no_argument,       nullptr, 'h' },
+            {nullptr,     no_argument,       nullptr,  0  }
+        };
 
-       c = getopt_long(argc, argv, "sh", long_options, &option_index);
-       if (c == -1)
-           break;
+        c = getopt_long(argc, argv, "sh", longOptions, &optionIndex);
+        if (c == -1)
+            break;
 
-       switch (c) {
-       case 'w':
-           width = atoi(optarg);
-           break;
-       case 'h':
-           height = atoi(optarg);
-           break;
-       case 's':
-           silent = 1;
-           break;
-       case '?':
-           ERR("Usage: %s to start 3A engine\n"
-               "         --silent,  optional, subpress debug log\n",
-               argv[0]);
-           exit(-1);
+        switch (c) {
+        case 'w':
+            g_width = atoi(optarg);
+            break;
+        case 'h':
+            g_height = atoi(optarg);
+            break;
+        case 's':
+            g_silent = 1;
+            break;
+        case '?':
+            ERR("Usage: %s to start 3A engine\n"
+                "         --silent,  optional, subpress debug log\n",
+                argv[0]);
+            exit(-1);
 
-       default:
-           ERR("?? getopt returned character code %c ??\n", c);
-       }
-   }
+        default:
+            ERR("?? getopt returned character code %c ??\n", c);
+        }
+    }
 }
 
-void *engine_thread(void *arg)
+void *EngineThread(void *arg)
 {
-    int isp_fd;
-    struct rkaiq_media_info *media_info;
+    int ispFd;
+    struct rkaiq_media_info *mediaInfo;
 
-    media_info = (struct rkaiq_media_info *) arg;
+    mediaInfo = (struct rkaiq_media_info *) arg;
 
-    isp_fd = open(media_info->vd_params_path, O_RDWR);
-    if (isp_fd < 0) {
-        ERR("open %s failed %s\n", media_info->vd_params_path, strerror(errno));
+    ispFd = open(mediaInfo->vdParamsPath, O_RDWR);
+    if (ispFd < 0) {
+        ERR("open %s failed %s\n", mediaInfo->vdParamsPath, strerror(errno));
         return NULL;
     }
 
-    init_engine(media_info);
-    subscrible_stream_event(media_info, isp_fd, true);
+    init_engine(mediaInfo);
+    subscrible_stream_event(mediaInfo, ispFd, true);
 
     for (;;) {
-        DBG("%s: wait stream start event...\n", media_info->mdev_path);
-        wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_START, -1);
-        DBG("%s: wait stream start event success ...\n", media_info->mdev_path);
-        start_engine(media_info);
+        DBG("%s: wait stream start event...\n", mediaInfo->mdevPath);
+        wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1);
+        DBG("%s: wait stream start event success ...\n", mediaInfo->mdevPath);
+        start_engine(mediaInfo);
 
-        DBG("%s: wait stream stop event...\n", media_info->mdev_path);
-        wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
-        DBG("%s: wait stream stop event success ...\n", media_info->mdev_path);
+        DBG("%s: wait stream stop event...\n", mediaInfo->mdevPath);
+        wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
+        DBG("%s: wait stream stop event success ...\n", mediaInfo->mdevPath);
 
-        stop_engine(media_info);
+        stop_engine(mediaInfo);
     }
 
-    subscrible_stream_event(media_info, isp_fd, false);
-    deinit_engine(media_info);
-    close(isp_fd);
+    subscrible_stream_event(mediaInfo, ispFd, false);
+    deinit_engine(mediaInfo);
+    close(ispFd);
 
-    return NULL;
+    return nullptr;
 }
 
 int main(int argc, char **argv)
@@ -313,37 +313,37 @@ int main(int argc, char **argv)
      */
     setlinebuf(stdout);
 
-    parse_args(argc, argv);
+    ParseArgs(argc, argv);
 
     for (i = 0; i < MAX_MEDIA_NODES; i++) {
-        sprintf(media_infos[i].mdev_path, "/dev/media%d", i);
-        if (rkaiq_get_media_info(&media_infos[i])) {
-            ERR("Bad media topology for: %s\n", media_infos[i].mdev_path);
-            media_infos[i].available = 0;
+        snprintf(g_mediaInfos[i].mdevPath, sizeof(g_mediaInfos[i].mdevPath), "/dev/media%d", i);
+        if (rkaiq_get_media_info(&g_mediaInfos[i])) {
+            ERR("Bad media topology for: %s\n", g_mediaInfos[i].mdevPath);
+            g_mediaInfos[i].available = 0;
             continue;
         }
-        media_infos[i].available = 1;
+        g_mediaInfos[i].available = 1;
         threads++;
     }
 
     if (threads > 1)
-        has_mul_cam = 1;
+        g_hasMulCam = 1;
 
     for (i = 0; i < MAX_MEDIA_NODES; i++) {
-        if (!media_infos[i].available)
+        if (!g_mediaInfos[i].available)
             continue;
-        ret = pthread_create(&media_infos[i].pid, NULL, engine_thread, &media_infos[i]);
+        ret = pthread_create(&g_mediaInfos[i].pid, nullptr, EngineThread, &g_mediaInfos[i]);
         if (ret) {
-            media_infos[i].pid = 0;
-            ERR("Failed to create camera engine thread for: %s\n", media_infos[i].mdev_path);
-            errno_exit("Create thread failed");
+            g_mediaInfos[i].pid = 0;
+            ERR("Failed to create camera engine thread for: %s\n", g_mediaInfos[i].mdevPath);
+            ErrnoExit("Create thread failed");
         }
     }
 
     for (i = 0; i < MAX_MEDIA_NODES; i++) {
-        if (!media_infos[i].available || media_infos[i].pid == 0)
+        if (!g_mediaInfos[i].available || g_mediaInfos[i].pid == 0)
             continue;
-        pthread_join(media_infos[i].pid, NULL);
+        pthread_join(g_mediaInfos[i].pid, nullptr);
     }
 
     return 0;

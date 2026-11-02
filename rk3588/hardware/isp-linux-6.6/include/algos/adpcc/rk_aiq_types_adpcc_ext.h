@@ -591,7 +591,6 @@ typedef struct Adpcc_fast_mode_attr_s {
 } Adpcc_fast_mode_attr_t;
 
 typedef struct Adpcc_onfly_cfg_s {
-    // M4_ENUM_DESC("mode", "Adpcc_onfly_mode_t", "ADPCC_ONFLY_MODE_FAST");
     Adpcc_onfly_mode_t mode;  // expert or fast mode
     // M4_STRUCT_DESC("fast_mode", "normal_ui_style")
     Adpcc_fast_mode_attr_t fast_mode;

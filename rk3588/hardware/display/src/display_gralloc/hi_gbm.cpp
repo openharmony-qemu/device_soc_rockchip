@@ -33,7 +33,7 @@ namespace DISPLAY {
 #endif
 
 /* memory type definitions. */
-enum drm_rockchip_gem_mem_type {
+enum DrmRockchipGemMemType {
     /* Physically Continuous memory. */
     ROCKCHIP_BO_CONTIG  = 1 << 0,
     /* cachable mapping. */

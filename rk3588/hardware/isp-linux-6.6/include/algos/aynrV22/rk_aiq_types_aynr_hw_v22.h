@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 
-
 typedef struct RK_YNR_Fix_V22_s {
     /* YNR_GLOBAL_CTRL */
     uint8_t rnr_en;
@@ -114,6 +113,4 @@ typedef struct RK_YNR_Fix_V22_s {
 
 
 #endif
-
-
 

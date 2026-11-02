@@ -42,7 +42,6 @@ typedef struct CalibDbV2_BayerNrV1_C_Set_s {
     // M4_STRUCT_LIST_DESC("Calib_ISO", M4_SIZE_DYNAMIC, "double_index_list")
     CalibDbV2_BayerNrV1_C_ISO_t *Calib_ISO;
     int Calib_ISO_len;
-
 } CalibDbV2_BayerNrV1_C_Set_t;
 
 typedef struct CalibDbV2_BayerNrV1_Calib_s {

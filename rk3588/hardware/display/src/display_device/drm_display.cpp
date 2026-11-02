@@ -212,11 +212,11 @@ int32_t DrmDisplay::WaitForVBlank(uint64_t *ns)
     DISPLAY_CHK_RETURN((ret != 0), DISPLAY_FAILURE, DISPLAY_LOGE("wait vblank failed errno %{public}d", errno));
     *ns = static_cast<uint64_t>(vbl.reply.tval_sec * nPerS + vbl.reply.tval_usec * nPerUS);
 #else
-    const int SLEEP_TIME_MILLISECONDS = 20;
-    const int MILLISECONDS_TO_MICROSECONDS = 1000;
-    const int MILLISECONDS_TO_NANOSECONDS = 1000 * 1000;
-    usleep(SLEEP_TIME_MILLISECONDS * MILLISECONDS_TO_MICROSECONDS);
-    *ns = (SLEEP_TIME_MILLISECONDS * MILLISECONDS_TO_NANOSECONDS);
+    const int sleepTimeMilliseconds = 20;
+    const int millisecondsToMicroseconds = 1000;
+    const int millisecondsToNanoseconds = 1000 * 1000;
+    usleep(sleepTimeMilliseconds * millisecondsToMicroseconds);
+    *ns = (sleepTimeMilliseconds * millisecondsToNanoseconds);
 #endif
     return DISPLAY_SUCCESS;
 }

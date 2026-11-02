@@ -361,12 +361,12 @@ typedef struct RKAiqExpI2cParam_s {
     // M4_ARRAY_DESC("RegValue", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
     unsigned int   RegValue[MAX_I2CDATA_LEN];
 
-    // M4_ARRAY_DESC("ValueByteNum", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
+    // M4_ARRAY_DESC("ValueByteNum", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),
+    // M4_HIDE(1))
     unsigned int   ValueByteNum[MAX_I2CDATA_LEN];
 
     // M4_ARRAY_DESC("DelayFrames", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
     unsigned int   DelayFrames[MAX_I2CDATA_LEN];
-
 } RKAiqExpI2cParam_t;
 
 typedef struct {
@@ -374,7 +374,7 @@ typedef struct {
     RkAiqExpRealParam_t exp_real_params; //real value
 
     // M4_STRUCT_DESC("RegPara", "normal_ui_style",M4_HIDE(1))
-    RkAiqExpSensorParam_t exp_sensor_params;//reg value
+    RkAiqExpSensorParam_t exp_sensor_params; //reg value
 } RkAiqExpParamComb_t;
 
 typedef struct {

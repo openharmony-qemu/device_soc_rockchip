@@ -90,8 +90,7 @@
 
 #define ANR_NO_SEPERATE_MARCO (0)
 
-
-#define rk_fmt_fourcc(a, b, c, d)\
+#define rk_fmt_fourcc(a, b, c, d) \
     ((uint32_t)(a) | ((uint32_t)(b) << 8) | ((uint32_t)(c) << 16) | ((uint32_t)(d) << 24))
 #define rk_fmt_fourcc_be(a, b, c, d)    (rk_fmt_fourcc(a, b, c, d) | (1 << 31))
 
@@ -119,8 +118,7 @@ typedef enum rk_aiq_rotation_e {
     RK_AIQ_ROTATION_270
 } rk_aiq_rotation_t;
 
-typedef enum rk_aiq_af_sec_stat_e
-{
+typedef enum rk_aiq_af_sec_stat_e {
     RK_AIQ_AF_SEARCH_INVAL   = 0,
     RK_AIQ_AF_SEARCH_RUNNING = 1,
     RK_AIQ_AF_SEARCH_END     = 2,
@@ -475,14 +473,11 @@ typedef rk_aiq_orb_algo_stat_t rk_aiq_isp_orb_stats_t;
 #endif
 typedef rk_aiq_orb_algo_meas_t rk_aiq_isp_orb_meas_t;
 
-
 typedef struct {
     unsigned char  equ_segm;
     unsigned short offset;
     unsigned short gamma_y[45];
 } rk_aiq_isp_goc_t;
-
-
 
 typedef struct {
     uint32_t frame_id;
@@ -509,11 +504,9 @@ typedef struct {
     bool bValid_af_stats;
 } rk_aiq_isp_stats_t;
 
-
 #if 1
 typedef AsharpProcResult_t rkaiq_asharp_procRes_t;
 #endif
-
 
 typedef enum rk_aiq_gray_mode_e {
     RK_AIQ_GRAY_MODE_CPSL, /*!< controlled by cpsl*/
@@ -626,7 +619,6 @@ typedef struct rk_aiq_cpsl_cap_s {
     rk_aiq_range_t strength_ir;
 } rk_aiq_cpsl_cap_t;
 
-
 typedef struct rk_aiq_awb_stat_res_v200_s rk_aiq_isp_raw_awb_meas_v20_t;
 
 typedef enum capture_raw_e {
@@ -700,11 +692,11 @@ typedef struct rkisp_bay3dbuf_info_s {
             int ds_size;
         } v32;
         struct {
-			int ds_fd;
-			int ds_size;
-			int gain_fd;
-			int gain_size;
-		} v33;
+            int ds_fd;
+            int ds_size;
+            int gain_fd;
+            int gain_size;
+        } v33;
         struct {
             int gain_fd;
             int gain_size;

@@ -19,8 +19,8 @@
 
 #include "iq_parser_v2/argbir_head.h"
 
-#ifndef _RK_AIQ_ALGO_ARGBIR_HW_H_
-#define _RK_AIQ_ALGO_ARGBIR_HW_H_
+#ifndef RK_AIQ_ALGO_ARGBIR_HW_H_
+#define RK_AIQ_ALGO_ARGBIR_HW_H_
 
 #define ARGBIR_SCALE_NUM 4
 
@@ -48,4 +48,4 @@ typedef struct RkAiqArgbirProcResult_s {
     RgbirProcRes_t RgbirProcRes;
 } RkAiqArgbirProcResult_t;
 
-#endif  //_RK_AIQ_ALGO_ARGBIR_HW_H_
+#endif  //RK_AIQ_ALGO_ARGBIR_HW_H_

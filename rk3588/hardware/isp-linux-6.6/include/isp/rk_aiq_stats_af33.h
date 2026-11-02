@@ -378,7 +378,7 @@ typedef struct afStats_hFilt_s {
         M4_ORDER(2),
         M4_NOTES(...\n
         Freq of use: low))  */
-    // reg: sw_rawaf_h1iir_shift_wina, sw_rawaf_h2iir_shift_wina 
+    // reg: sw_rawaf_h1iir_shift_wina, sw_rawaf_h2iir_shift_wina
     uint8_t hw_afCfg_accMainWin_shift;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_afCfg_accSubWin_shift),
@@ -444,7 +444,7 @@ typedef struct afStats_vFilt_s {
         M4_ORDER(3),
         M4_NOTES(...\n
         Freq of use: low))  */
-    // reg: sw_rawaf_v1iir_shift_wina, sw_rawaf_v2iir_shift_wina 
+    // reg: sw_rawaf_v1iir_shift_wina, sw_rawaf_v2iir_shift_wina
     uint8_t hw_afCfg_accMainWin_shift;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_afCfg_accSubWin_val),
@@ -457,7 +457,7 @@ typedef struct afStats_vFilt_s {
         M4_ORDER(4),
         M4_NOTES(...\n
         Freq of use: low))  */
-    // reg: sw_rawaf_v1iir_shift_winb, sw_rawaf_v2iir_shift_winb 
+    // reg: sw_rawaf_v1iir_shift_winb, sw_rawaf_v2iir_shift_winb
     uint8_t hw_afCfg_accSubWin_shift;
 } afStats_vFilt_t;
 
@@ -478,7 +478,8 @@ typedef struct afStats_gamma_s {
         M4_TYPE(f32),
         M4_SIZE_EX(1,17),
         M4_RANGE_EX(0,1),
-        M4_DEFAULT([0, 0.0440, 0.1056, 0.1750, 0.2395, 0.3363, 0.3998, 0.4487, 0.4888, 0.5543, 0.6080, 0.6608, 0.7419, 0.8143, 0.8759, 0.9404, 1.0000]),
+        M4_DEFAULT([0, 0.0440, 0.1056, 0.1750, 0.2395, 0.3363, 0.3998, 0.4487, 0.4888,
+                    0.5543, 0.6080, 0.6608, 0.7419, 0.8143, 0.8759, 0.9404, 1.0000]),
         M4_HIDE_EX(0),
         M4_DIGIT_EX(8f8b),
         M4_RO(0),
@@ -486,7 +487,7 @@ typedef struct afStats_gamma_s {
         M4_GROUP(gamma_en_group),
         M4_NOTES(Gamma curve in af statics.\nFreq of use: high))  */
     //reg: sw_y0 ~ sw_y16
-    float hw_afCfg_gamma_val[17]; 
+    float hw_afCfg_gamma_val[17];
 } afStats_gamma_t;
 
 typedef struct afStats_gaus_s {
@@ -769,7 +770,7 @@ typedef struct afStats_cfg_s {
         M4_ORDER(14),
         M4_GROUP(ldg_en_group),
         M4_NOTES(Horizontal filter ldg setting))  */
-    afStats_hLdg_t hFilt_ldg;    
+    afStats_hLdg_t hFilt_ldg;
     /* M4_GENERIC_DESC(
         M4_ALIAS(vFilt1),
         M4_TYPE(struct),

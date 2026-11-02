@@ -22,10 +22,9 @@
 #include "common/rk_aiq_comm.h"
 
 
-
-typedef struct RK_YNR_Fix_V1_s{
+typedef struct RK_YNR_Fix_V1_s {
 	
-	 unsigned char ynr_en;
+    unsigned char ynr_en;
     unsigned char ynr_sgm_dx[16];
     unsigned short ynr_lsgm_y[17];
     unsigned char ynr_lci[4];
@@ -55,6 +54,4 @@ typedef struct RK_YNR_Fix_V1_s{
 
 
 #endif
-
-
 

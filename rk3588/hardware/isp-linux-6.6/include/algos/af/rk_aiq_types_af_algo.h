@@ -509,7 +509,6 @@ typedef struct {
 
     /**********[High light]**********/
     unsigned short highlit_thresh;
-
 }  rk_aiq_af_algo_meas_v33_t;
 
 typedef rk_aiq_af_algo_meas_v20_t rk_aiq_af_algo_meas_t;

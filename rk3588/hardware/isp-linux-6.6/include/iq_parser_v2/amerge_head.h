@@ -29,24 +29,32 @@ RKAIQ_BEGIN_DECLARE
 
 // merge V10
 typedef struct MergeOECurveV10_s {
-    // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
+    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float CtrlData[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+    //  0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float Smooth[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Offset", "f32", M4_SIZE(1,13), M4_RANGE(108,300), "[210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Offset", "f32", M4_SIZE(1,13), M4_RANGE(108,300), "[210, 210, 210, 210, 210, 210, 210, 210, 210,
+    // 210, 210, 210, 210]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float Offset[MERGE_ENVLV_STEP_MAX];
 } MergeOECurveV10_t;
 
 typedef struct MergeMDCurveV10_s {
-    // M4_ARRAY_DESC("MoveCoef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("MoveCoef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4,
+    //  0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float MoveCoef[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("LM_smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("LM_smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+    // 0.4, 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float LM_smooth[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("LM_offset", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("LM_offset", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38,
+    // 0.38, 0.38, 0.38, 0.38, 0.38]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float LM_offset[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("MS_smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("MS_smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+    // 0.4, 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float MS_smooth[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("MS_offset", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("MS_offset", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38,
+    // 0.38, 0.38, 0.38, 0.38, 0.38]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float MS_offset[MERGE_ENVLV_STEP_MAX];
 } MergeMDCurveV10_t;
 
@@ -92,13 +100,17 @@ typedef struct LongFrameModeData_s {
 } LongFrameModeData_t;
 
 typedef struct MergeMDCurveV11Short_s {
-    // M4_ARRAY_DESC("MoveCoef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("MoveCoef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4,
+    // 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float MoveCoef[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Coef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Coef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+    // 0.05, 0.05, 0.05, 0.05, 0.05]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float Coef[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("ms_thd0", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",M4_DIGIT(1), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("ms_thd0", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    // 0]",M4_DIGIT(1), M4_DYNAMIC(0), 0)
     float ms_thd0[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("lm_thd0", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",M4_DIGIT(1), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("lm_thd0", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    // 0]",M4_DIGIT(1), M4_DYNAMIC(0), 0)
     float lm_thd0[MERGE_ENVLV_STEP_MAX];
 } MergeMDCurveV11Short_t;
 
@@ -133,11 +145,14 @@ typedef struct CalibDbV2_merge_v11_s {
 
 // merge v12
 typedef struct MergeEachChnCurveV12_s {
-    // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
+    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float CtrlData[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Smooth", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+    // 0.4, 0.4, 0.4]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float Smooth[MERGE_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Offset", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Offset", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38,
+    // 0.38, 0.38, 0.38, 0.38, 0.38]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float Offset[MERGE_ENVLV_STEP_MAX];
 } MergeEachChnCurveV12_t;
 

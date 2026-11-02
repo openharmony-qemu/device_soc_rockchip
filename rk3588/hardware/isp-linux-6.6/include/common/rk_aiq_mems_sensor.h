@@ -137,7 +137,7 @@ typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getSensorList)(mems_sensor_ctx
 typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSensorList)(
     mems_sensor_list_t* sensors_list);
 typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getSensorCapabilities)(
-    const mems_sensor_ctx_t ctx,const mems_sensor_type_t type, const char* sensor_key,
+    const mems_sensor_ctx_t ctx, const mems_sensor_type_t type, const char* sensor_key,
     mems_sensor_capabilities_t* caps);
 typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSensorCapabilities)(
     mems_sensor_capabilities_t* caps);
@@ -183,3 +183,4 @@ typedef struct rk_aiq_mems_sensor_intf_s {
 #endif
 
 #endif  // COMMON_RK_AIQ_SENSOR_H
+

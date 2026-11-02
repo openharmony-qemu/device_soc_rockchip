@@ -22,10 +22,9 @@
 #include "common/rk_aiq_comm.h"
 
 
-
-typedef struct RK_MFNR_Fix_V1_s{
+typedef struct RK_MFNR_Fix_V1_s {
 	
-	 unsigned char tnr_en;
+    unsigned char tnr_en;
     unsigned char mode;
     unsigned char opty_en;
     unsigned char optc_en;
@@ -87,6 +86,4 @@ typedef struct RK_MFNR_Fix_V1_s{
 
 
 #endif
-
-
 

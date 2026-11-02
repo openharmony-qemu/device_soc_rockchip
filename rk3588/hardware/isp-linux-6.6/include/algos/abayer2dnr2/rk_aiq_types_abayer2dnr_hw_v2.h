@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 
-
 typedef struct RK_Bayer2dnr_Fix_V2_s {
 
     //ISP_BAYNR_3A00_CTRL
@@ -61,8 +60,5 @@ typedef struct RK_Bayer2dnr_Fix_V2_s {
 } RK_Bayer2dnr_Fix_V2_t;
 
 
-
 #endif
-
-
 

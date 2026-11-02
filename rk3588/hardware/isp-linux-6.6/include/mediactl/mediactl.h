@@ -220,7 +220,7 @@ unsigned int media_entity_get_links_count(struct media_entity *entity);
  * @return A pointer to the link
  */
 const struct media_link *media_entity_get_link(struct media_entity *entity,
-        unsigned int index);
+                                               unsigned int index);
 
 /**
  * @brief Get the device node name for an entity
@@ -256,7 +256,7 @@ static inline unsigned int media_entity_type(struct media_entity *entity)
  * @return A pointer to the entity if found, or NULL otherwise.
  */
 struct media_entity *media_get_entity_by_name(struct media_device *media,
-        const char *name, size_t length);
+                                              const char *name, size_t length);
 
 /**
  * @brief Find an entity by its ID.
@@ -272,7 +272,7 @@ struct media_entity *media_get_entity_by_name(struct media_device *media,
  * @return A pointer to the entity if found, or NULL otherwise.
  */
 struct media_entity *media_get_entity_by_id(struct media_device *media,
-        __u32 id);
+                                            __u32 id);
 
 /**
  * @brief Get the number of entities
@@ -316,7 +316,7 @@ struct media_entity *media_get_entity(struct media_device *media, unsigned int i
  * otherwise.
  */
 struct media_entity *media_get_default_entity(struct media_device *media,
-        unsigned int type);
+                                              unsigned int type);
 
 /**
  * @brief Get the media device information

@@ -75,19 +75,6 @@ typedef struct AblcParams_s {
     float blc_b[ABLC_MAX_ISO_LEVEL];
 } AblcParams_t;
 
-#if 0
-typedef struct AblcSelect_s {
-    bool enable;
-    short int blc_r;
-    short int blc_gr;
-    short int blc_gb;
-    short int blc_b;
-} AblcSelect_t;
-
-
-typedef AblcSelect_t AblcManualAttr_t;
-#endif
-
 
 typedef struct AblcProc_s {
     bool enable;
@@ -105,7 +92,6 @@ typedef struct AblcProc_s {
 } AblcProc_t;
 
 
-
 typedef struct rk_aiq_blc_attrib_s {
     rk_aiq_uapi_sync_t sync;
     AblcOPMode_t eMode;
@@ -114,7 +100,6 @@ typedef struct rk_aiq_blc_attrib_s {
     AblcManualAttr_t stBlc0Manual;
     AblcManualAttr_t stBlc1Manual;
 } rk_aiq_blc_attrib_t;
-
 
 
 #endif

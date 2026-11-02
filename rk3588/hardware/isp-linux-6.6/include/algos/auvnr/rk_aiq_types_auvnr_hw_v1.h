@@ -21,8 +21,8 @@
 #define _RK_AIQ_TYPE_AUVNR_HW_V1_H_
 #include "common/rk_aiq_comm.h"
 
-typedef struct RK_UVNR_Fix_V1_s{
-	unsigned char uvnr_en;
+typedef struct RK_UVNR_Fix_V1_s {
+    unsigned char uvnr_en;
     unsigned char uvnr_step1_en;
     unsigned char uvnr_step2_en;
     unsigned char nr_gain_en;
@@ -51,8 +51,5 @@ typedef struct RK_UVNR_Fix_V1_s{
 }RK_UVNR_Fix_V1_t;
 
 
-
 #endif
-
-
 

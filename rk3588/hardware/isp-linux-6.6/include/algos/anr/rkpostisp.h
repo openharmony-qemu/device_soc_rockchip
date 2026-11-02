@@ -47,8 +47,7 @@ typedef struct rk_ainr_param_t
     float sigma_curve_tab[RK_AINR_LUMA_LEN][RK_AINR_TAB_LEN];   //  0.0~32.0
 }rk_ainr_param;
 
-typedef struct rk_aiisp_frame_t
-{
+typedef struct rk_aiisp_frame_t {
     int src_fd;
     int src_phy_addr;
     void *src_vir_addr;

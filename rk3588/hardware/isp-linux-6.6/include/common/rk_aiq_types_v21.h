@@ -38,11 +38,6 @@ typedef struct rk_aiq_isp_ccm_v21_s {
     //TODO:
     void* place_holder;
 } rk_aiq_isp_ccm_v21_t;
-/*
-typedef struct rk_aiq_isp_dhaz_cfg_v21_s {
-    //TODO:
-    void* place_holder;
-} rk_aiq_isp_dhaz_cfg_v21_t;*/
 
 typedef RkAiqAdehazeProcResult_t rk_aiq_isp_dehaze_v21_t;
 
@@ -76,25 +71,9 @@ typedef RK_YNR_Fix_V2_t rk_aiq_isp_ynr_v21_t ;
 
 #endif
 
-#if 0
-typedef struct rk_aiq_isp_cnr_v21_s {
-    //TODO:
-    void* place_holder;
-} rk_aiq_isp_cnr_v21_t;
-#else
 typedef RK_CNR_Fix_V1_t rk_aiq_isp_cnr_v21_t ;
 
-#endif
-
-#if 0
-typedef struct rk_aiq_isp_sharp_v21_s {
-    //TODO:
-    void* place_holder;
-} rk_aiq_isp_sharp_v21_t;
-#else
 typedef RK_SHARP_Fix_V3_t rk_aiq_isp_sharp_v21_t ;
-
-#endif
 
 typedef struct rk_aiq_awb_stat_res_v201_s rk_aiq_isp_raw_awb_meas_v21_t;
 

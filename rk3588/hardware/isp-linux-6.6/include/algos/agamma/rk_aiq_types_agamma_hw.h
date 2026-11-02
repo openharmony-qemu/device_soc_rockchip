@@ -18,8 +18,8 @@
  */
 #include "iq_parser_v2/agamma_head.h"
 
-#ifndef _RK_AIQ_ALGO_AGAMMA_HW_H_
-#define _RK_AIQ_ALGO_AGAMMA_HW_H_
+#ifndef RK_AIQ_ALGO_AGAMMA_HW_H_
+#define RK_AIQ_ALGO_AGAMMA_HW_H_
 
 typedef struct AgammaProcResV10_s {
     bool gamma_en;
@@ -46,4 +46,4 @@ typedef struct AgammaProcRes_s {
 #endif
 } AgammaProcRes_t;
 
-#endif  //_RK_AIQ_ALGO_AGAMMA_HW_H_
+#endif  //RK_AIQ_ALGO_AGAMMA_HW_H_

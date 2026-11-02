@@ -41,17 +41,6 @@
 #define mpp_logd_f(fmt, ...)  _mpp_log_l(MPP_LOG_DEBUG,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 #define mpp_logv_f(fmt, ...)  _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 
-// #define mpp_logf(fmt, ...) HDF_LOGI(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_loge(fmt, ...) HDF_LOGE(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_logw(fmt, ...) HDF_LOGW(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_logi(fmt, ...) HDF_LOGI(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_logd(fmt, ...) HDF_LOGD(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-
-// #define mpp_logf_f(fmt, ...) HDF_LOGI(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_loge_f(fmt, ...) HDF_LOGE(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_logw_f(fmt, ...) HDF_LOGW(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_logi_f(fmt, ...) HDF_LOGI(LOG_CORE,  "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-// #define mpp_logd_f(fmt, ...) HDF_LOGD(LOG_CORE, "[%{public}s:%{public}d] " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define mpp_logf_c(cond, fmt, ...)  do { if (cond) mpp_logf(fmt, ## __VA_ARGS__); } while (0)
 #define mpp_loge_c(cond, fmt, ...)  do { if (cond) mpp_loge(fmt, ## __VA_ARGS__); } while (0)

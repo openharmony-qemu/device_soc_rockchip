@@ -136,7 +136,8 @@ typedef struct _RkAiqAlgoDesComm {
 // for all algos
 
 typedef enum RkAiqAlgoConfType_e {
-    RK_AIQ_ALGO_CONFTYPE_INIT = 0,           // just used for the firt time, no much meaning now, equal to UPDATECALIB | NEEDRESET
+    // just used for the firt time, no much meaning now, equal to UPDATECALIB | NEEDRESET
+    RK_AIQ_ALGO_CONFTYPE_INIT = 0,
     RK_AIQ_ALGO_CONFTYPE_UPDATECALIB = 0x01, // update iq parameters
     RK_AIQ_ALGO_CONFTYPE_UPDATECALIB_PTR = 0x02, // only update callib pointer, contents related to algo not changed
     RK_AIQ_ALGO_CONFTYPE_NEEDRESET   = 0x04, // not used now, reset to the initial status

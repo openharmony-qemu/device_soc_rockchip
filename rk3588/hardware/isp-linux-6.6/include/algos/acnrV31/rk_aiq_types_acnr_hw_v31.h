@@ -24,7 +24,7 @@
 typedef struct RK_CNR_Fix_V31_s {
    
    /* CNR_CTRL */
-   uint8_t cnr_en;
+    uint8_t cnr_en;
    uint8_t exgain_bypass;
    uint8_t yuv422_mode;
    uint8_t thumb_mode;
@@ -78,6 +78,4 @@ typedef struct RK_CNR_Fix_V31_s {
 } RK_CNR_Fix_V31_t;
 
 #endif
-
-
 

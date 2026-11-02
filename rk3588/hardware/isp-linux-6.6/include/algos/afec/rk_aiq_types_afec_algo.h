@@ -11,10 +11,6 @@ typedef struct {
     unsigned char mesh_density;
     unsigned int mesh_size;
     unsigned int mesh_buf_fd;
-    //unsigned short meshxi[FEC_MESH_XY_NUM_ALGO];
-    //unsigned char meshxf[FEC_MESH_XY_NUM_ALGO];
-    //unsigned short meshyi[FEC_MESH_XY_NUM_ALGO];
-    //unsigned char meshyf[FEC_MESH_XY_NUM_ALGO];
     int usage;
     int img_buf_index;
 } fec_preprocess_result_t;

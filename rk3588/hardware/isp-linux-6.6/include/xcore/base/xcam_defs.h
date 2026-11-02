@@ -26,7 +26,6 @@
 #if defined(__linux__)
 #include "unistd.h"
 #endif
-//#include "xcam_log.h"
 
 #define XCAM_ASSERT(exp)  assert(exp)
 
@@ -38,8 +37,8 @@
 #define XCAM_END_DECLARE
 #endif
 
-#ifndef __user
-#define __user
+#ifndef XCAM_USER
+#define XCAM_USER
 #endif
 
 #define XCAM_UNUSED(variable) (void)(variable)

@@ -23,9 +23,6 @@
 
 XCAM_BEGIN_DECLARE
 
-//typedef struct rk_aiq_static_metas_s {
-//} rk_aiq_static_metas_t;
-
 typedef enum rk_aiq_status_e {
     RK_AIQ_STATUS_VICAP_READY = 1,
     RK_AIQ_STATUS_VICAP_RESET,
@@ -105,17 +102,7 @@ typedef enum rk_aiq_iq_bin_mode_s {
     RK_AIQ_META_NOT_FULL_IQ_BIN,
 } rk_aiq_iq_bin_mode_t;
 
-#if 0
-typedef struct rk_aiq_tb_info_s {
-    uint16_t magic;
-    bool is_pre_aiq;
-    uint8_t prd_type;
-    bool is_start_once;
-    uint8_t iq_bin_mode;
-    void* rtt_share_addr;
-} rk_aiq_tb_info_t;
-#endif
-
 XCAM_END_DECLARE
 
 #endif
+

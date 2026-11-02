@@ -21,96 +21,96 @@
 
 #define HDF_LOG_TAG codec_hdi_mpp_mpi
 
-void *mLibHandle = NULL;
+void *g_mLibHandle = NULL;
 
-const char *mLibName = "librockchip_mpp.z.so";
+const char *M_LIB_NAME = "librockchip_mpp.z.so";
 RKMppApi *GetPacketApi(RKMppApi *pMppApi)
 {
-    pMppApi->HdiMppPacketNew = (hdiMppPacketNew)dlsym(mLibHandle, "mpp_packet_new");
-    pMppApi->HdiMppPacketInit = (hdiMppPacketInit)dlsym(mLibHandle, "mpp_packet_init");
-    pMppApi->HdiMppPacketInitWithBuffer = (hdiMppPacketInitWithBuffer)dlsym(mLibHandle, "mpp_packet_init_with_buffer");
-    pMppApi->HdiMppPacketCopyInit = (hdiMppPacketCopyInit)dlsym(mLibHandle, "mpp_packet_copy_init");
-    pMppApi->HdiMppPacketDeinit = (hdiMppPacketDeinit)dlsym(mLibHandle, "mpp_packet_deinit");
-    pMppApi->HdiMppPacketGetEos = (hdiMppPacketGetEos)dlsym(mLibHandle, "mpp_packet_get_eos");
-    pMppApi->HdiMppPacketSetEos = (hdiMppPacketSetEos)dlsym(mLibHandle, "mpp_packet_set_eos");
-    pMppApi->HdiMppPacketGetPts = (hdiMppPacketGetPts)dlsym(mLibHandle, "mpp_packet_get_pts");
-    pMppApi->HdiMppPacketSetPts = (hdiMppPacketSetPts)dlsym(mLibHandle, "mpp_packet_set_pts");
-    pMppApi->HdiMppPacketSetData = (hdiMppPacketSetData)dlsym(mLibHandle, "mpp_packet_set_data");
-    pMppApi->HdiMppPacketSetSize = (hdiMppPacketSetSize)dlsym(mLibHandle, "mpp_packet_set_size");
-    pMppApi->HdiMppPacketGetPos = (hdiMppPacketGetPos)dlsym(mLibHandle, "mpp_packet_get_pos");
-    pMppApi->HdiMppPacketSetPos = (hdiMppPacketSetPos)dlsym(mLibHandle, "mpp_packet_set_pos");
-    pMppApi->HdiMppPacketSetLength = (hdiMppPacketSetLength)dlsym(mLibHandle, "mpp_packet_set_length");
-    pMppApi->HdiMppPacketGetLength = (hdiMppPacketGetLength)dlsym(mLibHandle, "mpp_packet_get_length");
-    pMppApi->HdiMppPacketIsPartition = (hdiMppPacketIsPartition)dlsym(mLibHandle, "mpp_packet_is_partition");
-    pMppApi->HdiMppPacketIsEoi = (hdiMppPacketIsEoi)dlsym(mLibHandle, "mpp_packet_is_eoi");
-    pMppApi->HdiMppMetaSetPacket = (hdiMppMetaSetPacket)dlsym(mLibHandle, "mpp_meta_set_packet");
+    pMppApi->HdiMppPacketNew = (hdiMppPacketNew)dlsym(g_mLibHandle, "mpp_packet_new");
+    pMppApi->HdiMppPacketInit = (hdiMppPacketInit)dlsym(g_mLibHandle, "mpp_packet_init");
+    pMppApi->HdiMppPacketInitWithBuffer = (hdiMppPacketInitWithBuffer)dlsym(g_mLibHandle, "mpp_packet_init_with_buffer");
+    pMppApi->HdiMppPacketCopyInit = (hdiMppPacketCopyInit)dlsym(g_mLibHandle, "mpp_packet_copy_init");
+    pMppApi->HdiMppPacketDeinit = (hdiMppPacketDeinit)dlsym(g_mLibHandle, "mpp_packet_deinit");
+    pMppApi->HdiMppPacketGetEos = (hdiMppPacketGetEos)dlsym(g_mLibHandle, "mpp_packet_get_eos");
+    pMppApi->HdiMppPacketSetEos = (hdiMppPacketSetEos)dlsym(g_mLibHandle, "mpp_packet_set_eos");
+    pMppApi->HdiMppPacketGetPts = (hdiMppPacketGetPts)dlsym(g_mLibHandle, "mpp_packet_get_pts");
+    pMppApi->HdiMppPacketSetPts = (hdiMppPacketSetPts)dlsym(g_mLibHandle, "mpp_packet_set_pts");
+    pMppApi->HdiMppPacketSetData = (hdiMppPacketSetData)dlsym(g_mLibHandle, "mpp_packet_set_data");
+    pMppApi->HdiMppPacketSetSize = (hdiMppPacketSetSize)dlsym(g_mLibHandle, "mpp_packet_set_size");
+    pMppApi->HdiMppPacketGetPos = (hdiMppPacketGetPos)dlsym(g_mLibHandle, "mpp_packet_get_pos");
+    pMppApi->HdiMppPacketSetPos = (hdiMppPacketSetPos)dlsym(g_mLibHandle, "mpp_packet_set_pos");
+    pMppApi->HdiMppPacketSetLength = (hdiMppPacketSetLength)dlsym(g_mLibHandle, "mpp_packet_set_length");
+    pMppApi->HdiMppPacketGetLength = (hdiMppPacketGetLength)dlsym(g_mLibHandle, "mpp_packet_get_length");
+    pMppApi->HdiMppPacketIsPartition = (hdiMppPacketIsPartition)dlsym(g_mLibHandle, "mpp_packet_is_partition");
+    pMppApi->HdiMppPacketIsEoi = (hdiMppPacketIsEoi)dlsym(g_mLibHandle, "mpp_packet_is_eoi");
+    pMppApi->HdiMppMetaSetPacket = (hdiMppMetaSetPacket)dlsym(g_mLibHandle, "mpp_meta_set_packet");
     return pMppApi;
 }
 
 RKMppApi *GetFrameApi(RKMppApi *pMppApi)
 {
-    pMppApi->HdiMppFrameInit = (hdiMppFrameInit)dlsym(mLibHandle, "mpp_frame_init");
-    pMppApi->HdiMppFrameDeinit = (hdiMppFrameDeinit)dlsym(mLibHandle, "mpp_frame_deinit");
-    pMppApi->HdiMppFrameGetNext = (hdiMppFrameGetNext)dlsym(mLibHandle, "mpp_frame_get_next");
-    pMppApi->HdiMppFrameGetInfoChange = (hdiMppFrameGetInfoChange)dlsym(mLibHandle, "mpp_frame_get_info_change");
-    pMppApi->HdiMppFrameGetWidth = (hdiMppFrameGetWidth)dlsym(mLibHandle, "mpp_frame_get_width");
-    pMppApi->HdiMppFrameGetHeight = (hdiMppFrameGetHeight)dlsym(mLibHandle, "mpp_frame_get_height");
-    pMppApi->HdiMppFrameGetHorStride = (hdiMppFrameGetHorStride)dlsym(mLibHandle, "mpp_frame_get_hor_stride");
-    pMppApi->HdiMppFrameGetVerStride = (hdiMppFrameGetVerStride)dlsym(mLibHandle, "mpp_frame_get_ver_stride");
-    pMppApi->HdiMppFrameGetBufferSize = (hdiMppFrameGetBufferSize)dlsym(mLibHandle, "mpp_frame_get_buf_size");
-    pMppApi->HdiMppFrameGetFormat = (hdiMppFrameGetFormat)dlsym(mLibHandle, "mpp_frame_get_fmt");
-    pMppApi->HdiMppFrameGetErrinfo = (hdiMppFrameGetErrinfo)dlsym(mLibHandle, "mpp_frame_get_errinfo");
-    pMppApi->HdiMppFrameGetDiscard = (hdiMppFrameGetDiscard)dlsym(mLibHandle, "mpp_frame_get_discard");
-    pMppApi->HdiMppFrameGetBuffer = (hdiMppFrameGetBuffer)dlsym(mLibHandle, "mpp_frame_get_buffer");
-    pMppApi->HdiMppFrameSetBuffer = (hdiMppFrameSetBuffer)dlsym(mLibHandle, "mpp_frame_set_buffer");
-    pMppApi->HdiMppFrameGetEos = (hdiMppFrameGetEos)dlsym(mLibHandle, "mpp_frame_get_eos");
-    pMppApi->HdiMppFrameSetEos = (hdiMppFrameSetEos)dlsym(mLibHandle, "mpp_frame_set_eos");
-    pMppApi->HdiMppFrameSetFormat = (hdiMppFrameSetFormat)dlsym(mLibHandle, "mpp_frame_set_fmt");
-    pMppApi->HdiMppFrameSetWidth = (hdiMppFrameSetWidth)dlsym(mLibHandle, "mpp_frame_set_width");
-    pMppApi->HdiMppFrameSetHeight = (hdiMppFrameSetHeight)dlsym(mLibHandle, "mpp_frame_set_height");
-    pMppApi->HdiMppFrameSetHorStride = (hdiMppFrameSetHorStride)dlsym(mLibHandle, "mpp_frame_set_hor_stride");
-    pMppApi->HdiMppFrameSetVerStride = (hdiMppFrameSetVerStride)dlsym(mLibHandle, "mpp_frame_set_ver_stride");
-    pMppApi->HdiMppFrameGetMeta = (hdiMppFrameGetMeta)dlsym(mLibHandle, "mpp_frame_get_meta");
+    pMppApi->HdiMppFrameInit = (hdiMppFrameInit)dlsym(g_mLibHandle, "mpp_frame_init");
+    pMppApi->HdiMppFrameDeinit = (hdiMppFrameDeinit)dlsym(g_mLibHandle, "mpp_frame_deinit");
+    pMppApi->HdiMppFrameGetNext = (hdiMppFrameGetNext)dlsym(g_mLibHandle, "mpp_frame_get_next");
+    pMppApi->HdiMppFrameGetInfoChange = (hdiMppFrameGetInfoChange)dlsym(g_mLibHandle, "mpp_frame_get_info_change");
+    pMppApi->HdiMppFrameGetWidth = (hdiMppFrameGetWidth)dlsym(g_mLibHandle, "mpp_frame_get_width");
+    pMppApi->HdiMppFrameGetHeight = (hdiMppFrameGetHeight)dlsym(g_mLibHandle, "mpp_frame_get_height");
+    pMppApi->HdiMppFrameGetHorStride = (hdiMppFrameGetHorStride)dlsym(g_mLibHandle, "mpp_frame_get_hor_stride");
+    pMppApi->HdiMppFrameGetVerStride = (hdiMppFrameGetVerStride)dlsym(g_mLibHandle, "mpp_frame_get_ver_stride");
+    pMppApi->HdiMppFrameGetBufferSize = (hdiMppFrameGetBufferSize)dlsym(g_mLibHandle, "mpp_frame_get_buf_size");
+    pMppApi->HdiMppFrameGetFormat = (hdiMppFrameGetFormat)dlsym(g_mLibHandle, "mpp_frame_get_fmt");
+    pMppApi->HdiMppFrameGetErrinfo = (hdiMppFrameGetErrinfo)dlsym(g_mLibHandle, "mpp_frame_get_errinfo");
+    pMppApi->HdiMppFrameGetDiscard = (hdiMppFrameGetDiscard)dlsym(g_mLibHandle, "mpp_frame_get_discard");
+    pMppApi->HdiMppFrameGetBuffer = (hdiMppFrameGetBuffer)dlsym(g_mLibHandle, "mpp_frame_get_buffer");
+    pMppApi->HdiMppFrameSetBuffer = (hdiMppFrameSetBuffer)dlsym(g_mLibHandle, "mpp_frame_set_buffer");
+    pMppApi->HdiMppFrameGetEos = (hdiMppFrameGetEos)dlsym(g_mLibHandle, "mpp_frame_get_eos");
+    pMppApi->HdiMppFrameSetEos = (hdiMppFrameSetEos)dlsym(g_mLibHandle, "mpp_frame_set_eos");
+    pMppApi->HdiMppFrameSetFormat = (hdiMppFrameSetFormat)dlsym(g_mLibHandle, "mpp_frame_set_fmt");
+    pMppApi->HdiMppFrameSetWidth = (hdiMppFrameSetWidth)dlsym(g_mLibHandle, "mpp_frame_set_width");
+    pMppApi->HdiMppFrameSetHeight = (hdiMppFrameSetHeight)dlsym(g_mLibHandle, "mpp_frame_set_height");
+    pMppApi->HdiMppFrameSetHorStride = (hdiMppFrameSetHorStride)dlsym(g_mLibHandle, "mpp_frame_set_hor_stride");
+    pMppApi->HdiMppFrameSetVerStride = (hdiMppFrameSetVerStride)dlsym(g_mLibHandle, "mpp_frame_set_ver_stride");
+    pMppApi->HdiMppFrameGetMeta = (hdiMppFrameGetMeta)dlsym(g_mLibHandle, "mpp_frame_get_meta");
     return pMppApi;
 }
 
 RKMppApi *GetConfigApi(RKMppApi *pMppApi)
 {
-    pMppApi->HdiMppDecCfgInit = (hdiMppDecCfgInit)dlsym(mLibHandle, "mpp_dec_cfg_init");
-    pMppApi->HdiMppDecCfgDeinit = (hdiMppDecCfgDeinit)dlsym(mLibHandle, "mpp_dec_cfg_deinit");
-    pMppApi->HdiMppDecCfgSetU32 = (hdiMppDecCfgSetU32)dlsym(mLibHandle, "mpp_dec_cfg_set_u32");
+    pMppApi->HdiMppDecCfgInit = (hdiMppDecCfgInit)dlsym(g_mLibHandle, "mpp_dec_cfg_init");
+    pMppApi->HdiMppDecCfgDeinit = (hdiMppDecCfgDeinit)dlsym(g_mLibHandle, "mpp_dec_cfg_deinit");
+    pMppApi->HdiMppDecCfgSetU32 = (hdiMppDecCfgSetU32)dlsym(g_mLibHandle, "mpp_dec_cfg_set_u32");
 
-    pMppApi->HdiMppEncCfgInit = (hdiMppEncCfgInit)dlsym(mLibHandle, "mpp_enc_cfg_init");
-    pMppApi->HdiMppEncCfgDeinit = (hdiMppEncCfgDeinit)dlsym(mLibHandle, "mpp_enc_cfg_deinit");
-    pMppApi->HdiMppEncCfgSetS32 = (hdiMppEncCfgSetS32)dlsym(mLibHandle, "mpp_enc_cfg_set_s32");
-    pMppApi->HdiMppEncCfgSetU32 = (hdiMppEncCfgSetU32)dlsym(mLibHandle, "mpp_enc_cfg_set_u32");
-    pMppApi->HdiMppEncRefCfgInit = (hdiMppEncRefCfgInit)dlsym(mLibHandle, "mpp_enc_ref_cfg_init");
-    pMppApi->HdiMppEncRefCfgDeinit = (hdiMppEncRefCfgDeinit)dlsym(mLibHandle, "mpp_enc_ref_cfg_deinit");
-    pMppApi->HdiMppEncGenRefCfg = (hdiMppEncGenRefCfg)dlsym(mLibHandle, "mpi_enc_gen_ref_cfg");
+    pMppApi->HdiMppEncCfgInit = (hdiMppEncCfgInit)dlsym(g_mLibHandle, "mpp_enc_cfg_init");
+    pMppApi->HdiMppEncCfgDeinit = (hdiMppEncCfgDeinit)dlsym(g_mLibHandle, "mpp_enc_cfg_deinit");
+    pMppApi->HdiMppEncCfgSetS32 = (hdiMppEncCfgSetS32)dlsym(g_mLibHandle, "mpp_enc_cfg_set_s32");
+    pMppApi->HdiMppEncCfgSetU32 = (hdiMppEncCfgSetU32)dlsym(g_mLibHandle, "mpp_enc_cfg_set_u32");
+    pMppApi->HdiMppEncRefCfgInit = (hdiMppEncRefCfgInit)dlsym(g_mLibHandle, "mpp_enc_ref_cfg_init");
+    pMppApi->HdiMppEncRefCfgDeinit = (hdiMppEncRefCfgDeinit)dlsym(g_mLibHandle, "mpp_enc_ref_cfg_deinit");
+    pMppApi->HdiMppEncGenRefCfg = (hdiMppEncGenRefCfg)dlsym(g_mLibHandle, "mpi_enc_gen_ref_cfg");
     pMppApi->HdiMppEncGenSmartGopRefCfg =
-        (hdiMppEncGenSmartGopRefCfg)dlsym(mLibHandle, "mpi_enc_gen_smart_gop_ref_cfg");
+        (hdiMppEncGenSmartGopRefCfg)dlsym(g_mLibHandle, "mpi_enc_gen_smart_gop_ref_cfg");
     return pMppApi;
 }
 
 RKMppApi *GetBufferGroupApi(RKMppApi *pMppApi)
 {
-    pMppApi->HdiMppBufferGroupGet = (hdiMppBufferGroupGet)dlsym(mLibHandle, "mpp_buffer_group_get");
-    pMppApi->HdiMppBufferGroupPut = (hdiMppBufferGroupPut)dlsym(mLibHandle, "mpp_buffer_group_put");
-    pMppApi->HdiMppBufferGroupClear = (hdiMppBufferGroupClear)dlsym(mLibHandle, "mpp_buffer_group_clear");
+    pMppApi->HdiMppBufferGroupGet = (hdiMppBufferGroupGet)dlsym(g_mLibHandle, "mpp_buffer_group_get");
+    pMppApi->HdiMppBufferGroupPut = (hdiMppBufferGroupPut)dlsym(g_mLibHandle, "mpp_buffer_group_put");
+    pMppApi->HdiMppBufferGroupClear = (hdiMppBufferGroupClear)dlsym(g_mLibHandle, "mpp_buffer_group_clear");
     pMppApi->HdiMppBufferGroupLimitConfig =
-        (hdiMppBufferGroupLimitConfig)dlsym(mLibHandle, "mpp_buffer_group_limit_config");
+        (hdiMppBufferGroupLimitConfig)dlsym(g_mLibHandle, "mpp_buffer_group_limit_config");
     pMppApi->HdiMppBufferGetFdWithCaller =
-        (hdiMppBufferGetFdWithCaller)dlsym(mLibHandle, "mpp_buffer_get_fd_with_caller");
-    pMppApi->HdiMppBufferGetWithTag = (hdiMppBufferGetWithTag)dlsym(mLibHandle, "mpp_buffer_get_with_tag");
-    pMppApi->HdiMppBufferImportWithTag = (hdiMppBufferImportWithTag)dlsym(mLibHandle, "mpp_buffer_import_with_tag");
+        (hdiMppBufferGetFdWithCaller)dlsym(g_mLibHandle, "mpp_buffer_get_fd_with_caller");
+    pMppApi->HdiMppBufferGetWithTag = (hdiMppBufferGetWithTag)dlsym(g_mLibHandle, "mpp_buffer_get_with_tag");
+    pMppApi->HdiMppBufferImportWithTag = (hdiMppBufferImportWithTag)dlsym(g_mLibHandle, "mpp_buffer_import_with_tag");
     pMppApi->HdiMppBufferWriteWithCaller =
-        (hdiMppBufferWriteWithCaller)dlsym(mLibHandle, "mpp_buffer_write_with_caller");
+        (hdiMppBufferWriteWithCaller)dlsym(g_mLibHandle, "mpp_buffer_write_with_caller");
     pMppApi->HdiMppBufferGetPtrWithCaller =
-        (hdiMppBufferGetPtrWithCaller)dlsym(mLibHandle, "mpp_buffer_get_ptr_with_caller");
+        (hdiMppBufferGetPtrWithCaller)dlsym(g_mLibHandle, "mpp_buffer_get_ptr_with_caller");
     pMppApi->HdiMppBufferGetSizeWithCaller =
-        (hdiMppBufferGetSizeWithCaller)dlsym(mLibHandle, "mpp_buffer_get_size_with_caller");
-    pMppApi->HdiMppBufferGroupUsage = (hdiMppBufferGroupUsage)dlsym(mLibHandle, "mpp_buffer_group_usage");
-    pMppApi->HdiMppBufferPutWithCaller = (hdiMppBufferPutWithCaller)dlsym(mLibHandle, "mpp_buffer_put_with_caller");
+        (hdiMppBufferGetSizeWithCaller)dlsym(g_mLibHandle, "mpp_buffer_get_size_with_caller");
+    pMppApi->HdiMppBufferGroupUsage = (hdiMppBufferGroupUsage)dlsym(g_mLibHandle, "mpp_buffer_group_usage");
+    pMppApi->HdiMppBufferPutWithCaller = (hdiMppBufferPutWithCaller)dlsym(g_mLibHandle, "mpp_buffer_put_with_caller");
     return pMppApi;
 }
 
@@ -129,31 +129,31 @@ int32_t GetMppApi(RKMppApi **mppApi)
         return ret;
     }
 
-    mLibHandle = dlopen(mLibName, RTLD_NOW);
-    if (mLibHandle == NULL) {
-        HDF_LOGE("%{public}s: lib %{public}s dlopen failed, error code[%{public}s]", __func__, mLibName, dlerror());
+    g_mLibHandle = dlopen(M_LIB_NAME, RTLD_NOW);
+    if (g_mLibHandle == NULL) {
+        HDF_LOGE("%{public}s: lib %{public}s dlopen failed, error code[%{public}s]", __func__, M_LIB_NAME, dlerror());
         free(*mppApi);
         *mppApi = NULL;
         return HDF_FAILURE;
     }
 
-    pMppApi->HdiMppCreate = (hdiMppCreate)dlsym(mLibHandle, "mpp_create");
-    pMppApi->HdiMppInit = (hdiMppInit)dlsym(mLibHandle, "mpp_init");
-    pMppApi->HdiMppStart = (hdiMppStart)dlsym(mLibHandle, "mpp_start");
-    pMppApi->HdiMppStop = (hdiMppStop)dlsym(mLibHandle, "mpp_stop");
-    pMppApi->HdiMppDestroy = (hdiMppDestroy)dlsym(mLibHandle, "mpp_destroy");
-    pMppApi->HdiMppCheckSupportFormat = (hdiMppCheckSupportFormat)dlsym(mLibHandle, "mpp_check_support_format");
-    pMppApi->HdiMppShowSupportFormat = (hdiMppShowSupportFormat)dlsym(mLibHandle, "mpp_show_support_format");
-    pMppApi->HdiMppShowColorFormat = (hdiMppShowColorFormat)dlsym(mLibHandle, "mpp_show_color_format");
+    pMppApi->HdiMppCreate = (hdiMppCreate)dlsym(g_mLibHandle, "mpp_create");
+    pMppApi->HdiMppInit = (hdiMppInit)dlsym(g_mLibHandle, "mpp_init");
+    pMppApi->HdiMppStart = (hdiMppStart)dlsym(g_mLibHandle, "mpp_start");
+    pMppApi->HdiMppStop = (hdiMppStop)dlsym(g_mLibHandle, "mpp_stop");
+    pMppApi->HdiMppDestroy = (hdiMppDestroy)dlsym(g_mLibHandle, "mpp_destroy");
+    pMppApi->HdiMppCheckSupportFormat = (hdiMppCheckSupportFormat)dlsym(g_mLibHandle, "mpp_check_support_format");
+    pMppApi->HdiMppShowSupportFormat = (hdiMppShowSupportFormat)dlsym(g_mLibHandle, "mpp_show_support_format");
+    pMppApi->HdiMppShowColorFormat = (hdiMppShowColorFormat)dlsym(g_mLibHandle, "mpp_show_color_format");
     GetPacketApi(pMppApi);
     GetFrameApi(pMppApi);
     GetConfigApi(pMppApi);
     GetBufferGroupApi(pMppApi);
-    pMppApi->HdiMppTaskMetaGetPacket = (hdiMppTaskMetaGetPacket)dlsym(mLibHandle, "mpp_task_meta_get_packet");
-    pMppApi->HdiMppTaskMetaSetPacket = (hdiMppTaskMetaSetPacket)dlsym(mLibHandle, "mpp_task_meta_set_packet");
-    pMppApi->HdiMppTaskMetaGetFrame = (hdiMppTaskMetaGetFrame)dlsym(mLibHandle, "mpp_task_meta_get_frame");
-    pMppApi->HdiMppTaskMetaSetFrame = (hdiMppTaskMetaSetFrame)dlsym(mLibHandle, "mpp_task_meta_set_frame");
-    pMppApi->HdiMppEnvGetU32 = (hdiMppEnvGetU32)dlsym(mLibHandle, "mpp_env_get_u32");
+    pMppApi->HdiMppTaskMetaGetPacket = (hdiMppTaskMetaGetPacket)dlsym(g_mLibHandle, "mpp_task_meta_get_packet");
+    pMppApi->HdiMppTaskMetaSetPacket = (hdiMppTaskMetaSetPacket)dlsym(g_mLibHandle, "mpp_task_meta_set_packet");
+    pMppApi->HdiMppTaskMetaGetFrame = (hdiMppTaskMetaGetFrame)dlsym(g_mLibHandle, "mpp_task_meta_get_frame");
+    pMppApi->HdiMppTaskMetaSetFrame = (hdiMppTaskMetaSetFrame)dlsym(g_mLibHandle, "mpp_task_meta_set_frame");
+    pMppApi->HdiMppEnvGetU32 = (hdiMppEnvGetU32)dlsym(g_mLibHandle, "mpp_env_get_u32");
     return HDF_SUCCESS;
 }
 
