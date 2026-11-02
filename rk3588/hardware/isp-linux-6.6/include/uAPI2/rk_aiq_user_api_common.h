@@ -93,7 +93,7 @@ typedef struct rk_aiq_version_info_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(TODO.
+        M4_NOTES(The aiq version info.
 		Freq of use: high))  */
     char aiq_ver[32];
 } rk_aiq_version_info_t;
@@ -117,7 +117,7 @@ typedef struct rk_aiq_module_ctl_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(TODO.
+        M4_NOTES(The module enable switch.
 		Freq of use: high))  */
     bool en;
     /* M4_GENERIC_DESC(
@@ -127,7 +127,7 @@ typedef struct rk_aiq_module_ctl_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(TODO.
+        M4_NOTES(The module bypass switch.
 		Freq of use: high))  */
     bool bypass;
     /* M4_GENERIC_DESC(
@@ -151,7 +151,7 @@ typedef struct rk_aiq_module_list_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(TODO))   */
+        M4_NOTES(module_ctl))   */
     rk_aiq_module_ctl_t module_ctl[RESULT_TYPE_MAX_PARAM];
 } rk_aiq_module_list_t;
 

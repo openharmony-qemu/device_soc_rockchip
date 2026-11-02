@@ -77,7 +77,8 @@ typedef struct RK_Bayertnr_Fix_V2_s {
     //BAY3D_BAY3D_MI_ST 0x2CC8
     uint8_t sw_bay3dmi_st_linemode;
     uint8_t sw_bay3d_mi2cur_linecnt;
-
 } RK_Bayertnr_Fix_V2_t;
+
+
 
 #endif

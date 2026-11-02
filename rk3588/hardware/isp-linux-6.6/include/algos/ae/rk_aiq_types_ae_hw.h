@@ -276,8 +276,7 @@ typedef struct RkAiqAecHwStatsRes_s {
     yuvae_stat_t yuvae;
     sihist_stat_t sihist;
 #endif
-    uint16_t raw_mean[4];  //not HW! The last 8bits are decimal places, raw_mean[3] = extra-chn-mean
-
+    uint16_t raw_mean[4];  //not HW! The last 8bits are fractional bits, raw_mean[3] = extra-chn-mean
 } RkAiqAecHwStatsRes_t;
 
 /*****************************************************************************/
@@ -297,7 +296,6 @@ typedef struct CISFeature_s {
 } CISFeature_t;
 
 typedef struct RkAiqExpRealParam_s {
-
     // M4_NUMBER_DESC("CISTime", "f32", M4_RANGE(0,1), "0", M4_DIGIT(6))
     float integration_time;
 
@@ -321,7 +319,6 @@ typedef struct RkAiqExpRealParam_s {
 } RkAiqExpRealParam_t;
 
 typedef struct RkAiqExpSensorParam_s {
-
     // M4_NUMBER_DESC("fine_integration_time", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
     unsigned int fine_integration_time;
 

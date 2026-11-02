@@ -90,10 +90,8 @@ IM_API IM_STATUS imcheckHeader(im_api_version_t header_version = RGA_CURRENT_API
 #define imcheck(src, dst, src_rect, dst_rect, ...) \
     ({ \
         IM_STATUS __ret = IM_STATUS_NOERROR; \
-        rga_buffer_t __pat; \
-        im_rect __pat_rect; \
-        memset_s(&__pat, sizeof(rga_buffer_t), 0, sizeof(rga_buffer_t)); \
-        memset_s(&__pat_rect, sizeof(im_rect), 0, sizeof(im_rect)); \
+        rga_buffer_t __pat = {0}; \
+        im_rect __pat_rect = {0}; \
         int __args[] = {__VA_ARGS__}; \
         int __argc = sizeof(__args)/sizeof(int); \
         if (__argc == 0) { \

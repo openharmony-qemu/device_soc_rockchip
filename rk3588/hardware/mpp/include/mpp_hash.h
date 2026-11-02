@@ -271,6 +271,11 @@ static inline void hlist_move_list(struct hlist_head *old,
  *
  * This has to be a macro since HASH_BITS() will not work on pointers since
  * it calculates the size during preprocessing.
+ *
+ * G.PRE.02 exemption: HASH_SIZE() applies sizeof() to the hashtable array; if
+ * it were passed to an inline function the array would decay to a pointer and
+ * sizeof() would yield the pointer size, so the bucket count would be wrong.
+ * Must stay a macro.
  */
 #define hash_empty(hashtable) hash_empty_(hashtable, HASH_SIZE(hashtable))
 

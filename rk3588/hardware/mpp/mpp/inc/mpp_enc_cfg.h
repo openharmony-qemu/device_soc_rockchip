@@ -13,6 +13,9 @@
 
 #include "kmpp_obj.h"
 
+/* shift width of the element index field in an encoded cfg position */
+#define KMPP_CFG_POS_ELEM_SHIFT 16
+
 /*
  * MppEncCfgSet shows the relationship between different configuration
  * Due to the huge amount of configurable parameters we need to setup
@@ -27,7 +30,7 @@ static inline rk_u8 *POS_TO_FLAG(void *p, rk_u32 pos)
 
 static inline rk_u8 *POS_TO_ELEM(void *p, rk_u32 pos)
 {
-    return (rk_u8 *)p + (pos >> 16);
+    return (rk_u8 *)p + (pos >> KMPP_CFG_POS_ELEM_SHIFT);
 }
 
 typedef struct MppEncCfgSet_t {
@@ -64,6 +67,10 @@ typedef struct MppEncCfgSet_t {
     MppEncFineTuneCfg   tune;
 } MppEncCfgSet;
 
+#define KMPP_OBJ_NAME               mpp_enc_cfg
+#define KMPP_OBJ_INTF_TYPE          MppEncCfg
+#include "kmpp_obj_func.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -76,10 +83,6 @@ rk_u32 *mpp_enc_cfg_h264_change(MppEncCfgSet *cfg);
 rk_u32 *mpp_enc_cfg_h265_change(MppEncCfgSet *cfg);
 rk_u32 *mpp_enc_cfg_jpeg_change(MppEncCfgSet *cfg);
 rk_u32 *mpp_enc_cfg_vp8_change(MppEncCfgSet *cfg);
-
-#define KMPP_OBJ_NAME               mpp_enc_cfg
-#define KMPP_OBJ_INTF_TYPE          MppEncCfg
-#include "kmpp_obj_func.h"
 
 #ifdef __cplusplus
 }

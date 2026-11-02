@@ -11,22 +11,13 @@
 
 #define MPP_TAG_SIZE            32
 
-#define MPP_ABS(x)              ((x) < (0) ? -(x) : (x))
-
-#define MPP_MAX(a, b)           ((a) > (b) ? (a) : (b))
-#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a,b),c)
-#define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
-
-#define MPP_MIN(a,b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN(a,b),c)
-#define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
-
-#define MPP_DIV(a, b)           (((b) != 0) ? (a) / (b) : (a))
-
-#define MPP_CLIP3(l, h, v)      ((v) < (l) ? (l) : ((v) > (h) ? (h) : (v)))
-#define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
-#define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
-
+/*
+ * G.PRE.02: the arithmetic helper macros (MPP_ABS/MPP_MIN/MPP_MAX and
+ * derivatives) were converted to static inline functions below; all call
+ * sites are runtime contexts, so no constant-expression usage is lost.
+ * MPP_SWAP must remain a macro: it is a statement macro with a type
+ * parameter, which an inline function cannot express.
+ */
 #define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
 #define MPP_ARRAY_ELEMS_U(a)    ((rk_u32)(sizeof(a) / sizeof((a)[0])))
@@ -126,25 +117,7 @@
         ((RK_U8*)(p))[2] = (d)>>16; } while(0)
 
 #include <stdio.h>
-#if defined(_WIN32) && !defined(__MINGW32CE__)
-#define snprintf                _snprintf
-#define fseeko                  _fseeki64
-
-#include <direct.h>
-#include <io.h>
-#include <sys/stat.h>
-
-#define chdir                   _chdir
-#define mkdir                   _mkdir
-#define access                  _access
-#define off_t                   _off_t
-
-#define R_OK                    4 /* Test for read permission. */
-#define W_OK                    2 /* Test for write permission. */
-#define X_OK                    1 /* Test for execute permission. */
-#define F_OK                    0 /* Test for existence. */
-
-#elif defined(__MINGW32CE__)
+#if defined(__MINGW32CE__)
 #define fseeko                  fseeko64
 #else
 #include <unistd.h>
@@ -207,15 +180,72 @@ static __inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
     else               return a;
 }
 
+static inline RK_S32 mpp_abs(RK_S32 x)
+{
+    return (x < 0) ? -x : x;
+}
+
+static inline RK_S32 mpp_min(RK_S32 a, RK_S32 b)
+{
+    return (a > b) ? b : a;
+}
+
+static inline RK_S32 mpp_min3(RK_S32 a, RK_S32 b, RK_S32 c)
+{
+    return mpp_min(mpp_min(a, b), c);
+}
+
+static inline RK_S32 mpp_min4(RK_S32 a, RK_S32 b, RK_S32 c, RK_S32 d)
+{
+    return mpp_min(a, mpp_min3(b, c, d));
+}
+
+static inline RK_S32 mpp_max(RK_S32 a, RK_S32 b)
+{
+    return (a > b) ? a : b;
+}
+
+static inline RK_S32 mpp_max3(RK_S32 a, RK_S32 b, RK_S32 c)
+{
+    return mpp_max(mpp_max(a, b), c);
+}
+
+static inline RK_S32 mpp_max4(RK_S32 a, RK_S32 b, RK_S32 c, RK_S32 d)
+{
+    return mpp_max(a, mpp_max3(b, c, d));
+}
+
+static inline RK_S32 mpp_div(RK_S32 a, RK_S32 b)
+{
+    return (b != 0) ? a / b : a;
+}
+
+static inline RK_S32 mpp_clip3(RK_S32 l, RK_S32 h, RK_S32 v)
+{
+    return (v < l) ? l : ((v > h) ? h : v);
+}
+
+static inline RK_S32 mpp_sign(RK_S32 a)
+{
+    return (a < 0) ? -1 : 1;
+}
+
+static inline RK_S32 mpp_div_sign(RK_S32 a, RK_S32 b)
+{
+    return (a + mpp_sign(a) * b / 2) / b;
+}
+
+/* minimum fd for duplication: skip stdin / stdout / stderr */
+#define MPP_FD_MIN              3
+
 static __inline RK_S32 mpp_dup(RK_S32 fd)
 {
-    /* avoid stdin / stdout / stderr so start from 3 */
 #ifdef F_DUPFD_CLOEXEC
-    return fcntl(fd, F_DUPFD_CLOEXEC, 3);
+    return fcntl(fd, F_DUPFD_CLOEXEC, MPP_FD_MIN);
 #else
     RK_S32 new_fd = -1;
 
-    new_fd = fcntl(fd, F_DUPFD, 3);
+    new_fd = fcntl(fd, F_DUPFD, MPP_FD_MIN);
     if (new_fd == -1)
         return -1;
 

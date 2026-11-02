@@ -29,6 +29,12 @@ typedef struct MppSglnBase_t {
     rk_u32 debug;
 } MppSglnBase;
 
+/*
+ * G.PRE.02 exemption: token-pasting (##) and stringizing (#) macros cannot be
+ * replaced by inline functions. MPP_SGLN_DEF/MPP_MODULE_DEF rely on them to
+ * paste identifier names and to stringize names for registration, and they
+ * must stay function-like macros.
+ */
 #define MPP_SGLN_STR(x)      #x
 #define MPP_SGLN_CAT(p, x)   p##_##x
 #define MPP_SGLN_CTOR(p, x)  MPP_SGLN_CAT(p, x)

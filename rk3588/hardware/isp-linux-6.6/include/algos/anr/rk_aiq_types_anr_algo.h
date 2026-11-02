@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef _RK_AIQ_TYPE_ANR_ALGO_H_
-#define _RK_AIQ_TYPE_ANR_ALGO_H_
+#ifndef _RK_AIQ_TYPE_NR_ALGO_H_
+#define _RK_AIQ_TYPE_NR_ALGO_H_
 #include "algos/anr/rk_aiq_types_anr_hw.h"
 
 RKAIQ_BEGIN_DECLARE
@@ -27,11 +27,6 @@ RKAIQ_BEGIN_DECLARE
 #define UVNR_FIX_VALUE_PRINTF 1
 #define YNR_FIX_VALUE_PRINTF 1
 #define MFNR_FIX_VALUE_PRINTF 1
-
-#define ANR_USE_XML_FILE 1
-
-#define ANR_USE_JSON_PARA 1
-
 
 RKAIQ_END_DECLARE
 

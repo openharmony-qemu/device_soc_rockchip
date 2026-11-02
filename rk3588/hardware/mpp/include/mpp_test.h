@@ -187,8 +187,8 @@ do { \
 do { \
     rk_s32 _n = (rk_s32)(n); \
     if (_n > 0) { \
-        rk_s32 _s = MPP_MAX(0, MPP_MIN((start), _n - 1)); \
-        rk_s32 _e = MPP_MAX(_s, MPP_MIN((end), _n - 1)); \
+        rk_s32 _s = mpp_max(0, mpp_min((start), _n - 1)); \
+        rk_s32 _e = mpp_max(_s, mpp_min((end), _n - 1)); \
         rk_s32 _i, _max = 0; \
         MPP_TEST_CALC_WIDTH(cases, _s, _e); \
         for (_i = _s; _i <= _e; _i++) \
@@ -252,7 +252,7 @@ static inline rk_s32 mpp_test_parse_opts(void *ctx,
                 if (opts[j].fn) {
                     const char *next = (i + 1 < argc) ? argv[i + 1] : NULL;
 
-                    i += MPP_MAX(1, opts[j].fn(ctx, next));
+                    i += mpp_max(1, opts[j].fn(ctx, next));
                 } else {
                     i++;
                 }
