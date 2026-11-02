@@ -22,6 +22,7 @@
     "hisysevent_config": [],
     "deps": {
       "components": [
+        "bounds_checking_function",
         "hilog",
         "init",
         "c_utils",

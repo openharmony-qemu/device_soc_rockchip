@@ -21,7 +21,6 @@
 #define _RK_AIQ_TYPE_ABAYER2DNR_HW_V2_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_Bayer2dnr_Fix_V2_s {
 
     //ISP_BAYNR_3A00_CTRL
@@ -59,6 +58,4 @@ typedef struct RK_Bayer2dnr_Fix_V2_s {
     uint32_t dat_max;
 } RK_Bayer2dnr_Fix_V2_t;
 
-
 #endif
-

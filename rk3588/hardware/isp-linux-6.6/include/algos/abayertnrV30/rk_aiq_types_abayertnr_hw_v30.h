@@ -21,7 +21,6 @@
 #define _RK_AIQ_TYPE_ABAYERTNR_HW_V30_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_Bayertnr_Fix_V30_s {
     /* BAY3D_CTRL */
     uint8_t bypass_en;
@@ -193,6 +192,4 @@ typedef struct RK_Bayertnr_Fix_V30_s {
     uint8_t tnr_gain_max;
 } RK_Bayertnr_Fix_V30_t;
 
-
 #endif
-

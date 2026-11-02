@@ -17,7 +17,6 @@
 #include <message_parcel.h>
 #include <securec.h>
 
-
 namespace OHOS {
 namespace HDI {
 namespace Nnrt {
@@ -32,70 +31,70 @@ NnrtDeviceVdiImpl::~NnrtDeviceVdiImpl()
     }
 }
 
-int32_t NnrtDeviceVdiImpl::GetDeviceName(std::string& name)
+int32_t NnrtDeviceVdiImpl::GetDeviceName(std::string &name)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     name = "RK3588-NPU";
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::GetVendorName(std::string& name)
+int32_t NnrtDeviceVdiImpl::GetVendorName(std::string &name)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     name = "Rockchip";
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::GetDeviceType(DeviceType& deviceType)
+int32_t NnrtDeviceVdiImpl::GetDeviceType(DeviceType &deviceType)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     deviceType = DeviceType::ACCELERATOR;
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::GetDeviceStatus(DeviceStatus& status)
+int32_t NnrtDeviceVdiImpl::GetDeviceStatus(DeviceStatus &status)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     status = DeviceStatus::AVAILABLE;
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::GetSupportedOperation(const Model& model, std::vector<bool>& ops)
+int32_t NnrtDeviceVdiImpl::GetSupportedOperation(const Model &model, std::vector<bool> &ops)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::IsFloat16PrecisionSupported(bool& isSupported)
-{
-    HDF_LOGI("%{public}s: enter", __func__);
-    isSupported = true;
-    return HDF_SUCCESS;
-}
-
-int32_t NnrtDeviceVdiImpl::IsPerformanceModeSupported(bool& isSupported)
+int32_t NnrtDeviceVdiImpl::IsFloat16PrecisionSupported(bool &isSupported)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     isSupported = true;
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::IsPrioritySupported(bool& isSupported)
+int32_t NnrtDeviceVdiImpl::IsPerformanceModeSupported(bool &isSupported)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     isSupported = true;
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::IsDynamicInputSupported(bool& isSupported)
+int32_t NnrtDeviceVdiImpl::IsPrioritySupported(bool &isSupported)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     isSupported = true;
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::PrepareModel(const Model& model, const ModelConfig& config,
-    sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
+int32_t NnrtDeviceVdiImpl::IsDynamicInputSupported(bool &isSupported)
+{
+    HDF_LOGI("%{public}s: enter", __func__);
+    isSupported = true;
+    return HDF_SUCCESS;
+}
+
+int32_t NnrtDeviceVdiImpl::PrepareModel(const Model &model, const ModelConfig &config,
+                                        sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel> &preparedModel)
 {
     HDF_LOGI("NnrtDeviceVdiImpl::PrepareModel enter %{public}s.", model.name.c_str());
 
@@ -104,7 +103,7 @@ int32_t NnrtDeviceVdiImpl::PrepareModel(const Model& model, const ModelConfig& c
         HDF_LOGE("Create new PreparedModelService instance failed.");
         return HDF_FAILURE;
     }
-    
+
     int ret = service->init(model.name.c_str());
     if (ret != 0) {
         HDF_LOGE("Prepared model failed.");
@@ -112,19 +111,20 @@ int32_t NnrtDeviceVdiImpl::PrepareModel(const Model& model, const ModelConfig& c
     }
 
     preparedModel = service;
-    
+
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::IsModelCacheSupported(bool& isSupported)
+int32_t NnrtDeviceVdiImpl::IsModelCacheSupported(bool &isSupported)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     isSupported = true;
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::PrepareModelFromModelCache(const std::vector<SharedBuffer>& modelCache,
-    const ModelConfig& config, sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
+int32_t NnrtDeviceVdiImpl::PrepareModelFromModelCache(const std::vector<SharedBuffer> &modelCache,
+                                                      const ModelConfig &config,
+                                                      sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel> &preparedModel)
 {
     HDF_LOGI("PrepareModelFromModelCache start");
 
@@ -154,9 +154,9 @@ int32_t NnrtDeviceVdiImpl::PrepareModelFromModelCache(const std::vector<SharedBu
     }
 
     printf("read from ashmem start, modelCache[0].dataSize=%d\n", buffer.dataSize);
-    HDF_LOGI("PrepareModelFromModelCache: read from ashmem start, buffer bufferSize=%d dataSize=%d",
-        buffer.bufferSize, buffer.dataSize);
-    auto data = const_cast<void*>(ashptr->ReadFromAshmem(buffer.dataSize, 0));
+    HDF_LOGI("PrepareModelFromModelCache: read from ashmem start, buffer bufferSize=%d dataSize=%d", buffer.bufferSize,
+             buffer.dataSize);
+    auto data = const_cast<void *>(ashptr->ReadFromAshmem(buffer.dataSize, 0));
     if (data == nullptr) {
         HDF_LOGE("ModelBuffer cannot be nullptr.");
         return HDF_FAILURE;
@@ -173,8 +173,9 @@ int32_t NnrtDeviceVdiImpl::PrepareModelFromModelCache(const std::vector<SharedBu
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::PrepareOfflineModel(const std::vector<SharedBuffer>& offlineModels,
-    const ModelConfig& config, sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel>& preparedModel)
+int32_t NnrtDeviceVdiImpl::PrepareOfflineModel(const std::vector<SharedBuffer> &offlineModels,
+                                               const ModelConfig &config,
+                                               sptr<OHOS::HDI::Nnrt::V2_1::IPreparedModel> &preparedModel)
 {
     HDF_LOGI("NnrtDeviceVdiImpl::PrepareOfflineModel enter");
     auto ret = PrepareModelFromModelCache(offlineModels, config, preparedModel);
@@ -187,7 +188,7 @@ int32_t NnrtDeviceVdiImpl::PrepareOfflineModel(const std::vector<SharedBuffer>& 
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::AllocateBuffer(uint32_t length, SharedBuffer& buffer)
+int32_t NnrtDeviceVdiImpl::AllocateBuffer(uint32_t length, SharedBuffer &buffer)
 {
     HDF_LOGI("NnrtDeviceVdiImpl::AllocateBuffer enter");
 
@@ -214,7 +215,7 @@ int32_t NnrtDeviceVdiImpl::AllocateBuffer(uint32_t length, SharedBuffer& buffer)
     return HDF_SUCCESS;
 }
 
-int32_t NnrtDeviceVdiImpl::ReleaseBuffer(const SharedBuffer& buffer)
+int32_t NnrtDeviceVdiImpl::ReleaseBuffer(const SharedBuffer &buffer)
 {
     HDF_LOGI("NnrtDeviceVdiImpl::ReleaseBuffer enter");
 
@@ -231,7 +232,7 @@ int32_t NnrtDeviceVdiImpl::ReleaseBuffer(const SharedBuffer& buffer)
     ashptr->UnmapAshmem();
     ashptr->CloseAshmem();
 
-    for (auto& ash : m_ashmems) {
+    for (auto &ash : m_ashmems) {
         ash.second->UnmapAshmem();
         ash.second->CloseAshmem();
     }
@@ -246,14 +247,13 @@ extern "C" INnrtDeviceVdi *CreateNnrtDeviceVdi()
     return new NnrtDeviceVdiImpl();
 }
 
-extern "C" void DestroyNnrtDeviceVdi(INnrtDeviceVdi* vdi)
+extern "C" void DestroyNnrtDeviceVdi(INnrtDeviceVdi *vdi)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     delete vdi;
 }
 
-
-} // V2_1
-} // Nnrt
-} // HDI
-} // OHOS
+}  // V2_1
+}  // Nnrt
+}  // HDI
+}  // OHOS

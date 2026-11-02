@@ -21,7 +21,7 @@ const char *mpp_rt_get_rw_path(void);
 
 /*
  * Check a kmpp kernel capability by reading /proc/kmpp/<module>/<kind> and
- * matching the leading name before the colon. Generic helper ¡ª kmpp modules
+ * matching the leading name before the colon. Generic helper â€” kmpp modules
  * call this to probe their own feat/cmds/fix entries and cache locally.
  * Returns rk_ok if supported, rk_nok otherwise.
  */
@@ -32,4 +32,3 @@ rk_s32 mpp_rt_kmpp_cap_check(const char *module, const char *kind, const char *n
 #endif
 
 #endif /* MPP_RUNTIME_H */
-

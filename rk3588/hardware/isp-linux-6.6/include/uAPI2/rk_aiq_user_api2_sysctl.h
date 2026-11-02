@@ -50,15 +50,9 @@ typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
  *       used to help select the satisfied iq file when multiple iq files
  *       exsist.
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit(const char* sns_ent_name,
-                            rk_aiq_working_mode_t mode,
-                            const char* force_iq_file);
+XCamReturn rk_aiq_uapi2_sysctl_preInit(const char *sns_ent_name, rk_aiq_working_mode_t mode, const char *force_iq_file);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_regHwEvtCb(const char* sns_ent_name,
-                               rk_aiq_hwevt_cb hwevt_cb,
-                               void* cb_ctx);
+XCamReturn rk_aiq_uapi2_sysctl_regHwEvtCb(const char *sns_ent_name, rk_aiq_hwevt_cb hwevt_cb, void *cb_ctx);
 
 /*!
  * \brief initialze aiq control system context
@@ -72,9 +66,7 @@ rk_aiq_uapi2_sysctl_regHwEvtCb(const char* sns_ent_name,
  *                            isp settings, etc.) for each frame
  * \return return system context if success, or NULL if failure.
  */
-rk_aiq_sys_ctx_t* rk_aiq_uapi2_sysctl_init(const char* sns_ent_name,
-                                           const char* iq_file_dir,
-                                           rk_aiq_error_cb err_cb,
+rk_aiq_sys_ctx_t *rk_aiq_uapi2_sysctl_init(const char *sns_ent_name, const char *iq_file_dir, rk_aiq_error_cb err_cb,
                                            rk_aiq_metas_cb metas_cb);
 
 /*!
@@ -83,8 +75,7 @@ rk_aiq_sys_ctx_t* rk_aiq_uapi2_sysctl_init(const char* sns_ent_name,
  *
  * \param[in] ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
  */
-void
-rk_aiq_uapi2_sysctl_deinit(rk_aiq_sys_ctx_t* ctx);
+void rk_aiq_uapi2_sysctl_deinit(rk_aiq_sys_ctx_t *ctx);
 
 /*!
  * \brief prepare aiq control system before runninig
@@ -98,10 +89,8 @@ rk_aiq_uapi2_sysctl_deinit(rk_aiq_sys_ctx_t* ctx);
  * \param[in] mode            pipleline working mode
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_prepare(const rk_aiq_sys_ctx_t* ctx,
-                            uint32_t  width, uint32_t  height,
-                            rk_aiq_working_mode_t mode);
+XCamReturn rk_aiq_uapi2_sysctl_prepare(const rk_aiq_sys_ctx_t *ctx, uint32_t width, uint32_t height,
+                                       rk_aiq_working_mode_t mode);
 
 /*!
  * \brief start aiq control system
@@ -112,8 +101,7 @@ rk_aiq_uapi2_sysctl_prepare(const rk_aiq_sys_ctx_t* ctx,
  * \param[in] ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_start(const rk_aiq_sys_ctx_t* ctx);
+XCamReturn rk_aiq_uapi2_sysctl_start(const rk_aiq_sys_ctx_t *ctx);
 
 /*!
  * \brief stop aiq control system
@@ -122,8 +110,7 @@ rk_aiq_uapi2_sysctl_start(const rk_aiq_sys_ctx_t* ctx);
  * \param[in] keep_ext_hw_st  do not change external devices status, like ircut/cpsl
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_stop(const rk_aiq_sys_ctx_t* ctx, bool keep_ext_hw_st);
+XCamReturn rk_aiq_uapi2_sysctl_stop(const rk_aiq_sys_ctx_t *ctx, bool keep_ext_hw_st);
 
 /*!
  * \brief get aiq version infos
@@ -131,32 +118,23 @@ rk_aiq_uapi2_sysctl_stop(const rk_aiq_sys_ctx_t* ctx, bool keep_ext_hw_st);
  * \param[in,out] vers         version infos
  * \return return 0 if success
  */
-void rk_aiq_uapi2_get_version_info(rk_aiq_ver_info_t* vers);
+void rk_aiq_uapi2_get_version_info(rk_aiq_ver_info_t *vers);
 
-void rk_aiq_uapi2_get_aiqversion_info(const rk_aiq_sys_ctx_t* ctx, rk_aiq_version_info_t* vers);
+void rk_aiq_uapi2_get_aiqversion_info(const rk_aiq_sys_ctx_t *ctx, rk_aiq_version_info_t *vers);
 
 /*!
  * \brief apply an new iq file when stream on
  *
  * \param[in] iqfile       iqfile which will be applied
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_updateIq(rk_aiq_sys_ctx_t* sys_ctx, char* iqfile);
+XCamReturn rk_aiq_uapi2_sysctl_updateIq(rk_aiq_sys_ctx_t *sys_ctx, char *iqfile);
 
+int32_t rk_aiq_uapi2_sysctl_getModuleCtl(const rk_aiq_sys_ctx_t *ctx, rk_aiq_module_id_t mId, bool *mod_en);
 
-int32_t rk_aiq_uapi2_sysctl_getModuleCtl(const rk_aiq_sys_ctx_t* ctx,
-                                         rk_aiq_module_id_t mId, bool *mod_en);
+XCamReturn rk_aiq_uapi2_sysctl_getModuleEn(const rk_aiq_sys_ctx_t *ctx, rk_aiq_module_list_t *mod);
+XCamReturn rk_aiq_uapi2_sysctl_setModuleEn(const rk_aiq_sys_ctx_t *ctx, rk_aiq_module_list_t *mod);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_getModuleEn(const rk_aiq_sys_ctx_t* ctx,
-                                rk_aiq_module_list_t* mod);
-XCamReturn
-rk_aiq_uapi2_sysctl_setModuleEn(const rk_aiq_sys_ctx_t* ctx,
-                                rk_aiq_module_list_t* mod);
-
-XCamReturn
-rk_aiq_uapi2_sysctl_setModuleCtl(const rk_aiq_sys_ctx_t* ctx, rk_aiq_module_id_t mId, bool mod_en);
-
+XCamReturn rk_aiq_uapi2_sysctl_setModuleCtl(const rk_aiq_sys_ctx_t *ctx, rk_aiq_module_id_t mId, bool mod_en);
 
 /*!
  * \brief get algo lib enabled status
@@ -167,11 +145,9 @@ rk_aiq_uapi2_sysctl_setModuleCtl(const rk_aiq_sys_ctx_t* ctx, rk_aiq_module_id_t
  *                            returned by call \ref rk_aiq_uapi2_sysctl_regLib for customer algos
  * \return                    return true if enabled , false if disabled or unregistered
  */
-bool rk_aiq_uapi2_sysctl_getAxlibStatus(const rk_aiq_sys_ctx_t* ctx,
-                                        const int algo_type,
-                                        const int lib_id);
+bool rk_aiq_uapi2_sysctl_getAxlibStatus(const rk_aiq_sys_ctx_t *ctx, const int algo_type, const int lib_id);
 
-RkAiqAlgoContext* rk_aiq_uapi2_sysctl_getAxlibCtx(const rk_aiq_sys_ctx_t* ctx, const int algo_type, const int lib_id);
+RkAiqAlgoContext *rk_aiq_uapi2_sysctl_getAxlibCtx(const rk_aiq_sys_ctx_t *ctx, const int algo_type, const int lib_id);
 
 /*!
  * \brief enable or disable algo lib
@@ -190,11 +166,8 @@ RkAiqAlgoContext* rk_aiq_uapi2_sysctl_getAxlibCtx(const rk_aiq_sys_ctx_t* ctx, c
  *                            bypass the algo's prcosses.
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_enableAxlib(const rk_aiq_sys_ctx_t* ctx,
-                                const int algo_type,
-                                const int lib_id,
-                                bool enable);
+XCamReturn rk_aiq_uapi2_sysctl_enableAxlib(const rk_aiq_sys_ctx_t *ctx, const int algo_type, const int lib_id,
+                                           bool enable);
 
 /*!
  * \brief get enabled algo lib context
@@ -206,15 +179,13 @@ rk_aiq_uapi2_sysctl_enableAxlib(const rk_aiq_sys_ctx_t* ctx,
  * \param[in] algo_type       algo type defined by RkAiqAlgoDesComm.type
  * \return return 0 if success
  */
-const RkAiqAlgoContext* rk_aiq_uapi2_sysctl_getEnabledAxlibCtx(const rk_aiq_sys_ctx_t* ctx, const int algo_type);
+const RkAiqAlgoContext *rk_aiq_uapi2_sysctl_getEnabledAxlibCtx(const rk_aiq_sys_ctx_t *ctx, const int algo_type);
 
 /********************below api continue to use api of CamHwIsp20********************/
 
-XCamReturn
-rk_aiq_uapi2_sysctl_getStaticMetas(const char* sns_ent_name, rk_aiq_static_info_t* static_info);
+XCamReturn rk_aiq_uapi2_sysctl_getStaticMetas(const char *sns_ent_name, rk_aiq_static_info_t *static_info);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(int index, rk_aiq_static_info_t* static_info);
+XCamReturn rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(int index, rk_aiq_static_info_t *static_info);
 /*!
  * \brief enum static camera infos
  *
@@ -222,25 +193,21 @@ rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(int index, rk_aiq_static_info_t* stat
  * \param[out] static_info    returned camera infos
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_enumStaticMetas(int index, rk_aiq_static_info_t* static_info);
+XCamReturn rk_aiq_uapi2_sysctl_enumStaticMetas(int index, rk_aiq_static_info_t *static_info);
 
 /*!
  * \brief get sensor entity name from video node
  * \param[in] vd             pp stream video node full path
  * \return return the binded sensor name
  */
-const char*
-rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd(const char* vd);
+const char *rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd(const char *vd);
 
 /*!
  * \brief get crop window of isp input
  *
  * \param[in] rect       get cams crop prop
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_getCrop(const rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_rect_t *rect);
-
+XCamReturn rk_aiq_uapi2_sysctl_getCrop(const rk_aiq_sys_ctx_t *sys_ctx, rk_aiq_rect_t *rect);
 
 /*!
  * \brief set compensation light config
@@ -249,9 +216,7 @@ rk_aiq_uapi2_sysctl_getCrop(const rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_rect_t *rect
  * \param[out] cfg            cpsl configs
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_setCpsLtCfg(const rk_aiq_sys_ctx_t* ctx,
-                                rk_aiq_cpsl_cfg_t* cfg);
+XCamReturn rk_aiq_uapi2_sysctl_setCpsLtCfg(const rk_aiq_sys_ctx_t *ctx, rk_aiq_cpsl_cfg_t *cfg);
 /*!
  * \brief get compensation light info
  *
@@ -259,9 +224,7 @@ rk_aiq_uapi2_sysctl_setCpsLtCfg(const rk_aiq_sys_ctx_t* ctx,
  * \param[out] info           current cpsl settings
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_getCpsLtInfo(const rk_aiq_sys_ctx_t* ctx,
-                                 rk_aiq_cpsl_info_t* info);
+XCamReturn rk_aiq_uapi2_sysctl_getCpsLtInfo(const rk_aiq_sys_ctx_t *ctx, rk_aiq_cpsl_info_t *info);
 /*!
  * \brief query compensation light capability
  *
@@ -269,9 +232,7 @@ rk_aiq_uapi2_sysctl_getCpsLtInfo(const rk_aiq_sys_ctx_t* ctx,
  * \param[out] cap            cpsl cap info
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_queryCpsLtCap(const rk_aiq_sys_ctx_t* ctx,
-                                  rk_aiq_cpsl_cap_t* cap);
+XCamReturn rk_aiq_uapi2_sysctl_queryCpsLtCap(const rk_aiq_sys_ctx_t *ctx, rk_aiq_cpsl_cap_t *cap);
 
 /*!
  * \brief set the bypass stream rotation
@@ -280,8 +241,7 @@ rk_aiq_uapi2_sysctl_queryCpsLtCap(const rk_aiq_sys_ctx_t* ctx,
  * \param[in] rot             rotation val
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_setSharpFbcRotation(const rk_aiq_sys_ctx_t* ctx, rk_aiq_rotation_t rot);
+XCamReturn rk_aiq_uapi2_sysctl_setSharpFbcRotation(const rk_aiq_sys_ctx_t *ctx, rk_aiq_rotation_t rot);
 
 /*!
  * \brief set multiple cameras working concurrently
@@ -290,17 +250,15 @@ rk_aiq_uapi2_sysctl_setSharpFbcRotation(const rk_aiq_sys_ctx_t* ctx, rk_aiq_rota
  * \param[in] cc        set cams concurrently used or not
  * \note should be called before rk_aiq_uapi_sysctl_start
  */
-void
-rk_aiq_uapi2_sysctl_setMulCamConc(const rk_aiq_sys_ctx_t* ctx, bool cc);
+void rk_aiq_uapi2_sysctl_setMulCamConc(const rk_aiq_sys_ctx_t *ctx, bool cc);
 
 /*!
  * \brief register mems sensor handler interface
  *
  * \param[in] intf          mems sensor interfaces
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_regMemsSensorIntf(const rk_aiq_sys_ctx_t* sys_ctx,
-                                      const rk_aiq_mems_sensor_intf_t* intf);
+XCamReturn rk_aiq_uapi2_sysctl_regMemsSensorIntf(const rk_aiq_sys_ctx_t *sys_ctx,
+                                                 const rk_aiq_mems_sensor_intf_t *intf);
 
 /**
  * @brief switch calibDB for different scene
@@ -311,18 +269,13 @@ rk_aiq_uapi2_sysctl_regMemsSensorIntf(const rk_aiq_sys_ctx_t* sys_ctx,
  *
  * @return 0 if no error
  */
-int rk_aiq_uapi2_sysctl_switch_scene(const rk_aiq_sys_ctx_t* sys_ctx,
-                                     const char* main_scene,
-                                     const char* sub_scene);
+int rk_aiq_uapi2_sysctl_switch_scene(const rk_aiq_sys_ctx_t *sys_ctx, const char *main_scene, const char *sub_scene);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_tuning(const rk_aiq_sys_ctx_t* sys_ctx, char* param);
+XCamReturn rk_aiq_uapi2_sysctl_tuning(const rk_aiq_sys_ctx_t *sys_ctx, char *param);
 
-char* rk_aiq_uapi2_sysctl_readiq(const rk_aiq_sys_ctx_t* sys_ctx, char* param);
+char *rk_aiq_uapi2_sysctl_readiq(const rk_aiq_sys_ctx_t *sys_ctx, char *param);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit_scene(const char* sns_ent_name, const char *main_scene,
-                                  const char *sub_scene);
+XCamReturn rk_aiq_uapi2_sysctl_preInit_scene(const char *sns_ent_name, const char *main_scene, const char *sub_scene);
 
 /**
  * @brief preInit the addr of IQ
@@ -333,8 +286,7 @@ rk_aiq_uapi2_sysctl_preInit_scene(const char* sns_ent_name, const char *main_sce
  *
  * @return 0 if no error
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit_iq_addr(const char* sns_ent_name, void *addr, size_t len);
+XCamReturn rk_aiq_uapi2_sysctl_preInit_iq_addr(const char *sns_ent_name, void *addr, size_t len);
 
 /**
  * @brief preInit the addr of IQ
@@ -345,11 +297,10 @@ rk_aiq_uapi2_sysctl_preInit_iq_addr(const char* sns_ent_name, void *addr, size_t
  *
  * @return 0 if no error
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit_iq_addr(const char* sns_ent_name, void *addr, size_t len);
+XCamReturn rk_aiq_uapi2_sysctl_preInit_iq_addr(const char *sns_ent_name, void *addr, size_t len);
 
 typedef struct rk_aiq_ctx_camInfo_s {
-    const char* sns_ent_nm;
+    const char *sns_ent_nm;
     int sns_camPhyId;
 } rk_aiq_ctx_camInfo_t;
 
@@ -361,9 +312,7 @@ typedef struct rk_aiq_ctx_camInfo_s {
  *
  * @return 0 if no error
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit_calibproj(const char* sns_ent_name, void *addr);
-
+XCamReturn rk_aiq_uapi2_sysctl_preInit_calibproj(const char *sns_ent_name, void *addr);
 
 /**
  * @brief set device buffer count, currently only for raw tx/rx device
@@ -374,12 +323,9 @@ rk_aiq_uapi2_sysctl_preInit_calibproj(const char* sns_ent_name, void *addr);
  *
  * @return XCAM_RETURN_NO_ERROR if no error, otherwise return values < 0
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit_devBufCnt(const char* sns_ent_name, const char* dev_ent,
-                                      int buf_cnt);
+XCamReturn rk_aiq_uapi2_sysctl_preInit_devBufCnt(const char *sns_ent_name, const char *dev_ent, int buf_cnt);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_getCamInfos(const rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_ctx_camInfo_t* camInfo);
+XCamReturn rk_aiq_uapi2_sysctl_getCamInfos(const rk_aiq_sys_ctx_t *sys_ctx, rk_aiq_ctx_camInfo_t *camInfo);
 
 /*!
  * \brief get 3a stats
@@ -389,9 +335,7 @@ rk_aiq_uapi2_sysctl_getCamInfos(const rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_ctx_camI
  * \return return 0 if success
  * \note non-blocked interface, and copy the result to stats.
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_get3AStats(const rk_aiq_sys_ctx_t* ctx,
-                              rk_aiq_isp_stats_t *stats);
+XCamReturn rk_aiq_uapi2_sysctl_get3AStats(const rk_aiq_sys_ctx_t *ctx, rk_aiq_isp_stats_t *stats);
 
 /*!
  * \brief get 3a stats
@@ -404,9 +348,7 @@ rk_aiq_uapi2_sysctl_get3AStats(const rk_aiq_sys_ctx_t* ctx,
  * \note blocked interface, and return the stats ref, user should
  *       call \ref rk_aiq_uapi_sysctl_release3AStatsRef to release.
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_get3AStatsBlk(const rk_aiq_sys_ctx_t* ctx,
-                                  rk_aiq_isp_stats_t **stats, int timeout_ms);
+XCamReturn rk_aiq_uapi2_sysctl_get3AStatsBlk(const rk_aiq_sys_ctx_t *ctx, rk_aiq_isp_stats_t **stats, int timeout_ms);
 
 /*!
  * \brief release 3a stats result ref
@@ -416,9 +358,7 @@ rk_aiq_uapi2_sysctl_get3AStatsBlk(const rk_aiq_sys_ctx_t* ctx,
  * \return void
  * \note called with \ref rk_aiq_uapi_sysctl_get3AStatsBlk
  */
-void
-rk_aiq_uapi2_sysctl_release3AStatsRef(const rk_aiq_sys_ctx_t* ctx,
-                                      rk_aiq_isp_stats_t *stats);
+void rk_aiq_uapi2_sysctl_release3AStatsRef(const rk_aiq_sys_ctx_t *ctx, rk_aiq_isp_stats_t *stats);
 
 /*!
  * \brief prepare RK-raw-format data process environment
@@ -427,8 +367,7 @@ rk_aiq_uapi2_sysctl_release3AStatsRef(const rk_aiq_sys_ctx_t* ctx,
  * \param[in] prop            prepare params
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_prepareRkRaw(const rk_aiq_sys_ctx_t* ctx, rk_aiq_raw_prop_t prop);
+XCamReturn rk_aiq_uapi2_sysctl_prepareRkRaw(const rk_aiq_sys_ctx_t *ctx, rk_aiq_raw_prop_t prop);
 
 /*!
  * \brief queue RK-Raw-format buffer into aiq control system
@@ -441,8 +380,7 @@ rk_aiq_uapi2_sysctl_prepareRkRaw(const rk_aiq_sys_ctx_t* ctx, rk_aiq_raw_prop_t 
  *                            should be registered,after frame is processed, callback function would be called.
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_enqueueRkRawBuf(const rk_aiq_sys_ctx_t* ctx, void *rawdata, bool sync);
+XCamReturn rk_aiq_uapi2_sysctl_enqueueRkRawBuf(const rk_aiq_sys_ctx_t *ctx, void *rawdata, bool sync);
 
 /*!
  * \brief queue RK-Raw-format file into aiq control system
@@ -452,8 +390,7 @@ rk_aiq_uapi2_sysctl_enqueueRkRawBuf(const rk_aiq_sys_ctx_t* ctx, void *rawdata, 
  * calling process will be blocked until the queued frame is processed
  * \return return 0 if success
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_enqueueRkRawFile(const rk_aiq_sys_ctx_t* ctx, const char *path);
+XCamReturn rk_aiq_uapi2_sysctl_enqueueRkRawFile(const rk_aiq_sys_ctx_t *ctx, const char *path);
 
 /*!
  * \brief regist RK-Raw-format buffer callback into aiq control system
@@ -469,8 +406,7 @@ rk_aiq_uapi2_sysctl_enqueueRkRawFile(const rk_aiq_sys_ctx_t* ctx, const char *pa
  * \return return 0 if success
  */
 
-XCamReturn
-rk_aiq_uapi2_sysctl_registRkRawCb(const rk_aiq_sys_ctx_t* ctx, void (*callback)(void*));
+XCamReturn rk_aiq_uapi2_sysctl_registRkRawCb(const rk_aiq_sys_ctx_t *ctx, void (*callback)(void *));
 
 /*!
  * \brief get working mode
@@ -478,8 +414,7 @@ rk_aiq_uapi2_sysctl_registRkRawCb(const rk_aiq_sys_ctx_t* ctx, void (*callback)(
  * \param[in] ctx             context
  * \param[out] working_mode   rk_aiq_working_mode_t
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_getWorkingMode(const rk_aiq_sys_ctx_t* ctx, rk_aiq_working_mode_t *mode);
+XCamReturn rk_aiq_uapi2_sysctl_getWorkingMode(const rk_aiq_sys_ctx_t *ctx, rk_aiq_working_mode_t *mode);
 
 /**
  * @brief turn on/off socket server
@@ -489,10 +424,9 @@ rk_aiq_uapi2_sysctl_getWorkingMode(const rk_aiq_sys_ctx_t* ctx, rk_aiq_working_m
  *
  * @return 0 if no error
  */
-int rk_aiq_uapi2_sysctl_tuning_enable(rk_aiq_sys_ctx_t* sys_ctx, bool enable);
+int rk_aiq_uapi2_sysctl_tuning_enable(rk_aiq_sys_ctx_t *sys_ctx, bool enable);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_resetCam(const rk_aiq_sys_ctx_t* sys_ctx, int camId);
+XCamReturn rk_aiq_uapi2_sysctl_resetCam(const rk_aiq_sys_ctx_t *sys_ctx, int camId);
 
 /**
  * @brief generated isp params for offline raw
@@ -502,10 +436,8 @@ rk_aiq_uapi2_sysctl_resetCam(const rk_aiq_sys_ctx_t* sys_ctx, int camId);
  * @param next_frm_info       next frame exp info, if mode=0, set null
  * @param mode                mode=1 working mode is all offline, mode=0 working mode is semi-offline
  */
-void rk_aiq_uapi2_sysctl_rawReproc_genIspParams (rk_aiq_sys_ctx_t* sys_ctx,
-                                                 uint32_t sequence,
-                                                 rk_aiq_frame_info_t *next_frm_info,
-                                                 int mode);
+void rk_aiq_uapi2_sysctl_rawReproc_genIspParams(rk_aiq_sys_ctx_t *sys_ctx, uint32_t sequence,
+                                                rk_aiq_frame_info_t *next_frm_info, int mode);
 
 /**
  * @brief set isp driver work mode to all offline
@@ -516,8 +448,7 @@ void rk_aiq_uapi2_sysctl_rawReproc_genIspParams (rk_aiq_sys_ctx_t* sys_ctx,
  * @param two_frm_exp_info[2] an array which include first frame and seond frame exp info
  * @return sns_ent_name
  */
-const char* rk_aiq_uapi2_sysctl_rawReproc_preInit(const char* isp_driver,
-                                                  const char* offline_sns_name,
+const char *rk_aiq_uapi2_sysctl_rawReproc_preInit(const char *isp_driver, const char *offline_sns_name,
                                                   rk_aiq_frame_info_t two_frm_exp_info[2]);
 /**
  * @brief set user delay counts of params related to stats
@@ -527,14 +458,12 @@ const char* rk_aiq_uapi2_sysctl_rawReproc_preInit(const char* isp_driver,
  *                                Can set INT8_MAX to restore the old delay counts.
  */
 
-void rk_aiq_uapi2_sysctl_setIspParamsDelayCnts(const rk_aiq_sys_ctx_t* sys_ctx, int8_t delay_cnts);
+void rk_aiq_uapi2_sysctl_setIspParamsDelayCnts(const rk_aiq_sys_ctx_t *sys_ctx, int8_t delay_cnts);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_preInit_rkrawstream_info(const char* sns_ent_name,
-                                             const rk_aiq_rkrawstream_info_t* info);
+XCamReturn rk_aiq_uapi2_sysctl_preInit_rkrawstream_info(const char *sns_ent_name,
+                                                        const rk_aiq_rkrawstream_info_t *info);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_setCrop(const rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_rect_t rect);
+XCamReturn rk_aiq_uapi2_sysctl_setCrop(const rk_aiq_sys_ctx_t *sys_ctx, rk_aiq_rect_t rect);
 
 /**
  * @brief pause vicap stream
@@ -543,24 +472,20 @@ rk_aiq_uapi2_sysctl_setCrop(const rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_rect_t rect)
  *
  * @return 0 if no error
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_pause(rk_aiq_sys_ctx_t* sys_ctx, bool isSingleMode);
+XCamReturn rk_aiq_uapi2_sysctl_pause(rk_aiq_sys_ctx_t *sys_ctx, bool isSingleMode);
 
 /**
  * @brief resume vicap stream
  *
  * \param[in] sys_ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
- * 
+ *
  * @return 0 if no error
  */
-XCamReturn
-rk_aiq_uapi2_sysctl_resume(rk_aiq_sys_ctx_t* sys_ctx);
+XCamReturn rk_aiq_uapi2_sysctl_resume(rk_aiq_sys_ctx_t *sys_ctx);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_getAinrParams(const rk_aiq_sys_ctx_t* sys_ctx, rk_ainr_param* para);
+XCamReturn rk_aiq_uapi2_sysctl_getAinrParams(const rk_aiq_sys_ctx_t *sys_ctx, rk_ainr_param *para);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_setUserOtpInfo(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_user_otp_info_t otp_info);
+XCamReturn rk_aiq_uapi2_sysctl_setUserOtpInfo(rk_aiq_sys_ctx_t *sys_ctx, rk_aiq_user_otp_info_t otp_info);
 
 /**
  * @brief set if aiq listens the stream status
@@ -568,21 +493,15 @@ rk_aiq_uapi2_sysctl_setUserOtpInfo(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_user_otp_in
  * \param[in] sys_ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
  * \note default val is true, and if aiq is running in ISP Server mode, shoud be set to false
  */
-void rk_aiq_uapi2_sysctl_setListenStrmStatus(rk_aiq_sys_ctx_t* sys_ctx, bool isListen);
+void rk_aiq_uapi2_sysctl_setListenStrmStatus(rk_aiq_sys_ctx_t *sys_ctx, bool isListen);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_initAiisp(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_aiisp_cfg_t* aiisp_cfg,
-                              rk_aiq_aiisp_cb aiisp_cb);
-XCamReturn
-rk_aiq_uapi2_sysctl_ReadAiisp(rk_aiq_sys_ctx_t* sys_ctx);
+XCamReturn rk_aiq_uapi2_sysctl_initAiisp(rk_aiq_sys_ctx_t *sys_ctx, rk_aiq_aiisp_cfg_t *aiisp_cfg,
+                                         rk_aiq_aiisp_cb aiisp_cb);
+XCamReturn rk_aiq_uapi2_sysctl_ReadAiisp(rk_aiq_sys_ctx_t *sys_ctx);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_register3Aalgo(const rk_aiq_sys_ctx_t* ctx,
-                                   void* algoDes, void *cbs);
+XCamReturn rk_aiq_uapi2_sysctl_register3Aalgo(const rk_aiq_sys_ctx_t *ctx, void *algoDes, void *cbs);
 
-XCamReturn
-rk_aiq_uapi2_sysctl_unRegister3Aalgo(const rk_aiq_sys_ctx_t* ctx,
-                                     const int algo_type);
+XCamReturn rk_aiq_uapi2_sysctl_unRegister3Aalgo(const rk_aiq_sys_ctx_t *ctx, const int algo_type);
 
 /**
  * @brief set sensor sync mode
@@ -590,7 +509,7 @@ rk_aiq_uapi2_sysctl_unRegister3Aalgo(const rk_aiq_sys_ctx_t* ctx,
  * \param[in] sys_ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
  * \note should be called after rk_aiq_uapi2_sysctl_prepare
  */
-XCamReturn rk_aiq_uapi2_sysctl_setSnsSyncMode(const rk_aiq_sys_ctx_t* ctx, enum rkmodule_sync_mode sync_mode);
+XCamReturn rk_aiq_uapi2_sysctl_setSnsSyncMode(const rk_aiq_sys_ctx_t *ctx, enum rkmodule_sync_mode sync_mode);
 
 RKAIQ_END_DECLARE
 

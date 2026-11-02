@@ -18,7 +18,6 @@
 
 #include "rk_aiq_types_v20.h"
 
-
 typedef rk_aiq_awb_stat_cfg_v201_t rk_aiq_isp_awb_meas_cfg_v21_t;
 typedef RkAiqAdrcProcResult_t rk_aiq_isp_drc_v21_t;
 
@@ -29,51 +28,36 @@ typedef struct rk_aiq_isp_blc_v21_s {
 
 typedef struct rk_aiq_isp_wb_gain_v21_s {
     //TODO:
-    void* place_holder;
+    void *place_holder;
 } rk_aiq_isp_wb_gain_v21_t;
 
 typedef AgicProcResult_t rk_aiq_isp_gic_v21_t;
 
 typedef struct rk_aiq_isp_ccm_v21_s {
     //TODO:
-    void* place_holder;
+    void *place_holder;
 } rk_aiq_isp_ccm_v21_t;
 
 typedef RkAiqAdehazeProcResult_t rk_aiq_isp_dehaze_v21_t;
 
 typedef struct rk_aiq_isp_dhaz_stats_v21_s {
     //TODO:
-    void* place_holder;
+    void *place_holder;
 } rk_aiq_isp_dhaz_stats_v21_t;
 
 // baynr, alias name of rawnr
-#if 0
-typedef struct rk_aiq_isp_baynr_v21_s {
-    //TODO:
-    void* place_holder;
-} rk_aiq_isp_baynr_v21_t;
-#else
-typedef RK_Bayernr_Fix_V2_t rk_aiq_isp_baynr_v21_t ;
+typedef RK_Bayernr_Fix_V2_t rk_aiq_isp_baynr_v21_t;
 
-#endif
 typedef struct rk_aiq_isp_bay3d_v21_s {
     //TODO:
-    void* place_holder;
+    void *place_holder;
 } rk_aiq_isp_bay3d_v21_t;
 
-#if 0
-typedef struct rk_aiq_isp_ynr_v21_s {
-    //TODO:
-    void* place_holder;
-} rk_aiq_isp_ynr_v21_t;
-#else
-typedef RK_YNR_Fix_V2_t rk_aiq_isp_ynr_v21_t ;
+typedef RK_YNR_Fix_V2_t rk_aiq_isp_ynr_v21_t;
 
-#endif
+typedef RK_CNR_Fix_V1_t rk_aiq_isp_cnr_v21_t;
 
-typedef RK_CNR_Fix_V1_t rk_aiq_isp_cnr_v21_t ;
-
-typedef RK_SHARP_Fix_V3_t rk_aiq_isp_sharp_v21_t ;
+typedef RK_SHARP_Fix_V3_t rk_aiq_isp_sharp_v21_t;
 
 typedef struct rk_aiq_awb_stat_res_v201_s rk_aiq_isp_raw_awb_meas_v21_t;
 

@@ -22,6 +22,16 @@
         <licensefile>LICENSE</licensefile>
         <policylist>
             <policy name="projectPolicy" desc="">
+                <policyitem type="copyright" name="Rockchip Corp.  All rights reserved." path="rk3588/hardware/npu/.*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Original upstream copyright retained"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/atmo/rk_aiq_types_atmo_stat_v200\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/atmo/rk_aiq_types_atmo_algo_int\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/atmo/rk_aiq_types_atmo_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/argbir/rk_aiq_types_argbir_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/amerge/rk_aiq_types_amerge_algo_int\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/amerge/rk_aiq_types_amerge_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/adrc/rk_aiq_types_adrc_algo_int\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/adrc/rk_aiq_types_adrc_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
+                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/adehaze/rk_aiq_types_adehaze_stat\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
                 <!--policyitem type="compatibility" name="GPL-2.0+" path="abc/.*" desc="Process that runs independently, invoked by the X process."/-->
                 <policyitem type="copyright" name="Huawei Technologies Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Huawei Technologies"/>
                 <policyitem type="copyright" name="Huawei Device Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Huawei Device"/>
@@ -226,6 +236,9 @@
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/lib64/librkaiq.so" desc="Rockchip prebuilt ISP library"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin64/ispserver" desc="Existing Rockchip prebuilt ISP server"/>
+                <filteritem type="filepath" name="rk3588/hardware/npu/lib64/librknnrt_v2.4.1b0_ohos_arm64.so" desc="Rockchip prebuilt NPU runtime"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/firmware/mali_csffw.bin" desc="gpu firmware"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/lib64/*" desc="gpb 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp/*" desc="isp lib and bin files"/>

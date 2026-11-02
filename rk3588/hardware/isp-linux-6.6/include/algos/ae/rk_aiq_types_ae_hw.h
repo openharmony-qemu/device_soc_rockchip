@@ -3,19 +3,19 @@
 #define __RK_AIQ_TYPES_AE_HW_H__
 
 #define RAWAEBIG_SUBWIN_NUM 4
-#define RAWAEBIG_WIN_NUM    225
-#define RAWAELITE_WIN_NUM   25
-#define YUVAE_SUBWIN_NUM    4
-#define YUVAE_WIN_NUM       225
+#define RAWAEBIG_WIN_NUM 225
+#define RAWAELITE_WIN_NUM 25
+#define YUVAE_SUBWIN_NUM 4
+#define YUVAE_WIN_NUM 225
 
-#define RAWHISTBIG_WIN_NUM  225
+#define RAWHISTBIG_WIN_NUM 225
 #define RAWHISTLITE_WIN_NUM 25
-#define SIHIST_WINCFG_NUM   1
-#define SIHIST_WIN_NUM      225
+#define SIHIST_WINCFG_NUM 1
+#define SIHIST_WIN_NUM 225
 
-#define RAWHIST_BIN_N_MAX   256
-#define RAWHIST_32LITE_BIN_N_MAX   64
-#define SIHIST_BIN_N_MAX    32
+#define RAWHIST_BIN_N_MAX 256
+#define RAWHIST_32LITE_BIN_N_MAX 64
+#define SIHIST_BIN_N_MAX 32
 
 #define MAX_AEC_EFFECT_FNUM 5
 
@@ -30,11 +30,7 @@ typedef enum _RAWHIST_WND_NUM {
     RAWHIST_WND_15X15 = 2,
 } RAWHISST_WND_NUM;
 
-typedef enum _AE_MODE {
-    RAWAE_MODE_S_LITE    = 0,
-    RAWAE_MODE_M_LITE    = 1,
-    RAWAE_MODE_L_LITE    = 2
-} AE_MODE;
+typedef enum _AE_MODE { RAWAE_MODE_S_LITE = 0, RAWAE_MODE_M_LITE = 1, RAWAE_MODE_L_LITE = 2 } AE_MODE;
 
 typedef enum WinSplitMode_s {
     LEFT_AND_RIGHT_MODE = 0,
@@ -59,7 +55,6 @@ typedef struct window {
     uint16_t v_size;
 } window_t;
 #pragma pack()
-
 
 #pragma pack(1)
 typedef struct rawaebig_meas_cfg {
@@ -88,7 +83,6 @@ typedef struct yuvae_meas_cfg {
     window_t subwin[YUVAE_SUBWIN_NUM];
 } yuvae_meas_cfg_t;
 #pragma pack()
-
 
 #pragma pack(1)
 typedef struct rawhistbig_cfg {
@@ -123,11 +117,11 @@ typedef struct rawhistlite_cfg {
 
 #pragma pack(1)
 typedef struct sihst_win_cfg {
-    unsigned char  data_sel;
-    unsigned char  waterline;
-    unsigned char  auto_stop;
-    unsigned char  mode;
-    unsigned char  stepsize;
+    unsigned char data_sel;
+    unsigned char waterline;
+    unsigned char auto_stop;
+    unsigned char mode;
+    unsigned char stepsize;
     window_t win;
 } sihst_win_cfg_t;
 #pragma pack()
@@ -147,8 +141,8 @@ typedef struct sihst_cfg {
    RawAE3 = RawAE big1, addr=0x4400, extra aebig <=> RawHIST3
 */
 typedef struct rk_aiq_ae_meas_params_s {
-    bool   ae_meas_en;
-    bool   ae_meas_update;
+    bool ae_meas_en;
+    bool ae_meas_update;
 
 #if ISP_HW_V20
     rawaelite_meas_cfg_t rawae0;
@@ -181,10 +175,10 @@ typedef struct rk_aiq_ae_meas_params_s {
 
 /* Differentiate structure according to hardware version */
 typedef struct rk_aiq_hist_meas_params_s {
-    bool   hist_meas_en;
-    bool   hist_meas_update;
-    unsigned char ae_swap; // used to choose LITE & BIG
-    unsigned char ae_sel; // used for rawae3 & rawhist3
+    bool hist_meas_en;
+    bool hist_meas_update;
+    unsigned char ae_swap;  // used to choose LITE & BIG
+    unsigned char ae_sel;   // used for rawae3 & rawhist3
 
 #if ISP_HW_V20
     rawhistlite_cfg_t rawhist0;
@@ -233,11 +227,11 @@ typedef struct rawaebig_stat {
     uint16_t channelr_xy[RAWAEBIG_WIN_NUM];
     uint16_t channelg_xy[RAWAEBIG_WIN_NUM];
     uint16_t channelb_xy[RAWAEBIG_WIN_NUM];
-    uint16_t channely_xy[RAWAEBIG_WIN_NUM]; //not HW!
-    uint16_t wndx_channelr[RAWAEBIG_SUBWIN_NUM]; //not HW!
-    uint16_t wndx_channelg[RAWAEBIG_SUBWIN_NUM]; //not HW!
-    uint16_t wndx_channelb[RAWAEBIG_SUBWIN_NUM]; //not HW!
-    uint16_t wndx_channely[RAWAEBIG_SUBWIN_NUM]; //not HW!
+    uint16_t channely_xy[RAWAEBIG_WIN_NUM];       //not HW!
+    uint16_t wndx_channelr[RAWAEBIG_SUBWIN_NUM];  //not HW!
+    uint16_t wndx_channelg[RAWAEBIG_SUBWIN_NUM];  //not HW!
+    uint16_t wndx_channelb[RAWAEBIG_SUBWIN_NUM];  //not HW!
+    uint16_t wndx_channely[RAWAEBIG_SUBWIN_NUM];  //not HW!
     uint64_t wndx_sumr[RAWAEBIG_SUBWIN_NUM];
     uint64_t wndx_sumg[RAWAEBIG_SUBWIN_NUM];
     uint64_t wndx_sumb[RAWAEBIG_SUBWIN_NUM];
@@ -247,7 +241,7 @@ typedef struct rawaelite_stat {
     uint16_t channelr_xy[RAWAELITE_WIN_NUM];
     uint16_t channelg_xy[RAWAELITE_WIN_NUM];
     uint16_t channelb_xy[RAWAELITE_WIN_NUM];
-    uint16_t channely_xy[RAWAELITE_WIN_NUM]; //not HW!
+    uint16_t channely_xy[RAWAELITE_WIN_NUM];  //not HW!
 } rawaelite_stat_t;
 
 typedef struct yuvae_stat {
@@ -317,13 +311,13 @@ typedef struct RkAiqExpRealParam_s {
     float isp_dgain;
 
     // M4_NUMBER_DESC("iso", "s32", M4_RANGE(0,524288), "0", M4_DIGIT(0),M4_HIDE(1))
-    int   iso;
+    int iso;
 
     // M4_NUMBER_DESC("DcgMode", "s32", M4_RANGE(-1,1), "0", M4_DIGIT(0))
-    int   dcg_mode;
+    int dcg_mode;
 
     // M4_NUMBER_DESC("longfrm_mode", "s32", M4_RANGE(0,1), "0", M4_DIGIT(0),M4_HIDE(1))
-    int   longfrm_mode;
+    int longfrm_mode;
 } RkAiqExpRealParam_t;
 
 typedef struct RkAiqExpSensorParam_s {
@@ -347,68 +341,69 @@ typedef struct RkAiqExpSensorParam_s {
 #define MAX_I2CDATA_LEN 64
 typedef struct RKAiqExpI2cParam_s {
     // M4_BOOL_DESC("bValid", "0",M4_HIDE(1))
-    bool           bValid;
+    bool bValid;
 
     // M4_NUMBER_DESC("nNumRegs", "u32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
-    unsigned int   nNumRegs;
+    unsigned int nNumRegs;
 
     // M4_ARRAY_DESC("RegAddr", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
-    unsigned int   RegAddr[MAX_I2CDATA_LEN];
+    unsigned int RegAddr[MAX_I2CDATA_LEN];
 
     // M4_ARRAY_DESC("AddrByteNum", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
-    unsigned int   AddrByteNum[MAX_I2CDATA_LEN];
+    unsigned int AddrByteNum[MAX_I2CDATA_LEN];
 
     // M4_ARRAY_DESC("RegValue", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
-    unsigned int   RegValue[MAX_I2CDATA_LEN];
+    unsigned int RegValue[MAX_I2CDATA_LEN];
 
     // M4_ARRAY_DESC("ValueByteNum", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),
     // M4_HIDE(1))
-    unsigned int   ValueByteNum[MAX_I2CDATA_LEN];
+    unsigned int ValueByteNum[MAX_I2CDATA_LEN];
 
     // M4_ARRAY_DESC("DelayFrames", "u32", M4_SIZE(1,64), M4_RANGE(0,65535), "0", M4_DIGIT(0), M4_DYNAMIC(0),M4_HIDE(1))
-    unsigned int   DelayFrames[MAX_I2CDATA_LEN];
+    unsigned int DelayFrames[MAX_I2CDATA_LEN];
+
 } RKAiqExpI2cParam_t;
 
 typedef struct {
     // M4_STRUCT_DESC("RealPara", "normal_ui_style")
-    RkAiqExpRealParam_t exp_real_params; //real value
+    RkAiqExpRealParam_t exp_real_params;  //real value
 
     // M4_STRUCT_DESC("RegPara", "normal_ui_style",M4_HIDE(1))
-    RkAiqExpSensorParam_t exp_sensor_params; //reg value
+    RkAiqExpSensorParam_t exp_sensor_params;  //reg value
 } RkAiqExpParamComb_t;
 
 typedef struct {
     // M4_BOOL_DESC("update", "0",M4_HIDE(1))
-    bool           update;
+    bool update;
     // M4_NUMBER_DESC("step", "s32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
-    int            step;
+    int step;
     // M4_NUMBER_DESC("gain", "s32", M4_RANGE(0,65535), "0", M4_DIGIT(0),M4_HIDE(1))
-    int            gain;
+    int gain;
 } RkAiqPIrisParam_t;
 
 typedef struct {
     // M4_BOOL_DESC("update", "0",M4_HIDE(1))
-    bool       update;
+    bool update;
     // M4_NUMBER_DESC("pwmDuty", "s32", M4_RANGE(0,100), "0", M4_DIGIT(0),M4_HIDE(1))
-    int        pwmDuty; //percent value,range = 0-100
+    int pwmDuty;  //percent value,range = 0-100
 } RkAiqDCIrisParam_t;
 
 typedef struct {
     // M4_NUMBER_DESC("pwmDuty", "s32", M4_RANGE(0,1024), "0", M4_DIGIT(0),M4_HIDE(1))
-    int        target;
+    int target;
     // M4_BOOL_DESC("update", "0",M4_HIDE(1))
-    bool       update;
+    bool update;
     // M4_NUMBER_DESC("adc", "s32", M4_RANGE(0,1024), "0", M4_DIGIT(0),M4_HIDE(1))
-    int        adc;
+    int adc;
     // M4_NUMBER_DESC("zoomPos", "s32", M4_RANGE(0,1024), "0", M4_DIGIT(0),M4_HIDE(1))
-    int        zoomPos;
+    int zoomPos;
 } RkAiqHDCIrisParam_t;
 
 typedef struct {
     // M4_STRUCT_DESC("PIris", "normal_ui_style",M4_HIDE(1))
-    RkAiqPIrisParam_t   PIris;
+    RkAiqPIrisParam_t PIris;
     // M4_STRUCT_DESC("DCIris", "normal_ui_style",M4_HIDE(1))
-    RkAiqDCIrisParam_t  DCIris;
+    RkAiqDCIrisParam_t DCIris;
     // M4_STRUCT_DESC("HDCIris", "normal_ui_style",M4_HIDE(1))
     RkAiqHDCIrisParam_t HDCIris;
 } RkAiqIrisParamComb_t;
@@ -452,7 +447,7 @@ typedef struct RKAiqAecExpInfo_s {
 
 typedef struct RKAiqAecStats_s {
     RkAiqAecHwStatsRes_t ae_data;  //AeHwMeas_Res
-    RKAiqAecExpInfo_t ae_exp; //AeExp_Info
+    RKAiqAecExpInfo_t ae_exp;      //AeExp_Info
 } RKAiqAecStats_t;
 
 typedef RkAiqAecHwConfig_t html_aec_para_t;

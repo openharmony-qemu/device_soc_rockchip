@@ -21,7 +21,6 @@
 #define _RK_AIQ_TYPE_ABAYERNR_HW_V1_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RKAnr_Bayernr_Fix_V1_s {
     unsigned char rawnr_en;
     unsigned char gauss_en;
@@ -63,6 +62,4 @@ typedef struct RKAnr_Bayernr_Fix_V1_s {
     unsigned short bgain_filp;
 } RK_Bayernr_Fix_V1_t;
 
-
 #endif
-

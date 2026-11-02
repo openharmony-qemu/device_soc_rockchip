@@ -21,7 +21,6 @@
 #ifndef _RK_AIQ_TYPE_ASHARP_HW_H_
 #define _RK_AIQ_TYPE_ASHARP_HW_H_
 
-
 RKAIQ_BEGIN_DECLARE
 
 typedef struct RKAsharp_Sharp_HW_Fix_s {
@@ -61,13 +60,12 @@ typedef struct RKAsharp_Sharp_HW_Fix_s {
 } RKAsharp_Sharp_HW_Fix_t;
 
 typedef struct RKAsharp_Sharp_HW_V2_Fix_s {
-    void* place_holder[1];
+    void *place_holder[1];
 } RKAsharp_Sharp_HW_V2_Fix_t;
 
 typedef struct RKAsharp_Sharp_HW_V3_Fix_s {
-    void* place_holder[1];
+    void *place_holder[1];
 } RKAsharp_Sharp_HW_V3_Fix_t;
-
 
 typedef struct RKAsharp_Sharp_Fix_s {
     RKAsharp_Sharp_HW_Fix_t stSharpFixV1;
@@ -102,4 +100,3 @@ typedef struct RKAsharp_Edgefilter_Fix_s {
 RKAIQ_END_DECLARE
 
 #endif
-

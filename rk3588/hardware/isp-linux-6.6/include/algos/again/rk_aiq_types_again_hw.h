@@ -32,8 +32,6 @@ typedef struct RK_GAIN_Fix_V1_s {
     unsigned int mge_gain[3];
     unsigned short int idx[15];
     unsigned short int lut[17];
-}RK_GAIN_Fix_V1_t;
-
+} RK_GAIN_Fix_V1_t;
 
 #endif
-

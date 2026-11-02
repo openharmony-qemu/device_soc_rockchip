@@ -47,11 +47,11 @@ typedef enum mems_sensor_return_e {
 
 typedef struct mems_sensor_capabilities_s {
     mems_sensor_type_t type;
-    double* resolutions;
+    double *resolutions;
     uint8_t num_resolutions;
-    double* scale;
+    double *scale;
     uint8_t num_scale;
-    double* sample_rates;
+    double *sample_rates;
     uint8_t num_sample_rates;
     bool is_data_valid;
 } mems_sensor_capabilities_t;
@@ -73,7 +73,7 @@ typedef struct sensor_vec_s {
             double z;
         };
     };
-}sensor_vec_t;
+} sensor_vec_t;
 
 typedef struct uncalib_event_s {
     union {
@@ -92,7 +92,7 @@ typedef struct uncalib_event_s {
             double z_bias;
         };
     };
-}uncalib_event_t;
+} uncalib_event_t;
 
 typedef sensor_vec_t gyro_data_t;
 typedef sensor_vec_t accel_data_t;
@@ -102,8 +102,7 @@ typedef struct sensor_vec_all_s {
     gyro_data_t gyro;
     accel_data_t accel;
     temperature_data_t temperature;
-}sensor_vec_all_t;
-
+} sensor_vec_all_t;
 
 typedef struct mems_sensor_event_s {
     uint64_t id;
@@ -122,43 +121,33 @@ typedef struct mems_sensor_event_s {
 
 typedef struct mems_sensor_list_s {
     int count;
-    char** key_list;
+    char **key_list;
 } mems_sensor_list_t;
 
-typedef void* mems_sensor_ctx_t;
-typedef void* mems_sensor_handle_t;
-typedef void* mems_sensor_data_t;
+typedef void *mems_sensor_ctx_t;
+typedef void *mems_sensor_handle_t;
+typedef void *mems_sensor_data_t;
 
 typedef mems_sensor_ctx_t (*rk_aiq_mems_sensor_createContext)();
 typedef mems_sensor_return_t (*rk_aiq_mems_sensor_destroyContext)(mems_sensor_ctx_t ctx);
-typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getSensorList)(mems_sensor_ctx_t ctx,
-                                                                 mems_sensor_type_t type,
-                                                                 mems_sensor_list_t* list);
-typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSensorList)(
-    mems_sensor_list_t* sensors_list);
-typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getSensorCapabilities)(
-    const mems_sensor_ctx_t ctx, const mems_sensor_type_t type, const char* sensor_key,
-    mems_sensor_capabilities_t* caps);
-typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSensorCapabilities)(
-    mems_sensor_capabilities_t* caps);
-typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getConfig)(const mems_sensor_ctx_t ctx,
-                                                             const mems_sensor_type_t type,
-                                                             const char* sensor_key,
-                                                             mems_sensor_config_t* cfg);
-typedef mems_sensor_return_t (*rk_aiq_mems_sensor_setConfig)(const mems_sensor_ctx_t ctx,
-                                                             const mems_sensor_type_t type,
-                                                             const char* sensor_key,
-                                                             mems_sensor_config_t cfg);
+typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getSensorList)(mems_sensor_ctx_t ctx, mems_sensor_type_t type,
+                                                                 mems_sensor_list_t *list);
+typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSensorList)(mems_sensor_list_t *sensors_list);
+typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getSensorCapabilities)(const mems_sensor_ctx_t ctx,
+                                                                         const mems_sensor_type_t type,
+                                                                         const char *sensor_key,
+                                                                         mems_sensor_capabilities_t *caps);
+typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSensorCapabilities)(mems_sensor_capabilities_t *caps);
+typedef mems_sensor_return_t (*rk_aiq_mems_sensor_getConfig)(const mems_sensor_ctx_t ctx, const mems_sensor_type_t type,
+                                                             const char *sensor_key, mems_sensor_config_t *cfg);
+typedef mems_sensor_return_t (*rk_aiq_mems_sensor_setConfig)(const mems_sensor_ctx_t ctx, const mems_sensor_type_t type,
+                                                             const char *sensor_key, mems_sensor_config_t cfg);
 typedef mems_sensor_handle_t (*rk_aiq_mems_sensor_createHandle)(const mems_sensor_ctx_t ctx,
-                                                                const mems_sensor_type_t type,
-                                                                const char* sensor_key,
-                                                                const uint32_t max_data_num,
-                                                                const uint32_t buf_cnt);
+                                                                const mems_sensor_type_t type, const char *sensor_key,
+                                                                const uint32_t max_data_num, const uint32_t buf_cnt);
 typedef mems_sensor_return_t (*rk_aiq_mems_sensor_destroyHandle)(mems_sensor_handle_t handle);
-typedef mems_sensor_data_t (*rk_aiq_mems_sensor_getData)(mems_sensor_handle_t handle,
-                                                         size_t* num_samples);
-typedef mems_sensor_data_t (*rk_aiq_mems_sensor_getLastNSamples)(mems_sensor_handle_t handle,
-                                                                 size_t num_samples);
+typedef mems_sensor_data_t (*rk_aiq_mems_sensor_getData)(mems_sensor_handle_t handle, size_t *num_samples);
+typedef mems_sensor_data_t (*rk_aiq_mems_sensor_getLastNSamples)(mems_sensor_handle_t handle, size_t num_samples);
 typedef mems_sensor_return_t (*rk_aiq_mems_sensor_releaseSamplesData)(mems_sensor_handle_t handle,
                                                                       mems_sensor_data_t data);
 
@@ -183,4 +172,3 @@ typedef struct rk_aiq_mems_sensor_intf_s {
 #endif
 
 #endif  // COMMON_RK_AIQ_SENSOR_H
-

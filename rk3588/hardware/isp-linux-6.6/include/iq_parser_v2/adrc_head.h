@@ -22,16 +22,16 @@
 
 #include "iq_parser_v2/adehaze_head.h"
 
-#define ADRC_Y_NUM             17
-#define ADRC_ENVLV_STEP_MAX    13
+#define ADRC_Y_NUM 17
+#define ADRC_ENVLV_STEP_MAX 13
 
 // drc v10
 typedef struct AdrcGain_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
     float CtrlData[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("DrcGain", "f32", M4_SIZE(1,13), M4_RANGE(1,8), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    // 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("DrcGain", "f32", M4_SIZE(1,13), M4_RANGE(1,8), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+    // M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float DrcGain[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("Alpha", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
     // 0.2, 0.2, 0.2]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
@@ -43,16 +43,16 @@ typedef struct AdrcGain_s {
 
 typedef struct HighLight_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
     float CtrlData[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    // 0]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+    // M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float Strength[ADRC_ENVLV_STEP_MAX];
 } HighLight_t;
 
 typedef struct LocalData_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float CtrlData[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("LocalWeit", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
     // M4_DIGIT(2), M4_DYNAMIC(0), 0)
@@ -85,8 +85,8 @@ typedef struct local_s {
 } local_t;
 
 typedef enum CompressMode_e {
-    COMPRESS_AUTO     = 0,
-    COMPRESS_MANUAL   = 1,
+    COMPRESS_AUTO = 0,
+    COMPRESS_MANUAL = 1,
 } CompressMode_t;
 
 typedef struct Compress_s {
@@ -95,7 +95,7 @@ typedef struct Compress_s {
     // M4_ARRAY_MARK_DESC("Manual_curve", "u32", M4_SIZE(1,17),  M4_RANGE(0, 8192), "[0, 558, 1087, 1588, 2063, 2515,
     // 2944, 3353, 3744, 4473, 5139, 5751, 6316, 6838, 7322, 7772, 8192]", M4_DIGIT(0), M4_DYNAMIC(0),
     // "drc_compress_curve")
-    uint16_t       Manual_curve[ADRC_Y_NUM];
+    uint16_t Manual_curve[ADRC_Y_NUM];
 } Compress_t;
 
 typedef struct CalibDbV2_Adrc_V10_s {
@@ -119,7 +119,7 @@ typedef struct CalibDbV2_Adrc_V10_s {
     // M4_NUMBER_DESC("Edge_Weit", "f32",  M4_RANGE(0,1), "1",M4_DIGIT(3))
     float Edge_Weit;
     // M4_BOOL_DESC("OutPutLongFrame", "0")
-    bool  OutPutLongFrame;
+    bool OutPutLongFrame;
     // M4_NUMBER_DESC("IIR_frame", "u8", M4_RANGE(1,1000), "2", M4_DIGIT(0))
     int IIR_frame;
     // M4_NUMBER_DESC("damp", "f32", M4_RANGE(0,1), "0.9", M4_DIGIT(3))
@@ -136,21 +136,21 @@ typedef struct LocalDataV2_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
     // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float CtrlData[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("LocalWeit", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    // 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("LocalWeit", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+    // M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float LocalWeit[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("LocalAutoEnable", "u8", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    // 1]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("LocalAutoEnable", "u8", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+    // M4_DIGIT(0), M4_DYNAMIC(0), 0)
     int LocalAutoEnable[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("LocalAutoWeit", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.037477, 0.037477, 0.037477, 0.037477,
     // 0.037477, 0.037477, 0.037477, 0.037477, 0.037477, 0.037477, 0.037477, 0.037477, 0.037477]",M4_DIGIT(5),
     // M4_DYNAMIC(0), 0)
     float LocalAutoWeit[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("GlobalContrast", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    // 0]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("GlobalContrast", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+    // M4_DIGIT(3), M4_DYNAMIC(0), 0)
     float GlobalContrast[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("LoLitContrast", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    // 0]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("LoLitContrast", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+    // M4_DIGIT(3), M4_DYNAMIC(0), 0)
     float LoLitContrast[ADRC_ENVLV_STEP_MAX];
 } LocalDataV2_t;
 
@@ -194,7 +194,7 @@ typedef struct CalibDbV2_Adrc_V11_s {
     // M4_NUMBER_DESC("Edge_Weit", "f32",  M4_RANGE(0,1), "1",M4_DIGIT(3))
     float Edge_Weit;
     // M4_BOOL_DESC("OutPutLongFrame", "0")
-    bool  OutPutLongFrame;
+    bool OutPutLongFrame;
     // M4_NUMBER_DESC("IIR_frame", "u8", M4_RANGE(1,1000), "2", M4_DIGIT(0))
     int IIR_frame;
     // M4_NUMBER_DESC("damp", "f32", M4_RANGE(0,1), "0.9", M4_DIGIT(3))
@@ -209,10 +209,10 @@ typedef struct CalibDbV2_drc_V11_s {
 // drc v12
 typedef struct MotionData_s {
     // M4_ARRAY_DESC("MotionCoef", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3,
-    //  0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float MotionCoef[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("MotionStr", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    // 0]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("MotionStr", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+    // M4_DIGIT(3), M4_DYNAMIC(0), 0)
     float MotionStr[ADRC_ENVLV_STEP_MAX];
 } MotionData_t;
 
@@ -239,10 +239,10 @@ typedef struct localV12_s {
 
 typedef struct HighLightDataV12_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(3), M4_DYNAMIC(0), 0)
     float CtrlData[ADRC_ENVLV_STEP_MAX];
-    // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    // 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+    // M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float Strength[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("gas_t", "f32", M4_SIZE(1,13), M4_RANGE(0,2), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
     // M4_DIGIT(3), M4_DYNAMIC(0), 0)
@@ -323,8 +323,8 @@ typedef struct CalibDbV2_Adrc_v12_lite_s {
     localV12Lite_t LocalSetting;
     // M4_STRUCT_DESC("CompressSetting", "normal_ui_style")
     Compress_t CompressSetting;
-    // M4_ARRAY_DESC("Scale_y", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048),
-    // "[0,2,20,76,193,381,631,772,919,1066,1211,1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("Scale_y", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048), "[0,2,20,76,193,381,631,772,919,1066,1211,
+    // 1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
     int Scale_y[ADRC_Y_NUM];
     // M4_NUMBER_DESC("ByPassThr", "f32", M4_RANGE(0,1), "0", M4_DIGIT(4))
     float ByPassThr;
@@ -345,13 +345,13 @@ typedef struct CalibDbV2_drc_v12_lite_s {
 
 typedef struct LocalDataV20_s {
     // M4_ARRAY_DESC("iso", "f32", M4_SIZE(1,13), M4_RANGE(50,10000000), "[50, 100, 200, 400, 800, 1600, 3200, 6400,
-    //  12800, 25600, 51200, 102400, 204800]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // 12800, 25600, 51200, 102400, 204800]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float iso[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("LocalWeit", "f32", M4_SIZE(1,13), M4_RANGE(0,16), "[16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    //  16, 16]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // 16, 16]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
     uint8_t hw_adrc_bifilt_wgt[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("hw_adrc_bifiltSoftThred_en", "u8", M4_SIZE(1,13), M4_RANGE(0,1), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    //  1, 1, 1]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // 1, 1, 1]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
     uint8_t hw_adrc_bifiltSoftThred_en[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("hw_adrc_bifilt_softThred", "u16", M4_SIZE(1,13), M4_RANGE(0,2047), "[119, 119, 119, 119, 119, 119,
     // 119, 119, 119, 119, 119, 119, 119]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
@@ -359,7 +359,7 @@ typedef struct LocalDataV20_s {
 } LocalDataV20_t;
 
 typedef enum thumb_thd_table_mode_e {
-    THUMB_THD_TABLE_AUTO   = 0,
+    THUMB_THD_TABLE_AUTO = 0,
     THUMB_THD_TABLE_MANUAL = 1,
 } thumb_thd_table_mode_t;
 
@@ -418,19 +418,19 @@ typedef struct bifltSettingV20_s {
 } bifltSettingV20_t;
 
 typedef enum drc_gain_mode_e {
-    DRC_GAIN_TABLE_AUTO   = 0,
+    DRC_GAIN_TABLE_AUTO = 0,
     DRC_GAIN_TABLE_MANUAL = 1,
 } drc_gain_mode_t;
 
 typedef struct drc_gain_drcGain_auto_s {
     // M4_ARRAY_DESC("iso", "f32", M4_SIZE(1,13), M4_RANGE(50,10000000), "[50, 100, 200, 400, 800, 1600, 3200, 6400,
-    //  12800, 25600, 51200, 102400, 204800]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // 12800, 25600, 51200, 102400, 204800]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float iso[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("sw_adrc_drcGain_maxLimit", "f32", M4_SIZE(1,13), M4_RANGE(1,8), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     // 1, 1]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float sw_adrc_drcGain_maxLimit[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("sw_adrc_drcGainLumaAdj_scale", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.2, 0.2, 0.2, 0.2, 0.2,
-    //  0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float sw_adrc_drcGainLumaAdj_scale[ADRC_ENVLV_STEP_MAX];
 } drc_gain_drcGain_auto_t;
 
@@ -440,8 +440,8 @@ typedef struct AdrcGainV20_s {
     // M4_NUMBER_DESC("hw_adrc_drcGainIdxLuma_scale", "f32", M4_RANGE(0,64), "1.00", M4_DIGIT(2))
     float hw_adrc_drcGainIdxLuma_scale;
     // M4_ARRAY_MARK_DESC("hw_adrc_luma2drcGain_manualVal", "u32", M4_SIZE(1,17),  M4_RANGE(0, 8191), "[1024, 1024,
-    //  1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024]", M4_DIGIT(0),
-    //  M4_DYNAMIC(0))
+    // 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024]", M4_DIGIT(0),
+    // M4_DYNAMIC(0))
     uint16_t hw_adrc_luma2drcGain_manualVal[ADRC_Y_NUM];
     // M4_ARRAY_TABLE_DESC("sw_adrc_luma2drcGain_autoVal", "array_table_ui", "none")
     drc_gain_drcGain_auto_t sw_adrc_luma2drcGain_autoVal;
@@ -459,8 +459,8 @@ typedef struct CompressV20_s {
 } CompressV20_t;
 
 typedef enum drc_compsGain_mode_e {
-    DRC_COMPSGAIN_NORMAL0    = 0,
-    DRC_COMPSGAIN_NORMAL1    = 1,
+    DRC_COMPSGAIN_NORMAL0 = 0,
+    DRC_COMPSGAIN_NORMAL1 = 1,
     DRC_COMPSGAIN_LONG_FRAME = 2,
 } drc_compsGain_mode_t;
 
@@ -469,10 +469,10 @@ typedef struct hw_adrc_adjCompsGain_params_s {
     // 12800, 25600, 51200, 102400, 204800]",M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float iso[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("hw_adrc_loDetail_ratio", "u16", M4_SIZE(1,13), M4_RANGE(0,4095), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    //  0, 0, 0]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // 0, 0, 0]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
     uint16_t hw_adrc_loDetail_ratio[ADRC_ENVLV_STEP_MAX];
     // M4_ARRAY_DESC("hw_adrc_hiDetail_ratio", "u16", M4_SIZE(1,13), M4_RANGE(0,4095), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    //  0, 0, 0]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // 0, 0, 0]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
     uint16_t hw_adrc_hiDetail_ratio[ADRC_ENVLV_STEP_MAX];
 } hw_adrc_adjCompsGain_params_t;
 
@@ -483,8 +483,8 @@ typedef struct hw_adrc_adjCompsGain_setting_s {
     hw_adrc_adjCompsGain_params_t hw_adrc_adjCompsGain_params;
     // M4_NUMBER_DESC("hw_adrc_adjCompsGainIdxLuma_scl", "u8", M4_RANGE(0,255), "64", M4_DIGIT(0))
     uint8_t hw_adrc_adjCompsGainIdxLuma_scl;
-    // M4_ARRAY_DESC("hw_adrc_luma2compsGainScale_val", "u16", M4_SIZE(1,17),  M4_RANGE(0,
-    // 2048),"[0,2,20,76,193,381,631,772,919,1066,1211,1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hw_adrc_luma2compsGainScale_val", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048),"[0,2,20,76,193,381,
+    // 631,772,919,1066,1211,1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
     uint16_t hw_adrc_luma2compsGainScale_val[ADRC_Y_NUM];
 } hw_adrc_adjCompsGain_setting_t;
 

@@ -71,12 +71,13 @@ typedef struct AblcExpInfo_V32_s {
     // M4_ARRAY_DESC("isp_dgain", "f32", M4_SIZE(1,3), M4_RANGE(0, 204800), "1", M4_DIGIT(3))
     float isp_dgain[3];
     // M4_ARRAY_DESC("iso", "u32", M4_SIZE(1,3), M4_RANGE(0, 204800), "1", M4_DIGIT(0))
-    int   arIso[3];
+    int arIso[3];
 
     // M4_NUMBER_DESC("isoLevelLow", "u8", M4_RANGE(0, 12), "0", M4_DIGIT(0))
     int isoLevelLow;
     // M4_NUMBER_DESC("isoLevelHig", "u8", M4_RANGE(0, 12), "0", M4_DIGIT(0))
     int isoLevelHig;
+
 } AblcExpInfo_V32_t;
 
 typedef struct rk_aiq_blc_info_v32_s {

@@ -21,7 +21,6 @@
 #define _RK_AIQ_TYPE_ABAYERTNR_HW_V23_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_Bayertnr_Fix_V23_s {
 
     /* BAY3D_CTRL */
@@ -100,9 +99,6 @@ typedef struct RK_Bayertnr_Fix_V23_s {
     uint8_t siggaus2;
     uint8_t siggaus3;
 
-
 } RK_Bayertnr_Fix_V23_t;
 
-
 #endif
-

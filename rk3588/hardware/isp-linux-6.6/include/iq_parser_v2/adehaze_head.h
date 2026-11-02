@@ -25,81 +25,81 @@
 RKAIQ_BEGIN_DECLARE
 
 #define DHAZ_ENHANCE_CURVE_KNOTS_NUM 17
-#define DHAZ_V11_SIGMA_IDX_NUM       15
-#define DHAZ_V11_SIGMA_LUT_NUM       17
-#define DHAZ_CTRL_DATA_STEP_MAX      13
-#define DHAZ_V12_HIST_WR_CURVE_NUM   17
-#define HIST_V14_OUTMERGE_ALPHA_NUM  17
+#define DHAZ_V11_SIGMA_IDX_NUM 15
+#define DHAZ_V11_SIGMA_LUT_NUM 17
+#define DHAZ_CTRL_DATA_STEP_MAX 13
+#define DHAZ_V12_HIST_WR_CURVE_NUM 17
+#define HIST_V14_OUTMERGE_ALPHA_NUM 17
 
 // dehaze v10
 typedef enum CtrlDataType_e {
-    CTRLDATATYPE_ENVLV   = 0,
-    CTRLDATATYPE_ISO     = 1,
+    CTRLDATATYPE_ENVLV = 0,
+    CTRLDATATYPE_ISO = 1,
 } CtrlDataType_t;
 
 typedef struct DehazeData_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,100), M4_RANGE(0,10000000), "50",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* CtrlData;
+    float *CtrlData;
     int CtrlData_len;
     // M4_ARRAY_DESC("dc_min_th", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "64",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* dc_min_th;
+    float *dc_min_th;
     int dc_min_th_len;
     // M4_ARRAY_DESC("dc_max_th", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "192",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* dc_max_th;
+    float *dc_max_th;
     int dc_max_th_len;
     // M4_ARRAY_DESC("yhist_th", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "249",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* yhist_th;
+    float *yhist_th;
     int yhist_th_len;
     // M4_ARRAY_DESC("yblk_th", "f32", M4_SIZE(1,100), M4_RANGE(0,512), "0.002",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* yblk_th;
+    float *yblk_th;
     int yblk_th_len;
     // M4_ARRAY_DESC("dark_th", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "250",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* dark_th;
+    float *dark_th;
     int dark_th_len;
     // M4_ARRAY_DESC("bright_min", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "180",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* bright_min;
+    float *bright_min;
     int bright_min_len;
     // M4_ARRAY_DESC("bright_max", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "240",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* bright_max;
+    float *bright_max;
     int bright_max_len;
     // M4_ARRAY_DESC("wt_max", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.9",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* wt_max;
+    float *wt_max;
     int wt_max_len;
     // M4_ARRAY_DESC("air_min", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "200",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* air_min;
+    float *air_min;
     int air_min_len;
     // M4_ARRAY_DESC("air_max", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "250",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* air_max;
+    float *air_max;
     int air_max_len;
     // M4_ARRAY_DESC("tmax_base", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "125",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* tmax_base;
+    float *tmax_base;
     int tmax_base_len;
     // M4_ARRAY_DESC("tmax_off", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.1",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* tmax_off;
+    float *tmax_off;
     int tmax_off_len;
     // M4_ARRAY_DESC("tmax_max", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.8",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* tmax_max;
+    float *tmax_max;
     int tmax_max_len;
     // M4_ARRAY_DESC("cfg_wt", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.8",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* cfg_wt;
+    float *cfg_wt;
     int cfg_wt_len;
     // M4_ARRAY_DESC("cfg_air", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "210",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* cfg_air;
+    float *cfg_air;
     int cfg_air_len;
     // M4_ARRAY_DESC("cfg_tmax", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.2",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* cfg_tmax;
+    float *cfg_tmax;
     int cfg_tmax_len;
     // M4_ARRAY_DESC("dc_thed", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "2",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* dc_thed;
+    float *dc_thed;
     int dc_thed_len;
     // M4_ARRAY_DESC("dc_weitcur", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "1",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* dc_weitcur;
+    float *dc_weitcur;
     int dc_weitcur_len;
     // M4_ARRAY_DESC("air_thed", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "2",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* air_thed;
+    float *air_thed;
     int air_thed_len;
     // M4_ARRAY_DESC("air_weitcur", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.14",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* air_weitcur;
+    float *air_weitcur;
     int air_weitcur_len;
 } DehazeData_t;
 
@@ -122,10 +122,10 @@ typedef struct Dehaze_Setting_V10_s {
 
 typedef struct EnhanceData_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,100), M4_RANGE(0,10000000), "50",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* CtrlData;
+    float *CtrlData;
     int CtrlData_len;
     // M4_ARRAY_DESC("enhance_value", "f32", M4_SIZE(1,100), M4_RANGE(1,16), "1",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* enhance_value;
+    float *enhance_value;
     int enhance_value_len;
 } EnhanceData_t;
 
@@ -138,25 +138,25 @@ typedef struct Enhance_Setting_V10_s {
 
 typedef struct HistData_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,100), M4_RANGE(0,10000000), "50",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* CtrlData;
+    float *CtrlData;
     int CtrlData_len;
     // M4_ARRAY_DESC("hist_gratio", "f32", M4_SIZE(1,100), M4_RANGE(0,32), "2",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* hist_gratio;
+    float *hist_gratio;
     int hist_gratio_len;
     // M4_ARRAY_DESC("hist_th_off", "f32", M4_SIZE(1,100), M4_RANGE(0,255), "64",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* hist_th_off;
+    float *hist_th_off;
     int hist_th_off_len;
     // M4_ARRAY_DESC("hist_k", "f32", M4_SIZE(1,100), M4_RANGE(0,8), "2",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* hist_k;
+    float *hist_k;
     int hist_k_len;
     // M4_ARRAY_DESC("hist_min", "f32", M4_SIZE(1,100), M4_RANGE(0,2), "0.016",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* hist_min;
+    float *hist_min;
     int hist_min_len;
     // M4_ARRAY_DESC("hist_scale", "f32", M4_SIZE(1,100), M4_RANGE(0,32), "0.09",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* hist_scale;
+    float *hist_scale;
     int hist_scale_len;
     // M4_ARRAY_DESC("cfg_gratio", "f32", M4_SIZE(1,100), M4_RANGE(0,32), "2",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* cfg_gratio;
+    float *cfg_gratio;
     int cfg_gratio_len;
 } HistData_t;
 
@@ -164,9 +164,9 @@ typedef struct Hist_setting_V10_s {
     // M4_BOOL_DESC("en", "1")
     bool en;
     // M4_BOOL_DESC("hist_para_en", "1")
-    bool  hist_para_en;
+    bool hist_para_en;
     // M4_BOOL_DESC("hist_channel", "1")
-    bool  hist_channel;
+    bool hist_channel;
     // M4_ARRAY_TABLE_DESC("HistData", "array_table_ui","none")
     HistData_t HistData;
 } Hist_setting_V10_t;
@@ -196,7 +196,7 @@ typedef struct CalibDbV2_dehaze_v10_s {
 // dehaze v11
 typedef struct DehazeDataV11_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float CtrlData[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("dc_min_th", "f32", M4_SIZE(1,13), M4_RANGE(0,255), "[64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
     // 64, 64]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
@@ -232,10 +232,10 @@ typedef struct DehazeDataV11_s {
     // 125, 125, 125, 125]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float tmax_base[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("tmax_off", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
-    //  0.1, 0.1, 0.1, 0.1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.1, 0.1, 0.1, 0.1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float tmax_off[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("tmax_max", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8,
-    //  0.8, 0.8, 0.8, 0.8]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.8, 0.8, 0.8, 0.8]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float tmax_max[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("cfg_wt", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8,
     // 0.8, 0.8, 0.8]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
@@ -244,10 +244,10 @@ typedef struct DehazeDataV11_s {
     // 210, 210, 210, 210]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float cfg_air[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("cfg_tmax", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
-    //  0.2, 0.2, 0.2, 0.2]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.2, 0.2, 0.2, 0.2]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float cfg_tmax[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("dc_weitcur", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    // 0]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("dc_weitcur", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+    // M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float dc_weitcur[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("bf_weight", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
     // 0.5, 0.5, 0.5, 0.5]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
@@ -286,7 +286,7 @@ typedef struct Dehaze_Setting_V11_s {
 
 typedef struct EnhanceDataV11_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float CtrlData[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("enhance_value", "f32", M4_SIZE(1,13), M4_RANGE(1,16), "[1,1,1,1,1,1,1,1,1,1,1,1,1]",M4_DIGIT(4),
     // M4_DYNAMIC(0), 0)
@@ -299,8 +299,8 @@ typedef struct EnhanceDataV11_s {
 typedef struct Enhance_Setting_V11_s {
     // M4_BOOL_DESC("en", "1")
     bool en;
-    // M4_ARRAY_DESC("enhance_curve", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1024),
-    // "[0,64,128,192,256,320,384,448,512,576,640,704,768,832,896,960,1023]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("enhance_curve", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1024), "[0,64,128,192,256,320,384,448,512,576,
+    // 640,704,768,832,896,960,1023]", M4_DIGIT(0), M4_DYNAMIC(0))
     float enhance_curve[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
     // M4_ARRAY_TABLE_DESC("EnhanceData", "array_table_ui", "none")
     EnhanceDataV11_t EnhanceData;
@@ -308,16 +308,16 @@ typedef struct Enhance_Setting_V11_s {
 
 typedef struct HistDataV11_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float CtrlData[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("hist_gratio", "f32", M4_SIZE(1,13), M4_RANGE(0,32), "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-    // 2]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("hist_gratio", "f32", M4_SIZE(1,13), M4_RANGE(0,32), "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]",
+    // M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float hist_gratio[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hist_th_off", "f32", M4_SIZE(1,13), M4_RANGE(0,255), "[64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
     // 64, 64]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float hist_th_off[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("hist_k", "f32", M4_SIZE(1,13), M4_RANGE(0,8), "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-    // 2]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("hist_k", "f32", M4_SIZE(1,13), M4_RANGE(0,8), "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]",
+    // M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float hist_k[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hist_min", "f32", M4_SIZE(1,13), M4_RANGE(0,2), "[0.015, 0.015, 0.015, 0.015, 0.015, 0.015, 0.015,
     // 0.015, 0.015, 0.015, 0.015, 0.015, 0.015]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
@@ -325,8 +325,8 @@ typedef struct HistDataV11_s {
     // M4_ARRAY_DESC("hist_scale", "f32", M4_SIZE(1,13), M4_RANGE(0,32), "[0.09, 0.09, 0.09, 0.09, 0.09, 0.09, 0.09,
     // 0.09, 0.09, 0.09, 0.09, 0.09, 0.09]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float hist_scale[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("cfg_gratio", "f32", M4_SIZE(1,13), M4_RANGE(0,32), "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-    // 2]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("cfg_gratio", "f32", M4_SIZE(1,13), M4_RANGE(0,32), "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]",
+    // M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float cfg_gratio[DHAZ_CTRL_DATA_STEP_MAX];
 } HistDataV11_t;
 
@@ -389,8 +389,8 @@ typedef struct Enhance_Setting_V12_s {
 } Enhance_Setting_V12_t;
 
 typedef enum HistWrMode_e {
-    HIST_WR_AUTO     = 0,
-    HIST_WR_MANUAL   = 1,
+    HIST_WR_AUTO = 0,
+    HIST_WR_MANUAL = 1,
     HIST_WR_SEMIAUTO = 2,
 } HistWrMode_t;
 
@@ -407,16 +407,16 @@ typedef struct Manual_curve_s {
 
 typedef struct hist_wr_semiauto_s {
     // M4_ARRAY_DESC("CtrlData", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2,
-    //  0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.3, 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float CtrlData[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("clim0", "f32", M4_SIZE(1,13), M4_RANGE(0.1,32), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    // 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("clim0", "f32", M4_SIZE(1,13), M4_RANGE(0.1,32), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+    // M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float clim0[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("clim1", "f32", M4_SIZE(1,13), M4_RANGE(0.1,32), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    // 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("clim1", "f32", M4_SIZE(1,13), M4_RANGE(0.1,32), "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+    // M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float clim1[DHAZ_CTRL_DATA_STEP_MAX];
-    // M4_ARRAY_DESC("dark_th", "f32", M4_SIZE(1,13), M4_RANGE(0,1023), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    // 0]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_DESC("dark_th", "f32", M4_SIZE(1,13), M4_RANGE(0,1023), "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+    // M4_DIGIT(0), M4_DYNAMIC(0), 0)
     float dark_th[DHAZ_CTRL_DATA_STEP_MAX];
 } hist_wr_semiauto_t;
 
@@ -464,7 +464,7 @@ typedef struct CalibDbV2_dehaze_v12_s {
 
 typedef struct DehazeDataV14_s {
     // M4_ARRAY_DESC("iso", "f32", M4_SIZE(1,13), M4_RANGE(0,10000000), "[0, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3,
-    //  0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.4, 0.5, 0.6, 0.8, 1]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float iso[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hw_dehaze_darkCh_minThed", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[64, 64, 64, 64, 64, 64, 64, 64,
     // 64, 64, 64, 64, 64]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
@@ -473,10 +473,10 @@ typedef struct DehazeDataV14_s {
     // 192, 192, 192, 192, 192, 192, 192]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
     uint8_t hw_dehaze_darkCh_maxThed[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hw_dehaze_lumaCount_maxThed", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[249, 249, 249, 249, 249,
-    //  249, 249, 249, 249, 249, 249, 249, 249]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
+    // 249, 249, 249, 249, 249, 249, 249, 249]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
     uint8_t hw_dehaze_lumaCount_maxThed[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("sw_dehaze_lumaCount_minRatio", "f32", M4_SIZE(1,13), M4_RANGE(0,512), "[0.002, 0.002, 0.002,
-    //  0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_dehaze_lumaCount_minRatio[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hw_dehaze_darkArea_thed	", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[250, 250, 250, 250, 250, 250,
     // 250, 250, 250 250, 250, 250, 250]",M4_DIGIT(0), M4_DYNAMIC(0), 0)
@@ -491,10 +491,10 @@ typedef struct DehazeDataV14_s {
     // 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_dehaze_invContrast_scale[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hw_dehaze_airLight_minLimit", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[200, 200, 200, 200, 200,
-    //  200, 200, 200, 200, 200, 200, 200, 200]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 200, 200, 200, 200, 200, 200, 200, 200]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     uint8_t hw_dehaze_airLight_minLimit[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hw_dehaze_airLight_maxLimit", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[250, 250, 250, 250, 250,
-    //  250, 250, 250, 250, 250, 250, 250, 250]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 250, 250, 250, 250, 250, 250, 250, 250]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     uint8_t hw_dehaze_airLight_maxLimit[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("sw_dehaze_airLight_scale", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[125, 125, 125, 125, 125, 125,
     // 125, 125, 125, 125, 125, 125, 125]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
@@ -512,7 +512,7 @@ typedef struct DehazeDataV14_s {
     // 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_dehaze_userInvContrast[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("hw_dehaze_userAirLight", "u8", M4_SIZE(1,13), M4_RANGE(0,255), "[210, 210, 210, 210, 210, 210,
-    //  210, 210, 210, 210, 210, 210, 210]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
+    // 210, 210, 210, 210, 210, 210, 210]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     uint8_t hw_dehaze_userAirLight[DHAZ_CTRL_DATA_STEP_MAX];
     // M4_ARRAY_DESC("sw_dehaze_userTransRatio", "f32", M4_SIZE(1,13), M4_RANGE(0,1), "[0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
     // 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]",M4_DIGIT(4), M4_DYNAMIC(0), 0)
@@ -540,8 +540,8 @@ typedef struct EnhanceDataV14_s {
     // M4_ARRAY_MARK_DESC("hw_enhance_loLumaConvert_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 1023), "[0, 64, 128, 192,
     // 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1023]", M4_DIGIT(0), M4_DYNAMIC(0), 0)
     float hw_enhance_loLumaConvert_val[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
-    // M4_ARRAY_MARK_DESC("sw_enhance_luma2strg_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16),
-    // "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("sw_enhance_luma2strg_val", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16), "[1,1,1,1,1,1,1,1,1,1,1,1,
+    // 1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float sw_enhance_luma2strg_val[DHAZ_ENHANCE_CURVE_KNOTS_NUM];
     // M4_NUMBER_DESC("sw_enhance_contrast_strg", "f32", M4_RANGE(0,16), "1", M4_DIGIT(4))
     float sw_enhance_contrast_strg;
@@ -578,8 +578,8 @@ typedef struct HistDataV14_s {
     float sw_hist_mapCount_scale;
     // M4_ARRAY_DESC("sw_hist_mapMerge_alpha", "f32", M4_SIZE(1,1), M4_RANGE(0,32), "2",M4_DIGIT(4), M4_DYNAMIC(0), 0)
     float sw_hist_mapMerge_alpha;
-    // M4_ARRAY_MARK_DESC("sw_dehaze_outputMerge_alpha", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16),
-    // "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
+    // M4_ARRAY_MARK_DESC("sw_dehaze_outputMerge_alpha", "f32", M4_SIZE(1,17),  M4_RANGE(0, 16), "[1,1,1,1,1,1,1,1,1,1,
+    // 1,1,1,1,1,1,1]", M4_DIGIT(2), M4_DYNAMIC(0), 0)
     float sw_dehaze_outputMerge_alpha[HIST_V14_OUTMERGE_ALPHA_NUM];
 } HistDataV14_t;
 

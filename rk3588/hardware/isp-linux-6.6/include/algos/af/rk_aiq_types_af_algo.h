@@ -8,36 +8,36 @@
 
 RKAIQ_BEGIN_DECLARE
 
-#define RKAIQ_RAWAF_WIN_NUM                2
-#define RKAIQ_RAWAF_LINE_NUM               5
-#define RKAIQ_RAWAF_GAMMA_NUM              17
-#define RKAIQ_RAWAF_SUMDATA_ROW            15
-#define RKAIQ_RAWAF_SUMDATA_COLUMN         15
-#define RKAIQ_RAWAF_SUMDATA_NUM            225
-#define RKAIQ_RAWAF_NEXT_ZOOMFOCUS_NUM     300
-#define RKAIQ_RAWAF_ROI_SUBWINS_VCNT       15
-#define RKAIQ_RAWAF_ROI_SUBWINS_HCNT       15
-#define RKAIQ_RAWAF_ROI_SUBWINS_NUM        (RKAIQ_RAWAF_ROI_SUBWINS_VCNT * RKAIQ_RAWAF_ROI_SUBWINS_HCNT)
-#define RKAIQ_PDAF_BLK_DATA_HEIGHT_MAX     64
-#define RKAIQ_PDAF_FINE_SEARCH_RANGE_MAX   10
-#define RKAIQ_PDAF_ISOPARA_NUM             16
-#define RKAIQ_PDAF_STEPRATIO_NUM           7
-#define RKAIQ_PDAF_RESOLUTION_NUM          10
+#define RKAIQ_RAWAF_WIN_NUM 2
+#define RKAIQ_RAWAF_LINE_NUM 5
+#define RKAIQ_RAWAF_GAMMA_NUM 17
+#define RKAIQ_RAWAF_SUMDATA_ROW 15
+#define RKAIQ_RAWAF_SUMDATA_COLUMN 15
+#define RKAIQ_RAWAF_SUMDATA_NUM 225
+#define RKAIQ_RAWAF_NEXT_ZOOMFOCUS_NUM 300
+#define RKAIQ_RAWAF_ROI_SUBWINS_VCNT 15
+#define RKAIQ_RAWAF_ROI_SUBWINS_HCNT 15
+#define RKAIQ_RAWAF_ROI_SUBWINS_NUM (RKAIQ_RAWAF_ROI_SUBWINS_VCNT * RKAIQ_RAWAF_ROI_SUBWINS_HCNT)
+#define RKAIQ_PDAF_BLK_DATA_HEIGHT_MAX 64
+#define RKAIQ_PDAF_FINE_SEARCH_RANGE_MAX 10
+#define RKAIQ_PDAF_ISOPARA_NUM 16
+#define RKAIQ_PDAF_STEPRATIO_NUM 7
+#define RKAIQ_PDAF_RESOLUTION_NUM 10
 
 typedef enum {
     PDAF_DATA_INVAL = 0,
-    PDAF_DATA_HSPD  = 1,
-    PDAF_DATA_MLPD  = 2,
-    PDAF_DATA_DPD   = 3,
-    PDAF_DATA_QPD   = 4
+    PDAF_DATA_HSPD = 1,
+    PDAF_DATA_MLPD = 2,
+    PDAF_DATA_DPD = 3,
+    PDAF_DATA_QPD = 4
 } PdafDataType_t;
 
 typedef enum {
     PDAF_DIR_INVAL = 0,
-    PDAF_DIR_LEFT  = 1,
+    PDAF_DIR_LEFT = 1,
     PDAF_DIR_RIGHT = 2,
-    PDAF_DIR_TOP   = 3,
-    PDAF_DIR_DOWN  = 4
+    PDAF_DIR_TOP = 3,
+    PDAF_DIR_DOWN = 4
 } PdafDataDir_t;
 
 typedef enum {
@@ -158,10 +158,10 @@ typedef struct {
     unsigned char v1_fir_sel;
     unsigned char hiir_en;
     unsigned char viir_en;
-    unsigned char v1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char v2_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h2_fv_outmode;    // 0 square, 1 absolute
+    unsigned char v1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char v2_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h2_fv_outmode;  // 0 square, 1 absolute
     unsigned char ldg_en;
     unsigned char accu_8bit_mode;
     unsigned char ae_mode;
@@ -203,9 +203,9 @@ typedef struct {
     /**********[Focus value statistic param]**********/
     // level depended gain
     // input8 lumi, output8bit gain
-    unsigned char h_ldg_lumth[2];    //luminance thresh
-    unsigned char h_ldg_gain[2];     //gain for [minLum,maxLum]
-    unsigned short h_ldg_gslp[2];    //[slope_low,-slope_high]
+    unsigned char h_ldg_lumth[2];  //luminance thresh
+    unsigned char h_ldg_gain[2];   //gain for [minLum,maxLum]
+    unsigned short h_ldg_gslp[2];  //[slope_low,-slope_high]
     unsigned char v_ldg_lumth[2];
     unsigned char v_ldg_gain[2];
     unsigned short v_ldg_gslp[2];
@@ -215,14 +215,14 @@ typedef struct {
     unsigned short h_fv_thresh;
 
     // left shift, more needed if outmode=square
-    unsigned char v1_fv_shift; //only for sel1
+    unsigned char v1_fv_shift;  //only for sel1
     unsigned char v2_fv_shift;
     unsigned char h1_fv_shift;
     unsigned char h2_fv_shift;
 
     /**********[High light]**********/
     unsigned short highlit_thresh;
-}  rk_aiq_af_algo_meas_v30_t;
+} rk_aiq_af_algo_meas_v30_t;
 
 typedef struct {
     unsigned char af_en;
@@ -232,10 +232,10 @@ typedef struct {
     unsigned char v1_fir_sel;
     unsigned char hiir_en;
     unsigned char viir_en;
-    unsigned char v1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char v2_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h2_fv_outmode;    // 0 square, 1 absolute
+    unsigned char v1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char v2_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h2_fv_outmode;  // 0 square, 1 absolute
     unsigned char ldg_en;
     unsigned char accu_8bit_mode;
     unsigned char ae_mode;
@@ -285,9 +285,9 @@ typedef struct {
     /**********[Focus value statistic param]**********/
     // level depended gain
     // input8 lumi, output8bit gain
-    unsigned char h_ldg_lumth[2];    //luminance thresh
-    unsigned char h_ldg_gain[2];     //gain for [minLum,maxLum]
-    unsigned short h_ldg_gslp[2];    //[slope_low,-slope_high]
+    unsigned char h_ldg_lumth[2];  //luminance thresh
+    unsigned char h_ldg_gain[2];   //gain for [minLum,maxLum]
+    unsigned short h_ldg_gslp[2];  //[slope_low,-slope_high]
     unsigned char v_ldg_lumth[2];
     unsigned char v_ldg_gain[2];
     unsigned short v_ldg_gslp[2];
@@ -297,14 +297,14 @@ typedef struct {
     unsigned short h_fv_thresh;
 
     // left shift, more needed if outmode=square
-    unsigned char v1_fv_shift; //only for sel1
+    unsigned char v1_fv_shift;  //only for sel1
     unsigned char v2_fv_shift;
     unsigned char h1_fv_shift;
     unsigned char h2_fv_shift;
 
     /**********[High light]**********/
     unsigned short highlit_thresh;
-}  rk_aiq_af_algo_meas_v31_t;
+} rk_aiq_af_algo_meas_v31_t;
 
 typedef struct {
     unsigned char af_en;
@@ -314,10 +314,10 @@ typedef struct {
     unsigned char v1_fir_sel;
     unsigned char hiir_en;
     unsigned char viir_en;
-    unsigned char v1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char v2_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h2_fv_outmode;    // 0 square, 1 absolute
+    unsigned char v1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char v2_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h2_fv_outmode;  // 0 square, 1 absolute
     unsigned char ldg_en;
     unsigned char accu_8bit_mode;
     unsigned char ae_mode;
@@ -374,9 +374,9 @@ typedef struct {
     /**********[Focus value statistic param]**********/
     // level depended gain
     // input8 lumi, output8bit gain
-    unsigned char h_ldg_lumth[2];    //luminance thresh
-    unsigned char h_ldg_gain[2];     //gain for [minLum,maxLum]
-    unsigned short h_ldg_gslp[2];    //[slope_low,-slope_high]
+    unsigned char h_ldg_lumth[2];  //luminance thresh
+    unsigned char h_ldg_gain[2];   //gain for [minLum,maxLum]
+    unsigned short h_ldg_gslp[2];  //[slope_low,-slope_high]
     unsigned char v_ldg_lumth[2];
     unsigned char v_ldg_gain[2];
     unsigned short v_ldg_gslp[2];
@@ -391,7 +391,7 @@ typedef struct {
     unsigned short h_fv_slope;
 
     // left shift, more needed if outmode=square
-    unsigned char v1_fv_shift; //only for sel1
+    unsigned char v1_fv_shift;  //only for sel1
     unsigned char v2_fv_shift;
     unsigned char h1_fv_shift;
     unsigned char h2_fv_shift;
@@ -408,7 +408,7 @@ typedef struct {
     // bls for af
     unsigned char bls_en;
     short bls_offset;
-}  rk_aiq_af_algo_meas_v32_t;
+} rk_aiq_af_algo_meas_v32_t;
 
 typedef struct {
     unsigned char af_en;
@@ -469,9 +469,9 @@ typedef struct {
     /**********[Focus value statistic param]**********/
     // level depended gain
     // input8 lumi, output8bit gain
-    unsigned char h_ldg_lumth[2];    //luminance thresh
-    unsigned char h_ldg_gain[2];     //gain for [minLum,maxLum]
-    unsigned short h_ldg_gslp[2];    //[slope_low,-slope_high]
+    unsigned char h_ldg_lumth[2];  //luminance thresh
+    unsigned char h_ldg_gain[2];   //gain for [minLum,maxLum]
+    unsigned short h_ldg_gslp[2];  //[slope_low,-slope_high]
     unsigned char v_ldg_lumth[2];
     unsigned char v_ldg_gain[2];
     unsigned short v_ldg_gslp[2];
@@ -496,10 +496,10 @@ typedef struct {
     unsigned char winb_h2_shift;
 
     // outmode
-    unsigned char v1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char v2_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h1_fv_outmode;    // 0 square, 1 absolute
-    unsigned char h2_fv_outmode;    // 0 square, 1 absolute
+    unsigned char v1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char v2_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h1_fv_outmode;  // 0 square, 1 absolute
+    unsigned char h2_fv_outmode;  // 0 square, 1 absolute
 
     // acc mode
     unsigned char v1_acc_mode;
@@ -509,7 +509,8 @@ typedef struct {
 
     /**********[High light]**********/
     unsigned short highlit_thresh;
-}  rk_aiq_af_algo_meas_v33_t;
+
+} rk_aiq_af_algo_meas_v33_t;
 
 typedef rk_aiq_af_algo_meas_v20_t rk_aiq_af_algo_meas_t;
 typedef rk_aiq_af_algo_stat_v20_t rk_aiq_af_algo_stat_t;
@@ -631,9 +632,9 @@ typedef struct {
     rk_aiq_pdaf_resolution_t pdResoInf;
 } rk_aiq_pdaf_algo_config_t;
 
-int get_lpfv(uint32_t sequence, uint8_t *image_buf, int32_t _img_width, int32_t _img_height,
-    int32_t _img_width_align, int32_t _img_height_align, uint8_t *pAfTmp, uint32_t sub_shp4_4[225],
-    uint32_t sub_shp8_8[225], uint32_t high_light[225], uint32_t high_light2[225], rk_aiq_af_algo_meas_v20_t *param);
+int get_lpfv(uint32_t sequence, uint8_t *image_buf, int32_t _img_width, int32_t _img_height, int32_t _img_width_align,
+             int32_t _img_height_align, uint8_t *pAfTmp, uint32_t sub_shp4_4[225], uint32_t sub_shp8_8[225],
+             uint32_t high_light[225], uint32_t high_light2[225], rk_aiq_af_algo_meas_v20_t *param);
 
 RKAIQ_END_DECLARE
 

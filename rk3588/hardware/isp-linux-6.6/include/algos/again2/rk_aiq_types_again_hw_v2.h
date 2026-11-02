@@ -40,6 +40,4 @@ typedef struct RK_GAIN_Fix_V2_s {
     unsigned int sw_gain[3];
 } RK_GAIN_Fix_V2_t;
 
-
 #endif
-

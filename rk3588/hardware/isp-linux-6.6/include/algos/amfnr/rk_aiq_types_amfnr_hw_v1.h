@@ -21,9 +21,8 @@
 #define _RK_AIQ_TYPE_AMFNR_HW_V1_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_MFNR_Fix_V1_s {
-	
+
     unsigned char tnr_en;
     unsigned char mode;
     unsigned char opty_en;
@@ -82,8 +81,6 @@ typedef struct RK_MFNR_Fix_V1_s {
 
     unsigned char weight_y[3];
 
-}RK_MFNR_Fix_V1_t;
-
+} RK_MFNR_Fix_V1_t;
 
 #endif
-

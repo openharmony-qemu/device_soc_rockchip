@@ -135,11 +135,11 @@ int32_t DrmPlane::Init(DrmDevice &drmDevice)
         if (strcpy_s(mName, sizeof(mName), drmEnum.name.c_str()) != EOK) {
             DISPLAY_LOGE("Failed to copy plane name");
         }
-        mPlane_value = prop.value;
+        mPlaneValue = prop.value;
 #if (defined(__aarch64__) || defined(__x86_64__))
-        DISPLAY_LOGE("plane name %{public}s type 0x%{public}lx\n", mName, mPlane_value);
+        DISPLAY_LOGE("plane name %{public}s type 0x%{public}lx\n", mName, mPlaneValue);
 #else
-        DISPLAY_LOGE("plane name %{public}s type 0x%{public}llx\n", mName, mPlane_value);
+        DISPLAY_LOGE("plane name %{public}s type 0x%{public}llx\n", mName, mPlaneValue);
 #endif
         break;
     }

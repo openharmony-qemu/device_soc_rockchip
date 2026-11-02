@@ -25,149 +25,139 @@
 RKAIQ_BEGIN_DECLARE
 
 typedef enum GlobalLumaMode_e {
-    GLOBALLUMAMODE_ENVLV     = 0,
-    GLOBALLUMAMODE_ISO       = 1,
+    GLOBALLUMAMODE_ENVLV = 0,
+    GLOBALLUMAMODE_ISO = 1,
 } GlobalLumaMode_t;
 
-typedef struct GlobalLumaData_s
-{
+typedef struct GlobalLumaData_s {
     // M4_ARRAY_DESC("EnvLv", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            EnvLv;
+    float *EnvLv;
     int EnvLv_len;
     // M4_ARRAY_DESC("ISO", "f32", M4_SIZE(1,100), M4_RANGE(0,10000000), "50",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* ISO;
+    float *ISO;
     int ISO_len;
     // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.25",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            Strength;
+    float *Strength;
     int Strength_len;
 } GlobalLumaData_t;
 
-typedef struct CalibDbGlobalLuma_s
-{
+typedef struct CalibDbGlobalLuma_s {
     // M4_ENUM_DESC("Mode", "GlobalLumaMode_t", "GLOBALLUMAMODE_ENVLV")
     GlobalLumaMode_t Mode;
     // M4_ARRAY_TABLE_DESC("GlobalLumaData", "array_table_ui", "none")
     GlobalLumaData_t GlobalLumaData;
     // M4_NUMBER_DESC("Tolerance", "f32", M4_RANGE(0,0.2), "0", M4_DIGIT(4))
-    float            Tolerance;
+    float Tolerance;
 } CalibDbGlobalLuma_t;
 
 typedef enum DetailsHighLightMode_e {
-    DETAILSHIGHLIGHTMODE_OEPDF       = 0,
-    DETAILSHIGHLIGHTMODE_ENVLV       = 1,
+    DETAILSHIGHLIGHTMODE_OEPDF = 0,
+    DETAILSHIGHLIGHTMODE_ENVLV = 1,
 } DetailsHighLightMode_t;
 
-typedef struct HighLightData_s
-{
+typedef struct HighLightData_s {
     // M4_ARRAY_DESC("OEPdf", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* OEPdf;
+    float *OEPdf;
     int OEPdf_len;
     // M4_ARRAY_DESC("EnvLv", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            EnvLv;
+    float *EnvLv;
     int EnvLv_len;
     // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.5",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            Strength;
+    float *Strength;
     int Strength_len;
 } HighLightData_t;
 
-typedef struct CalibDbDetailsHighLight_s
-{
+typedef struct CalibDbDetailsHighLight_s {
     // M4_ENUM_DESC("Mode", "DetailsHighLightMode_t", "DETAILSHIGHLIGHTMODE_ENVLV")
     DetailsHighLightMode_t Mode;
     // M4_ARRAY_TABLE_DESC("HighLightData", "array_table_ui", "none")
     HighLightData_t HighLightData;
     // M4_NUMBER_DESC("Tolerance", "f32", M4_RANGE(0,0.2), "0", M4_DIGIT(4))
-    float                  Tolerance;
+    float Tolerance;
 } CalibDbDetailsHighLight_t;
 
 typedef enum DetailsLowLightMode_e {
-    DETAILSLOWLIGHTMODE_FOCUSLUMA   = 0,
-    DETAILSLOWLIGHTMODE_DARKPDF     = 1,
-    DETAILSLOWLIGHTMODE_ISO          = 2,
+    DETAILSLOWLIGHTMODE_FOCUSLUMA = 0,
+    DETAILSLOWLIGHTMODE_DARKPDF = 1,
+    DETAILSLOWLIGHTMODE_ISO = 2,
 } DetailsLowLightMode_t;
 
-typedef struct LowLightData_s
-{
+typedef struct LowLightData_s {
     // M4_ARRAY_DESC("FocusLuma", "f32", M4_SIZE(1,100), M4_RANGE(0,100), "1",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* FocusLuma;
+    float *FocusLuma;
     int FocusLuma_len;
     // M4_ARRAY_DESC("DarkPdf", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* DarkPdf;
+    float *DarkPdf;
     int DarkPdf_len;
     // M4_ARRAY_DESC("ISO", "f32", M4_SIZE(1,100), M4_RANGE(0,10000000), "50",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* ISO;
+    float *ISO;
     int ISO_len;
     // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,100), M4_RANGE(1,4), "1",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            Strength;
+    float *Strength;
     int Strength_len;
 } LowLightData_t;
 
-typedef struct CalibDbDetailsLowLight_s
-{
+typedef struct CalibDbDetailsLowLight_s {
     // M4_ENUM_DESC("Mode", "DetailsLowLightMode_t", "DETAILSLOWLIGHTMODE_ISO")
     DetailsLowLightMode_t Mode;
     // M4_ARRAY_TABLE_DESC("LowLightData", "array_table_ui", "none")
     LowLightData_t LowLightData;
     // M4_NUMBER_DESC("Tolerance", "f32", M4_RANGE(0,0.2), "0", M4_DIGIT(4))
-    float                  Tolerance;
+    float Tolerance;
 } CalibDbDetailsLowLight_t;
 
 typedef enum TmoTypeMode_e {
-    TMOTYPEMODE_DYNAMICRANGE   = 0,
-    TMOTYPEMODE_ENVLV           = 1,
+    TMOTYPEMODE_DYNAMICRANGE = 0,
+    TMOTYPEMODE_ENVLV = 1,
 } TmoTypeMode_t;
 
-typedef struct TmoData_s
-{
+typedef struct TmoData_s {
     // M4_ARRAY_DESC("DynamicRange", "f32", M4_SIZE(1,100), M4_RANGE(1,84), "1",M4_DIGIT(4), M4_DYNAMIC(1))
-    float* DynamicRange;
+    float *DynamicRange;
     int DynamicRange_len;
     // M4_ARRAY_DESC("EnvLv", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            EnvLv;
+    float *EnvLv;
     int EnvLv_len;
     // M4_ARRAY_DESC("Strength", "f32", M4_SIZE(1,100), M4_RANGE(0,1), "0.5",M4_DIGIT(4), M4_DYNAMIC(1))
-    float*            Strength;
+    float *Strength;
     int Strength_len;
 } TmoData_t;
 
-typedef struct CalibDbLocalTMO_s
-{
+typedef struct CalibDbLocalTMO_s {
     // M4_ENUM_DESC("Mode", "TmoTypeMode_t", "TMOTYPEMODE_DYNAMICRANGE")
     TmoTypeMode_t Mode;
     // M4_ARRAY_TABLE_DESC("LocalTmoData", "array_table_ui", "none")
     TmoData_t LocalTmoData;
     // M4_NUMBER_DESC("Tolerance", "f32", M4_RANGE(0,0.2), "0", M4_DIGIT(4))
-    float                  Tolerance;
+    float Tolerance;
 } CalibDbLocalTMO_t;
 
-typedef struct CalibDbGlobaTMO_s
-{
+typedef struct CalibDbGlobaTMO_s {
     // M4_BOOL_DESC("Enable", "1")
-    bool         Enable;
+    bool Enable;
     // M4_NUMBER_DESC("IIR", "f32", M4_RANGE(1,1000), "64", M4_DIGIT(0))
-    float         IIR;
+    float IIR;
     // M4_ENUM_DESC("Mode", "TmoTypeMode_t", "TMOTYPEMODE_DYNAMICRANGE")
     TmoTypeMode_t Mode;
     // M4_ARRAY_TABLE_DESC("GlobalTmoData", "array_table_ui", "none")
     TmoData_t GlobalTmoData;
     // M4_NUMBER_DESC("Tolerance", "f32", M4_RANGE(0,0.2), "0", M4_DIGIT(4))
-    float                  Tolerance;
+    float Tolerance;
 } CalibDbGlobaTMO_t;
 
-typedef struct CalibDbTmoV20_s
-{
+typedef struct CalibDbTmoV20_s {
     // M4_BOOL_DESC("Enable", "1")
-    bool         Enable;
+    bool Enable;
     // M4_STRUCT_DESC("GlobalLuma", "normal_ui_style")
-    CalibDbGlobalLuma_t       GlobalLuma;
+    CalibDbGlobalLuma_t GlobalLuma;
     // M4_STRUCT_DESC("DetailsHighLight", "normal_ui_style")
     CalibDbDetailsHighLight_t DetailsHighLight;
     // M4_STRUCT_DESC("DetailsLowLight", "normal_ui_style")
-    CalibDbDetailsLowLight_t  DetailsLowLight;
+    CalibDbDetailsLowLight_t DetailsLowLight;
     // M4_STRUCT_DESC("LocalTMO", "normal_ui_style")
-    CalibDbLocalTMO_t         LocalTMO;
+    CalibDbLocalTMO_t LocalTMO;
     // M4_STRUCT_DESC("GlobaTMO", "normal_ui_style")
-    CalibDbGlobaTMO_t         GlobaTMO;
+    CalibDbGlobaTMO_t GlobaTMO;
     // M4_NUMBER_DESC("damp", "f32", M4_RANGE(0,1), "0.9", M4_DIGIT(4))
     float damp;
 } CalibDbTmoV20_t;
@@ -177,8 +167,6 @@ typedef struct CalibDbV2_tmo_s {
     CalibDbTmoV20_t TmoTuningPara;
 } CalibDbV2_tmo_t;
 
-
 RKAIQ_END_DECLARE
 
 #endif
-

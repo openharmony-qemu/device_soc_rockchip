@@ -23,8 +23,6 @@
 
 RKAIQ_BEGIN_DECLARE
 
-
 RKAIQ_END_DECLARE
 
 #endif
-

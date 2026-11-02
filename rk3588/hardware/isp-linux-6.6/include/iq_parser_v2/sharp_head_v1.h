@@ -102,14 +102,14 @@ typedef struct CalibDbV2_SharpV1_T_Set_s {
 } CalibDbV2_SharpV1_T_Set_t;
 
 typedef struct CalibDbV2_SharpV1_Kernel_s {
-    // M4_ARRAY_DESC("gauss_luma_coeff", "f32", M4_SIZE(3,3), M4_RANGE(0,1),
-    // "[0.0625,0.125,0.0625,0.125,0.25,0.125,0.0625,0.125,0.0625]", M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("gauss_luma_coeff", "f32", M4_SIZE(3,3), M4_RANGE(0,1), "[0.0625,0.125,0.0625,0.125,0.25,0.125,
+    // 0.0625,0.125,0.0625]", M4_DIGIT(6), M4_DYNAMIC(0))
     float gauss_luma_coeff[9];
-    // M4_ARRAY_DESC("pbf_coeff_l", "f32", M4_SIZE(3,3), M4_RANGE(0,1),
-    // "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("pbf_coeff_l", "f32", M4_SIZE(3,3), M4_RANGE(0,1), "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,
+    // 0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
     float pbf_coeff_l[9];
-    // M4_ARRAY_DESC("pbf_coeff_h", "f32", M4_SIZE(3,3), M4_RANGE(0,1),
-    // "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("pbf_coeff_h", "f32", M4_SIZE(3,3), M4_RANGE(0,1), "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,
+    // 0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
     float pbf_coeff_h[9];
     // M4_ARRAY_DESC("rf_m_coeff_l", "f32", M4_SIZE(5,5), M4_RANGE(0,1), "[0.023438,0.03125,0.039063,0.03125,0.023438,
     // 0.03125,0.046875,0.054688,0.046875,0.03125,0.039063,0.054688,0.09375,0.054688,0.039063,0.03125,0.046875,0.054688,
@@ -119,8 +119,8 @@ typedef struct CalibDbV2_SharpV1_Kernel_s {
     // 0.03125,0.046875,0.054688,0.046875,0.03125,0.039063,0.054688,0.09375,0.054688,0.039063,0.03125,0.046875,0.054688,
     // 0.046875,0.03125,0.023438,0.03125,0.039063,0.03125,0.023438]",M4_DIGIT(6), M4_DYNAMIC(0))
     float rf_m_coeff_h[25];
-    // M4_ARRAY_DESC("rf_m_coeff_h", "f32", M4_SIZE(17,13), M4_RANGE(0,1), "0.004",M4_DIGIT(6),
-    // M4_DYNAMIC(0),M4_HIDE(1))
+    // M4_ARRAY_DESC("rf_m_coeff_h", "f32", M4_SIZE(17,13), M4_RANGE(0,1), "0.004",M4_DIGIT(6), M4_DYNAMIC(0),
+    // M4_HIDE(1))
     float mbf_coeff[221];
     // M4_ARRAY_DESC("rf_h_coeff_l", "f32", M4_SIZE(5,5), M4_RANGE(0,1), "[0,0.015625,0.023438,0.015625,0,0.015625,
     // 0.0625,0.101563,0.0625,0.015625,0.023438,0.101563,0.125,0.101563,0.023438,0.015625,0.0625,0.101563,0.0625,
@@ -130,14 +130,13 @@ typedef struct CalibDbV2_SharpV1_Kernel_s {
     // 0.0625,0.101563,0.0625,0.015625,0.023438,0.101563,0.125,0.101563,0.023438,0.015625,0.0625,0.101563,0.0625,
     // 0.015625,0,0.015625,0.023438,0.015625,0]",M4_DIGIT(6), M4_DYNAMIC(0))
     float rf_h_coeff_h[25];
-    // M4_ARRAY_DESC("hbf_coeff_l", "f32", M4_SIZE(3,3), M4_RANGE(0,1),
-    // "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hbf_coeff_l", "f32", M4_SIZE(3,3), M4_RANGE(0,1), "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,
+    // 0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
     float hbf_coeff_l[9];
-    // M4_ARRAY_DESC("hbf_coeff_h", "f32", M4_SIZE(3,3), M4_RANGE(0,1),
-    // "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hbf_coeff_h", "f32", M4_SIZE(3,3), M4_RANGE(0,1), "[0.15625,0.25,0.15625,0.25,0.375,0.25,0.15625,
+    // 0.25,0.15625]",M4_DIGIT(6), M4_DYNAMIC(0))
     float hbf_coeff_h[9];
 } CalibDbV2_SharpV1_Kernel_t;
-
 
 typedef struct CalibDbV2_SharpV1_Tuning_s {
     // M4_BOOL_DESC("enable", "1")
@@ -147,6 +146,7 @@ typedef struct CalibDbV2_SharpV1_Tuning_s {
     // M4_STRUCT_LIST_DESC("Setting", M4_SIZE_DYNAMIC, "double_index_list")
     CalibDbV2_SharpV1_T_Set_t *Setting;
     int Setting_len;
+
 } CalibDbV2_SharpV1_Tuning_t;
 
 typedef struct CalibDbV2_SharpV1_s {
@@ -159,4 +159,3 @@ typedef struct CalibDbV2_SharpV1_s {
 RKAIQ_END_DECLARE
 
 #endif
-

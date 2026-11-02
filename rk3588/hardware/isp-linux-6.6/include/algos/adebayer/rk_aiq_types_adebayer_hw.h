@@ -1,33 +1,32 @@
 #ifndef _RK_AIQ_TYPES_ADEBAYER_HW_H_
 #define _RK_AIQ_TYPES_ADEBAYER_HW_H_
 
-#define RK_DEBAYER_V2_FIX_BIT_INT_TO_FLOAT      7
-#define RK_DEBAYER_V2_FIX_BIT_LOG2              12
+#define RK_DEBAYER_V2_FIX_BIT_INT_TO_FLOAT 7
+#define RK_DEBAYER_V2_FIX_BIT_LOG2 12
 
-#define RK_DEBAYER_V2_FIX_BIT_IIR_WGT_CLIP      3
-#define RK_DEBAYER_V2_FIX_BIT_IIR_GHOST         6
+#define RK_DEBAYER_V2_FIX_BIT_IIR_WGT_CLIP 3
+#define RK_DEBAYER_V2_FIX_BIT_IIR_GHOST 6
 
-#define RK_DEBAYER_V2_FIX_BIT_ALPHA_SCALE       10
-#define RK_DEBAYER_V2_FIX_BIT_EDGE_SCALE        10
+#define RK_DEBAYER_V2_FIX_BIT_ALPHA_SCALE 10
+#define RK_DEBAYER_V2_FIX_BIT_EDGE_SCALE 10
 
-#define RK_DEBAYER_V2_FIX_BIT_INV_SIGMA         16
-#define RK_DEBAYER_V2_FIX_BIT_INV_BF_SIGMA      16
+#define RK_DEBAYER_V2_FIX_BIT_INV_SIGMA 16
+#define RK_DEBAYER_V2_FIX_BIT_INV_BF_SIGMA 16
 
-#define RK_DEBAYER_V2_FIX_BIT_WGT_SLOPE         7
+#define RK_DEBAYER_V2_FIX_BIT_WGT_SLOPE 7
 
-#define RK_DEBAYER_V31_FIX_BIT_BF_WGT           7
-#define RK_DEBAYER_V31_FIX_BIT_BF_RATIO         10
-#define RK_DEBAYER_V31_FIX_BIT_INV_BF_SIGMA     16
-#define RK_DEBAYER_V31_FIX_BIT_INV_SIGMA        16
-#define RK_DEBAYER_V31_FIX_BIT_INT_TO_FLOAT     7
-#define RK_DEBAYER_V31_FIX_BIT_IIR_WGT          6
-#define RK_DEBAYER_V31_FIX_BIT_SLOPE            7
-#define RK_DEBAYER_V31_FIX_BIT_WGT_RATIO        3
-#define RK_DEBAYER_V31_FIX_BIT_CNR_WGT          12
-#define RK_DEBAYER_V31_FIX_BIT_LOG2             12
-#define RK_DEBAYER_V31_FIX_BIT_GRAD_FLT_ALPHA   6
-#define RK_DEBAYER_V31_FIX_BIT_WGT_FLT_ALPHA    6
-
+#define RK_DEBAYER_V31_FIX_BIT_BF_WGT 7
+#define RK_DEBAYER_V31_FIX_BIT_BF_RATIO 10
+#define RK_DEBAYER_V31_FIX_BIT_INV_BF_SIGMA 16
+#define RK_DEBAYER_V31_FIX_BIT_INV_SIGMA 16
+#define RK_DEBAYER_V31_FIX_BIT_INT_TO_FLOAT 7
+#define RK_DEBAYER_V31_FIX_BIT_IIR_WGT 6
+#define RK_DEBAYER_V31_FIX_BIT_SLOPE 7
+#define RK_DEBAYER_V31_FIX_BIT_WGT_RATIO 3
+#define RK_DEBAYER_V31_FIX_BIT_CNR_WGT 12
+#define RK_DEBAYER_V31_FIX_BIT_LOG2 12
+#define RK_DEBAYER_V31_FIX_BIT_GRAD_FLT_ALPHA 6
+#define RK_DEBAYER_V31_FIX_BIT_WGT_FLT_ALPHA 6
 
 typedef struct AdebayerHwConfigV1_s {
     unsigned char enable;
@@ -49,7 +48,6 @@ typedef struct AdebayerHwConfigV1_s {
     bool updatecfg;
 } AdebayerHwConfigV1_t;
 
-
 typedef struct AdebayerHwConfigV2_s {
     /* CONTROL */
     bool updatecfg;
@@ -64,15 +62,15 @@ typedef struct AdebayerHwConfigV2_s {
     unsigned char select_thed;
     unsigned char max_ratio;
     /* G_INTERP_FILTER */
-    int  filter1_coe[4];
-    int  filter2_coe[4];
+    int filter1_coe[4];
+    int filter2_coe[4];
 
     /* C_FILTER_GUIDE_GAUS */
-    int  guid_gaus_coe[3];
+    int guid_gaus_coe[3];
     /* C_FILTER_CE_GAUS */
-    int  ce_gaus_coe[3];
+    int ce_gaus_coe[3];
     /* C_FILTER_ALPHA_GAUS */
-    int  alpha_gaus_coe[3];
+    int alpha_gaus_coe[3];
 
     /* C_FILTER_IIR_0 */
     unsigned char ce_sgm;
@@ -179,4 +177,4 @@ typedef struct AdebayerHwConfigV3_s {
     unsigned char bf_curwgt;
 } AdebayerHwConfigV3_t;
 
-#endif //_RK_AIQ_TYPES_ADEBAYER_HW_H_
+#endif  //_RK_AIQ_TYPES_ADEBAYER_HW_H_

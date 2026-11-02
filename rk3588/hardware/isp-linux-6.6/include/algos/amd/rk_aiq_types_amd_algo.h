@@ -15,7 +15,7 @@ typedef struct rk_aiq_amd_params_s {
     //uint8_t *ratio_cur;
     //uint8_t *ratio_prev;
     //int ratio_size;
-    struct MediaBuffer_s* st_ratio;
+    struct MediaBuffer_s *st_ratio;
 } rk_aiq_amd_params_t;
 
-#endif //__RKAIQ_TYPES_AMD_ALGO_H__
+#endif  //__RKAIQ_TYPES_AMD_ALGO_H__

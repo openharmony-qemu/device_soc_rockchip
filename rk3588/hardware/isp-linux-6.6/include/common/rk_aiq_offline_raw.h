@@ -3,38 +3,36 @@
 
 #include <stdint.h>
 
-#define START_TAG           0xFF00
-#define FORMAT_TAG          0xFF01
-#define NORMAL_RAW_TAG      0xFF02
-#define HDR_S_RAW_TAG       0xFF03
-#define HDR_M_RAW_TAG       0xFF04
-#define HDR_L_RAW_TAG       0xFF05
-#define STATS_TAG           0xFF06
-#define ISP_REG_FMT_TAG     0xFF07
-#define ISP_REG_TAG         0xFF08
-#define ISPP_REG_FMT_TAG    0xFF09
-#define ISPP_REG_TAG        0xFF0A
-#define PLATFORM_TAG        0xFF0B
-#define END_TAG             0x00FF
+#define START_TAG 0xFF00
+#define FORMAT_TAG 0xFF01
+#define NORMAL_RAW_TAG 0xFF02
+#define HDR_S_RAW_TAG 0xFF03
+#define HDR_M_RAW_TAG 0xFF04
+#define HDR_L_RAW_TAG 0xFF05
+#define STATS_TAG 0xFF06
+#define ISP_REG_FMT_TAG 0xFF07
+#define ISP_REG_TAG 0xFF08
+#define ISPP_REG_FMT_TAG 0xFF09
+#define ISPP_REG_TAG 0xFF0A
+#define PLATFORM_TAG 0xFF0B
+#define END_TAG 0x00FF
 
-#define TAG_BYTE_LEN        (2)
-#define BLOCK_BYTE_LEN      (4)
+#define TAG_BYTE_LEN (2)
+#define BLOCK_BYTE_LEN (4)
 
 struct _block_header {
     unsigned short block_id;
     unsigned int block_length;
-}__attribute__ ((packed));
+} __attribute__((packed));
 
-struct _st_addrinfo
-{
+struct _st_addrinfo {
     unsigned int fd;
     unsigned int haddr;
     unsigned int laddr;
     unsigned int size;
-}__attribute__ ((packed));
+} __attribute__((packed));
 
-struct _raw_format
-{
+struct _raw_format {
     unsigned short tag;
     unsigned int size;
     unsigned short vesrion;
@@ -50,7 +48,7 @@ struct _raw_format
     unsigned short line_length;
     unsigned short acive_line_length;
     unsigned char byte_order;
-}__attribute__ ((packed));
+} __attribute__((packed));
 
 typedef struct rk_aiq_frame_info_s {
     unsigned short tag;
@@ -80,6 +78,6 @@ typedef struct rk_aiq_frame_info_s {
 
     float awg_rgain;
     float awg_bgain;
-}__attribute__ ((packed)) rk_aiq_frame_info_t;
+} __attribute__((packed)) rk_aiq_frame_info_t;
 
 #endif

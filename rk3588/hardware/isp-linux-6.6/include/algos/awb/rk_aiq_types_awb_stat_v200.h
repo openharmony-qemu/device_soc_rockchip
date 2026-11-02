@@ -41,13 +41,13 @@ typedef enum rk_aiq_blk_stat_mode_v200_e {
     RK_AIQ_AWB_BLK_STAT_MODE_UVWP_V200 = 2,
     RK_AIQ_AWB_BLK_STAT_MODE_XYWP_V200 = 3,
     RK_AIQ_AWB_BLK_STAT_MODE_MAX_V200
-} rk_aiq_blk_stat_mode_v200_t; //cxf333 repeat
+} rk_aiq_blk_stat_mode_v200_t;  //cxf333 repeat
 typedef struct rk_aiq_awb_exc_range_s {
     rk_aiq_awb_exc_range_domain_t domain;
-    bool excludeEnable; // 0 disable,1 eanble;
-    bool measureEnable; // 1 calculate sum value in the range,0 don't meausre
-    int xu[2]; //left right
-    int yv[2]; //top bottom
+    bool excludeEnable;  // 0 disable,1 eanble;
+    bool measureEnable;  // 1 calculate sum value in the range,0 don't meausre
+    int xu[2];           //left right
+    int yv[2];           //top bottom
 } rk_aiq_awb_exc_range_t;
 
 typedef struct rk_aiq_awb_stat_cfg_v200_s {
@@ -61,11 +61,11 @@ typedef struct rk_aiq_awb_stat_cfg_v200_s {
     rk_aiq_blk_stat_mode_v200_t blkMeasureMode;
     unsigned short blkMeasWpTh[3];
     bool multiwindow_en;
-    uint8_t frameChoose; //default value is 0,support to choose long frame ,middle frame or short frame when hdr is on
+    uint8_t frameChoose;  //default value is 0,support to choose long frame ,middle frame or short frame when hdr is on
     uint8_t rgb2yuv_c_range;
     uint8_t rgb2yuv_y_range;
     short rgb2yuv_matrix[9];
-    unsigned short windowSet[4]; //hOffset,vOffser,hSiz,vSize;
+    unsigned short windowSet[4];  //hOffset,vOffser,hSiz,vSize;
     unsigned char lightNum;
     unsigned short maxR;
     unsigned short minR;
@@ -75,19 +75,20 @@ typedef struct rk_aiq_awb_stat_cfg_v200_s {
     unsigned short minB;
     unsigned short maxY;
     unsigned short minY;
-    rk_aiq_awb_uv_range_para_t         uvRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM]; //A CWF D50 D65 D75 HZ TL84
-    rk_aiq_awb_3dyuv_range_para_t       yuvRange_param[RK_AIQ_AWB_YUV_LS_PARA_NUM];
-    rk_aiq_rgb2xy_para_t     rgb2xy_param;
-    rk_aiq_awb_xy_range_para_t   xyRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
+    rk_aiq_awb_uv_range_para_t uvRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];  //A CWF D50 D65 D75 HZ TL84
+    rk_aiq_awb_3dyuv_range_para_t yuvRange_param[RK_AIQ_AWB_YUV_LS_PARA_NUM];
+    rk_aiq_rgb2xy_para_t rgb2xy_param;
+    rk_aiq_awb_xy_range_para_t xyRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
     //several window in pixel domain
-    //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
-    unsigned short multiwindow[RK_AIQ_AWB_MULTIWINDOW_NUM][4];
+    unsigned short multiwindow[RK_AIQ_AWB_MULTIWINDOW_NUM]
+                              [4];  //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
     //several winow in uv or xy domain
     rk_aiq_awb_exc_range_t excludeWpRange[RK_AIQ_AWB_EXCLUDE_WP_RANGE_NUM];
 
-    int  groupIllIndxCurrent; //for time share
-    int  IllIndxSetCurrent[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM]; //for time share
+    int groupIllIndxCurrent;                                 //for time share
+    int IllIndxSetCurrent[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];  //for time share
     char timeSign[64];
+
 } rk_aiq_awb_stat_cfg_v200_t;
 
 typedef struct rk_aiq_awb_stat_wp_res_v200_s {
@@ -101,7 +102,7 @@ typedef struct rk_aiq_awb_stat_blk_res_v200_s {
     unsigned int Rvalue;
     unsigned int Gvalue;
     unsigned int Bvalue;
-    bool isWP[RK_AIQ_AWB_STORE_LS_WPFLAG_NUM]; //record wp flag in three light sources
+    bool isWP[RK_AIQ_AWB_STORE_LS_WPFLAG_NUM];  //record wp flag in three light sources
 } rk_aiq_awb_stat_blk_res_v200_t;
 
 typedef struct rk_aiq_awb_stat_wp_res_light_v200_s {
@@ -110,13 +111,13 @@ typedef struct rk_aiq_awb_stat_wp_res_light_v200_s {
 
 typedef struct rk_aiq_awb_stat_res_v200_s {
     rk_aiq_awb_stat_wp_res_light_v200_t light[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
-    rk_aiq_awb_stat_blk_res_v200_t   blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
+    rk_aiq_awb_stat_blk_res_v200_t blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
     //window in pixel domain
     rk_aiq_awb_stat_wp_res_light_v200_t multiwindowLightResult[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
     //window in xy or uv domain
     rk_aiq_awb_stat_wp_res_v200_t excWpRangeResult[RK_AIQ_AWB_STAT_WP_RANGE_NUM_V200];
 
-    rk_aiq_awb_stat_cfg_v200_t  awb_cfg_effect_v200;
+    rk_aiq_awb_stat_cfg_v200_t awb_cfg_effect_v200;
 } rk_aiq_awb_stat_res_v200_t;
 
 #endif

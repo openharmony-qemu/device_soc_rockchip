@@ -25,7 +25,7 @@
 
 #include "algos/awb/rk_aiq_types_awb_stat_v2xx.h"
 
-#ifdef ISP_HW_V30 //for rk3588
+#ifdef ISP_HW_V30  //for rk3588
 #define AWB_MULTI_WINDOW_EN
 #define AWB_EXCWP_RANGE_STAT_EN
 #define AWB_WPNUM2_EN
@@ -42,7 +42,7 @@
 #define RK_AIQ_AWB_MULTIWINDOW_NUM_V201 4
 #define RK_AIQ_AWB_WP_HIST_BIN_NUM 8
 #define RK_AIQ_WP_GAIN_FRAC_BIS_INTERNAL 8
-#define RK_AIQ_AWBWP_WEIGHT_CURVE_DOT_NUM (RK_AIQ_AWB_WP_HIST_BIN_NUM+1)
+#define RK_AIQ_AWBWP_WEIGHT_CURVE_DOT_NUM (RK_AIQ_AWB_WP_HIST_BIN_NUM + 1)
 #define RK_AIQ_AWB_YUV2_THCURVE_DOT_NUM 6
 #define RK_AIQ_AWB_YUV2_MATRIX_FRAC_BIT 9
 #define RK_AIQ_AWB_YUV2_OFFSET_FRAC_BIT 4
@@ -65,11 +65,11 @@ typedef enum rk_aiq_awb_blk_stat_mode_v201_e {
 } rk_aiq_awb_blk_stat_mode_v201_t;
 
 typedef struct rk_aiq_awb_exc_range_v201_s {
-    rk_aiq_awb_exc_range_domain_t domain; //1 uv domain,2 xy domain;
-    bool excludeEnable[RK_AIQ_AWB_XY_TYPE_MAX_V201]; // 0 disable,1 eanble;
-    bool measureEnable; //1 calculate sum r g b value in the range,0 not meausre
-    int xu[2]; //left right
-    int yv[2]; //top bottom
+    rk_aiq_awb_exc_range_domain_t domain;             //1 uv domain,2 xy domain;
+    bool excludeEnable[RK_AIQ_AWB_XY_TYPE_MAX_V201];  // 0 disable,1 eanble;
+    bool measureEnable;                               //1 calculate sum r g b value in the range,0 not meausre
+    int xu[2];                                        //left right
+    int yv[2];                                        //top bottom
 } rk_aiq_awb_exc_range_v201_t;
 
 typedef enum RK_AIQ_AWB_BLK_STAT_REALWP_ILL_S {
@@ -97,19 +97,19 @@ typedef struct rk_aiq_awb_stat_cfg_v201_s {
     bool threeDyuvEnable[RK_AIQ_AWB_XY_TYPE_MAX_V201];
     unsigned short threeDyuvIllu[RK_AIQ_AWB_YUV_LS_PARA_NUM];
     bool wpDiffWeiEnable[RK_AIQ_AWB_XY_TYPE_MAX_V201];
-    bool blkWeightEnable[RK_AIQ_AWB_XY_TYPE_MAX_V201]; //the different weight in WP sum
+    bool blkWeightEnable[RK_AIQ_AWB_XY_TYPE_MAX_V201];  //the different weight in WP sum
     bool blkStatisticsEnable;
     rk_aiq_down_scale_mode_t dsMode;
     rk_aiq_awb_blk_stat_mode_v201_t blkMeasureMode;
-    bool blk_rtdw_measure_en; //right and down measure eanble
+    bool blk_rtdw_measure_en;  //right and down measure eanble
 #ifdef AWB_MULTI_WINDOW_EN
     bool multiwindow_en;
     //several window in pixel domain
-    //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
-    unsigned short multiwindow[RK_AIQ_AWB_MULTIWINDOW_NUM_V201][4];
+    unsigned short multiwindow[RK_AIQ_AWB_MULTIWINDOW_NUM_V201]
+                              [4];  //8  windows in pixel domain ,hOffset,vOffser,hSize,vSize;
 #endif
-    uint8_t frameChoose; //default value is 0,support to choose long frame ,middle frame or short frame when hdr is on
-    unsigned short windowSet[4]; //hOffset,vOffser,hSiz,vSize;
+    uint8_t frameChoose;  //default value is 0,support to choose long frame ,middle frame or short frame when hdr is on
+    unsigned short windowSet[4];  //hOffset,vOffser,hSiz,vSize;
     unsigned char lightNum;
     unsigned short maxR;
     unsigned short minR;
@@ -119,31 +119,31 @@ typedef struct rk_aiq_awb_stat_cfg_v201_s {
     unsigned short minB;
     unsigned short maxY;
     unsigned short minY;
-    uint16_t pre_wbgain_inv_r; //3i+f8;
+    uint16_t pre_wbgain_inv_r;  //3i+f8;
     uint16_t pre_wbgain_inv_g;
     uint16_t pre_wbgain_inv_b;
-    short          icrgb2RYuv_matrix[12]; //3*3 matrix 9bit fracitional +0bit integer+1s
+    short icrgb2RYuv_matrix[12];  //3*3 matrix 9bit fracitional +0bit integer+1s
     //  3*1 off    4bit fractional +8bit integer+1s
-    rk_aiq_awb_rt3dyuv_range_para_t     ic3Dyuv2Range_param[RK_AIQ_AWB_YUV_LS_PARA_NUM];
-    rk_aiq_awb_uv_range_para_t            uvRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM]; //A CWF D50 D65 D75 HZ TL84
-    rk_aiq_rgb2xy_para_t      rgb2xy_param;
-    rk_aiq_awb_xy_range_para_t    xyRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
+    rk_aiq_awb_rt3dyuv_range_para_t ic3Dyuv2Range_param[RK_AIQ_AWB_YUV_LS_PARA_NUM];
+    rk_aiq_awb_uv_range_para_t uvRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];  //A CWF D50 D65 D75 HZ TL84
+    rk_aiq_rgb2xy_para_t rgb2xy_param;
+    rk_aiq_awb_xy_range_para_t xyRange_param[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
     //several winow in uv or xy domain
     rk_aiq_awb_exc_range_v201_t excludeWpRange[RK_AIQ_AWB_EXCLUDE_WP_RANGE_NUM];
     //with differernt luma ,the different weight in WP sum
-    unsigned char wpDiffwei_y[RK_AIQ_AWBWP_WEIGHT_CURVE_DOT_NUM]; //8bit
-    //8bit fix point ,and wpDiffwei_w[4]=wpDiffwei_w[5]=255;
-    unsigned char wpDiffwei_w[RK_AIQ_AWBWP_WEIGHT_CURVE_DOT_NUM];
-    rk_aiq_awb_xy_type_v201_t xyRangeTypeForWpHist; //for xyRangeT
+    unsigned char wpDiffwei_y[RK_AIQ_AWBWP_WEIGHT_CURVE_DOT_NUM];  //8bit
+    unsigned char
+        wpDiffwei_w[RK_AIQ_AWBWP_WEIGHT_CURVE_DOT_NUM];  //8bit fix point ,and wpDiffwei_w[4]=wpDiffwei_w[5]=255;
+    rk_aiq_awb_xy_type_v201_t xyRangeTypeForWpHist;      //for xyRangeT
     unsigned char blkWeight[RK_AIQ_AWB_GRID_NUM_TOTAL];
-    rk_aiq_awb_xy_type_v201_t xyRangeTypeForBlkStatistics; //used when blkMeasureMode>BLK_MEASURE_MODE_ALL
-    //blkMeasureMode used when blkMeasureMode>BLK_MEASURE_MODE_ALL
-    rk_aiq_awb_blk_stat_realwp_ill_e illIdxForBlkStatistics;
+    rk_aiq_awb_xy_type_v201_t xyRangeTypeForBlkStatistics;  //used when blkMeasureMode>BLK_MEASURE_MODE_ALL
+    rk_aiq_awb_blk_stat_realwp_ill_e
+        illIdxForBlkStatistics;  //blkMeasureMode used when blkMeasureMode>BLK_MEASURE_MODE_ALL
     bool blkStatisticsWithLumaWeightEn;
-    int  groupIllIndxCurrent; //not register, for time share
-    int  IllIndxSetCurrent[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM]; //not register,for time share
-    char timeSign[64]; //not register,for time share
-    rk_aiq_awb_stat_cfg_mode_e statCfgMode; //not register,for blc1 used case
+    int groupIllIndxCurrent;                                 //not register, for time share
+    int IllIndxSetCurrent[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];  //not register,for time share
+    char timeSign[64];                                       //not register,for time share
+    rk_aiq_awb_stat_cfg_mode_e statCfgMode;                  //not register,for blc1 used case
 
 } rk_aiq_awb_stat_cfg_v201_t;
 
@@ -172,7 +172,7 @@ typedef struct rk_aiq_awb_stat_res_v201_s {
     int WpNo2[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
 #endif
     //method2
-    rk_aiq_awb_stat_blk_res_v201_t   blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
+    rk_aiq_awb_stat_blk_res_v201_t blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
 #ifdef AWB_MULTI_WINDOW_EN
     //window in pixel domain
     rk_aiq_awb_stat_wp_res_light_v201_t multiwindowLightResult[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
@@ -184,26 +184,24 @@ typedef struct rk_aiq_awb_stat_res_v201_s {
     //wpno histogram
     unsigned int WpNoHist[RK_AIQ_AWB_WP_HIST_BIN_NUM];
 
-    rk_aiq_awb_stat_cfg_v201_t  awb_cfg_effect_v201;
+    rk_aiq_awb_stat_cfg_v201_t awb_cfg_effect_v201;
 } rk_aiq_awb_stat_res_v201_t;
-
 
 typedef struct rk_aiq_awb_stat_res2_v201_s {
     //method1
     rk_aiq_awb_stat_wp_res_light_v201_t light[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
     //method2
-    rk_aiq_awb_stat_blk_res_v201_t   blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
+    rk_aiq_awb_stat_blk_res_v201_t blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
     //wpno histogram
     unsigned int WpNoHist[RK_AIQ_AWB_WP_HIST_BIN_NUM];
 } rk_aiq_awb_stat_res2_v201_t;
-
 
 typedef struct rk_aiq_awb_stat_res2_v30_s {
     //method1
     rk_aiq_awb_stat_wp_res_light_v201_t light[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
     int WpNo2[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];
     //method2
-    rk_aiq_awb_stat_blk_res_v201_t   blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
+    rk_aiq_awb_stat_blk_res_v201_t blockResult[RK_AIQ_AWB_GRID_NUM_TOTAL];
     //window in pixel domain
     rk_aiq_awb_stat_wp_res_light_v201_t multiwindowLightResult[4];
     //window in xy or uv domain
@@ -211,6 +209,5 @@ typedef struct rk_aiq_awb_stat_res2_v30_s {
     //wpno histogram
     unsigned int WpNoHist[RK_AIQ_AWB_WP_HIST_BIN_NUM];
 } rk_aiq_awb_stat_res2_v30_t;
-
 
 #endif

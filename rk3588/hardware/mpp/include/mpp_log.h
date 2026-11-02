@@ -27,34 +27,81 @@
  * mpp_logv is for verbose logging
  */
 
-#define mpp_logf(fmt, ...)  _mpp_log_l(MPP_LOG_FATAL,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_loge(fmt, ...)  _mpp_log_l(MPP_LOG_ERROR,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logw(fmt, ...)  _mpp_log_l(MPP_LOG_WARN,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logi(fmt, ...)  _mpp_log_l(MPP_LOG_INFO,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logd(fmt, ...)  _mpp_log_l(MPP_LOG_DEBUG,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logv(fmt, ...)  _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_logf(fmt, ...) _mpp_log_l(MPP_LOG_FATAL, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_loge(fmt, ...) _mpp_log_l(MPP_LOG_ERROR, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logw(fmt, ...) _mpp_log_l(MPP_LOG_WARN, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logi(fmt, ...) _mpp_log_l(MPP_LOG_INFO, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logd(fmt, ...) _mpp_log_l(MPP_LOG_DEBUG, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logv(fmt, ...) _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
 
-#define mpp_logf_f(fmt, ...)  _mpp_log_l(MPP_LOG_FATAL,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_loge_f(fmt, ...)  _mpp_log_l(MPP_LOG_ERROR,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logw_f(fmt, ...)  _mpp_log_l(MPP_LOG_WARN,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logi_f(fmt, ...)  _mpp_log_l(MPP_LOG_INFO,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logd_f(fmt, ...)  _mpp_log_l(MPP_LOG_DEBUG,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
-#define mpp_logv_f(fmt, ...)  _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_logf_f(fmt, ...) _mpp_log_l(MPP_LOG_FATAL, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_loge_f(fmt, ...) _mpp_log_l(MPP_LOG_ERROR, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logw_f(fmt, ...) _mpp_log_l(MPP_LOG_WARN, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logi_f(fmt, ...) _mpp_log_l(MPP_LOG_INFO, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logd_f(fmt, ...) _mpp_log_l(MPP_LOG_DEBUG, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
+#define mpp_logv_f(fmt, ...) _mpp_log_l(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ##__VA_ARGS__)
 
+#define mpp_logf_c(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logf(fmt, ##__VA_ARGS__);                                                                              \
+    } while (0)
+#define mpp_loge_c(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_loge(fmt, ##__VA_ARGS__);                                                                              \
+    } while (0)
+#define mpp_logw_c(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logw(fmt, ##__VA_ARGS__);                                                                              \
+    } while (0)
+#define mpp_logi_c(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logi(fmt, ##__VA_ARGS__);                                                                              \
+    } while (0)
+#define mpp_logd_c(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logd(fmt, ##__VA_ARGS__);                                                                              \
+    } while (0)
+#define mpp_logv_c(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logv(fmt, ##__VA_ARGS__);                                                                              \
+    } while (0)
 
-#define mpp_logf_c(cond, fmt, ...)  do { if (cond) mpp_logf(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_loge_c(cond, fmt, ...)  do { if (cond) mpp_loge(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logw_c(cond, fmt, ...)  do { if (cond) mpp_logw(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logi_c(cond, fmt, ...)  do { if (cond) mpp_logi(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logd_c(cond, fmt, ...)  do { if (cond) mpp_logd(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logv_c(cond, fmt, ...)  do { if (cond) mpp_logv(fmt, ## __VA_ARGS__); } while (0)
-
-#define mpp_logf_cf(cond, fmt, ...) do { if (cond) mpp_logf_f(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_loge_cf(cond, fmt, ...) do { if (cond) mpp_loge_f(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logw_cf(cond, fmt, ...) do { if (cond) mpp_logw_f(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logi_cf(cond, fmt, ...) do { if (cond) mpp_logi_f(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logd_cf(cond, fmt, ...) do { if (cond) mpp_logd_f(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_logv_cf(cond, fmt, ...) do { if (cond) mpp_logv_f(fmt, ## __VA_ARGS__); } while (0)
+#define mpp_logf_cf(cond, fmt, ...)                                                                                    \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logf_f(fmt, ##__VA_ARGS__);                                                                            \
+    } while (0)
+#define mpp_loge_cf(cond, fmt, ...)                                                                                    \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_loge_f(fmt, ##__VA_ARGS__);                                                                            \
+    } while (0)
+#define mpp_logw_cf(cond, fmt, ...)                                                                                    \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logw_f(fmt, ##__VA_ARGS__);                                                                            \
+    } while (0)
+#define mpp_logi_cf(cond, fmt, ...)                                                                                    \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logi_f(fmt, ##__VA_ARGS__);                                                                            \
+    } while (0)
+#define mpp_logd_cf(cond, fmt, ...)                                                                                    \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logd_f(fmt, ##__VA_ARGS__);                                                                            \
+    } while (0)
+#define mpp_logv_cf(cond, fmt, ...)                                                                                    \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_logv_f(fmt, ##__VA_ARGS__);                                                                            \
+    } while (0)
 
 /*
  * mpp runtime log system usage:
@@ -62,14 +109,22 @@
  * mpp_log is for important message like open/close/reset/flush, it will print too.
  */
 
-#define mpp_log(fmt, ...)   mpp_logi(fmt, ## __VA_ARGS__)
-#define mpp_err(fmt, ...)   mpp_loge(fmt, ## __VA_ARGS__)
+#define mpp_log(fmt, ...) mpp_logi(fmt, ##__VA_ARGS__)
+#define mpp_err(fmt, ...) mpp_loge(fmt, ##__VA_ARGS__)
 
-#define mpp_log_f(fmt, ...)  mpp_logi_f(fmt, ## __VA_ARGS__)
-#define mpp_err_f(fmt, ...)  mpp_loge_f(fmt, ## __VA_ARGS__)
+#define mpp_log_f(fmt, ...) mpp_logi_f(fmt, ##__VA_ARGS__)
+#define mpp_err_f(fmt, ...) mpp_loge_f(fmt, ##__VA_ARGS__)
 
-#define mpp_log_c(cond, fmt, ...)   do { if (cond) mpp_log(fmt, ## __VA_ARGS__); } while (0)
-#define mpp_log_cf(cond, fmt, ...)  do { if (cond) mpp_log_f(fmt, ## __VA_ARGS__); } while (0)
+#define mpp_log_c(cond, fmt, ...)                                                                                      \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_log(fmt, ##__VA_ARGS__);                                                                               \
+    } while (0)
+#define mpp_log_cf(cond, fmt, ...)                                                                                     \
+    do {                                                                                                               \
+        if (cond)                                                                                                      \
+            mpp_log_f(fmt, ##__VA_ARGS__);                                                                             \
+    } while (0)
 
 #ifdef __cplusplus
 extern "C" {

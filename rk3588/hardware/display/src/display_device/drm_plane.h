@@ -183,11 +183,11 @@ public:
     }
     uint64_t GetPlaneValue()
     {
-        return mPlane_value;
+        return mPlaneValue;
     }
     void SetPlaneValue(uint64_t value)
     {
-        mPlane_value = value;
+        mPlaneValue = value;
     }
 private:
     uint32_t mId = 0;
@@ -196,7 +196,7 @@ private:
     uint32_t mPropFbId = 0;
     uint32_t mPropFenceInId = 0;
     uint32_t mPropCrtcId = 0;
-    uint64_t mPlane_value;
+    uint64_t mPlaneValue;
     char mName[100];
 
     uint32_t mPropCrtc_xId = 0;

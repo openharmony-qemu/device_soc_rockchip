@@ -8,13 +8,7 @@
 extern "C" {
 #endif
 
-typedef enum opMode_e {
-    OP_AUTO   = 0,
-    OP_MANUAL = 1,
-    OP_SEMI_AUTO = 2,
-    OP_REG_MANUAL = 3,
-    OP_INVAL
-} opMode_t;
+typedef enum opMode_e { OP_AUTO = 0, OP_MANUAL = 1, OP_SEMI_AUTO = 2, OP_REG_MANUAL = 3, OP_INVAL } opMode_t;
 
 /*
 *****************************
@@ -23,7 +17,7 @@ typedef enum opMode_e {
 */
 
 typedef enum dayNightScene_e {
-    DAYNIGHT_SCENE_DAY   = 0,
+    DAYNIGHT_SCENE_DAY = 0,
     DAYNIGHT_SCENE_NIGHT = 1,
     DAYNIGHT_SCENE_INVAL,
 } dayNightScene_t;
@@ -40,11 +34,10 @@ typedef enum awbRange_e {
 } awbRange_t;
 
 typedef enum aeMode_e {
-    AE_AUTO          = 0,
-    AE_IRIS_PRIOR    = 1,
+    AE_AUTO = 0,
+    AE_IRIS_PRIOR = 1,
     AE_SHUTTER_PRIOR = 2,
 } aeMode_t;
-
 
 /*
 *****************
@@ -76,19 +69,19 @@ typedef enum aeMeasAreaType_e {
 } aeMeasAreaType_t;
 
 typedef enum expPwrLineFreq_e {
-    EXP_PWR_LINE_FREQ_DIS   = 0,
-    EXP_PWR_LINE_FREQ_50HZ  = 1,
-    EXP_PWR_LINE_FREQ_60HZ  = 2,
+    EXP_PWR_LINE_FREQ_DIS = 0,
+    EXP_PWR_LINE_FREQ_50HZ = 1,
+    EXP_PWR_LINE_FREQ_60HZ = 2,
 } expPwrLineFreq_t;
 
 typedef enum antiFlickerMode_e {
     ANTIFLICKER_NORMAL_MODE = 0,
-    ANTIFLICKER_AUTO_MODE   = 1,
+    ANTIFLICKER_AUTO_MODE = 1,
 } antiFlickerMode_t;
 
 typedef struct frameRateInfo_s {
-    opMode_t         mode;
-    unsigned int     fps; /* valid when manual mode*/
+    opMode_t mode;
+    unsigned int fps; /* valid when manual mode*/
 } frameRateInfo_t;
 
 typedef struct rk_aiq_version_info_s {
@@ -166,4 +159,4 @@ typedef struct rk_aiq_module_list_s {
 }
 #endif
 
-#endif  /*__RK_AIQ_USER_API2_COMMON_H__*/
+#endif /*__RK_AIQ_USER_API2_COMMON_H__*/

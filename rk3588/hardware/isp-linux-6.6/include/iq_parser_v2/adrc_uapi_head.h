@@ -273,8 +273,8 @@ typedef struct mdrcAttr_v12_lite_s {
     mDrcLocalV12Lite_t LocalSetting;
     // M4_STRUCT_DESC("CompressSetting", "normal_ui_style")
     mDrcCompress_t CompressSetting;
-    // M4_ARRAY_DESC("Scale_y", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048),
-    // "[0,2,20,76,193,381,631,772,919,1066,1211,1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("Scale_y", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048), "[0,2,20,76,193,381,631,772,919,1066,1211,
+    // 1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
     int Scale_y[ADRC_Y_NUM];
     // M4_NUMBER_DESC("Edge_Weit", "f32",  M4_RANGE(0,1), "1",M4_DIGIT(3))
     float Edge_Weit;
@@ -352,8 +352,8 @@ typedef struct hw_mdrc_adjCompsGain_setting_s {
     hw_mdrc_adjCompsGain_params_t hw_adrc_adjCompsGain_params;
     // M4_NUMBER_DESC("hw_adrc_adjCompsGainIdxLuma_scl", "u8", M4_RANGE(0,255), "64", M4_DIGIT(0))
     uint8_t hw_adrc_adjCompsGainIdxLuma_scl;
-    // M4_ARRAY_DESC("hw_adrc_luma2compsGainScale_val", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048),
-    // "[0,2,20,76,193,381,631,772,919,1066,1211,1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("hw_adrc_luma2compsGainScale_val", "u16", M4_SIZE(1,17),  M4_RANGE(0, 2048), "[0,2,20,76,193,381,
+    // 631,772,919,1066,1211,1479,1700,1863,1968,2024,2048]", M4_DIGIT(0), M4_DYNAMIC(0))
     uint16_t hw_adrc_luma2compsGainScale_val[ADRC_Y_NUM];
 } hw_mdrc_adjCompsGain_setting_t;
 

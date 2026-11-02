@@ -1,34 +1,38 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <getopt.h> /* getopt_long() */
-#include <fcntl.h> /* low-level i/o */
-#include <inttypes.h>
+#include <fcntl.h>  /* low-level i/o */
+#include <cinttypes>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <sys/ioctl.h>
 #include <pthread.h>
+#include <securec.h>
 
 #include <linux/videodev2.h>
 #include "uAPI2/rk_aiq_user_api2_sysctl.h"
 #include "mediactl/mediactl.h"
 
-#define CLEAR(x) memset(&(x), 0, sizeof(x))
-#define DBG(...) do { if (!g_silent) printf("DBG: " __VA_ARGS__);} while (0)
-#define ERR(...) do { fprintf(stderr, "ERR: " __VA_ARGS__); } while (0)
-
+#define DBG(...)                                                                                                       \
+    do {                                                                                                               \
+        if (!g_silent)                                                                                                 \
+            printf("DBG: " __VA_ARGS__);                                                                               \
+    } while (0)
+#define ERR(...)                                                                                                       \
+    do {                                                                                                               \
+        fprintf(stderr, "ERR: " __VA_ARGS__);                                                                          \
+    } while (0)
 
 /* Private v4l2 event */
-#define CIFISP_V4L2_EVENT_STREAM_START  \
-                    (V4L2_EVENT_PRIVATE_START + 1)
-#define CIFISP_V4L2_EVENT_STREAM_STOP   \
-                    (V4L2_EVENT_PRIVATE_START + 2)
+#define CIFISP_V4L2_EVENT_STREAM_START (V4L2_EVENT_PRIVATE_START + 1)
+#define CIFISP_V4L2_EVENT_STREAM_STOP (V4L2_EVENT_PRIVATE_START + 2)
 
-#define RKAIQ_FILE_PATH_LEN                       64
-#define RKAIQ_FLASH_NUM_MAX                       2
+#define RKAIQ_FILE_PATH_LEN 64
+#define RKAIQ_FLASH_NUM_MAX 2
 
 /* 1 vicap + 2 mipi + 1 bridge + 1 redundance */
-#define MAX_MEDIA_NODES                           16
+#define MAX_MEDIA_NODES 16
 
 #define IQ_PATH "/vendor/etc/iqfiles/"
 
@@ -46,7 +50,7 @@ struct rkaiq_media_info {
 
     char mdevPath[32];
     int available;
-    rk_aiq_sys_ctx_t* aiq_ctx;
+    rk_aiq_sys_ctx_t *aiq_ctx;
 
     pthread_t pid;
 };
@@ -65,11 +69,10 @@ static int Xioctl(int fh, int request, void *arg)
 
     do {
         r = ioctl(fh, request, arg);
-    } while (-1 == r && EINTR == errno);
+    } while (r == -1 && errno == EINTR);
 
     return r;
 }
-
 
 static int rkaiq_get_devname(struct media_device *device, const char *name, char *devName)
 {
@@ -77,8 +80,9 @@ static int rkaiq_get_devname(struct media_device *device, const char *name, char
     struct media_entity *entity = nullptr;
 
     entity = media_get_entity_by_name(device, name, strlen(name));
-    if (!entity)
+    if (!entity) {
         return -1;
+    }
 
     devname = media_entity_get_devname(entity);
     if (!devname) {
@@ -86,8 +90,10 @@ static int rkaiq_get_devname(struct media_device *device, const char *name, char
         return -1;
     }
 
-    strncpy(devName, devname, RKAIQ_FILE_PATH_LEN - 1);
-    devName[RKAIQ_FILE_PATH_LEN - 1] = '\0';
+    if (strcpy_s(devName, RKAIQ_FILE_PATH_LEN, devname) != EOK) {
+        ERR("device path is too long for %s\n", name);
+        return -ENAMETOOLONG;
+    }
 
     DBG("get %s devname: %s\n", name, devName);
 
@@ -100,56 +106,56 @@ int rkaiq_get_media_info(struct rkaiq_media_info *mediaInfo)
     const char *sensorName;
     int ret;
 
-    device = media_device_new (mediaInfo->mdevPath);
-    if (!device)
+    device = media_device_new(mediaInfo->mdevPath);
+    if (!device) {
         return -ENOMEM;
+    }
     /* Enumerate entities, pads and links. */
-    ret = media_device_enumerate (device);
-    if (ret)
+    ret = media_device_enumerate(device);
+    if (ret) {
         return ret;
+    }
     if (!ret) {
         /* Try rkisp */
-        ret = rkaiq_get_devname(device, "rkisp-isp-subdev",
-                                mediaInfo->sdIspPath);
-        ret |= rkaiq_get_devname(device, "rkisp-input-params",
-                                mediaInfo->vdParamsPath);
-        ret |= rkaiq_get_devname(device, "rkisp-statistics",
-                                mediaInfo->vdStatsPath);
-        ret |= rkaiq_get_devname(device, "rkisp_mainpath",
-                                mediaInfo->mainpath);
+        ret = rkaiq_get_devname(device, "rkisp-isp-subdev", mediaInfo->sdIspPath);
+        ret |= rkaiq_get_devname(device, "rkisp-input-params", mediaInfo->vdParamsPath);
+        ret |= rkaiq_get_devname(device, "rkisp-statistics", mediaInfo->vdStatsPath);
+        ret |= rkaiq_get_devname(device, "rkisp_mainpath", mediaInfo->mainpath);
     }
     if (ret) {
         fprintf(stderr, "Cound not find rkisp dev names, skipped %s\n", mediaInfo->mdevPath);
-        media_device_unref (device);
+        media_device_unref(device);
         return ret;
     }
 
     sensorName = rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd(mediaInfo->mainpath);
     if (sensorName == nullptr || strlen(sensorName) == 0) {
         fprintf(stderr, "ERR: No sensor attached to %s\n", mediaInfo->mdevPath);
-        media_device_unref (device);
+        media_device_unref(device);
         return -EINVAL;
     }
 
-    strncpy(mediaInfo->sensorEntityName, sensorName, sizeof(mediaInfo->sensorEntityName) - 1);
-    mediaInfo->sensorEntityName[sizeof(mediaInfo->sensorEntityName) - 1] = '\0';
+    if (strcpy_s(mediaInfo->sensorEntityName, sizeof(mediaInfo->sensorEntityName), sensorName) != EOK) {
+        ERR("sensor entity name is too long for %s\n", mediaInfo->mdevPath);
+        media_device_unref(device);
+        return -ENAMETOOLONG;
+    }
 
-    media_device_unref (device);
+    media_device_unref(device);
 
     return ret;
 }
 
 static void init_engine(struct rkaiq_media_info *mediaInfo)
 {
-    mediaInfo->aiq_ctx = rk_aiq_uapi2_sysctl_init(mediaInfo->sensorEntityName,
-                                                  IQ_PATH, NULL, NULL);
+    mediaInfo->aiq_ctx = rk_aiq_uapi2_sysctl_init(mediaInfo->sensorEntityName, IQ_PATH, nullptr, nullptr);
     /* 3A server has listened stream events already */
     rk_aiq_uapi2_sysctl_setListenStrmStatus(mediaInfo->aiq_ctx, false);
-    if (g_hasMulCam)
+    if (g_hasMulCam) {
         rk_aiq_uapi2_sysctl_setMulCamConc(mediaInfo->aiq_ctx, 1);
+    }
 
-    if (rk_aiq_uapi2_sysctl_prepare(mediaInfo->aiq_ctx,
-            g_width, g_height, RK_AIQ_WORKING_MODE_NORMAL)) {
+    if (rk_aiq_uapi2_sysctl_prepare(mediaInfo->aiq_ctx, g_width, g_height, RK_AIQ_WORKING_MODE_NORMAL)) {
         ERR("rkaiq engine prepare failed !\n");
         exit(-1);
     }
@@ -159,7 +165,7 @@ static void start_engine(struct rkaiq_media_info *mediaInfo)
 {
     DBG("device manager start\n");
     rk_aiq_uapi2_sysctl_start(mediaInfo->aiq_ctx);
-    if (mediaInfo->aiq_ctx == NULL) {
+    if (mediaInfo->aiq_ctx == nullptr) {
         ERR("rkisp_init engine failed\n");
         exit(-1);
     } else {
@@ -181,9 +187,7 @@ static void deinit_engine(struct rkaiq_media_info *mediaInfo)
 static int wait_stream_event(int fd, unsigned int event_type, int timeOutMs)
 {
     int ret;
-    struct v4l2_event event;
-
-    CLEAR(event);
+    struct v4l2_event event = {};
 
     do {
         /*
@@ -193,19 +197,21 @@ static int wait_stream_event(int fd, unsigned int event_type, int timeOutMs)
          * dequeue event and block until sucess.
          */
         ret = Xioctl(fd, VIDIOC_DQEVENT, &event);
-        if (ret == 0 && event.type == event_type)
+        if (ret < 0) {
+            ERR("dequeue stream event failed: %s\n", strerror(errno));
+            return ret;
+        }
+        if (event.type == event_type) {
             return 0;
+        }
     } while (true);
-
-    return -1;
 }
 
 static int subscrible_stream_event(struct rkaiq_media_info *mediaInfo, int fd, bool subs)
 {
-    struct v4l2_event_subscription sub;
+    struct v4l2_event_subscription sub = {};
     int ret = 0;
 
-    CLEAR(sub);
     sub.type = CIFISP_V4L2_EVENT_STREAM_START;
     ret = Xioctl(fd,
                  subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
@@ -215,7 +221,7 @@ static int subscrible_stream_event(struct rkaiq_media_info *mediaInfo, int fd, b
         exit(EXIT_FAILURE);
     }
 
-    CLEAR(sub);
+    sub = {};
     sub.type = CIFISP_V4L2_EVENT_STREAM_STOP;
     ret = Xioctl(fd,
                  subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
@@ -233,17 +239,14 @@ void ParseArgs(int argc, char **argv)
 {
     int c;
 
-    while (1) {
-        int optionIndex = 0;
-        static struct option longOptions[] = {
+    int optionIndex = 0;
+    static struct option longOptions[] = {
             {"silent",    no_argument,       nullptr, 's' },
             {"help",      no_argument,       nullptr, 'h' },
             {nullptr,     no_argument,       nullptr,  0  }
-        };
+    };
 
-        c = getopt_long(argc, argv, "sh", longOptions, &optionIndex);
-        if (c == -1)
-            break;
+    while ((c = getopt_long(argc, argv, "sh", longOptions, &optionIndex)) != -1) {
 
         switch (c) {
         case 'w':
@@ -272,12 +275,12 @@ void *EngineThread(void *arg)
     int ispFd;
     struct rkaiq_media_info *mediaInfo;
 
-    mediaInfo = (struct rkaiq_media_info *) arg;
+    mediaInfo = (struct rkaiq_media_info *)arg;
 
     ispFd = open(mediaInfo->vdParamsPath, O_RDWR);
     if (ispFd < 0) {
         ERR("open %s failed %s\n", mediaInfo->vdParamsPath, strerror(errno));
-        return NULL;
+        return nullptr;
     }
 
     init_engine(mediaInfo);
@@ -285,12 +288,17 @@ void *EngineThread(void *arg)
 
     for (;;) {
         DBG("%s: wait stream start event...\n", mediaInfo->mdevPath);
-        wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1);
+        if (wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1) != 0) {
+            break;
+        }
         DBG("%s: wait stream start event success ...\n", mediaInfo->mdevPath);
         start_engine(mediaInfo);
 
         DBG("%s: wait stream stop event...\n", mediaInfo->mdevPath);
-        wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
+        if (wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1) != 0) {
+            stop_engine(mediaInfo);
+            break;
+        }
         DBG("%s: wait stream stop event success ...\n", mediaInfo->mdevPath);
 
         stop_engine(mediaInfo);
@@ -305,7 +313,8 @@ void *EngineThread(void *arg)
 
 int main(int argc, char **argv)
 {
-    int ret, i;
+    int ret;
+    int i;
     int threads = 0;
 
     /* Line buffered so that printf can flash every line if redirected to
@@ -316,7 +325,11 @@ int main(int argc, char **argv)
     ParseArgs(argc, argv);
 
     for (i = 0; i < MAX_MEDIA_NODES; i++) {
-        snprintf(g_mediaInfos[i].mdevPath, sizeof(g_mediaInfos[i].mdevPath), "/dev/media%d", i);
+        ret = sprintf_s(g_mediaInfos[i].mdevPath, sizeof(g_mediaInfos[i].mdevPath), "/dev/media%d", i);
+        if (ret < 0) {
+            ERR("Failed to format media device path for index %d\n", i);
+            continue;
+        }
         if (rkaiq_get_media_info(&g_mediaInfos[i])) {
             ERR("Bad media topology for: %s\n", g_mediaInfos[i].mdevPath);
             g_mediaInfos[i].available = 0;
@@ -326,12 +339,14 @@ int main(int argc, char **argv)
         threads++;
     }
 
-    if (threads > 1)
+    if (threads > 1) {
         g_hasMulCam = 1;
+    }
 
     for (i = 0; i < MAX_MEDIA_NODES; i++) {
-        if (!g_mediaInfos[i].available)
+        if (!g_mediaInfos[i].available) {
             continue;
+        }
         ret = pthread_create(&g_mediaInfos[i].pid, nullptr, EngineThread, &g_mediaInfos[i]);
         if (ret) {
             g_mediaInfos[i].pid = 0;
@@ -341,8 +356,9 @@ int main(int argc, char **argv)
     }
 
     for (i = 0; i < MAX_MEDIA_NODES; i++) {
-        if (!g_mediaInfos[i].available || g_mediaInfos[i].pid == 0)
+        if (!g_mediaInfos[i].available || g_mediaInfos[i].pid == 0) {
             continue;
+        }
         pthread_join(g_mediaInfos[i].pid, nullptr);
     }
 

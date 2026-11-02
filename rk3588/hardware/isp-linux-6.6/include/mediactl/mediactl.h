@@ -1,7 +1,7 @@
 /*
  * Media controller interface library
  *
- * Copyright (C) 2010-2011 Ideas on board SPRL
+ * Copyright (c) 2010-2011 Ideas on board SPRL
  *
  * Contact: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
  *
@@ -132,9 +132,7 @@ void media_device_unref(struct media_device *media);
  *
  * @return Zero on success or -ENOMEM if memory cannot be allocated.
  */
-int media_device_add_entity(struct media_device *media,
-                            const struct media_entity_desc *desc,
-                            const char *devnode);
+int media_device_add_entity(struct media_device *media, const struct media_entity_desc *desc, const char *devnode);
 
 /**
  * @brief Set a handler for debug messages.
@@ -146,9 +144,7 @@ int media_device_add_entity(struct media_device *media,
  * debugging information is to be printed. The handler expects an
  * fprintf-like function.
  */
-void media_debug_set_handler(
-    struct media_device *media, void (*debug_handler)(void *, ...),
-    void *debug_priv);
+void media_debug_set_handler(struct media_device *media, void (*debug_handler)(void *, ...), void *debug_priv);
 
 /**
  * @brief Enumerate the device topology
@@ -195,8 +191,7 @@ const struct media_entity_desc *media_entity_get_info(struct media_entity *entit
  *
  * @return A pointer to the pad
  */
-const struct media_pad *media_entity_get_pad(struct media_entity *entity,
-        unsigned int index);
+const struct media_pad *media_entity_get_pad(struct media_entity *entity, unsigned int index);
 
 /**
  * @brief Get the number of links
@@ -219,8 +214,7 @@ unsigned int media_entity_get_links_count(struct media_entity *entity);
  *
  * @return A pointer to the link
  */
-const struct media_link *media_entity_get_link(struct media_entity *entity,
-                                               unsigned int index);
+const struct media_link *media_entity_get_link(struct media_entity *entity, unsigned int index);
 
 /**
  * @brief Get the device node name for an entity
@@ -255,8 +249,7 @@ static inline unsigned int media_entity_type(struct media_entity *entity)
  *
  * @return A pointer to the entity if found, or NULL otherwise.
  */
-struct media_entity *media_get_entity_by_name(struct media_device *media,
-                                              const char *name, size_t length);
+struct media_entity *media_get_entity_by_name(struct media_device *media, const char *name, size_t length);
 
 /**
  * @brief Find an entity by its ID.
@@ -271,8 +264,7 @@ struct media_entity *media_get_entity_by_name(struct media_device *media,
  *
  * @return A pointer to the entity if found, or NULL otherwise.
  */
-struct media_entity *media_get_entity_by_id(struct media_device *media,
-                                            __u32 id);
+struct media_entity *media_get_entity_by_id(struct media_device *media, __u32 id);
 
 /**
  * @brief Get the number of entities
@@ -315,8 +307,7 @@ struct media_entity *media_get_entity(struct media_device *media, unsigned int i
  * @return A pointer to the default entity for the type if it exists, or NULL
  * otherwise.
  */
-struct media_entity *media_get_default_entity(struct media_device *media,
-                                              unsigned int type);
+struct media_entity *media_get_default_entity(struct media_device *media, unsigned int type);
 
 /**
  * @brief Get the media device information
@@ -356,9 +347,7 @@ const char *media_get_devnode(struct media_device *media);
  *     -ENOENT: link not found
  *     - other error codes returned by MEDIA_IOC_SETUP_LINK
  */
-int media_setup_link(struct media_device *media,
-                     struct media_pad *source, struct media_pad *sink,
-                     __u32 flags);
+int media_setup_link(struct media_device *media, struct media_pad *source, struct media_pad *sink, __u32 flags);
 
 /**
  * @brief Reset all links to the disabled state.
@@ -382,8 +371,7 @@ int media_reset_links(struct media_device *media);
  *
  * @return Pointer to struct media_pad on success, NULL on failure.
  */
-struct media_pad *media_parse_pad(struct media_device *media,
-                                  const char *p, char **endp);
+struct media_pad *media_parse_pad(struct media_device *media, const char *p, char **endp);
 
 /**
  * @brief Parse string to a link on the media device.
@@ -396,8 +384,7 @@ struct media_pad *media_parse_pad(struct media_device *media,
  *
  * @return Pointer to struct media_link on success, NULL on failure.
  */
-struct media_link *media_parse_link(struct media_device *media,
-                                    const char *p, char **endp);
+struct media_link *media_parse_link(struct media_device *media, const char *p, char **endp);
 
 /**
  * @brief Parse string to a link on the media device and set it up.
@@ -409,8 +396,7 @@ struct media_link *media_parse_link(struct media_device *media,
  *
  * @return 0 on success, or a negative error code on failure.
  */
-int media_parse_setup_link(struct media_device *media,
-                           const char *p, char **endp);
+int media_parse_setup_link(struct media_device *media, const char *p, char **endp);
 
 /**
  * @brief Parse string to link(s) on the media device and set it up.
@@ -426,6 +412,6 @@ int media_parse_setup_links(struct media_device *media, const char *p);
 
 #ifdef __cplusplus
 }
-#endif // __cplusplus
+#endif  // __cplusplus
 
 #endif

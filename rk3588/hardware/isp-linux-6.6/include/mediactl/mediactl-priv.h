@@ -1,7 +1,7 @@
 /*
  * Media controller interface library
  *
- * Copyright (C) 2010-2011 Ideas on board SPRL
+ * Copyright (c) 2010-2011 Ideas on board SPRL
  *
  * Contact: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
  *

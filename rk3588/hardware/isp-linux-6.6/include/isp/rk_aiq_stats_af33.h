@@ -22,10 +22,9 @@
 
 #include "common/rk_aiq_comm.h"
 
-
-#define AFSTATS_ZONE_ROW            15
-#define AFSTATS_ZONE_COLUMN         15
-#define AFSTATS_ZONE_NUM            225
+#define AFSTATS_ZONE_ROW 15
+#define AFSTATS_ZONE_COLUMN 15
+#define AFSTATS_ZONE_NUM 225
 
 typedef enum afStats_src_mode_e {
     /*
@@ -76,7 +75,6 @@ typedef enum afStats_ds_mode_e {
     */
     afStats_ds_8x8_mode = 3
 } afStats_ds_mode_t;
-
 
 typedef enum afStats_hFiltLnBnd_mode_e {
     afStats_hFiltLnBnd_preLn_mode = 0,
@@ -309,7 +307,6 @@ typedef struct afStats_vLdg_s {
     float hw_afCfg_slopeR_val;
 } afStats_vLdg_t;
 
-
 typedef enum afStats_fvFmt_mode_e {
     /*
     reg: (sw_rawaf_XX_fv_outmode== 1 && sw_rawaf_XX_acc_mode == 1)
@@ -391,7 +388,7 @@ typedef struct afStats_hFilt_s {
         M4_ORDER(3),
         M4_NOTES(...\n
         Freq of use: low))  */
-    // reg: sw_rawaf_h1iir_shift_wina, sw_rawaf_h2iir_shift_wina 
+    // reg: sw_rawaf_h1iir_shift_wina, sw_rawaf_h2iir_shift_wina
     uint8_t hw_afCfg_accSubWin_shift;
 } afStats_hFilt_t;
 
@@ -478,8 +475,8 @@ typedef struct afStats_gamma_s {
         M4_TYPE(f32),
         M4_SIZE_EX(1,17),
         M4_RANGE_EX(0,1),
-        M4_DEFAULT([0, 0.0440, 0.1056, 0.1750, 0.2395, 0.3363, 0.3998, 0.4487, 0.4888,
-                    0.5543, 0.6080, 0.6608, 0.7419, 0.8143, 0.8759, 0.9404, 1.0000]),
+        M4_DEFAULT([0, 0.0440, 0.1056, 0.1750, 0.2395, 0.3363, 0.3998, 0.4487, 0.4888, 0.5543, 0.6080, 0.6608, 0.7419,
+        0.8143, 0.8759, 0.9404, 1.0000]),
         M4_HIDE_EX(0),
         M4_DIGIT_EX(8f8b),
         M4_RO(0),

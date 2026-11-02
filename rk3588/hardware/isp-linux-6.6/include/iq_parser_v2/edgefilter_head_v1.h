@@ -30,17 +30,17 @@ typedef struct CalibDbV2_Edgefilter_Luma_s {
     // M4_ARRAY_DESC("luma_point", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[0,16,32,64,96,160,224,256]", M4_DIGIT(2),
     // M4_DYNAMIC(0))
     float luma_point[8];
-    // M4_ARRAY_DESC("noise_clip", "f32", M4_SIZE(1, 8), M4_RANGE(0,255),
-    // "[2.0000,6.0000,8.0000,10.0000,16.0000,16.0000,14.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("noise_clip", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[2.0000,6.0000,8.0000,10.0000,16.0000,
+    // 16.0000,14.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float noise_clip[8];
-    // M4_ARRAY_DESC("dog_clip_pos", "f32", M4_SIZE(1, 8), M4_RANGE(0,255),
-    // "[10.0000,12.0000,12.0000,16.0000,16.0000,12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_clip_pos", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[10.0000,12.0000,12.0000,16.0000,16.0000,
+    // 12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float dog_clip_pos[8];
-    // M4_ARRAY_DESC("dog_clip_neg", "f32", M4_SIZE(1, 8), M4_RANGE(0,255),
-    // "[10.0000,12.0000,12.0000,16.0000,16.0000,12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_clip_neg", "f32", M4_SIZE(1, 8), M4_RANGE(0,255), "[10.0000,12.0000,12.0000,16.0000,16.0000,
+    // 12.0000,10.0000,10.0000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float dog_clip_neg[8];
-    // M4_ARRAY_DESC("dog_alpha", "f32", M4_SIZE(1, 8), M4_RANGE(0,3),
-    // "[0.1000,0.2000,0.2000,0.2000,0.2000,0.2000,0.2000,0.1000]", M4_DIGIT(2), M4_DYNAMIC(0))
+    // M4_ARRAY_DESC("dog_alpha", "f32", M4_SIZE(1, 8), M4_RANGE(0,3), "[0.1000,0.2000,0.2000,0.2000,0.2000,0.2000,
+    // 0.2000,0.1000]", M4_DIGIT(2), M4_DYNAMIC(0))
     float dog_alpha[8];
 } CalibDbV2_Edgefilter_Luma_t;
 
@@ -65,7 +65,6 @@ typedef struct CalibDbV2_Edgefilter_T_ISO_s {
     // M4_ARRAY_TABLE_DESC("luma_para", "array_table_ui", "none")
     CalibDbV2_Edgefilter_Luma_t luma_para;
 } CalibDbV2_Edgefilter_T_ISO_t;
-
 
 typedef struct CalibDbV2_Edgefilter_T_Set_s {
     // M4_STRING_MARK_DESC("SNR_Mode", M4_SIZE(1,1), M4_RANGE(0, 64), "LSNR",M4_DYNAMIC(0), "index1")
@@ -98,7 +97,6 @@ typedef struct CalibDbV2_Edgefilter_Tuning_s {
     int Setting_len;
 } CalibDbV2_Edgefilter_Tuning_t;
 
-
 typedef struct CalibDbV2_Edgefilter_s {
     // M4_STRING_DESC("Version", M4_SIZE(1,1), M4_RANGE(0, 64), "V1", M4_DYNAMIC(0))
     char *Version;
@@ -109,4 +107,3 @@ typedef struct CalibDbV2_Edgefilter_s {
 RKAIQ_END_DECLARE
 
 #endif
-

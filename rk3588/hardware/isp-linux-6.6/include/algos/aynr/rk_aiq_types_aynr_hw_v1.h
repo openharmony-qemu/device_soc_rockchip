@@ -21,9 +21,8 @@
 #define _RK_AIQ_TYPE_AYNR_HW_V1_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_YNR_Fix_V1_s {
-	
+
     unsigned char ynr_en;
     unsigned char ynr_sgm_dx[16];
     unsigned short ynr_lsgm_y[17];
@@ -50,8 +49,6 @@ typedef struct RK_YNR_Fix_V1_s {
     unsigned short ynr_hstv_y[17];
     unsigned short ynr_st_scale[3];
 
-}RK_YNR_Fix_V1_t;
-
+} RK_YNR_Fix_V1_t;
 
 #endif
-

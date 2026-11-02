@@ -1,16 +1,16 @@
 #ifndef __TYPE_AWB_STAT_H__
 #define __TYPE_AWB_STAT_H__
 
-#define AWBSTATS_NONROI_NUM                       4
-#define AWBSTATS_WPDCT_LS_NUM                     4
-#define AWBSTATS_WPDCT_UVREGION_NUM               4
-#define AWBSTATS_WPDCT_UVREGIONVTX_NUM            4
-#define AWBSTATS_WP_HIST_BIN_NUM                  8
-#define AWBSTATS_WPLUMAWGTCURVE_SEGMENT_MAX       (AWBSTATS_WP_HIST_BIN_NUM+1)
-#define AWBSTATS_WPFLTOUTFULL_ENTITY_NUM          4
-#define AWBSTATS_WPFLTOUTSMP_ENTITY_NUM           3
-#define AWBSTATS_WPVECTDISCURVE_SEGMENT_MAX       6
-#define AWBSTATS_ZONE_15x15_NUM                   225
+#define AWBSTATS_NONROI_NUM 4
+#define AWBSTATS_WPDCT_LS_NUM 4
+#define AWBSTATS_WPDCT_UVREGION_NUM 4
+#define AWBSTATS_WPDCT_UVREGIONVTX_NUM 4
+#define AWBSTATS_WP_HIST_BIN_NUM 8
+#define AWBSTATS_WPLUMAWGTCURVE_SEGMENT_MAX (AWBSTATS_WP_HIST_BIN_NUM + 1)
+#define AWBSTATS_WPFLTOUTFULL_ENTITY_NUM 4
+#define AWBSTATS_WPFLTOUTSMP_ENTITY_NUM 3
+#define AWBSTATS_WPVECTDISCURVE_SEGMENT_MAX 6
+#define AWBSTATS_ZONE_15x15_NUM 225
 
 typedef enum awbStats_wpHistSrc_mode_e {
     awbStats_norWpHist_mode = 0,
@@ -18,15 +18,15 @@ typedef enum awbStats_wpHistSrc_mode_e {
 } awbStats_wpHistSrc_mode_t;
 
 typedef enum awbStats_ds_mode_e {
-	/*
+    /*
 	reg: (sw_rawawb_ds16x8_mode_en = = 0) && (sw_rawawb_wind_size == 0)
     */
     awbStats_ds_4x4 = 0,
-	/*
+    /*
 	reg: (sw_rawawb_ds16x8_mode_en = = 0) && (sw_rawawb_wind_size == 1)
     */
     awbStats_ds_8x8 = 1,
-	/*
+    /*
 	reg: (sw_rawawb_ds16x8_mode_en = = 1)
     */
     awbStats_ds_16x8 = 2
@@ -40,11 +40,11 @@ typedef enum awbStats_src_mode_e {
     /*
     reg: (sw_drc2awb_sel_en=0) && (sw_bnr2awb_sel_en=0) && (sw_3a_rawawb_sel=1)
     */
-    awbStats_chl1DegamOut_mode  = 1,
+    awbStats_chl1DegamOut_mode = 1,
     /*
     reg: (sw_drc2awb_sel_en=0) && (sw_bnr2awb_sel_en=0) && (sw_3a_rawawb_sel=2)
     */
-    awbStats_chl2DegamOut_mode  = 2,
+    awbStats_chl2DegamOut_mode = 2,
     /*
     reg: (sw_drc2awb_sel_en=0) && (sw_bnr2awb_sel_en=1)
     */
@@ -64,7 +64,7 @@ typedef struct awbStats_blc_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Whether to enable awb blc.\nFreq of use: high))  */
-		//reg:sw_bls2_en
+    //reg:sw_bls2_en
     bool hw_awbCfg_blc_en;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_obR_val),
@@ -140,7 +140,7 @@ typedef struct awbStats_nonROI_s {
         M4_ORDER(0),
         M4_NOTES(Horizontal offset of awb statics Non-Region of Interest.\n
         Freq of use: low))  */
-	//reg:sw_rawawb_multiwindowX_h_offs
+    //reg:sw_rawawb_multiwindowX_h_offs
     uint16_t hw_awbCfg_nonROI_x;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_nonROI_y),
@@ -153,7 +153,7 @@ typedef struct awbStats_nonROI_s {
         M4_ORDER(0),
         M4_NOTES(Vertical offset of awb statics Non-Region of Interest.\n
         Freq of use: low))  */
-	//reg:sw_rawawb_multiwindowX_v_offs
+    //reg:sw_rawawb_multiwindowX_v_offs
     uint16_t hw_awbCfg_nonROI_y;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_nonROI_width),
@@ -166,7 +166,7 @@ typedef struct awbStats_nonROI_s {
         M4_ORDER(0),
         M4_NOTES(Horizontal size of awb statics Non-Region of Interest.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_multiwindowX_h_size
+    //reg:sw_rawawb_multiwindowX_h_size
     uint16_t hw_awbCfg_nonROI_width;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_nonROI_height),
@@ -186,7 +186,7 @@ typedef struct awbStats_nonROI_s {
 typedef enum awbStats_mainWinSize_mode_s {
     awbStats_winSizeFull_mode = 0,
     awbStats_winSizeFixed_mode = 1,
-}awbStats_mainWinSize_mode_e;
+} awbStats_mainWinSize_mode_e;
 
 typedef struct awbStats_mainWin_s {
     /* M4_GENERIC_DESC(
@@ -210,7 +210,7 @@ typedef struct awbStats_mainWin_s {
         M4_ORDER(0),
         M4_NOTES(Horizontal offset of awb statics window.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_h_offs
+    //reg:sw_rawawb_h_offs
     uint16_t hw_awbCfg_win_x;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_win_y),
@@ -236,7 +236,7 @@ typedef struct awbStats_mainWin_s {
         M4_ORDER(0),
         M4_NOTES(Horizontal size of awb statics window.\n
         Freq of use: high))  */
-		//reg:sw_rawawb_h_size
+    //reg:sw_rawawb_h_size
     uint16_t hw_awbCfg_win_width;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_win_height),
@@ -249,7 +249,7 @@ typedef struct awbStats_mainWin_s {
         M4_ORDER(0),
         M4_NOTES(Vertical size of awb statics window.\n
         Freq of use: high))  */
-		//reg:sw_rawawb_v_size
+    //reg:sw_rawawb_v_size
     uint16_t hw_awbCfg_win_height;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_nonROI_en),
@@ -272,7 +272,7 @@ typedef struct awbStats_mainWin_s {
         M4_ORDER(0),
         M4_NOTES(The pixels in the non-ROI region do not participate in the awb statistical calculation\n
         Freq of use: low))  */
-        //reg:w_rawawb_multiwindow0_h/v_offs/size
+    //reg:w_rawawb_multiwindow0_h/v_offs/size
     awbStats_nonROI_t nonROI[AWBSTATS_NONROI_NUM];
 } awbStats_win_t;
 
@@ -287,7 +287,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Max red value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_r_max
+    //reg:sw_rawawb_r_max
     float hw_awbT_wpMaxR_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMinR_thred),
@@ -299,7 +299,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Min red value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_r_min
+    //reg:sw_rawawb_r_min
     float hw_awbT_wpMinR_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMaxR_thred),
@@ -311,7 +311,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Max green value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_g_max
+    //reg:sw_rawawb_g_max
     float hw_awbT_wpMaxG_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMinG_thred),
@@ -323,7 +323,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Min green value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_g_min
+    //reg:sw_rawawb_g_min
     float hw_awbT_wpMinG_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMaxB_thred),
@@ -335,7 +335,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Max blue value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_b_max
+    //reg:sw_rawawb_b_max
     float hw_awbT_wpMaxB_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMinB_thred),
@@ -347,7 +347,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Min blue value in white point detection.\nFreq of use: high))  */
-		////reg:sw_rawawb_b_min
+    ////reg:sw_rawawb_b_min
     float hw_awbT_wpMinB_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMaxY_thred),
@@ -359,7 +359,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Max y value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_y_max
+    //reg:sw_rawawb_y_max
     float hw_awbT_wpMaxY_thred;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpMinY_thred),
@@ -371,7 +371,7 @@ typedef struct awbStats_rgbyWp_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Min y value in white point detection.\nFreq of use: high))  */
-		//reg:sw_rawawb_y_min
+    //reg:sw_rawawb_y_min
     float hw_awbT_wpMinY_thred;
 } awbStats_rgbyWp_t;
 typedef struct awb_rgb2xy_para_s {
@@ -387,7 +387,7 @@ typedef struct awb_rgb2xy_para_s {
         M4_DIGIT_EX(6f12),
         M4_NOTES(RGB2XY weight matrix.\n
         Freq of use: high))  */
-		//reg:sw_rawawb_wt0/1/2
+    //reg:sw_rawawb_wt0/1/2
     float hw_awbCfg_rgb2xy_coeff[3];
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_xyTransMatrix_coeff),
@@ -400,7 +400,7 @@ typedef struct awb_rgb2xy_para_s {
         M4_ORDER(0),
         M4_DIGIT_EX(6f12),
         M4_NOTES(RGB2XY, rotation matrix.\nFreq of use: high))  */
-		//reg:sw_rawawb_mat0/1/2_x/y
+    //reg:sw_rawawb_mat0/1/2_x/y
     float hw_awbCfg_xyTransMatrix_coeff[6];
 } awb_rgb2xy_para_t;
 
@@ -625,10 +625,11 @@ typedef struct awb_wpFiltOutFull_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(This mode bit allows you to choose whether to perform the filtering of specific white points from the xy space or the uv space.\n
+        M4_NOTES(This mode bit allows you to choose whether to perform the filtering of specific white points from the
+        xy space or the uv space.\n
         Reference enum types.\n
         Freq of use: high))  */
-		//reg:sw_rawawb_exc_wp_region0/1/2/3_domain
+    //reg:sw_rawawb_exc_wp_region0/1/2/3_domain
     awb_wpSpace_mode_t hw_awbT_wpSpace_mode;
     /* M4_GENERIC_DESC(
         M4_ALIAS(wpRegion),
@@ -662,12 +663,12 @@ typedef struct awb_wpFiltOutFull_s {
         M4_ORDER(0),
         M4_NOTES(The enabled bit for independent statistics of the filtered white points\n
         Freq of use: high))  */
-   //reg:sw_rawawb_exc_wp_region0~3_measen
+    //reg:sw_rawawb_exc_wp_region0~3_measen
     bool hw_awbCfg_wpStats_en;
 } awb_wpFiltOutFull_t;
 
 typedef struct awb_wpFiltOutSmp_s {
-     /* M4_GENERIC_DESC(
+    /* M4_GENERIC_DESC(
          M4_ALIAS(hw_awbT_wpSpace_mode),
          M4_TYPE(enum),
          M4_ENUM_DEF(awb_wpSpace_mode_t),
@@ -675,11 +676,11 @@ typedef struct awb_wpFiltOutSmp_s {
          M4_HIDE_EX(0),
          M4_RO(0),
          M4_ORDER(0),
-         M4_NOTES(This mode bit allows you to choose whether to perform the filtering
-         of specific white points from the xy space or the uv space.\n
+         M4_NOTES(This mode bit allows you to choose whether to perform the filtering of specific white points from the
+         xy space or the uv space.\n
         Reference enum types.\n
         Freq of use: high))  */
-     //reg:sw_rawawb_exc_wp_region4/5/6_domain
+    //reg:sw_rawawb_exc_wp_region4/5/6_domain
     awb_wpSpace_mode_t hw_awbT_wpSpace_mode;
     /* M4_GENERIC_DESC(
         M4_ALIAS(wpRegion),
@@ -690,7 +691,7 @@ typedef struct awb_wpFiltOutSmp_s {
         M4_ORDER(0),
         M4_NOTES(Parameters for filted out white points from XY or UV space \n
         Freq of use: high))  */
-     awbStats_filtOutRegion_t wpRegion;
+    awbStats_filtOutRegion_t wpRegion;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_wpStats_wgt),
         M4_TYPE(f32),
@@ -717,7 +718,7 @@ typedef struct awbStats_wpLumaWgtCurve_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(The X coordinate of luma weight curve.\nFreq of use: high))  */
-	//reg:sw_rawawb_wp_luma_weicurve_y0/1/2/3/4/5/6/7/8
+    //reg:sw_rawawb_wp_luma_weicurve_y0/1/2/3/4/5/6/7/8
     uint8_t idx[AWBSTATS_WPLUMAWGTCURVE_SEGMENT_MAX];
     /* M4_GENERIC_DESC(
         M4_ALIAS(val),
@@ -729,7 +730,7 @@ typedef struct awbStats_wpLumaWgtCurve_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(The Y coordinate of luma weight curve.\nFreq of use: high))  */
-	//reg:sw_rawawb_wp_luma_weicurve_y0/1/2/3/4/5/6/7/8
+    //reg:sw_rawawb_wp_luma_weicurve_y0/1/2/3/4/5/6/7/8
     float val[AWBSTATS_WPLUMAWGTCURVE_SEGMENT_MAX];
 } awbStats_wpLumaWgtCurve_t;
 
@@ -744,7 +745,7 @@ typedef struct awbStats_wpVectDistThCurve_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(The X coordinate of curve.\nFreq of use: high))  */
-	//reg:sw_rawawb_rotu0~5_lsX
+    //reg:sw_rawawb_rotu0~5_lsX
     float idx[AWBSTATS_WPVECTDISCURVE_SEGMENT_MAX];
     /* M4_GENERIC_DESC(
         M4_ALIAS(val),
@@ -757,7 +758,7 @@ typedef struct awbStats_wpVectDistThCurve_s {
         M4_ORDER(0),
         M4_DIGIT_EX(4f4),
         M4_NOTES(The Y coordinate of curve.\nFreq of use: high))  */
-	//reg:sw_rawawb_th0~5_lsX
+    //reg:sw_rawawb_th0~5_lsX
     float val[AWBSTATS_WPVECTDISCURVE_SEGMENT_MAX];
 } awbStats_wpVectDistThCurve_t;
 
@@ -774,7 +775,7 @@ typedef struct awbStats_rotYuvVectEdp_s {
         M4_DIGIT_EX(4f4),
         M4_NOTES(The y coordinate values of the endpoints of the light source white point vector in the rotYuv space.\n
         Freq of use: high))  */
-        //reg:sw_rawawb_coor_x1_lsX_y, sw_rawawb_vec_x21_lsX_y
+    //reg:sw_rawawb_coor_x1_lsX_y, sw_rawawb_vec_x21_lsX_y
     float hw_awbT_edpY_val;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_edpU_val),
@@ -788,7 +789,7 @@ typedef struct awbStats_rotYuvVectEdp_s {
         M4_DIGIT_EX(4f4),
         M4_NOTES(The u coordinate values of the endpoints of the light source white point vector in the rotYuv space.\n
         Freq of use: high))  */
-        //reg:sw_rawawb_coor_x1_lsX_u, sw_rawawb_vec_x21_lsX_u
+    //reg:sw_rawawb_coor_x1_lsX_u, sw_rawawb_vec_x21_lsX_u
     float hw_awbT_edpU_val;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_edpV_val),
@@ -802,9 +803,9 @@ typedef struct awbStats_rotYuvVectEdp_s {
         M4_DIGIT_EX(4f4),
         M4_NOTES(The v coordinate values of the endpoints of the light source white point vector in the rotYuv space.\n
         Freq of use: high))  */
-        //reg:sw_rawawb_coor_x1_lsX_v, sw_rawawb_vec_x21_lsX_v
+    //reg:sw_rawawb_coor_x1_lsX_v, sw_rawawb_vec_x21_lsX_v
     float hw_awbT_edpV_val;
-}awbStats_rotYuvVectEdp_t;
+} awbStats_rotYuvVectEdp_t;
 
 typedef struct awbStats_rotYuvVect_s {
     /* M4_GENERIC_DESC(
@@ -821,7 +822,7 @@ typedef struct awbStats_rotYuvVect_s {
 } awbStats_rotYuvVect_t;
 
 typedef struct awbStats_rotYuvRegion_s {
-     /* M4_GENERIC_DESC(
+    /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbT_u2WpDisTh_curve),
         M4_TYPE(struct),
         M4_UI_MODULE(array_table_ui),
@@ -844,7 +845,7 @@ typedef struct awbStats_rotYuvRegion_s {
 } awbStats_rotYuvRegion_t;
 
 typedef struct awbStats_rotYuvWpDct_s {
-     /* M4_GENERIC_DESC(
+    /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_rgb2RYuv_coeff),
         M4_TYPE(f32),
         M4_SIZE_EX(3,4),
@@ -856,7 +857,7 @@ typedef struct awbStats_rotYuvWpDct_s {
         M4_NOTES(RGB2ROTYUV coefficient mat.\n
         Freq of use: high))  */
     float hw_awbCfg_rgb2RotYuv_coeff[12];
-     /* M4_GENERIC_DESC(
+    /* M4_GENERIC_DESC(
         M4_ALIAS(wpRegion),
         M4_TYPE(struct),
         M4_UI_MODULE(normal_ui_style),
@@ -904,7 +905,7 @@ typedef struct awbStats_norWpStatsCfg_s {
         M4_NOTES(Enable filter out specific white points from detected white points in xy space or uv space.\n
         Freq of use: high))  */
     //reg: sw_rawawb_exc_wp_region0/1/2/3/4/5/6_excen bit0
-	bool hw_awbCfg_wpFiltOut_en[AWBSTATS_WPFLTOUTFULL_ENTITY_NUM+AWBSTATS_WPFLTOUTSMP_ENTITY_NUM];
+    bool hw_awbCfg_wpFiltOut_en[AWBSTATS_WPFLTOUTFULL_ENTITY_NUM + AWBSTATS_WPFLTOUTSMP_ENTITY_NUM];
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_rotYuvDct_en),
         M4_TYPE(bool),
@@ -925,10 +926,10 @@ typedef struct awbStats_norWpStatsCfg_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(It is perform weighted statistics on the luma weights
-        of the normal white point when the bit is enabled.\n
+        M4_NOTES(It is perform weighted statistics on the luma weights of the normal white point when the bit is
+        enabled.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_wp_luma_wei_en0
+    //reg:sw_rawawb_wp_luma_wei_en0
     bool hw_awbCfg_lumaWgt_en;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_zoneWgt_en),
@@ -938,10 +939,10 @@ typedef struct awbStats_norWpStatsCfg_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(It is perform weighted statistics on the zone weights
-        of the normal white point when the bit is enabled.\n
+        M4_NOTES(It is perform weighted statistics on the zone weights of the normal white point when the bit is
+        enabled.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_wp_blk_wei_en0
+    //reg:sw_rawawb_wp_blk_wei_en0
     bool hw_awbCfg_zoneWgt_en;
 } awbStats_norWpStatsCfg_t;
 
@@ -981,7 +982,7 @@ typedef struct awbStats_bigWpStatsCfg_s {
         M4_NOTES(Enable filter out specific white points from detected white points in xy space or uv space.\n
         Freq of use: high))  */
     //reg: sw_rawawb_exc_wp_region0/1/2/3/4/5/6_excen  bit1
-    bool hw_awbCfg_wpFiltOut_en[AWBSTATS_WPFLTOUTFULL_ENTITY_NUM+AWBSTATS_WPFLTOUTSMP_ENTITY_NUM];
+    bool hw_awbCfg_wpFiltOut_en[AWBSTATS_WPFLTOUTFULL_ENTITY_NUM + AWBSTATS_WPFLTOUTSMP_ENTITY_NUM];
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_rotYuvDct_en),
         M4_TYPE(bool),
@@ -1004,7 +1005,7 @@ typedef struct awbStats_bigWpStatsCfg_s {
         M4_ORDER(0),
         M4_NOTES(It is perform weighted statistics on the luma weights of the big white point when the bit is enabled.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_wp_luma_wei_en1
+    //reg:sw_rawawb_wp_luma_wei_en1
     bool hw_awbCfg_lumaWgt_en;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_zoneWgt_en),
@@ -1016,7 +1017,7 @@ typedef struct awbStats_bigWpStatsCfg_s {
         M4_ORDER(0),
         M4_NOTES(It is perform weighted statistics on the zone weights of the big white point when the bit is enabled.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_wp_blk_wei_en1
+    //reg:sw_rawawb_wp_blk_wei_en1
     bool hw_awbCfg_zoneWgt_en;
 } awbStats_bigWpStatsCfg_t;
 
@@ -1041,7 +1042,7 @@ typedef struct awbStats_wpEngine_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Number of light sources.\nFreq of use: high))  */
-		//sw_rawawb_light_num
+    //sw_rawawb_light_num
     uint8_t hw_awbCfg_lightSrcNum_val;
     /* M4_GENERIC_DESC(
         M4_ALIAS(wpDct_xySpace),
@@ -1070,7 +1071,8 @@ typedef struct awbStats_wpEngine_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(The feature supports defining special white points in the XY space or UV space and filtering them from the original space.\n
+        M4_NOTES(The feature supports defining special white points in the XY space or UV space and filtering them from
+        the original space.\n
         These white points are filtered can be independently statisticed in full-featured engine only.\n
         Freq of use: high))  */
     awb_wpFiltOutFull_t wpFiltOut_fullEntity[AWBSTATS_WPFLTOUTFULL_ENTITY_NUM];
@@ -1081,8 +1083,8 @@ typedef struct awbStats_wpEngine_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(The feature supports defining special white points in the XY space
-        or UV space and filtering them from the original space.\n
+        M4_NOTES(The feature supports defining special white points in the XY space or UV space and filtering them from
+        the original space.\n
         These white points are filtered can be independently statisticed in full-featured engine only. \n
         Freq of use: high))  */
     awb_wpFiltOutSmp_t wpFiltOut_smpEntity[AWBSTATS_WPFLTOUTSMP_ENTITY_NUM];
@@ -1140,8 +1142,8 @@ typedef struct awbStats_wpEngine_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(The statistic of normal white points will be output individually.\n
-        This structure contains the combined enabling configuration of various white point detection
-        engines used to detect normal white points.\n
+        This structure contains the combined enabling configuration of various white point detection engines used to
+        detect normal white points.\n
         Freq of use: high))  */
     awbStats_norWpStatsCfg_t norWpStatsCfg;
     /* M4_GENERIC_DESC(
@@ -1152,8 +1154,8 @@ typedef struct awbStats_wpEngine_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(The statistic of big white points will be output individually.\n
-        This structure contains the combined enabling configuration of various white point detection
-        engines used to detect big white points.
+        This structure contains the combined enabling configuration of various white point detection engines used to
+        detect big white points.
         Freq of use: high))  */
     awbStats_norWpStatsCfg_t bigWpStatsCfg;
 } awbStats_wpEngine_t;
@@ -1164,7 +1166,8 @@ typedef enum awbStats_pixEngineSrc_mode_e {
     */
     awbStats_pixAll_mode = 0,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx == 0)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx ==
+	0)
     */
     awbStats_norWpLs0_mode = 0x10,
     /*
@@ -1180,19 +1183,23 @@ typedef enum awbStats_pixEngineSrc_mode_e {
     */
     awbStats_norWpLs3_mode = 0x13,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx == 4)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx ==
+	4)
     */
     awbStats_norWpLs4_mode = 0x14,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx == 5)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx ==
+	5)
     */
     awbStats_norWpLs5_mode = 0x15,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx == 6)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx ==
+	6)
     */
     awbStats_norWpLs6_mode = 0x16,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx == 7)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 0) && (sw_rawawb_blk_measure_illu_idx ==
+	7)
     */
     awbStats_norWpAll_mode = 0x17,
     /*
@@ -1200,15 +1207,18 @@ typedef enum awbStats_pixEngineSrc_mode_e {
     */
     awbStats_bigWpLs0_mode = 0x20,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx == 1)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx ==
+	1)
     */
     awbStats_bigWpLs1_mode = 0x21,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx == 2)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx ==
+	2)
     */
     awbStats_bigWpLs2_mode = 0x22,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx == 3)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx ==
+	3)
     */
     awbStats_bigWpLs3_mode = 0x23,
     /*
@@ -1216,15 +1226,18 @@ typedef enum awbStats_pixEngineSrc_mode_e {
     */
     awbStats_bigWpLs4_mode = 0x24,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx == 5)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx ==
+	5)
     */
     awbStats_bigWpLs5_mode = 0x25,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx == 6)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx ==
+	6)
     */
     awbStats_bigWpLs6_mode = 0x26,
     /*
-	reg: (sw_rawawb_blk_measure_mode = = 1) && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx == 7)
+	reg: (sw_rawawb_blk_measure_mode = = 1)  && (sw_rawawb_blk_measure_xytype == 1) && (sw_rawawb_blk_measure_illu_idx ==
+	7)
     */
     awbStats_bigWpAll_mode = 0x27
 } awbStats_pixEngineSrc_mode_t;
@@ -1261,7 +1274,7 @@ typedef struct awbStats_pixEngine_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(Whether to enable luma weight.\nFreq of use: high))  */
-     //reg:sw_rawawb_blk_with_luma_wei_en
+    //reg:sw_rawawb_blk_with_luma_wei_en
     bool hw_awbCfg_lumaWgt_en;
 } awbStats_pixEngine_t;
 
@@ -1275,7 +1288,7 @@ typedef struct awbStats_cfg_s {
         M4_ORDER(0),
         M4_NOTES(Enable awb statics.\n
         Freq of use: high))  */
-	//reg:sw_rawawb_en
+    //reg:sw_rawawb_en
     bool hw_awbCfg_stats_en;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_statsSrc_mode),
@@ -1307,7 +1320,7 @@ typedef struct awbStats_cfg_s {
         M4_RO(0),
         M4_ORDER(0),
         M4_NOTES(The enable bit of lsc in the awb statistics module.\nFreq of use: high))  */
-	//reg:sw_rawlsc_bypass_en
+    //reg:sw_rawlsc_bypass_en
     bool hw_awbCfg_lsc_en;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_awbCfg_ds_mode),
@@ -1320,7 +1333,7 @@ typedef struct awbStats_cfg_s {
         M4_NOTES(The mode bit is used to switch the way bayer raw is converted to rgb.\n
         Reference enum types.\n
         Freq of use: high))  */
-     //reg:sw_rawawb_ds16x8_mode_en+sw_rawawb_wind_size
+    //reg:sw_rawawb_ds16x8_mode_en+sw_rawawb_wind_size
     awbStats_ds_mode_t hw_awbCfg_ds_mode;
     /* M4_GENERIC_DESC(
         M4_ALIAS(mainWin),
@@ -1423,8 +1436,8 @@ typedef struct awbStats_wpEngineStats_s {
         M4_HIDE_EX(0),
         M4_RO(1),
         M4_ORDER(0),
-        M4_NOTES(The accumulation of normal white points and big white points from xy and uv spaces
-        without luma weight, zone weight and include weight\n
+        M4_NOTES(The accumulation of normal white points and big white points from xy and uv spaces without luma weight,
+        zone weight and include weight\n
         Freq of use: high))  */
     uint32_t hw_awbCfg_wpXyUvSpcRaw_cnt[AWBSTATS_WPDCT_LS_NUM];
     /* M4_GENERIC_DESC(
@@ -1452,7 +1465,6 @@ typedef struct awbStats_wpfltEngineStats_s {
         Freq of use: high))  */
     awbStats_wpStats_t fltPix[AWBSTATS_WPFLTOUTFULL_ENTITY_NUM];
 } awbStats_wpfltEngineStats_t;
-
 
 typedef struct awbStats_pixStats_s {
     /* M4_GENERIC_DESC(
@@ -1551,36 +1563,34 @@ typedef enum awbStats_cfg_mode_s {
     AWB_CFG_MODE_API = 0,
     AWB_CFG_MODE_RK = 1,
     AWB_CFG_MODE_ThP = 2
-}awbStats_cfg_mode_e;
+} awbStats_cfg_mode_e;
 
 typedef struct awbStats_cfg_priv_s {
-    awbStats_cfg_t com; // Must be placed first
+    awbStats_cfg_t com;  // Must be placed first
     awbStats_cfg_mode_e mode;
     int count;
-    int  groupIllIndxCurrent;//for time share
-    int  IllIndxSetCurrent[AWBSTATS_WPDCT_LS_NUM];//for time share
+    int groupIllIndxCurrent;                       //for time share
+    int IllIndxSetCurrent[AWBSTATS_WPDCT_LS_NUM];  //for time share
     char timeSign[64];
-    float preWbgainSw[4];//rggb
-}awbStats_cfg_priv_t;
+    float preWbgainSw[4];  //rggb
+} awbStats_cfg_priv_t;
 
 typedef struct rk_aiq_awb_stat_cfg_effect_s {
     awbStats_cfg_mode_e mode;
     awbStats_pixEngineSrc_mode_t blkMeasureMode;
     unsigned char lightNum;
-    int  groupIllIndxCurrent; //for time share
-    int  IllIndxSetCurrent[AWBSTATS_WPDCT_LS_NUM]; //for time share
+    int groupIllIndxCurrent;                       //for time share
+    int IllIndxSetCurrent[AWBSTATS_WPDCT_LS_NUM];  //for time share
     char timeSign[64];
-    float preWbgainSw[4]; //rggb
+    float preWbgainSw[4];  //rggb
 
 } rk_aiq_awb_stat_cfg_effect_t;
 
-
 typedef struct awbStats_stats_priv_s {
-    awbStats_stats_t com; // Must be placed first
+    awbStats_stats_t com;  // Must be placed first
     int dbginfo_fd;
     rk_aiq_awb_stat_cfg_effect_t awb_cfg_effect;
     awbStats_pixStats_t sumBlkRGB;
-}awbStats_stats_priv_t;
-
+} awbStats_stats_priv_t;
 
 #endif

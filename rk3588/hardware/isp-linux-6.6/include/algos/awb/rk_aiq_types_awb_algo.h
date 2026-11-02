@@ -28,7 +28,7 @@
 #include "algos/awb/rk_aiq_types_awb_stat_v32.h"
 #if defined(ISP_HW_V39)
 #include "isp/rk_aiq_stats_awb39.h"
-#else //defined(ISP_HW_V33)
+#else  //defined(ISP_HW_V33)
 #include "isp/rk_aiq_stats_awb33.h"
 #endif
 typedef struct rk_aiq_wb_gain_s {
@@ -38,10 +38,7 @@ typedef struct rk_aiq_wb_gain_s {
     float bgain;
 } rk_aiq_wb_gain_t;
 
-typedef enum rk_aiq_wb_gapin_aplly_pos_s {
-    IN_AWBGAIN0 = 0,
-    IN_AWBGAIN1
-}rk_aiq_wb_gapin_aplly_pos_e;
+typedef enum rk_aiq_wb_gapin_aplly_pos_s { IN_AWBGAIN0 = 0, IN_AWBGAIN1 } rk_aiq_wb_gapin_aplly_pos_e;
 
 typedef struct rk_aiq_wb_gain_v32_s {
     float rgain;
@@ -52,4 +49,3 @@ typedef struct rk_aiq_wb_gain_v32_s {
 } rk_aiq_wb_gain_v32_t;
 
 #endif
-

@@ -1,10 +1,10 @@
 #ifndef __RK_AIQ_ORB_ALGO_H__
 #define __RK_AIQ_ORB_ALGO_H__
 
-#define MAX_POINTS                  10000
-#define DESCRIPTOR_SIZE             15
+#define MAX_POINTS 10000
+#define DESCRIPTOR_SIZE 15
 #define ORB_FEATURE_DESCRIPTOR_BITS 120
-#define ORB_FEATURE_DUMMY_NUM       13
+#define ORB_FEATURE_DUMMY_NUM 13
 
 #include "common/rk_aiq_comm.h"
 

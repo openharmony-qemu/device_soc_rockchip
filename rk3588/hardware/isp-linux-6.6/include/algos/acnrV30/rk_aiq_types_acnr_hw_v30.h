@@ -23,15 +23,15 @@
 
 typedef struct RK_CNR_Fix_V30_s {
     /* CNR_CTRL */
-    uint8_t  cnr_en;
-    uint8_t  exgain_bypass;
-    uint8_t  yuv422_mode;
-    uint8_t  thumb_mode;
-    uint8_t  bf3x3_wgt0_sel;
+    uint8_t cnr_en;
+    uint8_t exgain_bypass;
+    uint8_t yuv422_mode;
+    uint8_t thumb_mode;
+    uint8_t bf3x3_wgt0_sel;
 
     /* CNR_EXGAIN */
-    uint8_t  gain_iso;
-    uint8_t  global_gain_alpha;
+    uint8_t gain_iso;
+    uint8_t global_gain_alpha;
     uint16_t global_gain;
 
     /* CNR_THUMB1 */
@@ -42,44 +42,42 @@ typedef struct RK_CNR_Fix_V30_s {
     uint16_t thumb_bf_ratio;
 
     /* CNR_LBF_WEITD */
-    uint8_t  lbf1x7_weit_d[4];
+    uint8_t lbf1x7_weit_d[4];
 
     /* CNR_IIR_PARA1 */
-    uint8_t  iir_uvgain;
-    uint8_t  iir_strength;
-    uint8_t  exp_shift;
+    uint8_t iir_uvgain;
+    uint8_t iir_strength;
+    uint8_t exp_shift;
     uint16_t wgt_slope;
 
     /* CNR_IIR_PARA2 */
-    uint8_t  chroma_ghost;
-    uint8_t  iir_uv_clip;
+    uint8_t chroma_ghost;
+    uint8_t iir_uv_clip;
 
     /* CNR_GAUS_COE */
-    uint8_t  gaus_coe[6];
+    uint8_t gaus_coe[6];
 
     /* CNR_GAUS_RATIO */
     uint16_t gaus_ratio;
-    uint8_t  bf_wgt_clip;
+    uint8_t bf_wgt_clip;
     uint16_t global_alpha;
 
     /* CNR_BF_PARA1 */
-    uint8_t  uv_gain;
+    uint8_t uv_gain;
     uint16_t sigma_r;
-    uint8_t  bf_ratio;
+    uint8_t bf_ratio;
 
     /* CNR_BF_PARA2 */
     uint16_t adj_offset;
     uint16_t adj_ratio;
 
     /* CNR_SIGMA */
-    uint8_t  sigma_y[13];
+    uint8_t sigma_y[13];
 
     /* CNR_IIR_GLOBAL_GAIN */
-    uint8_t  iir_gain_alpha;
-    uint8_t  iir_global_gain;
+    uint8_t iir_gain_alpha;
+    uint8_t iir_global_gain;
 
 } RK_CNR_Fix_V30_t;
 
-
 #endif
-

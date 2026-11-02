@@ -3,11 +3,11 @@
 
 #include "../algos/ae/rk_aiq_types_ae_hw.h"
 
-#define AESTATS_SUBWIN_NUM                4
-#define AESTATS_ZONE_15x15_ROW            15
-#define AESTATS_ZONE_15x15_COL            15
-#define AESTATS_ZONE_15x15_NUM            225
-#define AESTATS_HIST_BIN_NUM              256
+#define AESTATS_SUBWIN_NUM 4
+#define AESTATS_ZONE_15x15_ROW 15
+#define AESTATS_ZONE_15x15_COL 15
+#define AESTATS_ZONE_15x15_NUM 225
+#define AESTATS_HIST_BIN_NUM 256
 
 /*****************************************************************************/
 /**
@@ -16,9 +16,9 @@
 /*****************************************************************************/
 
 typedef enum aeStats_winZone_mode_e {
-    aeStats_winZone_5x5_mode    = 1,
+    aeStats_winZone_5x5_mode = 1,
 
-    aeStats_winZone_15x15_mode    = 2,
+    aeStats_winZone_15x15_mode = 2,
 } aeStats_winZone_mode_t;
 
 typedef enum aeStats_histPix_mode_e {
@@ -26,22 +26,22 @@ typedef enum aeStats_histPix_mode_e {
     reg:(sw_aehist_mode == 2)
     R histogram mode;
     */
-    aeStats_histPixR_mode  = 2,
+    aeStats_histPixR_mode = 2,
     /*
     reg:(sw_aehist_mode == 3)
     G histogram mode;
     */
-    aeStats_histPixG_mode  = 3,
+    aeStats_histPixG_mode = 3,
     /*
     reg:(sw_aehist_mode == 4)
     B histogram mode;
     */
-    aeStats_histPixB_mode  = 4,
+    aeStats_histPixB_mode = 4,
     /*
     reg:(sw_aehist_mode == 5)
     Y histogram mode;
     */
-    aeStats_histPixY_mode  = 5,
+    aeStats_histPixY_mode = 5,
 } aeStats_histPix_mode_t;
 
 typedef struct aeStats_hist_s {
@@ -301,23 +301,23 @@ typedef struct aeStats_subWin_s {
     uint16_t hw_aeCfg_win_height;
 } aeStats_subWin_t;
 
-typedef enum aeStats_srcEntity0_mode_e {    // Domain,        linear
+typedef enum aeStats_srcEntity0_mode_e {  // Domain,        linear
     /*
     reg: (sw_rawae_from_vicap == 1)
     */
-    aeStats_vicapOut_mode = 0,                   //Raw12,         Y
+    aeStats_vicapOut_mode = 0,  //Raw12,         Y
     /*
     reg: (sw_rawae0_sel == 0) && (sw_bnr2ae0_sel == 0) && (sw_rawae_from_vicap == 0)
     */
-    aeStats_entity0_chl0DpcOut_mode = 1,           //Raw12,         Y
+    aeStats_entity0_chl0DpcOut_mode = 1,  //Raw12,         Y
     /*
     reg: (sw_rawae0_sel == 1) && (sw_bnr2ae0_sel == 0) && (sw_rawae_from_vicap == 0)
     */
-    aeStats_entity0_chl1DpcOut_mode = 2,           //Raw12,         Y
+    aeStats_entity0_chl1DpcOut_mode = 2,  //Raw12,         Y
     /*
     reg: (sw_bnr2ae0_sel == 1) && (sw_rawae_from_vicap == 0)
     */
-    aeStats_btnrOutLow_mode = 3                  //Raw20[9:0],    Y
+    aeStats_btnrOutLow_mode = 3  //Raw20[9:0],    Y
 } aeStats_srcEntity0_mode_t;
 
 typedef struct aeStats_entity0_s {
@@ -364,23 +364,23 @@ typedef struct aeStats_entity0_s {
     aeStats_hist_t hist;
 } aeStats_entity0_t;
 
-typedef enum aeStats_srcEntity3_mode_e {    // Domain,        linear
+typedef enum aeStats_srcEntity3_mode_e {  // Domain,        linear
     /*
     reg: (sw_rawae_sel == 0) && (sw_bnr2aebig_sel == 0)
     */
-    aeStats_entity3_chl0DpcOut_mode = 0,           //Raw12bit,         Y
+    aeStats_entity3_chl0DpcOut_mode = 0,  //Raw12bit,         Y
     /*
     reg: (sw_rawae_sel == 1) && (sw_bnr2aebig_sel == 0)
     */
-    aeStats_entity3_chl1DpcOut_mode = 1,           //Raw12bit,         Y
+    aeStats_entity3_chl1DpcOut_mode = 1,  //Raw12bit,         Y
     /*
     reg: (sw_rawae_sel == 3)
     */
-    aeStats_dmIn_mode = 2,                        //Raw12bit,         Y
+    aeStats_dmIn_mode = 2,  //Raw12bit,         Y
     /*
     reg: (sw_bnr2aebig_sel == 1)
     */
-    aeStats_btnrOutHigh_mode = 3                 //Raw20bit[10:19],    Y
+    aeStats_btnrOutHigh_mode = 3  //Raw20bit[10:19],    Y
 } aeStats_srcEntity3_mode_t;
 
 typedef struct aeStats_entity3_s {
@@ -427,8 +427,8 @@ typedef struct aeStats_entity3_s {
     aeStats_hist_t hist;
 } aeStats_entity3_t;
 
-typedef enum aeStats_srcCoWkEnt03_mode_e {    // Domain,           linear
-    aeStats_btnrOut_mode = 0,                         //Raw20[19:10],  Y
+typedef enum aeStats_srcCoWkEnt03_mode_e {  // Domain,           linear
+    aeStats_btnrOut_mode = 0,               //Raw20[19:10],  Y
 } aeStats_srcCoWkEnt03_mode_t;
 
 typedef struct aeStats_coWkEntity03_s {
@@ -752,9 +752,8 @@ typedef struct aeStats_stats_s {
 } aeStats_stats_t;
 
 typedef struct RKAiqAecStatsV25_s {
-    aeStats_stats_t ae_data;  //AeHwMeas_Res
-    RKAiqAecExpInfo_t ae_exp; //AeExp_Info
+    aeStats_stats_t ae_data;   //AeHwMeas_Res
+    RKAiqAecExpInfo_t ae_exp;  //AeExp_Info
 } RKAiqAecStatsV25_t;
-
 
 #endif

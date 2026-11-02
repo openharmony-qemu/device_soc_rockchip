@@ -35,9 +35,9 @@ RKAIQ_BEGIN_DECLARE
 
 typedef struct rk_aiq_ccm_cfg_s {
     bool ccmEnable;
-    float  matrix[9];
-    float  offs[3];
-    float  alp_y[CCM_CURVE_DOT_NUM];
+    float matrix[9];
+    float offs[3];
+    float alp_y[CCM_CURVE_DOT_NUM];
     float bound_bit;
     float rgb2y_para[3];
 } rk_aiq_ccm_cfg_t;
@@ -67,4 +67,3 @@ typedef struct rk_aiq_ccm_cfg_v2_s {
 RKAIQ_END_DECLARE
 
 #endif
-

@@ -69,6 +69,4 @@ typedef struct RK_CNR_Fix_V2_s {
 
 } RK_CNR_Fix_V2_t;
 
-
 #endif
-

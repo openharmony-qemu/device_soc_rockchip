@@ -65,6 +65,4 @@ typedef struct RK_SHARP_Fix_V4_s {
 
 } RK_SHARP_Fix_V4_t;
 
-
 #endif
-

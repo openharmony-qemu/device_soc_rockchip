@@ -21,7 +21,6 @@
 #define _RK_AIQ_TYPE_AYNR_HW_V3_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_YNR_Fix_V3_s {
 
     // YNR_2700_GLOBAL_CTRL (0x0000)
@@ -37,7 +36,6 @@ typedef struct RK_YNR_Fix_V3_s {
     uint8_t ynr_lbft5x5_bypass;
     uint8_t ynr_bft3x3_bypass;
     uint8_t ynr_en;
-
 
     // YNR_2700_RNR_MAX_R  (0x0004)
     uint8_t ynr_local_gainscale;
@@ -105,6 +103,4 @@ typedef struct RK_YNR_Fix_V3_s {
 
 } RK_YNR_Fix_V3_t;
 
-
 #endif
-

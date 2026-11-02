@@ -21,7 +21,6 @@
 #define _RK_AIQ_TYPE_AYUVME_HW_V1_H_
 #include "common/rk_aiq_comm.h"
 
-
 typedef struct RK_YUVME_Fix_V1_s {
     /* CTRL */
     uint8_t bypass;
@@ -46,6 +45,4 @@ typedef struct RK_YUVME_Fix_V1_s {
 
 } RK_YUVME_Fix_V1_t;
 
-
 #endif
-

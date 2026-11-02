@@ -52,6 +52,7 @@ ohos_executable("ispserver") {
   cflags_cc = [ "-std=c++11" ]
 
   deps = [ ":librkaiq" ]
+  external_deps = [ "bounds_checking_function:libsec_shared" ]
 
   install_images = [ chipset_base_dir ]
   install_enable = true
