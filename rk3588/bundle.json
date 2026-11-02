@@ -1,5 +1,5 @@
 {
-  "name": "@ohos/rk3588",
+  "name": "@ohos/soc_rk3588",
   "description": "device rockchip for rk3588 component",
   "version": "3.1",
   "license": "Apache 2.0",
