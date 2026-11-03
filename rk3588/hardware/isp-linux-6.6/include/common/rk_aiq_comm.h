@@ -20,6 +20,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
 
 #ifdef __cplusplus
@@ -132,36 +133,6 @@ typedef enum _camAlgoResultType {
 
 #define RKAiqOPMode_t rk_aiq_op_mode_t
 
-/* The following macros are type-generic or preprocessor-level and cannot be
- * expressed as functions:
- * - ABS/MIN/MAX/MIN2/INTERP1/CLIP/SWAP are type-generic (int/float/double);
- * - RETURN_RESULT_IF_DIFFERENT embeds a `return` into the caller;
- * - DCT_ASSERT is a disabled assertion that intentionally does not evaluate
- *   its argument (converting it to a function would evaluate the expression). */
-#define ABS(a) (((a) > 0) ? (a) : (-(a)))
-#ifndef MIN
-#define MIN(a, b) ((a) > (b) ? (b) : (a))
-#endif
-#ifndef MAX
-#define MAX(a, b) ((a) < (b) ? (b) : (a))
-#endif
-#define INTERP1(x0, x1, ratio) ((ratio) * ((x1) - (x0)) + x0)
-#define SWAP(_T_, A, B)              \
-    {                                \
-        _T_ tmp = (A);               \
-        (A) = (B);                   \
-        (B) = tmp;                   \
-    }
-#define MIN2(a, b) ((a) > (b) ? (b) : (a))
-#ifndef CLIP
-#define CLIP(a, min_v, max_v) (((a) < (min_v)) ? (min_v) : (((a) > (max_v)) ? (max_v) : (a)))
-#endif
-#define RETURN_RESULT_IF_DIFFERENT(cur_res, exp_res)   \
-    if (exp_res != cur_res) {                          \
-        return (cur_res);                              \
-    }
-#define DCT_ASSERT(exp) ((void)0)
-
 static inline long ROUND_D(double x)
 {
     const double roundingHalf = 0.5;
@@ -192,7 +163,7 @@ static inline int CLIPBIT(int a, int b)
 static inline int ROUND_INT(int x, int shf_bit)
 {
     return (int)((((x) > 0) ? 1 : -1) *
-                 ((ABS(x) + (1 << ((shf_bit) - 1))) >> (shf_bit)));
+                 ((abs(x) + (1 << ((shf_bit) - 1))) >> (shf_bit)));
 }
 
 static inline double LOG2(double x)
@@ -677,14 +648,6 @@ static inline bool CHECK_ISP_HW_V3X(void)
 #define AIQ_MAYBE_UNUSED
 #endif
 #endif  // AIQ_MAYBE_UNUSED
-
-#ifndef AIQ_UNUSED_PARAM
-#ifdef __cplusplus
-#define AIQ_UNUSED_PARAM(x) static_cast<void>(x)
-#else
-#define AIQ_UNUSED_PARAM(x) (void)(x)
-#endif
-#endif  // AIQ_UNUSED_PARAM
 
 // 函数用于将补码表示的整数转换为真值，指定符号位位置
 static inline int32_t c2trval(int signBitPosition, uint32_t complement)

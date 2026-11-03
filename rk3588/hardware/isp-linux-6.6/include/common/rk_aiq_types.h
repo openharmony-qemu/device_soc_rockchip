@@ -44,8 +44,7 @@
 #include "algos/aie/rk_aiq_types_aie_algo_int.h"
 #include "algos/aorb/rk_aiq_types_orb_algo.h"
 #include "algos/asd/rk_aiq_types_asd_algo.h"
-#include "algos/anr/rk_aiq_types_anr_algo.h"
-#include "algos/anr/rk_aiq_types_anr_algo_int.h"
+#include "algos/nr/rk_aiq_types_nr_algo_int.h"
 #include "algos/asharp/rk_aiq_types_asharp_algo.h"
 #include "algos/asharp/rk_aiq_types_asharp_algo_int.h"
 #include "algos/adpcc/rk_aiq_types_adpcc_algo.h"
@@ -88,7 +87,7 @@
 #include "isp/rk_aiq_stats_awb33.h"
 #endif
 
-#define ANR_NO_SEPERATE_MARCO (0)
+#define RKAIQ_NR_NO_SEPARATE_MODULES (0)
 
 typedef struct rk_aiq_color_info_s {
     float sensorGain;

@@ -17,18 +17,9 @@
  *
  */
 
-#ifndef _RK_AIQ_TYPE_NR_ALGO_H_
-#define _RK_AIQ_TYPE_NR_ALGO_H_
-#include "algos/anr/rk_aiq_types_anr_hw.h"
+#ifndef RK_AIQ_LEGACY_NR_ALGO_H
+#define RK_AIQ_LEGACY_NR_ALGO_H
 
-RKAIQ_BEGIN_DECLARE
-
-#define BAYERNR_FIX_VALUE_PRINTF 1
-#define UVNR_FIX_VALUE_PRINTF 1
-#define YNR_FIX_VALUE_PRINTF 1
-#define MFNR_FIX_VALUE_PRINTF 1
-
-RKAIQ_END_DECLARE
+#include "algos/nr/rk_aiq_types_nr_algo.h"
 
 #endif
-

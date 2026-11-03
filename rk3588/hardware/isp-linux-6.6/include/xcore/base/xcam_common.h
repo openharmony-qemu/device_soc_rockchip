@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <errno.h>
-#include <assert.h>
 #include <math.h>
 #include <securec.h>
 #include "xcam_defs.h"
@@ -60,12 +59,6 @@ typedef enum {
     XCAM_RETURN_ERROR_UNKNOWN = -255,
 } XCamReturn;
 
-#define xcam_malloc_type(TYPE) (TYPE *)(xcam_malloc(sizeof(TYPE)))
-#define xcam_malloc_type_array(TYPE, num) (TYPE *)(xcam_malloc(sizeof(TYPE) * (num)))
-
-#define xcam_malloc0_type(TYPE) (TYPE *)(xcam_malloc0(sizeof(TYPE)))
-#define xcam_malloc0_type_array(TYPE, num) (TYPE *)(xcam_malloc0(sizeof(TYPE) * (num)))
-
 static inline void *xcam_mem_clear_buffer(void *ptr, size_t size)
 {
     if (memset_s(ptr, size, 0, size) != EOK) {
@@ -73,8 +66,6 @@ static inline void *xcam_mem_clear_buffer(void *ptr, size_t size)
     }
     return ptr;
 }
-
-#define xcam_mem_clear(v_stack) xcam_mem_clear_buffer(&(v_stack), sizeof(v_stack))
 
 void *xcam_malloc(size_t size);
 void *xcam_malloc0(size_t size);
@@ -118,19 +109,6 @@ static inline uint32_t xcam_floor(uint32_t value, const uint32_t align)
 static inline int xcam_ret_is_ok(XCamReturn err)
 {
     return err >= XCAM_RETURN_NO_ERROR;
-}
-
-//format to [0 ~ 360]
-static inline float format_angle(float angle)
-{
-    if (angle < 0.0f)
-        angle += 360.0f;
-    if (angle >= 360.0f)
-        angle -= 360.0f;
-
-    xcam_assert(angle >= 0.0f);
-    xcam_assert(angle < 360.0f);
-    return angle;
 }
 
 static inline void xcam_to_lowercase(const char *src, char *dst)

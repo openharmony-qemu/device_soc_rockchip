@@ -42,8 +42,7 @@
 #include "algos/aie/rk_aiq_types_aie_algo_int.h"
 #include "algos/aorb/rk_aiq_types_orb_algo.h"
 #include "algos/asd/rk_aiq_types_asd_algo.h"
-#include "algos/anr/rk_aiq_types_anr_algo.h"
-#include "algos/anr/rk_aiq_types_anr_algo_int.h"
+#include "algos/nr/rk_aiq_types_nr_algo_int.h"
 #include "algos/asharp/rk_aiq_types_asharp_algo.h"
 #include "algos/asharp/rk_aiq_types_asharp_algo_int.h"
 #include "algos/adpcc/rk_aiq_types_adpcc_algo.h"
@@ -86,18 +85,16 @@ typedef rk_aiq_ccm_cfg_t rk_aiq_isp_ccm_t;
 typedef rk_aiq_lsc_cfg_t rk_aiq_isp_lsc_t;
 typedef AblcProc_t rk_aiq_isp_blc_t;
 
-#if ANR_NO_SEPERATE_MARCO
+#if RKAIQ_NR_NO_SEPARATE_MODULES
 typedef RKAnr_Bayernr_Fix_t rk_aiq_isp_rawnr_t;
 typedef RKAnr_Mfnr_Fix_t rk_aiq_isp_tnr_t;
 typedef RKAnr_Ynr_Fix_t rk_aiq_isp_ynr_t;
 typedef RKAnr_Uvnr_Fix_t rk_aiq_isp_uvnr_t;
-typedef ANRProcResult_t rkaiq_anr_procRes_t;
 #else
 typedef RK_Bayernr_Fix_V1_t rk_aiq_isp_rawnr_t;
 typedef RK_MFNR_Fix_V1_t rk_aiq_isp_tnr_t;
 typedef RK_YNR_Fix_V1_t rk_aiq_isp_ynr_t;
 typedef RK_UVNR_Fix_V1_t rk_aiq_isp_uvnr_t;
-typedef ANRProcResult_t rkaiq_anr_procRes_t;
 #endif
 
 typedef AgicProcResult_t rk_aiq_isp_gic_t;
