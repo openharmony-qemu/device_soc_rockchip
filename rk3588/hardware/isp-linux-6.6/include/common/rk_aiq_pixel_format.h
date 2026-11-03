@@ -19,9 +19,10 @@
 #define RK_AIQ_PIXEL_FORMAT_H
 
 #include <stdint.h>
+#include <linux/videodev2.h>
 
-#define rk_fmt_fourcc(a, b, c, d) ((uint32_t)(a) | ((uint32_t)(b) << 8) | ((uint32_t)(c) << 16) | ((uint32_t)(d) << 24))
-#define rk_fmt_fourcc_be(a, b, c, d) (rk_fmt_fourcc(a, b, c, d) | (1 << 31))
+#define rk_fmt_fourcc v4l2_fourcc
+#define rk_fmt_fourcc_be v4l2_fourcc_be
 
 typedef enum {
     /*      Pixel format         FOURCC                          depth  Description  */

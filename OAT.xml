@@ -156,6 +156,10 @@
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/common/rk_aiq_offline_raw.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypes.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp20.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20Aec.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20NoiseGamma.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20SensorAwb.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20ToneColor.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp21.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_aeStats25.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_awb33.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
@@ -210,6 +214,10 @@
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/common/rk_aiq_offline_raw.h" desc="file has no copyright header (OAT.4 NULL)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypes.h" desc="file has no copyright header (OAT.4 NULL)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp20.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20Aec.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20NoiseGamma.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20SensorAwb.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20ToneColor.h" desc="file has no copyright header (OAT.4 NULL)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp21.h" desc="file has no copyright header (OAT.4 NULL)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_aeStats25.h" desc="file has no copyright header (OAT.4 NULL)"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_awb33.h" desc="file has no copyright header (OAT.4 NULL)"/>

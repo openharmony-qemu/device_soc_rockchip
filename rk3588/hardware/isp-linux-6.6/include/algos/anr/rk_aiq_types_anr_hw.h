@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef _RK_AIQ_TYPE_ANR_HW_H_
-#define _RK_AIQ_TYPE_ANR_HW_H_
+#ifndef RK_AIQ_TYPES_NOISE_REDUCTION_HW_H
+#define RK_AIQ_TYPES_NOISE_REDUCTION_HW_H
 #include "common/rk_aiq_comm.h"
 
 RKAIQ_BEGIN_DECLARE

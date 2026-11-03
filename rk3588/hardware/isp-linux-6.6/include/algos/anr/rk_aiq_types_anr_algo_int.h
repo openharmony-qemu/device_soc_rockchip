@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef _RK_AIQ_TYPE_ANR_ALGO_INT_H_
-#define _RK_AIQ_TYPE_ANR_ALGO_INT_H_
+#ifndef RK_AIQ_TYPES_NOISE_REDUCTION_ALGO_INT_H
+#define RK_AIQ_TYPES_NOISE_REDUCTION_ALGO_INT_H
 
 #include <math.h>
 #include <string.h>
@@ -441,30 +441,30 @@ typedef enum ANRresult_e {
     ANR_RET_SUCCESS = 0,           // this has to be 0, if clauses rely on it
     ANR_RET_FAILURE = 1,           // process failure
     ANR_RET_INVALID_PARM = 2,      // invalid parameter
-    ANR_RET_WRONG_CONFIG = 3,      // feature not supported
+    RKAIQ_NOISE_REDUCTION_RET_WRONG_CONFIG = 3,      // feature not supported
     ANR_RET_BUSY = 4,              // there's already something going on...
-    ANR_RET_CANCELED = 5,          // operation canceled
-    ANR_RET_OUTOFMEM = 6,          // out of memory
-    ANR_RET_OUTOFRANGE = 7,        // parameter/value out of range
+    RKAIQ_NOISE_REDUCTION_RET_CANCELED = 5,          // operation canceled
+    RKAIQ_NOISE_REDUCTION_RET_OUTOFMEM = 6,          // out of memory
+    RKAIQ_NOISE_REDUCTION_RET_OUTOFRANGE = 7,        // parameter/value out of range
     ANR_RET_NULL_POINTER = 8,      // the/one/all parameter(s) is a(are) NULL pointer(s)
-    ANR_RET_DIVISION_BY_ZERO = 9,  // a divisor equals ZERO
-    ANR_RET_NO_INPUTIMAGE = 10     // no input image
+    RKAIQ_NOISE_REDUCTION_RET_DIVISION_BY_ZERO = 9,  // a divisor equals ZERO
+    RKAIQ_NOISE_REDUCTION_RET_NO_INPUTIMAGE = 10     // no input image
 } ANRresult_t;
 
 typedef enum ANRState_e {
-    ANR_STATE_INVALID = 0,     /**< initialization value */
+    RKAIQ_NOISE_REDUCTION_STATE_INVALID = 0,     /**< initialization value */
     ANR_STATE_INITIALIZED = 1, /**< instance is created, but not initialized */
     ANR_STATE_STOPPED = 2,     /**< instance is confiured (ready to start) or stopped */
     ANR_STATE_RUNNING = 3,     /**< instance is running (processes frames) */
     ANR_STATE_LOCKED = 4,      /**< instance is locked (for taking snapshots) */
-    ANR_STATE_MAX              /**< max */
+    RKAIQ_NOISE_REDUCTION_STATE_MAX              /**< max */
 } ANRState_t;
 
 typedef enum ANROPMode_e {
     ANR_OP_MODE_INVALID = 0, /**< initialization value */
     ANR_OP_MODE_AUTO = 1,    /**< instance is created, but not initialized */
     ANR_OP_MODE_MANUAL = 2,  /**< instance is confiured (ready to start) or stopped */
-    ANR_OP_MODE_MAX          /**< max */
+    RKAIQ_NOISE_REDUCTION_OP_MODE_MAX          /**< max */
 } ANROPMode_t;
 
 typedef enum ANRParamMode_e {
@@ -472,7 +472,7 @@ typedef enum ANRParamMode_e {
     ANR_PARAM_MODE_NORMAL = 1, /**< initialization value */
     ANR_PARAM_MODE_HDR = 2,    /**< instance is created, but not initialized */
     ANR_PARAM_MODE_GRAY = 3,   /**< instance is confiured (ready to start) or stopped */
-    ANR_PARAM_MODE_MAX         /**< max */
+    RKAIQ_NOISE_REDUCTION_PARAM_MODE_MAX         /**< max */
 } ANRParamMode_t;
 
 typedef struct RKAnr_Mfnr_Dynamic_s {

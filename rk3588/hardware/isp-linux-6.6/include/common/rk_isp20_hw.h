@@ -16,6 +16,8 @@
 #ifndef _CAM_HW_RK_ISP20_HW_H
 #define _CAM_HW_RK_ISP20_HW_H
 
+#include <linux/const.h>
+
 typedef signed char s8;
 typedef unsigned char u8;
 
@@ -28,7 +30,7 @@ typedef unsigned int u32;
 typedef signed long long s64;
 typedef unsigned long long u64;
 
-#define BIT_ULL(nr)            (1ULL << (nr))
+#define BIT_ULL _BITULL
 
 enum RK_ISP_HW_MODULE_ID_e {
     RK_ISP2X_DPCC_ID,
