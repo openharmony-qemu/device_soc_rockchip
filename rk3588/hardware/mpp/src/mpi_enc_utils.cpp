@@ -719,7 +719,7 @@ static void test_mpp_ctx_cleanup(MpiEncTestData *p)
     test_ctx_deinit(&p);
 }
 
-int hal_mpp_get_sps(void *ctx, unsigned char *buf, size_t *bufSize)
+int HalMppGetSps(void *ctx, unsigned char *buf, size_t *bufSize)
 {
     int ret;
     MppApi *mpi;
@@ -883,7 +883,7 @@ MPP_RET encodeGetPacket(MpiEncTestData *p, MppBuffer *cam_buf, MppPacket *packet
     return MPP_OK;
 }
 
-int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *bufSize)
+int hal_mpp_encode(void *ctx, int dmaFd, unsigned char *buf, size_t *bufSize)
 {
     if (!ctx) {
         mpp_err("memset_s failed\n");
@@ -894,7 +894,7 @@ int hal_mpp_encode(void *ctx, int dma_fd, unsigned char *buf, size_t *bufSize)
     MpiEncTestData *p = (MpiEncTestData *)ctx;
     MppBuffer cam_buf = NULL;
 
-    MPP_RET ret = encodePutFrame(p, &cam_buf, &packet, dma_fd);
+    MPP_RET ret = encodePutFrame(p, &cam_buf, &packet, dmaFd);
     if (ret != MPP_OK) {
         return ret;
     }
@@ -992,7 +992,7 @@ void *hal_mpp_ctx_create(MpiEncTestArgs *args)
     return p;
 }
 
-void hal_mpp_ctx_delete(void *ctx)
+void HalMppCtxDelete(void *ctx)
 {
     test_mpp_ctx_cleanup((MpiEncTestData*)ctx);
 }

@@ -540,7 +540,7 @@ typedef struct aeStats_cfg_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(0),
-        M4_NOTES(TODO))  */
+        M4_NOTES(Enable ae stats config update\nFreq of use: low))  */
     bool sw_aeCfg_update;
     /* M4_GENERIC_DESC(
         M4_ALIAS(hw_aeCfg_entityGroup_mode),
