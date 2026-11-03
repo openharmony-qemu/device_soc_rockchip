@@ -2,147 +2,189 @@
 /*
  * Copyright (c) 2026 Rockchip Electronics Co., Ltd.
  *
- * mpp_test.h - Unified assertion and check macros
+ * mpp_test.h - Unified assertion and check helpers for mpp unit tests
  *
- * 1. Test assertions (done-goto): MPP_TEST, MPP_ASSERT_*, MPP_PASS, done, return
- *    All paths converge to MPP_RET_LABEL for guaranteed cleanup.
+ * 1. Test assertions: mpp_test_assert_* record a failure into a caller-owned
+ *    rk_s32 result variable (declared via MPP_RET_VARS) and let the test
+ *    continue, so a single run reports every failure instead of stopping
+ *    at the first one.
  *
- * 2. Test infrastructure: MppTestCase table + MPP_TEST_RUN/MPP_TEST_END.
+ * 2. Test infrastructure: MppTestCase table + mpp_test_run helpers.
  *
- * 3. Test option parsing (mpp_opt-style, header-only).
+ * 3. Test option parsing (mpp-opt-style, header-only).
  *
- * Usage: MPP_RET_VARS; ... MPP_PASS(); MPP_RET_LABEL: return _mpp_ret;
+ * Usage:
+ *   static rk_s32 my_test(void *ctx)
+ *   {
+ *       MPP_RET_VARS;
+ *
+ *       mpp_test_assert_eq("a == b", a, b, &_mpp_ret);
+ *       return _mpp_ret;
+ *   }
  */
 
 #ifndef MPP_TEST_H
 #define MPP_TEST_H
 
+#include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "mpp_log.h"
 #include "mpp_common.h"
 
-#define MPP_RET_LABEL done
+/* Declares the result variable conventionally named _mpp_ret that the
+ * mpp_test_assert_* helpers write to: rk_ok passes, rk_nok fails. */
 #define MPP_RET_VARS rk_s32 _mpp_ret = rk_ok
 
 /* ===========================================================================
- * Section 1: Test assertions (done-goto)
- * Convention: _mpp_ret < 0 means failure, rk_ok means success.
+ * Section 1: Test assertions
+ * Convention: *ret < 0 means failure, rk_ok means success.
  * =========================================================================== */
 
-#define MPP_TEST(name) \
-    static rk_s32 name(void *ctx)
+static inline void mpp_test_fail(const char *msg, const char *func,
+                                 rk_s32 line, rk_s32 *ret)
+{
+    mpp_loge("  FAIL: %s at %s:%d\n", msg, func, line);
+    *ret = rk_nok;
+}
 
-#define MPP_PASS() goto MPP_RET_LABEL
+static inline void mpp_test_vformat(char *buf, rk_u32 size, const char *fmt,
+                                    va_list ap)
+{
+    if (vsnprintf(buf, size, fmt, ap) < 0)
+        buf[0] = '\0';
+}
 
-#define MPP_FAILm(msg) \
-do { \
-    mpp_loge("  FAIL: %s at %s:%d\n", msg, __FUNCTION__, __LINE__); \
-    _mpp_ret = rk_nok; \
-    goto MPP_RET_LABEL; \
-} while (0)
+static inline void mpp_test_failf(rk_s32 *ret, const char *func, rk_s32 line,
+                                  const char *fmt, ...)
+{
+    char buf[128];
+    va_list ap;
 
-#define MPP_FAIL(fmt, ...) \
-do { \
-    mpp_loge("  FAIL: " fmt " at %s:%d\n", ##__VA_ARGS__, __FUNCTION__, __LINE__); \
-    _mpp_ret = rk_nok; \
-    goto MPP_RET_LABEL; \
-} while (0)
+    va_start(ap, fmt);
+    mpp_test_vformat(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    mpp_test_fail(buf, func, line, ret);
+}
 
-#define MPP_ASSERTm(msg, cond) \
-do { \
-    if (!(cond)) { \
-        mpp_loge("  FAIL: %s (%s) at %s:%d\n", msg, #cond, __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline void mpp_test_fail_null(const char *msg, const void *p,
+                                      const char *func, rk_s32 line,
+                                      rk_s32 *ret)
+{
+    mpp_loge("  FAIL: %s (expected NULL, got %p) at %s:%d\n", msg, p,
+             func, line);
+    *ret = rk_nok;
+}
 
-#define MPP_ASSERT(cond) MPP_ASSERTm(#cond, cond)
+static inline void mpp_test_fail_not_null(const char *msg, const char *func,
+                                          rk_s32 line, rk_s32 *ret)
+{
+    mpp_loge("  FAIL: %s (unexpected NULL) at %s:%d\n", msg, func, line);
+    *ret = rk_nok;
+}
 
-#define MPP_ASSERT_FALSEm(msg, cond) \
-do { \
-    if ((cond)) { \
-        mpp_loge("  FAIL: %s (%s) at %s:%d\n", msg, #cond, __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline void mpp_test_assert_true(const char *msg, rk_s32 pass,
+                                        rk_s32 *ret)
+{
+    if (!pass)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_FALSE(cond) MPP_ASSERT_FALSEm(#cond, cond)
+static inline void mpp_test_assert_false(const char *msg, rk_s32 pass,
+                                         rk_s32 *ret)
+{
+    if (pass)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP__REL(rel, msg, exp, got) \
-do { \
-    if (!((exp) rel (got))) { \
-        mpp_loge("  FAIL: %s at %s:%d\n", msg, __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline void mpp_test_assert_eq(const char *msg, rk_s64 exp, rk_s64 got,
+                                      rk_s32 *ret)
+{
+    if (exp != got)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_EQm(msg, exp, got)  MPP__REL(==, msg, exp, got)
-#define MPP_ASSERT_NEQm(msg, exp, got) MPP__REL(!=, msg, exp, got)
-#define MPP_ASSERT_GTm(msg, exp, got)  MPP__REL(>, msg, exp, got)
-#define MPP_ASSERT_GTEm(msg, exp, got) MPP__REL(>=, msg, exp, got)
-#define MPP_ASSERT_LTm(msg, exp, got)  MPP__REL(<, msg, exp, got)
-#define MPP_ASSERT_LTEm(msg, exp, got) MPP__REL(<=, msg, exp, got)
+static inline void mpp_test_assert_neq(const char *msg, rk_s64 exp,
+                                       rk_s64 got, rk_s32 *ret)
+{
+    if (exp == got)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_EQ(exp, got)  MPP_ASSERT_EQm(#exp " != " #got, exp, got)
-#define MPP_ASSERT_NEQ(exp, got) MPP_ASSERT_NEQm(#exp " == " #got, exp, got)
-#define MPP_ASSERT_GT(exp, got)  MPP_ASSERT_GTm(#exp " <= " #got, exp, got)
-#define MPP_ASSERT_GTE(exp, got) MPP_ASSERT_GTEm(#exp " < " #got, exp, got)
-#define MPP_ASSERT_LT(exp, got)  MPP_ASSERT_LTm(#exp " >= " #got, exp, got)
-#define MPP_ASSERT_LTE(exp, got) MPP_ASSERT_LTEm(#exp " > " #got, exp, got)
+static inline void mpp_test_assert_gt(const char *msg, rk_s64 exp, rk_s64 got,
+                                      rk_s32 *ret)
+{
+    if (exp <= got)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_NULLm(msg, p) \
-do { \
-    if ((p) != NULL) { \
-        mpp_loge("  FAIL: %s (expected NULL, got %p) at %s:%d\n", \
-                 msg, (void *)(p), __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline void mpp_test_assert_gte(const char *msg, rk_s64 exp,
+                                       rk_s64 got, rk_s32 *ret)
+{
+    if (exp < got)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_NOT_NULLm(msg, p) \
-do { \
-    if ((p) == NULL) { \
-        mpp_loge("  FAIL: %s (unexpected NULL) at %s:%d\n", msg, __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline void mpp_test_assert_lt(const char *msg, rk_s64 exp, rk_s64 got,
+                                      rk_s32 *ret)
+{
+    if (exp >= got)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_NULL(p)     MPP_ASSERT_NULLm(#p, p)
-#define MPP_ASSERT_NOT_NULL(p) MPP_ASSERT_NOT_NULLm(#p, p)
+static inline void mpp_test_assert_lte(const char *msg, rk_s64 exp,
+                                       rk_s64 got, rk_s32 *ret)
+{
+    if (exp > got)
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_MEM_EQm(msg, exp, got, size) \
-do { \
-    const void *_e = (exp); const void *_g = (got); \
-    rk_s32 _s = (size); \
-    if (!_e || !_g || memcmp(_e, _g, _s)) { \
-        mpp_loge("  FAIL: %s (memory mismatch) at %s:%d\n", msg, __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline void mpp_test_assert_null(const char *msg, const void *p,
+                                        rk_s32 *ret)
+{
+    if (p != NULL)
+        mpp_test_fail_null(msg, p, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_MEM_EQ(exp, got, size) \
-    MPP_ASSERT_MEM_EQm(#exp " != " #got, exp, got, size)
+static inline void mpp_test_assert_not_null(const char *msg, const void *p,
+                                            rk_s32 *ret)
+{
+    if (p == NULL)
+        mpp_test_fail_not_null(msg, __func__, __LINE__, ret);
+}
 
-#define MPP_ASSERT_STR_EQm(msg, exp, got) \
-do { \
-    const char *_e = (exp); const char *_g = (got); \
-    if ((_e == NULL) || (_g == NULL) || strcmp(_e, _g)) { \
-        mpp_loge("  FAIL: %s (\"%s\" != \"%s\") at %s:%d\n", \
-                 msg, _e ? _e : "(null)", _g ? _g : "(null)", __FUNCTION__, __LINE__); \
-        _mpp_ret = rk_nok; \
-        goto MPP_RET_LABEL; \
-    } \
-} while (0)
+static inline rk_s32 mpp_test_mem_eq(const void *exp, const void *got,
+                                     rk_u32 size)
+{
+    if (!exp || !got)
+        return 0;
 
-#define MPP_ASSERT_STR_EQ(exp, got) \
-    MPP_ASSERT_STR_EQm(#exp " != " #got, exp, got)
+    return memcmp(exp, got, size) == 0;
+}
+
+static inline void mpp_test_assert_mem_eq(const char *msg, const void *exp,
+                                          const void *got, rk_u32 size,
+                                          rk_s32 *ret)
+{
+    if (!mpp_test_mem_eq(exp, got, size))
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
+
+static inline rk_s32 mpp_test_str_eq(const char *exp, const char *got)
+{
+    if (!exp || !got)
+        return 0;
+
+    return strcmp(exp, got) == 0;
+}
+
+static inline void mpp_test_assert_str_eq(const char *msg, const char *exp,
+                                          const char *got, rk_s32 *ret)
+{
+    if (!mpp_test_str_eq(exp, got))
+        mpp_test_fail(msg, __func__, __LINE__, ret);
+}
 
 /* ===========================================================================
  * Section 2: Test infrastructure
@@ -155,29 +197,17 @@ typedef struct MppTestCase_t {
     rk_s32      (*func)(void *ctx);
 } MppTestCase;
 
-static inline void mpp_test_calc_width(MppTestCase *cases, rk_s32 start,
-                                       rk_s32 end, rk_s32 *max)
+static inline void mpp_test_report(const char *name, rk_s32 ok)
 {
-    rk_s32 w;
-
-    for (w = start; w <= end; w++) {
-        rk_s32 l = (rk_s32)strlen(cases[w].name);
-
-        if (l > *max)
-            *max = l;
-    }
+    mpp_logi("test %s %s\n", name, ok ? "success" : "failed");
 }
 
 static inline void mpp_test_run_one(void *ctx, MppTestCase *cases, rk_s32 idx,
-                                    rk_s32 max, rk_s32 *ret)
+                                    rk_s32 *ret)
 {
     rk_s32 r = cases[idx].func(ctx);
-    char line[256];
 
-    snprintf(line, sizeof(line), "test %-*s %s", max,
-             cases[idx].name, (r < 0) ? "failed" : "success");
-    mpp_logi("%s", line);
-
+    mpp_test_report(cases[idx].name, r >= 0);
     if (r < 0)
         *ret = rk_nok;
 }
@@ -185,31 +215,24 @@ static inline void mpp_test_run_one(void *ctx, MppTestCase *cases, rk_s32 idx,
 static inline void mpp_test_run(void *ctx, MppTestCase *cases, rk_u32 n,
                                 rk_s32 *ret)
 {
-    rk_s32 i;
-    rk_s32 max = 0;
+    rk_u32 i;
 
-    mpp_test_calc_width(cases, 0, (rk_s32)n - 1, &max);
-    for (i = 0; i < (rk_s32)n; i++)
-        mpp_test_run_one(ctx, cases, i, max, ret);
+    for (i = 0; i < n; i++)
+        mpp_test_run_one(ctx, cases, (rk_s32)i, ret);
 }
 
 static inline void mpp_test_run_range(void *ctx, MppTestCase *cases, rk_s32 n,
                                       rk_s32 start, rk_s32 end, rk_s32 *ret)
 {
-    rk_s32 s;
-    rk_s32 e;
     rk_s32 i;
-    rk_s32 max = 0;
 
     if (n <= 0)
         return;
 
-    s = mpp_max(0, mpp_min(start, n - 1));
-    e = mpp_max(s, mpp_min(end, n - 1));
-
-    mpp_test_calc_width(cases, s, e, &max);
-    for (i = s; i <= e; i++)
-        mpp_test_run_one(ctx, cases, i, max, ret);
+    start = mpp_max(0, mpp_min(start, n - 1));
+    end = mpp_max(start, mpp_min(end, n - 1));
+    for (i = start; i <= end; i++)
+        mpp_test_run_one(ctx, cases, i, ret);
 }
 
 static inline void mpp_test_start(const char *name)
@@ -230,8 +253,19 @@ static inline void mpp_test_end(const char *name, rk_s32 ret)
 
 #define MPP_FLAG_VERBOSE (1 << 0)
 
-#define MPP_VERBOSE(flag, fmt, ...) \
-    do { if ((flag) & MPP_FLAG_VERBOSE) mpp_logi(fmt, ##__VA_ARGS__); } while (0)
+static inline void mpp_test_verbose(rk_u32 flag, const char *fmt, ...)
+{
+    char buf[128];
+    va_list ap;
+
+    if (!(flag & MPP_FLAG_VERBOSE))
+        return;
+
+    va_start(ap, fmt);
+    mpp_test_vformat(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    mpp_logi("%s", buf);
+}
 
 typedef rk_s32 (*MppTestOptFn)(void *ctx, const char *next);
 
@@ -247,67 +281,79 @@ typedef struct MppTestOpt_t {
 #define MPP_LONG_OPT_PREFIX_LEN 2
 #define MPP_SHORT_OPT_LEN       2
 
+static inline rk_s32 mpp_test_match_long(const char *arg, MppTestOpt *opt)
+{
+    return opt->long_opt && arg[1] == '-' &&
+           !strcmp(arg + MPP_LONG_OPT_PREFIX_LEN, opt->long_opt);
+}
+
+static inline rk_s32 mpp_test_match_short(const char *arg, MppTestOpt *opt)
+{
+    return opt->opt && arg[1] == opt->opt && arg[MPP_SHORT_OPT_LEN] == '\0';
+}
+
 static inline rk_s32 mpp_test_match_opt(const char *arg, MppTestOpt *opts,
                                         rk_s32 nopts)
 {
     rk_s32 j;
 
     for (j = 0; j < nopts; j++) {
-        if (arg[1] == '-' && opts[j].long_opt &&
-            !strcmp(arg + MPP_LONG_OPT_PREFIX_LEN, opts[j].long_opt))
-            return j;
-        if (opts[j].opt && arg[1] == opts[j].opt &&
-            arg[MPP_SHORT_OPT_LEN] == '\0')
+        if (mpp_test_match_long(arg, &opts[j]) ||
+            mpp_test_match_short(arg, &opts[j]))
             return j;
     }
 
     return -1;
 }
 
-static inline rk_s32 mpp_test_parse_opts(void *ctx,
-                                         MppTestOpt *opts, rk_s32 nopts,
-                                         rk_s32 argc, char **argv)
+static inline rk_s32 mpp_test_next_opt(MppTestOpt *opts, rk_s32 nopts,
+                                       rk_s32 argc, char **argv, rk_s32 i)
+{
+    if (i >= argc || argv[i][0] != '-')
+        return -1;
+
+    return mpp_test_match_opt(argv[i], opts, nopts);
+}
+
+static inline rk_s32 mpp_test_apply_opt(void *ctx, MppTestOpt *opt,
+                                        rk_s32 argc, char **argv, rk_s32 i)
+{
+    const char *next = (i + 1 < argc) ? argv[i + 1] : NULL;
+    rk_s32 step = opt->fn ? mpp_max(1, opt->fn(ctx, next)) : 1;
+
+    return i + step;
+}
+
+static inline rk_s32 mpp_test_parse_opts(void *ctx, MppTestOpt *opts,
+                                         rk_s32 nopts, rk_s32 argc,
+                                         char **argv)
 {
     rk_s32 i = 1;
+    rk_s32 j;
 
-    while (i < argc) {
-        const char *arg = argv[i];
-        rk_s32 j;
-
-        if (arg[0] != '-')
-            break;
-
-        j = mpp_test_match_opt(arg, opts, nopts);
-        if (j < 0)
-            break;
-
-        if (opts[j].fn) {
-            const char *next = (i + 1 < argc) ? argv[i + 1] : NULL;
-
-            i += mpp_max(1, opts[j].fn(ctx, next));
-        } else {
-            i++;
-        }
-    }
+    while ((j = mpp_test_next_opt(opts, nopts, argc, argv, i)) >= 0)
+        i = mpp_test_apply_opt(ctx, &opts[j], argc, argv, i);
 
     return i;
 }
 
-static inline void mpp_test_opt_help(const char *name,
-                                     MppTestOpt *opts, rk_s32 nopts)
+static inline void mpp_test_opt_help_one(MppTestOpt *opt)
+{
+    if (opt->long_opt)
+        mpp_logi("  -%c, --%-12s %s\n", opt->opt, opt->long_opt, opt->help);
+    else
+        mpp_logi("  -%-17c %s\n", opt->opt, opt->help);
+}
+
+static inline void mpp_test_opt_help(const char *name, MppTestOpt *opts,
+                                     rk_s32 nopts)
 {
     rk_s32 i;
 
     mpp_logi("Usage: %s [options] [file] [start] [end]\n", name);
     mpp_logi("Options:\n");
-
-    for (i = 0; i < nopts; i++) {
-        if (opts[i].long_opt)
-            mpp_logi("  -%c, --%-12s %s\n",
-                     opts[i].opt, opts[i].long_opt, opts[i].help);
-        else
-            mpp_logi("  -%-17c %s\n", opts[i].opt, opts[i].help);
-    }
+    for (i = 0; i < nopts; i++)
+        mpp_test_opt_help_one(&opts[i]);
 }
 
 #endif /* MPP_TEST_H */

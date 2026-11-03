@@ -128,8 +128,8 @@ static inline float format_angle(float angle)
     if (angle >= 360.0f)
         angle -= 360.0f;
 
-    assert(angle >= 0.0f);
-    assert(angle < 360.0f);
+    xcam_assert(angle >= 0.0f);
+    xcam_assert(angle < 360.0f);
     return angle;
 }
 
