@@ -17,20 +17,22 @@
  * sites are runtime contexts, so no constant-expression usage is lost.
  * MPP_SWAP must remain a macro: it is a statement macro with a type
  * parameter, which an inline function cannot express.
+ *
+ * G.PRE.02: MPP_ARRAY_ELEMS_U/S, MPP_ALIGN_DOWN, MPP_ALIGN_GEN, MPP_ROUNDUP,
+ * MPP_DIVUP and MPP_GENMASK were converted to static inline functions too.
+ * MPP_ARRAY_ELEMS keeps its macro form: sizeof() needs the array type, which
+ * an inline function cannot recover from a decayed pointer argument.
+ * MPP_ALIGN keeps its macro form for the same reason as MPP_SWAP (generic
+ * integer width) and because 90 call sites rely on it in init expressions.
  */
 #define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
-#define MPP_ARRAY_ELEMS_U(a)    ((rk_u32)(sizeof(a) / sizeof((a)[0])))
-#define MPP_ARRAY_ELEMS_S(a)    ((rk_s32)(sizeof(a) / sizeof((a)[0])))
+/* Thin forwarders keep the MPP_ARRAY_ELEMS_U(arr) call form; the
+ * computation itself now lives in the inline functions below. */
+#define MPP_ARRAY_ELEMS_U(a)    mpp_array_elems_u(sizeof(a), sizeof((a)[0]))
+#define MPP_ARRAY_ELEMS_S(a)    mpp_array_elems_s(sizeof(a), sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
-#define MPP_ALIGN_DOWN(x, a)    ((x)&~((a)-1))
-#define MPP_ALIGN_GEN(x, a)     (((x)+(a)-1)/(a)*(a))
 #define MPP_VSWAP(a, b)         { a ^= b; b ^= a; a ^= b; }
-
-#define MPP_ROUNDUP(N, M)       MPP_ALIGN(M, N)
-#define MPP_DIVUP(N, M)         (MPP_ROUNDUP(N, M) / N)
-
-#define MPP_GENMASK(h, l) (((1ULL << ((h) + 1)) - 1) & ~((1ULL << (l)) - 1))
 
 #define MPP_RB16(x)  ((((const RK_U8*)(x))[0] << 8) | ((const RK_U8*)(x))[1])
 #define MPP_WB16(p, d) do { \
@@ -159,8 +161,8 @@
 #define SZ_80M                  (SZ_1M*80)
 #define SZ_128M                 (SZ_1M*128)
 
-#define BPP_RGB_16BIT_FORMATS 2  // For RGB444/555/565 formats
-#define BPP_DEFAULT_FORMATS   4  // For other formats
+#define BPP_RGB_16BIT_FORMATS 2  /* For RGB444/555/565 formats */
+#define BPP_DEFAULT_FORMATS   4  /* For other formats */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -178,6 +180,59 @@ static __inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
     if      (a < amin) return amin;
     else if (a > amax) return amax;
     else               return a;
+}
+
+static inline rk_u32 mpp_array_elems_u(const size_t bytes, const size_t elem_size)
+{
+    if (elem_size == 0)
+        return 0;
+
+    return (rk_u32)(bytes / elem_size);
+}
+
+static inline rk_s32 mpp_array_elems_s(const size_t bytes, const size_t elem_size)
+{
+    if (elem_size == 0)
+        return 0;
+
+    return (rk_s32)(bytes / elem_size);
+}
+
+static inline RK_U32 mpp_align_down(RK_U32 x, RK_U32 a)
+{
+    if (a == 0)
+        return x;
+
+    return x & ~(a - 1);
+}
+
+static inline RK_U32 mpp_align_gen(RK_U32 x, RK_U32 a)
+{
+    if (a == 0)
+        return x;
+
+    return (x + a - 1) / a * a;
+}
+
+static inline RK_U32 mpp_roundup(RK_U32 n, RK_U32 m)
+{
+    if (n == 0)
+        return 0;
+
+    return mpp_align_gen(m, n);
+}
+
+static inline RK_U32 mpp_divup(RK_U32 n, RK_U32 m)
+{
+    if (n == 0)
+        return 0;
+
+    return mpp_roundup(n, m) / n;
+}
+
+static inline RK_U64 mpp_genmask(RK_U32 h, RK_U32 l)
+{
+    return ((1ULL << (h + 1)) - 1) & ~((1ULL << l) - 1);
 }
 
 static inline RK_S32 mpp_abs(RK_S32 x)
@@ -267,11 +322,11 @@ RK_U32 mpp_align_wxh2yuv420(RK_U32 val);
 RK_U32 mpp_align_wxh2yuv422(RK_U32 val);
 RK_U32 mpp_align_wxh2yuv444(RK_U32 val);
 
-// Clip a signed integer to the range [0, 2^n - 1]
+/* Clip a signed integer to the range [0, 2^n - 1] */
 RK_U32 mpp_clip_uint_pow2(RK_S32 val, RK_S32 n);
-// Divide an unsigned integer x by 2^n and round to nearest integer
+/* Divide an unsigned integer x by 2^n and round to nearest integer */
 RK_U64 mpp_round_pow2(RK_U64 x, RK_U16 n);
-// Divide a signed integer x by 2^n and round to nearest integer
+/* Divide a signed integer x by 2^n and round to nearest integer */
 RK_S64 mpp_round_pow2_signed(RK_S64 x, RK_U16 n);
 
 MPP_RET mpp_mkdir_p(const char *path);

@@ -526,7 +526,7 @@ int PreparedModelService::Compile(const void *modelBuffer, size_t length)
     HDF_LOGI("PreparedModelService::Compile rknn_query api ver: %{public}s", version.api_version);
     HDF_LOGI("PreparedModelService::Compile rknn_query drv ver: %{public}s", version.drv_version);
 
-    // Get Model Input Output Info
+    /* Get Model Input Output Info */
     ret = rknn_query(m_ctx, RKNN_QUERY_IN_OUT_NUM, &m_io_num, sizeof(m_io_num));
     if (ret != RKNN_SUCC) {
         HDF_LOGE("rknn_query input-output info fail! ret=%d", ret);

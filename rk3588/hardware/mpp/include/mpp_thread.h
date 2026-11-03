@@ -18,10 +18,6 @@
 #define PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP PTHREAD_RECURSIVE_MUTEX_INITIALIZER
 #endif
 
-#if defined(__USE_XOPEN2K) || (defined(__ANDROID__) && __ANDROID_API__ >= 21)
-#define COND_USE_CLOCK_MONOTONIC
-#endif
-
 #define THREAD_NAME_LEN 16
 
 #ifdef __cplusplus
@@ -108,7 +104,6 @@ MppThread *mpp_thread_create(MppThreadFunc func, void *ctx, const char *name);
 void mpp_thread_destroy(MppThread *thread);
 void mpp_thread_start(MppThread *thread);
 void mpp_thread_stop(MppThread *thread);
-
 
 /*
  * status transaction:
