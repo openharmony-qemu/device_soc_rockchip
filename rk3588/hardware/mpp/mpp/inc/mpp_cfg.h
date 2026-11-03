@@ -21,34 +21,123 @@ typedef struct MppCfgInfoHead_t {
 extern "C" {
 #endif
 
-#define MPP_CFG_SET_s8(entry, cfg, val) (kmpp_obj_impl_set_s8)(entry, cfg, val)
-#define MPP_CFG_GET_s8(entry, cfg, val) (kmpp_obj_impl_get_s8)(entry, cfg, (RK_S8 *)(val))
-#define MPP_CFG_SET_u8(entry, cfg, val) (kmpp_obj_impl_set_u8)(entry, cfg, val)
-#define MPP_CFG_GET_u8(entry, cfg, val) (kmpp_obj_impl_get_u8)(entry, cfg, (RK_U8 *)(val))
-#define MPP_CFG_SET_s16(entry, cfg, val) (kmpp_obj_impl_set_s16)(entry, cfg, val)
-#define MPP_CFG_GET_s16(entry, cfg, val) (kmpp_obj_impl_get_s16)(entry, cfg, (RK_S16 *)(val))
-#define MPP_CFG_SET_u16(entry, cfg, val) (kmpp_obj_impl_set_u16)(entry, cfg, val)
-#define MPP_CFG_GET_u16(entry, cfg, val) (kmpp_obj_impl_get_u16)(entry, cfg, (RK_U16 *)(val))
-#define MPP_CFG_SET_s32(entry, cfg, val) (kmpp_obj_impl_set_s32)(entry, cfg, val)
-#define MPP_CFG_GET_s32(entry, cfg, val) (kmpp_obj_impl_get_s32)(entry, cfg, (RK_S32 *)(val))
-#define MPP_CFG_SET_u32(entry, cfg, val) (kmpp_obj_impl_set_u32)(entry, cfg, val)
-#define MPP_CFG_GET_u32(entry, cfg, val) (kmpp_obj_impl_get_u32)(entry, cfg, (RK_U32 *)(val))
-#define MPP_CFG_SET_s64(entry, cfg, val) (kmpp_obj_impl_set_s64)(entry, cfg, val)
-#define MPP_CFG_GET_s64(entry, cfg, val) (kmpp_obj_impl_get_s64)(entry, cfg, (RK_S64 *)(val))
-#define MPP_CFG_SET_u64(entry, cfg, val) (kmpp_obj_impl_set_u64)(entry, cfg, val)
-#define MPP_CFG_GET_u64(entry, cfg, val) (kmpp_obj_impl_get_u64)(entry, cfg, (RK_U64 *)(val))
-#define MPP_CFG_SET_st(entry, cfg, val)  (kmpp_obj_impl_set_st)(entry, cfg, val)
-#define MPP_CFG_GET_st(entry, cfg, val)  (kmpp_obj_impl_get_st)(entry, cfg, (void *)(val))
-#define MPP_CFG_SET_arr(entry, cfg, val) (kmpp_obj_impl_set_arr)(entry, cfg, val)
-#define MPP_CFG_GET_arr(entry, cfg, val) (kmpp_obj_impl_get_arr)(entry, cfg, (void *)(val))
-#define MPP_CFG_SET_ptr(entry, cfg, val) (kmpp_obj_impl_set_ptr)(entry, cfg, val)
-#define MPP_CFG_GET_ptr(entry, cfg, val) (kmpp_obj_impl_get_ptr)(entry, cfg, (void **)(val))
+static inline MPP_RET MPP_CFG_SET_s8(KmppEntry *entry, const char *cfg, RK_S8 val)
+{
+    return (kmpp_obj_impl_set_s8)(entry, cfg, val);
+}
 
-#define CHECK_CFG_ENTRY(node, name, type) \
-    check_cfg_entry(node, name, type, __FUNCTION__)
+static inline MPP_RET MPP_CFG_GET_s8(KmppEntry *entry, const char *cfg, RK_S8 *val)
+{
+    return (kmpp_obj_impl_get_s8)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_u8(KmppEntry *entry, const char *cfg, RK_U8 val)
+{
+    return (kmpp_obj_impl_set_u8)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_u8(KmppEntry *entry, const char *cfg, RK_U8 *val)
+{
+    return (kmpp_obj_impl_get_u8)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_s16(KmppEntry *entry, const char *cfg, RK_S16 val)
+{
+    return (kmpp_obj_impl_set_s16)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_s16(KmppEntry *entry, const char *cfg, RK_S16 *val)
+{
+    return (kmpp_obj_impl_get_s16)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_u16(KmppEntry *entry, const char *cfg, RK_U16 val)
+{
+    return (kmpp_obj_impl_set_u16)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_u16(KmppEntry *entry, const char *cfg, RK_U16 *val)
+{
+    return (kmpp_obj_impl_get_u16)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_s32(KmppEntry *entry, const char *cfg, RK_S32 val)
+{
+    return (kmpp_obj_impl_set_s32)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_s32(KmppEntry *entry, const char *cfg, RK_S32 *val)
+{
+    return (kmpp_obj_impl_get_s32)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_u32(KmppEntry *entry, const char *cfg, RK_U32 val)
+{
+    return (kmpp_obj_impl_set_u32)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_u32(KmppEntry *entry, const char *cfg, RK_U32 *val)
+{
+    return (kmpp_obj_impl_get_u32)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_s64(KmppEntry *entry, const char *cfg, RK_S64 val)
+{
+    return (kmpp_obj_impl_set_s64)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_s64(KmppEntry *entry, const char *cfg, RK_S64 *val)
+{
+    return (kmpp_obj_impl_get_s64)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_u64(KmppEntry *entry, const char *cfg, RK_U64 val)
+{
+    return (kmpp_obj_impl_set_u64)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_u64(KmppEntry *entry, const char *cfg, RK_U64 *val)
+{
+    return (kmpp_obj_impl_get_u64)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_st(KmppEntry *entry, const char *cfg, void *val)
+{
+    return (kmpp_obj_impl_set_st)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_st(KmppEntry *entry, const char *cfg, void *val)
+{
+    return (kmpp_obj_impl_get_st)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_arr(KmppEntry *entry, const char *cfg, void *val)
+{
+    return (kmpp_obj_impl_set_arr)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_arr(KmppEntry *entry, const char *cfg, void *val)
+{
+    return (kmpp_obj_impl_get_arr)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_SET_ptr(KmppEntry *entry, const char *cfg, void *val)
+{
+    return (kmpp_obj_impl_set_ptr)(entry, cfg, val);
+}
+
+static inline MPP_RET MPP_CFG_GET_ptr(KmppEntry *entry, const char *cfg, void **val)
+{
+    return (kmpp_obj_impl_get_ptr)(entry, cfg, val);
+}
 
 MPP_RET check_cfg_entry(KmppEntry *node, const char *name, ElemType type,
                         const char *func);
+
+static inline MPP_RET CHECK_CFG_ENTRY(KmppEntry *node, const char *name, ElemType type)
+{
+    return check_cfg_entry(node, name, type, __FUNCTION__);
+}
 
 #ifdef  __cplusplus
 }
