@@ -233,7 +233,6 @@ typedef struct RKAnr_Mfnr_Params_Select_s {
     unsigned short fix_x_pos_dehaze[MAX_INTEPORATATION_LUMAPOINT];
 
     float mfnr_sigma_scale;
-
 } RKAnr_Mfnr_Params_Select_t;
 
 typedef struct RKAnr_Uvnr_Params_s {
@@ -309,7 +308,6 @@ typedef struct RKAnr_Uvnr_Params_s {
 
     int threAdj_x[9];
     int threAjd_y[9];
-
 } RKAnr_Uvnr_Params_t;
 
 typedef struct RKAnr_Uvnr_Params_Select_s {
@@ -380,7 +378,6 @@ typedef struct RKAnr_Uvnr_Params_Select_s {
 
     int threAdj_x[9];
     int threAdj_y[9];
-
 } RKAnr_Uvnr_Params_Select_t;
 
 typedef struct RKAnr_Ynr_Params_Select_s {
@@ -499,7 +496,6 @@ typedef struct ANR_Manual_Attr_s {
 
     int uvnrEn;
     RKAnr_Uvnr_Params_Select_t stUvnrParamSelect;
-
 } ANR_Manual_Attr_t;
 
 typedef struct ANR_Auto_Attr_s {
@@ -525,7 +521,6 @@ typedef struct ANR_Auto_Attr_s {
     RKAnr_Uvnr_Params_Select_t stUvnrParamSelect;
 
     RKAnr_Mfnr_Dynamic_t stMfnr_dynamic;
-
 } ANR_Auto_Attr_t;
 
 typedef struct ANRProcResult_s {
@@ -560,7 +555,6 @@ typedef struct ANRConfig_s {
     //manual mode get nr & sharp levle from config to anrContext
     //unsigned int u32NrLevel;
     //unsigned int u32SharpLevel;
-
 } ANRConfig_t;
 
 typedef struct rk_aiq_nr_attrib_s {

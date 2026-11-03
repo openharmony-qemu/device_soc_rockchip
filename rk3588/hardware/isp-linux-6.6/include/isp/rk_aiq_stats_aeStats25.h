@@ -339,7 +339,7 @@ typedef struct aeStats_entity0_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(3),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE main measurement window configuration))  */
     //reg: WND0_BLK_SIZE,WND0_OFFSET
     aeStats_mainWin_t mainWin;
     /* M4_GENERIC_DESC(
@@ -349,7 +349,7 @@ typedef struct aeStats_entity0_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(4),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE auxiliary measurement windows configuration))  */
     //reg: WND1_BLK_SIZE,WND1_OFFSET ~ WND4_BLK_SIZE,WND4_OFFSET
     aeStats_subWin_t subWin[AESTATS_SUBWIN_NUM];
     /* M4_GENERIC_DESC(
@@ -359,7 +359,7 @@ typedef struct aeStats_entity0_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(3),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE histogram configuration))  */
     //reg: WND0_BLK_SIZE,WND0_OFFSET
     aeStats_hist_t hist;
 } aeStats_entity0_t;
@@ -402,7 +402,7 @@ typedef struct aeStats_entity3_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(3),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE main measurement window configuration))  */
     //reg: WND0_BLK_SIZE,WND0_OFFSET
     aeStats_mainWin_t mainWin;
     /* M4_GENERIC_DESC(
@@ -412,7 +412,7 @@ typedef struct aeStats_entity3_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(4),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE auxiliary measurement windows configuration))  */
     //reg: WND1_BLK_SIZE,WND1_OFFSET ~ WND4_BLK_SIZE,WND4_OFFSET
     aeStats_subWin_t subWin[AESTATS_SUBWIN_NUM];
     /* M4_GENERIC_DESC(
@@ -422,7 +422,7 @@ typedef struct aeStats_entity3_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(3),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE histogram configuration))  */
     //reg: WND0_BLK_SIZE,WND0_OFFSET
     aeStats_hist_t hist;
 } aeStats_entity3_t;
@@ -449,7 +449,7 @@ typedef struct aeStats_coWkEntity03_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(3),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE main measurement window configuration))  */
     //reg: WND0_BLK_SIZE,WND0_OFFSET
     aeStats_mainWin_t mainWin;
     /* M4_GENERIC_DESC(
@@ -459,7 +459,7 @@ typedef struct aeStats_coWkEntity03_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(4),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE auxiliary measurement windows configuration))  */
     //reg: WND1_BLK_SIZE,WND1_OFFSET ~ WND4_BLK_SIZE,WND4_OFFSET
     aeStats_subWin_t subWin[AESTATS_SUBWIN_NUM];
     /* M4_GENERIC_DESC(

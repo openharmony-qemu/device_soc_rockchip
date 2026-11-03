@@ -56,7 +56,6 @@ typedef struct RKAsharp_Sharp_HW_Fix_s {
 
     unsigned char m_ratio;
     unsigned char h_ratio;
-
 } RKAsharp_Sharp_HW_Fix_t;
 
 typedef struct RKAsharp_Sharp_HW_V2_Fix_s {

@@ -108,7 +108,6 @@ typedef struct RKAsharp_Sharp_HW_Params_s {
     float h_rf_h_h[MAX_ISO_STEP][RKSHAPRENHW_HRF_DIAM * RKSHAPRENHW_HRF_DIAM];
     float kernel_hbf_l[MAX_ISO_STEP][RKSHAPRENHW_HBF_DIAM * RKSHAPRENHW_HBF_DIAM];
     float kernel_hbf_h[MAX_ISO_STEP][RKSHAPRENHW_HBF_DIAM * RKSHAPRENHW_HBF_DIAM];
-
 } RKAsharp_Sharp_HW_Params_t;
 
 typedef struct RKAsharp_Sharp_HW_Params_Select_s {
@@ -136,7 +135,6 @@ typedef struct RKAsharp_Sharp_HW_Params_Select_s {
     float kernel_mbf[RKSHAPRENHW_MBF_DIAM_Y * RKSHAPRENHW_MBF_DIAM_X];
     float h_rf_h[RKSHAPRENHW_HRF_DIAM * RKSHAPRENHW_HRF_DIAM];
     float kernel_hbf[RKSHAPRENHW_HBF_DIAM * RKSHAPRENHW_HBF_DIAM];
-
 } RKAsharp_Sharp_HW_Params_Select_t;
 
 typedef struct RKAsharp_Sharp_HW_V2_Params_s {
@@ -158,7 +156,6 @@ typedef struct RKAsharp_Sharp_HW_V2_Params_s {
     short kernel_pre_bf[MAX_ISO_STEP][RKSHAPRENHW_V2_PBF_DIAM * RKSHAPRENHW_V2_PBF_DIAM];
     short kernel_range_filter[MAX_ISO_STEP][RKSHAPRENHW_V2_HRF_DIAM * RKSHAPRENHW_V2_HRF_DIAM];
     short kernel_hf_bf[MAX_ISO_STEP][RKSHAPRENHW_V2_HBF_DIAM_Y * RKSHAPRENHW_V2_HBF_DIAM_X];
-
 } RKAsharp_Sharp_HW_V2_Params_t;
 
 typedef struct RKAsharp_Sharp_HW_V2_Params_Select_s {
@@ -180,7 +177,6 @@ typedef struct RKAsharp_Sharp_HW_V2_Params_Select_s {
     short kernel_pre_bf[RKSHAPRENHW_V2_PBF_DIAM * RKSHAPRENHW_V2_PBF_DIAM];
     short kernel_range_filter[RKSHAPRENHW_V2_HRF_DIAM * RKSHAPRENHW_V2_HRF_DIAM];
     short kernel_hf_bf[RKSHAPRENHW_V2_HBF_DIAM_Y * RKSHAPRENHW_V2_HBF_DIAM_X];
-
 } RKAsharp_Sharp_HW_V2_Params_Select_t;
 
 typedef struct RKAsharp_Sharp_HW_V3_Params_s {
@@ -209,14 +205,12 @@ typedef struct RKAsharp_Sharp_Params_s {
     RKAsharp_Sharp_HW_Params_t rk_sharpen_params_V1;
     RKAsharp_Sharp_HW_V2_Params_t rk_sharpen_params_V2;
     RKAsharp_Sharp_HW_V3_Params_t rk_sharpen_params_V3;
-
 } RKAsharp_Sharp_Params_t;
 
 typedef struct RKAsharp_Sharp_Params_Select_s {
     RKAsharp_Sharp_HW_Params_Select_t rk_sharpen_params_selected_V1;
     RKAsharp_Sharp_HW_V2_Params_Select_t rk_sharpen_params_selected_V2;
     RKAsharp_Sharp_HW_V3_Params_Select_t rk_sharpen_params_selected_V3;
-
 } RKAsharp_Sharp_Params_Select_t;
 
 typedef struct RKAsharp_EdgeFilter_Params_s {
@@ -276,7 +270,6 @@ typedef struct RKAsharp_EdgeFilter_Params_Select_s {
     float h_coef_5x5[RKEDGEFILTER_GAUS_DIAM * RKEDGEFILTER_GAUS_DIAM];
     float gf_coef_3x3[RKEDGEFILTER_SHRP_DIAM * RKEDGEFILTER_SHRP_DIAM];
     float dog_kernel[RKEDGEFILTER_DOG_DIAM * RKEDGEFILTER_DOG_DIAM];
-
 } RKAsharp_EdgeFilter_Params_Select_t;
 
 typedef enum AsharpResult_e {
@@ -323,7 +316,6 @@ typedef struct Asharp_Manual_Attr_s {
 
     int edgeFltEn;
     RKAsharp_EdgeFilter_Params_Select_t stEdgefilterParamSelect;
-
 } Asharp_Manual_Attr_t;
 
 typedef struct Asharp_Auto_Attr_s {
@@ -350,7 +342,6 @@ typedef struct AsharpProcResult_s {
     //for fgpa
     RKAsharp_Sharp_Fix_t stSharpFix;
     RKAsharp_Edgefilter_Fix_t stEdgefltFix;
-
 } AsharpProcResult_t;
 
 typedef struct AsharpConfig_s {

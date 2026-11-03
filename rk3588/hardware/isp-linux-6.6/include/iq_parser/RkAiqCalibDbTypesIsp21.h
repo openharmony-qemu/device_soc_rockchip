@@ -271,7 +271,6 @@ typedef struct CalibDb_Dehaze_ModeCell_v21_s {
     CalibDb_Dehaze_Setting_v21_t dehaze_setting;
     CalibDb_Enhance_Setting_v21_t enhance_setting;
     CalibDb_Hist_setting_v21_t hist_setting;
-
 } CalibDb_Dehaze_ModeCell_v21_t;
 
 typedef struct CalibDb_Dehaze_Isp21_s {
@@ -302,7 +301,6 @@ typedef struct Calibdb_Bayernr_2Dparams_V2_s {
     //not use in xml param
     float bayernrv2_edge_filter_lumapoint_r[8];
     float bayernrv2_edge_filter_wgt_r[RK_BAYERNR_V2_MAX_ISO_NUM][8];
-
 } Calibdb_Bayernr_2Dparams_V2_t;
 
 typedef struct CalibDb_Bayernr_2DSetting_V2_s {
@@ -311,7 +309,6 @@ typedef struct CalibDb_Bayernr_2DSetting_V2_s {
 
     // bayernr settting for hcg & lcg
     struct list_head listHead;
-
 } CalibDb_Bayernr_2DSetting_V2_t;
 
 typedef struct CalibDb_Bayernr_3DParams_V2_s {
