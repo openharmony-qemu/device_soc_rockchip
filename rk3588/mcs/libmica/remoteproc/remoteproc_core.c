@@ -147,6 +147,28 @@ int create_client(struct mica_client *client)
 	return 0;
 }
 
+/*
+ * The resource table lives in the persistent shared window: a vdev
+ * status left by an earlier session can make a fresh slave pass
+ * wait_remote_ready on a stale DRIVER_OK. Zero it after the image
+ * load, while the core is still offline.
+ */
+static void clear_stale_vdev_status(struct remoteproc *rproc)
+{
+	struct resource_table *table = rproc->rsc_table;
+	int i;
+
+	if (!table)
+		return;
+	for (i = 0; i < (int)table->num; i++) {
+		struct fw_rsc_vdev *vdev = (struct fw_rsc_vdev *)
+			((char *)table + table->offset[i]);
+
+		if (vdev->type == RSC_VDEV)
+			vdev->status = 0;
+	}
+}
+
 int load_client_image(struct mica_client *client)
 {
 	int ret;
@@ -182,6 +204,8 @@ int load_client_image(struct mica_client *client)
 		syslog(LOG_ERR, "failed to parse rsc table, please check the rsctable\n");
 		return -EINVAL;
 	}
+
+	clear_stale_vdev_status(rproc);
 
 	return ret;
 }
