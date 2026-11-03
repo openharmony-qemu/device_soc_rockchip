@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Rockchip Eletronics Co., Ltd.
+ * Copyright (c) 2021-2022 Rockchip Electronics Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,25 +23,21 @@ typedef RkAiqAdrcProcResult_t rk_aiq_isp_drc_v21_t;
 
 typedef struct rk_aiq_isp_blc_v21_s {
     rk_aiq_isp_blc_t v0;
-    //TODO: additional blc1 params
 } rk_aiq_isp_blc_v21_t;
 
 typedef struct rk_aiq_isp_wb_gain_v21_s {
-    //TODO:
     void *place_holder;
 } rk_aiq_isp_wb_gain_v21_t;
 
 typedef AgicProcResult_t rk_aiq_isp_gic_v21_t;
 
 typedef struct rk_aiq_isp_ccm_v21_s {
-    //TODO:
     void *place_holder;
 } rk_aiq_isp_ccm_v21_t;
 
 typedef RkAiqAdehazeProcResult_t rk_aiq_isp_dehaze_v21_t;
 
 typedef struct rk_aiq_isp_dhaz_stats_v21_s {
-    //TODO:
     void *place_holder;
 } rk_aiq_isp_dhaz_stats_v21_t;
 
@@ -49,7 +45,6 @@ typedef struct rk_aiq_isp_dhaz_stats_v21_s {
 typedef RK_Bayernr_Fix_V2_t rk_aiq_isp_baynr_v21_t;
 
 typedef struct rk_aiq_isp_bay3d_v21_s {
-    //TODO:
     void *place_holder;
 } rk_aiq_isp_bay3d_v21_t;
 

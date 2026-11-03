@@ -58,6 +58,20 @@ typedef enum {
     rk_true  = 1,
 } rk_bool;
 
+/*
+ * Mark a variable as intentionally unused, suppressing compiler warnings.
+ * Implemented as an inline function instead of a function-like macro.
+ */
+static inline void rk_unused(void *ptr)
+{
+    (void)ptr;
+}
+
+static inline void RK_UNUSED(void *ptr)
+{
+    (void)ptr;
+}
+
 #ifndef NULL
 #define NULL                    0L
 #endif
@@ -70,7 +84,6 @@ typedef enum {
 #define RK_FAILURE              (-1)
 
 #define RK_VOID                 void
-#define RK_UNUSED(x)            ((void)((x)))
 
 #define rk_ret                  rk_s32
 #define rk_null                 0L
@@ -80,7 +93,6 @@ typedef enum {
 #define rk_failure              (-1)
 
 #define rk_void                 void
-#define rk_unused(x)            ((void)((x)))
 
 #ifndef MODULE_TAG
 #define MODULE_TAG              NULL

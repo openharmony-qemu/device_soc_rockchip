@@ -20,6 +20,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 #ifdef __cplusplus
 #define RKAIQ_BEGIN_DECLARE extern "C" {
@@ -131,6 +132,12 @@ typedef enum _camAlgoResultType {
 
 #define RKAiqOPMode_t rk_aiq_op_mode_t
 
+/* The following macros are type-generic or preprocessor-level and cannot be
+ * expressed as functions:
+ * - ABS/MIN/MAX/MIN2/INTERP1/CLIP/SWAP are type-generic (int/float/double);
+ * - RETURN_RESULT_IF_DIFFERENT embeds a `return` into the caller;
+ * - DCT_ASSERT is a disabled assertion that intentionally does not evaluate
+ *   its argument (converting it to a function would evaluate the expression). */
 #define ABS(a) (((a) > 0) ? (a) : (-(a)))
 #ifndef MIN
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
@@ -138,32 +145,63 @@ typedef enum _camAlgoResultType {
 #ifndef MAX
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 #endif
-#define ROUND_D(x) (long)(((double)x) + (((x) > 0) ? 0.5 : (-0.5)))
-#define ROUND_F(x) (int)(((float)x) + (((x) > 0) ? 0.5 : (-0.5)))
-#define FLOOR(a) (int)(((double)(a) < (int)(a)) ? (int)((a)-1) : (int)(a))
-#define FLOOR_INT64(a) (long)(((double)(a) < (long)(a)) ? (long)((a)-1) : (long)(a))
 #define INTERP1(x0, x1, ratio) ((ratio) * ((x1) - (x0)) + x0)
-#define CLIPBIT(a, b) ((a) > ((1 << (b)) - 1) ? ((1 << (b)) - 1) : (a))
-#define SWAP(_T_, A, B)                                                                                                \
-    {                                                                                                                  \
-        _T_ tmp = (A);                                                                                                 \
-        (A) = (B);                                                                                                     \
-        (B) = tmp;                                                                                                     \
+#define SWAP(_T_, A, B)              \
+    {                                \
+        _T_ tmp = (A);               \
+        (A) = (B);                   \
+        (B) = tmp;                   \
     }
 #define MIN2(a, b) ((a) > (b) ? (b) : (a))
 #ifndef CLIP
 #define CLIP(a, min_v, max_v) (((a) < (min_v)) ? (min_v) : (((a) > (max_v)) ? (max_v) : (a)))
 #endif
-#define ROUND_INT(x, shf_bit) (int)((((x) > 0) ? 1 : -1) * ((ABS(x) + (1 << ((shf_bit)-1))) >> (shf_bit)))
-#define LOG2(x) (log((double)x) / log((double)2))
-
-#define RETURN_RESULT_IF_DIFFERENT(cur_res, exp_res)                                                                   \
-    if (exp_res != cur_res) {                                                                                          \
-        return (cur_res);                                                                                              \
+#define RETURN_RESULT_IF_DIFFERENT(cur_res, exp_res)   \
+    if (exp_res != cur_res) {                          \
+        return (cur_res);                              \
     }
 #define DCT_ASSERT(exp) ((void)0)
 
-#define ROUND_I32(a) (int32_t)((a) > 0 ? ((double)(a) + 0.5) : ((double)(a)-0.5))
+static inline long ROUND_D(double x)
+{
+    return (long)(((double)x) + (((x) > 0) ? 0.5 : (-0.5)));
+}
+
+static inline int ROUND_F(float x)
+{
+    return (int)(((float)x) + (((x) > 0) ? 0.5 : (-0.5)));
+}
+
+static inline int FLOOR(double a)
+{
+    return (int)(((double)(a) < (int)(a)) ? (int)((a) - 1) : (int)(a));
+}
+
+static inline long FLOOR_INT64(double a)
+{
+    return (long)(((double)(a) < (long)(a)) ? (long)((a) - 1) : (long)(a));
+}
+
+static inline int CLIPBIT(int a, int b)
+{
+    return ((a) > ((1 << (b)) - 1) ? ((1 << (b)) - 1) : (a));
+}
+
+static inline int ROUND_INT(int x, int shf_bit)
+{
+    return (int)((((x) > 0) ? 1 : -1) *
+                 ((ABS(x) + (1 << ((shf_bit) - 1))) >> (shf_bit)));
+}
+
+static inline double LOG2(double x)
+{
+    return log(x) / log(2.0);
+}
+
+static inline int32_t ROUND_I32(double a)
+{
+    return (int32_t)((a) > 0 ? ((double)(a) + 0.5) : ((double)(a) - 0.5));
+}
 #ifndef RK_AIQ_FLT_EPSILON
 #define RK_AIQ_FLT_EPSILON 0.000000119209289550781250000000
 #endif /* RK_AIQ_FLT_EPSILON */
@@ -509,7 +547,10 @@ typedef enum {
     RKAIQ_SENSOR_HDR_MODE_STAGGER,  // 2frame or 3frame
 } rk_aiq_sensor_hdr_line_mode_t;
 
-#define RK_AIQ_HDR_GET_WORKING_MODE(mode) (mode & 0xF0)
+static inline int RK_AIQ_HDR_GET_WORKING_MODE(int mode)
+{
+    return mode & 0xF0;
+}
 
 typedef enum {
     RKAIQ_ISPP_TNR_MODE_2TO1,
@@ -576,21 +617,45 @@ typedef struct rk_aiq_uapi_sync_s {
 
 extern int g_rkaiq_isp_hw_ver;
 
-#define CHECK_ISP_HW_V20() (g_rkaiq_isp_hw_ver == 20 ? true : false)
+static inline bool CHECK_ISP_HW_V20(void)
+{
+    return g_rkaiq_isp_hw_ver == 20;
+}
 
-#define CHECK_ISP_HW_V21() (g_rkaiq_isp_hw_ver == 21 ? true : false)
+static inline bool CHECK_ISP_HW_V21(void)
+{
+    return g_rkaiq_isp_hw_ver == 21;
+}
 
-#define CHECK_ISP_HW_V30() (g_rkaiq_isp_hw_ver == 30 ? true : false)
+static inline bool CHECK_ISP_HW_V30(void)
+{
+    return g_rkaiq_isp_hw_ver == 30;
+}
 
-#define CHECK_ISP_HW_V32() (g_rkaiq_isp_hw_ver == 32 ? true : false)
+static inline bool CHECK_ISP_HW_V32(void)
+{
+    return g_rkaiq_isp_hw_ver == 32;
+}
 
-#define CHECK_ISP_HW_V32_LITE() (g_rkaiq_isp_hw_ver == 321 ? true : false)
+static inline bool CHECK_ISP_HW_V32_LITE(void)
+{
+    return g_rkaiq_isp_hw_ver == 321;
+}
 
-#define CHECK_ISP_HW_V39() (g_rkaiq_isp_hw_ver == 39 ? true : false)
+static inline bool CHECK_ISP_HW_V39(void)
+{
+    return g_rkaiq_isp_hw_ver == 39;
+}
 
-#define CHECK_ISP_HW_V33() (g_rkaiq_isp_hw_ver == 33 ? true : false)
+static inline bool CHECK_ISP_HW_V33(void)
+{
+    return g_rkaiq_isp_hw_ver == 33;
+}
 
-#define CHECK_ISP_HW_V3X() (g_rkaiq_isp_hw_ver == 30 ? true : g_rkaiq_isp_hw_ver == 31 ? true : false)
+static inline bool CHECK_ISP_HW_V3X(void)
+{
+    return g_rkaiq_isp_hw_ver == 30 || g_rkaiq_isp_hw_ver == 31;
+}
 
 #ifndef AIQ_MAYBE_UNUSED
 #ifdef __GNUC__

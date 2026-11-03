@@ -227,29 +227,6 @@ typedef enum {
 
 #define MPP_FRAME_FMT_LE_MASK (0x01000000)
 
-#define MPP_FRAME_FMT_IS_YUV(fmt)                                                                                      \
-    (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) && ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT))
-#define MPP_FRAME_FMT_IS_YUV_10BIT(fmt)                                                                                \
-    ((fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV420SP_10BIT || (fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV422SP_10BIT ||   \
-     (fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV444SP_10BIT)
-#define MPP_FRAME_FMT_IS_RGB(fmt)                                                                                      \
-    (((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) && ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT))
-
-/*
- * For MPP_FRAME_FBC_AFBC_V1 the 16byte aligned stride is used.
- */
-#define MPP_FRAME_FMT_IS_FBC(fmt) (fmt & MPP_FRAME_FBC_MASK)
-#define MPP_FRAME_FMT_IS_AFBC(fmt) (fmt & (MPP_FRAME_FBC_AFBC_V1 | MPP_FRAME_FBC_AFBC_V2))
-#define MPP_FRAME_FMT_IS_AFBC_V1(fmt) (fmt & MPP_FRAME_FBC_AFBC_V1)
-#define MPP_FRAME_FMT_IS_AFBC_V2(fmt) (fmt & MPP_FRAME_FBC_AFBC_V2)
-#define MPP_FRAME_FMT_IS_RKFBC(fmt) (fmt & MPP_FRAME_FBC_RKFBC)
-
-#define MPP_FRAME_FMT_IS_HDR(fmt) (fmt & MPP_FRAME_HDR_MASK)
-
-#define MPP_FRAME_FMT_IS_LE(fmt) ((fmt & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK)
-#define MPP_FRAME_FMT_IS_BE(fmt) ((fmt & MPP_FRAME_FMT_LE_MASK) == 0)
-
-#define MPP_FRAME_FMT_IS_TILE(fmt) (fmt & MPP_FRAME_TILE_FLAG)
 
 /* mpp color format index definition */
 typedef enum {
@@ -299,6 +276,80 @@ typedef enum {
 
     MPP_FMT_BUTT,
 } MppFrameFormat;
+
+/*
+ * Frame format inspection helpers.
+ *
+ * These used to be function-like macros. They are now inline functions; they
+ * need to appear after MppFrameFormat because the predicates compare against
+ * the enumerators themselves.
+ */
+static inline RK_S32 MPP_FRAME_FMT_IS_YUV(RK_U32 fmt)
+{
+    return ((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_YUV) &&
+           ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_YUV_BUTT);
+}
+
+static inline RK_S32 MPP_FRAME_FMT_IS_YUV_10BIT(RK_U32 fmt)
+{
+    return ((fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV420SP_10BIT) ||
+           ((fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV422SP_10BIT) ||
+           ((fmt & MPP_FRAME_FMT_MASK) == MPP_FMT_YUV444SP_10BIT);
+}
+
+static inline RK_S32 MPP_FRAME_FMT_IS_RGB(RK_U32 fmt)
+{
+    return ((fmt & MPP_FRAME_FMT_COLOR_MASK) == MPP_FRAME_FMT_RGB) &&
+           ((fmt & MPP_FRAME_FMT_MASK) < MPP_FMT_RGB_BUTT);
+}
+
+/*
+ * For MPP_FRAME_FBC_AFBC_V1 the 16 byte aligned stride is used.
+ */
+static inline RK_U32 MPP_FRAME_FMT_IS_FBC(RK_U32 fmt)
+{
+    return fmt & MPP_FRAME_FBC_MASK;
+}
+
+static inline RK_U32 MPP_FRAME_FMT_IS_AFBC(RK_U32 fmt)
+{
+    return fmt & (MPP_FRAME_FBC_AFBC_V1 | MPP_FRAME_FBC_AFBC_V2);
+}
+
+static inline RK_U32 MPP_FRAME_FMT_IS_AFBC_V1(RK_U32 fmt)
+{
+    return fmt & MPP_FRAME_FBC_AFBC_V1;
+}
+
+static inline RK_U32 MPP_FRAME_FMT_IS_AFBC_V2(RK_U32 fmt)
+{
+    return fmt & MPP_FRAME_FBC_AFBC_V2;
+}
+
+static inline RK_U32 MPP_FRAME_FMT_IS_RKFBC(RK_U32 fmt)
+{
+    return fmt & MPP_FRAME_FBC_RKFBC;
+}
+
+static inline RK_U32 MPP_FRAME_FMT_IS_HDR(RK_U32 fmt)
+{
+    return fmt & MPP_FRAME_HDR_MASK;
+}
+
+static inline RK_S32 MPP_FRAME_FMT_IS_LE(RK_U32 fmt)
+{
+    return (fmt & MPP_FRAME_FMT_LE_MASK) == MPP_FRAME_FMT_LE_MASK;
+}
+
+static inline RK_S32 MPP_FRAME_FMT_IS_BE(RK_U32 fmt)
+{
+    return (fmt & MPP_FRAME_FMT_LE_MASK) == 0;
+}
+
+static inline RK_U32 MPP_FRAME_FMT_IS_TILE(RK_U32 fmt)
+{
+    return fmt & MPP_FRAME_TILE_FLAG;
+}
 
 typedef enum MppFmtLayout_e {
     MPP_FMT_RASTER,

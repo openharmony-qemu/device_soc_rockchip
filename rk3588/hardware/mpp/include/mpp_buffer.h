@@ -261,24 +261,6 @@ typedef struct MppBufferInfo_t {
 #define mpp_buffer_set_discard(buffer) \
         mpp_buffer_discard_with_caller(buffer, __FUNCTION__)
 
-#define mpp_buffer_sync_begin(buffer) \
-        mpp_buffer_sync_begin_f(buffer, 0, __FUNCTION__)
-#define mpp_buffer_sync_end(buffer) \
-        mpp_buffer_sync_end_f(buffer, 0, __FUNCTION__)
-#define mpp_buffer_sync_partial_begin(buffer, offset, length) \
-        mpp_buffer_sync_partial_begin_f(buffer, 0, offset, length, __FUNCTION__)
-#define mpp_buffer_sync_partial_end(buffer, offset, length) \
-        mpp_buffer_sync_partial_end_f(buffer, 0, offset, length, __FUNCTION__)
-
-#define mpp_buffer_sync_ro_begin(buffer) \
-        mpp_buffer_sync_begin_f(buffer, 1, __FUNCTION__)
-#define mpp_buffer_sync_ro_end(buffer) \
-        mpp_buffer_sync_end_f(buffer, 1, __FUNCTION__)
-#define mpp_buffer_sync_ro_partial_begin(buffer, offset, length) \
-        mpp_buffer_sync_partial_begin_f(buffer, 1, offset, length, __FUNCTION__)
-#define mpp_buffer_sync_ro_partial_end(buffer, offset, length) \
-        mpp_buffer_sync_partial_end_f(buffer, 1, offset, length, __FUNCTION__)
-
 #define mpp_buffer_group_get_internal(group, type, ...) \
         mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_INTERNAL, MODULE_TAG, __FUNCTION__)
 
@@ -328,6 +310,53 @@ MPP_RET mpp_buffer_sync_begin_f(MppBuffer buffer, RK_S32 ro, const char* caller)
 MPP_RET mpp_buffer_sync_end_f(MppBuffer buffer, RK_S32 ro, const char* caller);
 MPP_RET mpp_buffer_sync_partial_begin_f(MppBuffer buffer, RK_S32 ro, RK_U32 offset, RK_U32 length, const char* caller);
 MPP_RET mpp_buffer_sync_partial_end_f(MppBuffer buffer, RK_S32 ro, RK_U32 offset, RK_U32 length, const char* caller);
+
+/*
+ * The cache sync helpers below were previously function-like macros wrapping
+ * the mpp_buffer_sync_*_f() entry points. They are now inline functions so
+ * that the shared library keeps the same public interface while the header
+ * no longer hides control flow (and no longer relies on __FUNCTION__ inside a
+ * macro, which reports the caller name only by expansion accident).
+ */
+static inline MPP_RET mpp_buffer_sync_begin(MppBuffer buffer)
+{
+    return mpp_buffer_sync_begin_f(buffer, 0, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_end(MppBuffer buffer)
+{
+    return mpp_buffer_sync_end_f(buffer, 0, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_partial_begin(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_begin_f(buffer, 0, offset, length, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_partial_end(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_end_f(buffer, 0, offset, length, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_begin(MppBuffer buffer)
+{
+    return mpp_buffer_sync_begin_f(buffer, 1, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_end(MppBuffer buffer)
+{
+    return mpp_buffer_sync_end_f(buffer, 1, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_partial_begin(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_begin_f(buffer, 1, offset, length, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_partial_end(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_end_f(buffer, 1, offset, length, __FUNCTION__);
+}
 
 MPP_RET mpp_buffer_group_get(MppBufferGroup *group, MppBufferType type, MppBufferMode mode,
                              const char *tag, const char *caller);

@@ -155,56 +155,74 @@ typedef struct MppTestCase_t {
     rk_s32      (*func)(void *ctx);
 } MppTestCase;
 
-#define MPP_TEST_CALC_WIDTH(cases, start, end) \
-do { \
-    rk_s32 _w; \
-    for (_w = (start); _w <= (end); _w++) { \
-        rk_s32 _l = (rk_s32)strlen((cases)[_w].name); \
-        if (_l > _max) _max = _l; \
-    } \
-} while (0)
+static inline void mpp_test_calc_width(MppTestCase *cases, rk_s32 start,
+                                       rk_s32 end, rk_s32 *max)
+{
+    rk_s32 w;
 
-#define MPP_TEST_RUN_ONE(ctx, cases, idx, max) \
-do { \
-    rk_s32 _r = (cases)[(idx)].func(ctx); \
-    char _line[256]; \
-    snprintf(_line, sizeof(_line), "test %-*s %s", (max), \
-             (cases)[(idx)].name, (_r < 0) ? "failed" : "success"); \
-    mpp_logi("%s", _line); \
-    if (_r < 0) _mpp_ret = rk_nok; \
-} while (0)
+    for (w = start; w <= end; w++) {
+        rk_s32 l = (rk_s32)strlen(cases[w].name);
 
-#define MPP_TEST_RUN(ctx, cases, n) \
-do { \
-    rk_u32 _i; \
-    rk_s32 _max = 0; \
-    MPP_TEST_CALC_WIDTH(cases, 0, (rk_s32)(n) - 1); \
-    for (_i = 0; _i < (n); _i++) \
-        MPP_TEST_RUN_ONE(ctx, cases, _i, _max); \
-} while (0)
+        if (l > *max)
+            *max = l;
+    }
+}
 
-#define MPP_TEST_RUN_RANGE(ctx, cases, n, start, end) \
-do { \
-    rk_s32 _n = (rk_s32)(n); \
-    if (_n > 0) { \
-        rk_s32 _s = mpp_max(0, mpp_min((start), _n - 1)); \
-        rk_s32 _e = mpp_max(_s, mpp_min((end), _n - 1)); \
-        rk_s32 _i, _max = 0; \
-        MPP_TEST_CALC_WIDTH(cases, _s, _e); \
-        for (_i = _s; _i <= _e; _i++) \
-            MPP_TEST_RUN_ONE(ctx, cases, _i, _max); \
-    } \
-} while (0)
+static inline void mpp_test_run_one(void *ctx, MppTestCase *cases, rk_s32 idx,
+                                    rk_s32 max, rk_s32 *ret)
+{
+    rk_s32 r = cases[idx].func(ctx);
+    char line[256];
 
-#define MPP_TEST_START(name) \
-do { \
-    mpp_logi("start\n"); \
-} while (0)
+    snprintf(line, sizeof(line), "test %-*s %s", max,
+             cases[idx].name, (r < 0) ? "failed" : "success");
+    mpp_logi("%s", line);
 
-#define MPP_TEST_END(name) \
-do { \
-    mpp_logi("done %s\n", _mpp_ret ? "failed" : "success"); \
-} while (0)
+    if (r < 0)
+        *ret = rk_nok;
+}
+
+static inline void mpp_test_run(void *ctx, MppTestCase *cases, rk_u32 n,
+                                rk_s32 *ret)
+{
+    rk_s32 i;
+    rk_s32 max = 0;
+
+    mpp_test_calc_width(cases, 0, (rk_s32)n - 1, &max);
+    for (i = 0; i < (rk_s32)n; i++)
+        mpp_test_run_one(ctx, cases, i, max, ret);
+}
+
+static inline void mpp_test_run_range(void *ctx, MppTestCase *cases, rk_s32 n,
+                                      rk_s32 start, rk_s32 end, rk_s32 *ret)
+{
+    rk_s32 s;
+    rk_s32 e;
+    rk_s32 i;
+    rk_s32 max = 0;
+
+    if (n <= 0)
+        return;
+
+    s = mpp_max(0, mpp_min(start, n - 1));
+    e = mpp_max(s, mpp_min(end, n - 1));
+
+    mpp_test_calc_width(cases, s, e, &max);
+    for (i = s; i <= e; i++)
+        mpp_test_run_one(ctx, cases, i, max, ret);
+}
+
+static inline void mpp_test_start(const char *name)
+{
+    (void)name;
+    mpp_logi("start\n");
+}
+
+static inline void mpp_test_end(const char *name, rk_s32 ret)
+{
+    (void)name;
+    mpp_logi("done %s\n", ret ? "failed" : "success");
+}
 
 /* ===========================================================================
  * Section 3: Test option parsing (mpp-opt-style, header-only)
@@ -224,6 +242,28 @@ typedef struct MppTestOpt_t {
     MppTestOptFn  fn;        /* handler, returns argc consumed (1=flag, 2=flag+value) */
 } MppTestOpt;
 
+/* Length of the "--" prefix used for long options, and the total
+ * length of a short option ("-x"), used to skip the prefix when matching. */
+#define MPP_LONG_OPT_PREFIX_LEN 2
+#define MPP_SHORT_OPT_LEN       2
+
+static inline rk_s32 mpp_test_match_opt(const char *arg, MppTestOpt *opts,
+                                        rk_s32 nopts)
+{
+    rk_s32 j;
+
+    for (j = 0; j < nopts; j++) {
+        if (arg[1] == '-' && opts[j].long_opt &&
+            !strcmp(arg + MPP_LONG_OPT_PREFIX_LEN, opts[j].long_opt))
+            return j;
+        if (opts[j].opt && arg[1] == opts[j].opt &&
+            arg[MPP_SHORT_OPT_LEN] == '\0')
+            return j;
+    }
+
+    return -1;
+}
+
 static inline rk_s32 mpp_test_parse_opts(void *ctx,
                                          MppTestOpt *opts, rk_s32 nopts,
                                          rk_s32 argc, char **argv)
@@ -232,36 +272,22 @@ static inline rk_s32 mpp_test_parse_opts(void *ctx,
 
     while (i < argc) {
         const char *arg = argv[i];
-        rk_s32 found = 0;
         rk_s32 j;
 
         if (arg[0] != '-')
             break;
 
-        for (j = 0; j < nopts; j++) {
-            rk_s32 match = 0;
-
-            if (arg[1] == '-' && opts[j].long_opt &&
-                !strcmp(arg + 2, opts[j].long_opt))
-                match = 1;
-            else if (opts[j].opt && arg[1] == opts[j].opt && arg[2] == '\0')
-                match = 1;
-
-            if (match) {
-                found = 1;
-                if (opts[j].fn) {
-                    const char *next = (i + 1 < argc) ? argv[i + 1] : NULL;
-
-                    i += mpp_max(1, opts[j].fn(ctx, next));
-                } else {
-                    i++;
-                }
-                break;
-            }
-        }
-
-        if (!found)
+        j = mpp_test_match_opt(arg, opts, nopts);
+        if (j < 0)
             break;
+
+        if (opts[j].fn) {
+            const char *next = (i + 1 < argc) ? argv[i + 1] : NULL;
+
+            i += mpp_max(1, opts[j].fn(ctx, next));
+        } else {
+            i++;
+        }
     }
 
     return i;

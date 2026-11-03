@@ -1,13 +1,21 @@
-/******************************************************************************
+/*
+ * rk_aiq_types_adrc_algo.h
  *
- * Copyright (c) 2019 Fuzhou Rockchip Electronics Co.Ltd . All rights reserved.
- * No part of this work may be reproduced, modified, distributed, transmitted,
- * transcribed, or translated into any language or computer format, in any form
- * or by any means without written permission of:
- * Fuzhou Rockchip Electronics Co.Ltd .
+ *  Copyright (c) 2019 Rockchip Corporation
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *****************************************************************************/
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 #ifndef __RK_AIQ_TYPES_ADRC_ALGO_H__
 #define __RK_AIQ_TYPES_ADRC_ALGO_H__
 

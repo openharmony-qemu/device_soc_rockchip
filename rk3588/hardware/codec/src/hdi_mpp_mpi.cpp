@@ -28,7 +28,8 @@ RKMppApi *GetPacketApi(RKMppApi *pMppApi)
 {
     pMppApi->HdiMppPacketNew = (hdiMppPacketNew)dlsym(g_mLibHandle, "mpp_packet_new");
     pMppApi->HdiMppPacketInit = (hdiMppPacketInit)dlsym(g_mLibHandle, "mpp_packet_init");
-    pMppApi->HdiMppPacketInitWithBuffer = (hdiMppPacketInitWithBuffer)dlsym(g_mLibHandle, "mpp_packet_init_with_buffer");
+    pMppApi->HdiMppPacketInitWithBuffer =
+        (hdiMppPacketInitWithBuffer)dlsym(g_mLibHandle, "mpp_packet_init_with_buffer");
     pMppApi->HdiMppPacketCopyInit = (hdiMppPacketCopyInit)dlsym(g_mLibHandle, "mpp_packet_copy_init");
     pMppApi->HdiMppPacketDeinit = (hdiMppPacketDeinit)dlsym(g_mLibHandle, "mpp_packet_deinit");
     pMppApi->HdiMppPacketGetEos = (hdiMppPacketGetEos)dlsym(g_mLibHandle, "mpp_packet_get_eos");

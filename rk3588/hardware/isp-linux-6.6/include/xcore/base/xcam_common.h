@@ -81,16 +81,27 @@ const char *xcam_fourcc_to_string(uint32_t fourcc);
 
 static inline uint32_t xcam_ceil(uint32_t value, const uint32_t align)
 {
+    if (align == 0) {
+        return value;
+    }
     return (value + align - 1) / align * align;
 }
 
 static inline uint32_t xcam_around(uint32_t value, const uint32_t align)
 {
-    return (value + align / 2) / align * align;
+    const uint32_t rounding_half = 2;
+
+    if (align == 0) {
+        return value;
+    }
+    return (value + align / rounding_half) / align * align;
 }
 
 static inline uint32_t xcam_floor(uint32_t value, const uint32_t align)
 {
+    if (align == 0) {
+        return value;
+    }
     return value / align * align;
 }
 

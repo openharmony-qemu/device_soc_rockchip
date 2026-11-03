@@ -29,7 +29,7 @@ typedef struct RK_UVNR_Fix_V1_s {
     unsigned char uvnr_nobig_en;
     unsigned char uvnr_big_en;
 
-    unsigned char uvnr_gain_1sigma;
+unsigned char uvnr_gain_1sigma;
     unsigned char uvnr_gain_offset;
     unsigned char uvnr_gain_uvgain[2];
     unsigned char uvnr_gain_t2gen;
@@ -45,7 +45,7 @@ typedef struct RK_UVNR_Fix_V1_s {
     unsigned char uvnr_t2gen_wtq[4];
     unsigned short uvnr_t2flt_msigma;
 
-    unsigned char uvnr_t2flt_wtp;
+unsigned char uvnr_t2flt_wtp;
     unsigned char uvnr_t2flt_wt[3];
 
 } RK_UVNR_Fix_V1_t;

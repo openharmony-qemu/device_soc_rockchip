@@ -23,7 +23,7 @@
 
 typedef struct RK_Bayertnr_Fix_V23_s {
 
-    /* BAY3D_CTRL */
+/* BAY3D_CTRL */
     uint8_t soft_st;
     uint8_t soft_mode;
     uint8_t bay3d_en;
@@ -41,14 +41,14 @@ typedef struct RK_Bayertnr_Fix_V23_s {
     uint8_t loswitch_protect;
     uint8_t bwsaving_en;
 
-    /* BAY3D_KALRATIO */
+/* BAY3D_KALRATIO */
     uint16_t softwgt;
     uint16_t hidif_th;
 
-    /* BAY3D_GLBPK2 */
+/* BAY3D_GLBPK2 */
     uint32_t glbpk2;
 
-    /* BAY3D_CTRL1 */
+/* BAY3D_CTRL1 */
     uint8_t hiwgt_opt_en;
     uint8_t hichncor_en;
     uint8_t bwopt_gain_dis;
@@ -62,25 +62,25 @@ typedef struct RK_Bayertnr_Fix_V23_s {
     uint8_t higaus5x5_en;
     uint8_t wgtmix_opt_en;
 
-    /*isp32 lite*/
+/*isp32 lite*/
     uint8_t wgtmm_opt_en;
     uint8_t wgtmm_sel_en;
 
-    /* BAY3D_WGTLMT */
+/* BAY3D_WGTLMT */
     uint16_t wgtlmt;
     uint16_t wgtratio;
 
-    /* BAY3D_SIG */
+/* BAY3D_SIG */
     uint16_t sig0_x[16];
     uint16_t sig0_y[16];
     uint16_t sig1_x[16];
     uint16_t sig1_y[16];
     uint16_t sig2_y[16];
 
-    /*isp32 lite*/
+/*isp32 lite*/
     uint16_t wgtmin;
 
-    /* BAY3D_HISIGRAT */
+/* BAY3D_HISIGRAT */
     uint16_t hisigrat0;
     uint16_t hisigrat1;
     /* BAY3D_HISIGOFF */
@@ -93,7 +93,7 @@ typedef struct RK_Bayertnr_Fix_V23_s {
     uint16_t rgain_off;
     uint16_t bgain_off;
 
-    /* BAY3D_SIGGAUS */
+/* BAY3D_SIGGAUS */
     uint8_t siggaus0;
     uint8_t siggaus1;
     uint8_t siggaus2;

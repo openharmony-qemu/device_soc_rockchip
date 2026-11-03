@@ -23,39 +23,39 @@
 
 typedef struct RK_Bayer2dnr_Fix_V2_s {
 
-    //ISP_BAYNR_3A00_CTRL
+//ISP_BAYNR_3A00_CTRL
     uint8_t baynr_lg2_mode;
     uint8_t baynr_gauss_en;
     uint8_t baynr_log_bypass;
     uint8_t baynr_en;
 
-    // ISP_BAYNR_3A00_DGAIN0-2
+// ISP_BAYNR_3A00_DGAIN0-2
     uint16_t baynr_dgain[3];
 
-    // ISP_BAYNR_3A00_PIXDIFF
+// ISP_BAYNR_3A00_PIXDIFF
     uint16_t baynr_pix_diff;
 
-    // ISP_BAYNR_3A00_THLD
+// ISP_BAYNR_3A00_THLD
     uint16_t baynr_diff_thld;
     uint16_t baynr_softthld;
 
-    // ISP_BAYNR_3A00_W1_STRENG
+// ISP_BAYNR_3A00_W1_STRENG
     uint16_t bltflt_streng;
     uint16_t baynr_reg_w1;
 
-    // ISP_BAYNR_3A00_SIGMAX0-15
+// ISP_BAYNR_3A00_SIGMAX0-15
     uint16_t sigma_x[16];
 
-    // ISP_BAYNR_3A00_SIGMAY0-15
+// ISP_BAYNR_3A00_SIGMAY0-15
     uint16_t sigma_y[16];
 
-    // ISP_BAYNR_3A00_WRIT_D
+// ISP_BAYNR_3A00_WRIT_D
     uint16_t weit_d[3];
 
-    uint16_t lg2_lgoff;
+uint16_t lg2_lgoff;
     uint16_t lg2_off;
 
-    uint32_t dat_max;
+uint32_t dat_max;
 } RK_Bayer2dnr_Fix_V2_t;
 
 #endif
