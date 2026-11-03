@@ -258,9 +258,6 @@ typedef struct MppBufferInfo_t {
 #define mpp_buffer_set_offset(buffer, offset) \
         mpp_buffer_set_offset_with_caller(buffer, offset, __FUNCTION__)
 
-#define mpp_buffer_set_discard(buffer) \
-        mpp_buffer_discard_with_caller(buffer, __FUNCTION__)
-
 #define mpp_buffer_group_get_internal(group, type, ...) \
         mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_INTERNAL, MODULE_TAG, __FUNCTION__)
 
@@ -287,6 +284,17 @@ MPP_RET mpp_buffer_get_with_tag(MppBufferGroup group, MppBuffer *buffer, size_t 
 MPP_RET mpp_buffer_put_with_caller(MppBuffer buffer, const char *caller);
 MPP_RET mpp_buffer_inc_ref_with_caller(MppBuffer buffer, const char *caller);
 MPP_RET mpp_buffer_discard_with_caller(MppBuffer buffer, const char *caller);
+
+/*
+ * mpp_buffer_set_discard was previously a function-like macro. It is now an
+ * inline function so the shared library keeps the same public interface while
+ * the header no longer hides control flow (and no longer relies on __FUNCTION__
+ * inside a macro, which reports the caller name only by expansion accident).
+ */
+static inline MPP_RET mpp_buffer_set_discard(MppBuffer buffer)
+{
+    return mpp_buffer_discard_with_caller(buffer, __FUNCTION__);
+}
 
 MPP_RET mpp_buffer_info_get_with_caller(MppBuffer buffer, MppBufferInfo *info, const char *caller);
 MPP_RET mpp_buffer_read_with_caller(MppBuffer buffer, size_t offset, void *data, size_t size, const char *caller);

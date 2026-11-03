@@ -29,9 +29,6 @@
 #define mpp_realloc(ptr, type, count) \
     (type*)mpp_osal_realloc(__FUNCTION__, ptr, sizeof(type) * (count))
 
-#define mpp_realloc_size(ptr, type, size) \
-    (type*)mpp_osal_realloc(__FUNCTION__, ptr, size)
-
 #define mpp_free(ptr) \
     mpp_osal_free(__FUNCTION__, ptr)
 
@@ -46,6 +43,18 @@ void *mpp_osal_malloc(const char *caller, size_t size);
 void *mpp_osal_calloc(const char *caller, size_t size);
 void *mpp_osal_realloc(const char *caller, void *ptr, size_t size);
 void mpp_osal_free(const char *caller, void *ptr);
+
+/*
+ * mpp_realloc_size was previously a function-like macro. It is now an inline
+ * function so the shared library keeps the same public interface while the
+ * header no longer hides control flow (and no longer relies on __FUNCTION__
+ * inside a macro). The macro's leading (type*) cast is dropped: callers cast
+ * the returned void* themselves.
+ */
+static inline void *mpp_realloc_size(void *ptr, size_t size)
+{
+    return mpp_osal_realloc(__FUNCTION__, ptr, size);
+}
 
 void mpp_show_mem_status(void);
 rk_u32 mpp_mem_total_now(void);
