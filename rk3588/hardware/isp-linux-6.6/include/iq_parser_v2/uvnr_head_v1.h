@@ -58,7 +58,6 @@ typedef struct CalibDbV2_UVNR_T_ISO_s {
     float step3_bf_uvgain;
     // M4_NUMBER_DESC("step3_bf_ratio", "f32", M4_RANGE(0.0, 1.0), "1.0", M4_DIGIT(2))
     float step3_bf_ratio;
-
 } CalibDbV2_UVNR_T_ISO_t;
 
 typedef struct CalibDbV2_UVNR_T_Set_s {

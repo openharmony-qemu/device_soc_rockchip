@@ -23,6 +23,7 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #if defined(__linux__)
 #include <sys/time.h>
@@ -37,12 +38,7 @@
  * declaration specifiers) or type-generic helpers that cannot be turned into
  * a single C function without losing type transparency.
  */
-static inline void xcam_assert_failed(int condition)
-{
-    assert(condition);
-}
-
-#define XCAM_ASSERT(exp)  xcam_assert_failed((exp) ? 1 : 0)
+#define XCAM_ASSERT(exp)  assert(exp)
 
 #ifdef  __cplusplus
 #define XCAM_BEGIN_DECLARE  extern "C" {
@@ -90,33 +86,49 @@ static inline const char *xcam_str(const char *str)
     return str ? str : "null";
 }
 
-#define XCAM_STR(str)  xcam_str(str)
+static inline const char *XCAM_STR(const char *str)
+{
+    return xcam_str(str);
+}
 
 static inline const char *xcam_bool2str(int value)
 {
     return value ? "true" : "false";
 }
 
-#define XCAM_BOOL2STR(value)  xcam_bool2str((value) ? 1 : 0)
+static inline const char *XCAM_BOOL2STR(bool value)
+{
+    return xcam_bool2str(value ? 1 : 0);
+}
 
 static inline int xcam_double_equal(double a, double b, double tolerance)
 {
     return (a >= (b - tolerance)) && (a <= (b + tolerance));
 }
 
-#define XCAM_DOUBLE_EQUAL(a, b, tolerance)  xcam_double_equal((a), (b), (tolerance))
+static inline int XCAM_DOUBLE_EQUAL(double a, double b, double tolerance)
+{
+    return xcam_double_equal(a, b, tolerance);
+}
 
 static inline int xcam_double_equal_around(double a, double b)
 {
-    return xcam_double_equal(a, b, 0.000001);
+    const double tolerance = 0.000001;
+    return xcam_double_equal(a, b, tolerance);
 }
 
-#define XCAM_DOUBLE_EQUAL_AROUND(a, b)  xcam_double_equal_around((a), (b))
+static inline int XCAM_DOUBLE_EQUAL_AROUND(double a, double b)
+{
+    return xcam_double_equal_around(a, b);
+}
 
 #define XCAM_GAMMA_TABLE_SIZE 256
 #define XCAM_MAX_STR_SIZE 4096
 #undef XCAM_CL_MAX_STR_SIZE
 #define XCAM_CL_MAX_STR_SIZE 1024
+
+#define XCAM_USEC_PER_SEC 1000000LL
+#define XCAM_NSEC_PER_USEC 1000
 
 static inline int64_t xcam_timespec_2_nsec(struct timespec ts)
 {
@@ -125,30 +137,48 @@ static inline int64_t xcam_timespec_2_nsec(struct timespec ts)
 
 static inline int64_t xcam_timespec_2_usec(struct timespec ts)
 {
-    return (int64_t)ts.tv_sec * 1000000LL + ts.tv_nsec / 1000;
+    return (int64_t)ts.tv_sec * XCAM_USEC_PER_SEC + ts.tv_nsec / XCAM_NSEC_PER_USEC;
 }
 
 static inline int64_t xcam_timeval_2_usec(struct timeval tv)
 {
-    return (int64_t)tv.tv_sec * 1000000LL + tv.tv_usec;
+    return (int64_t)tv.tv_sec * XCAM_USEC_PER_SEC + tv.tv_usec;
 }
 
-#define XCAM_TIMESPEC_2_NSEC(timespec) xcam_timespec_2_nsec(timespec)
-#define XCAM_TIMESPEC_2_USEC(timespec) xcam_timespec_2_usec(timespec)
-#define XCAM_TIMEVAL_2_USEC(timeval)   xcam_timeval_2_usec(timeval)
+static inline int64_t XCAM_TIMESPEC_2_NSEC(struct timespec ts)
+{
+    return xcam_timespec_2_nsec(ts);
+}
+
+static inline int64_t XCAM_TIMESPEC_2_USEC(struct timespec ts)
+{
+    return xcam_timespec_2_usec(ts);
+}
+
+static inline int64_t XCAM_TIMEVAL_2_USEC(struct timeval tv)
+{
+    return xcam_timeval_2_usec(tv);
+}
 
 static inline int64_t xcam_timestamp_2_seconds(int64_t t)
 {
-    return t / 1000000;
+    return t / XCAM_USEC_PER_SEC;
 }
 
 static inline int64_t xcam_seconds_2_timestamp(int64_t sec)
 {
-    return sec * 1000000;
+    return sec * XCAM_USEC_PER_SEC;
 }
 
-#define XCAM_TIMESTAMP_2_SECONDS(t) xcam_timestamp_2_seconds(t)
-#define XCAM_SECONDS_2_TIMESTAMP(t) xcam_seconds_2_timestamp(t)
+static inline int64_t XCAM_TIMESTAMP_2_SECONDS(int64_t t)
+{
+    return xcam_timestamp_2_seconds(t);
+}
+
+static inline int64_t XCAM_SECONDS_2_TIMESTAMP(int64_t t)
+{
+    return xcam_seconds_2_timestamp(t);
+}
 
 #define XCAM_TIMESTAMP_FORMAT "%02d:%02d:%02d.%03d"
 
@@ -171,12 +201,27 @@ static inline int64_t xcam_align_down(int64_t value, int64_t align)
 
 static inline int64_t xcam_align_around(int64_t value, int64_t align)
 {
-    return ((value + align / 2) / align) * align;
+    const int64_t roundingDivisor = 2;
+    if (align == 0) {
+        return value;
+    }
+    return ((value + align / roundingDivisor) / align) * align;
 }
 
-#define XCAM_ALIGN_UP(value, align)     xcam_align_up(value, align)
-#define XCAM_ALIGN_DOWN(value, align)   xcam_align_down(value, align)
-#define XCAM_ALIGN_AROUND(value, align) xcam_align_around(value, align)
+static inline int64_t XCAM_ALIGN_UP(int64_t value, int64_t align)
+{
+    return xcam_align_up(value, align);
+}
+
+static inline int64_t XCAM_ALIGN_DOWN(int64_t value, int64_t align)
+{
+    return xcam_align_down(value, align);
+}
+
+static inline int64_t XCAM_ALIGN_AROUND(int64_t value, int64_t align)
+{
+    return xcam_align_around(value, align);
+}
 
 #ifdef _LP64
 #define PRIuS "zu"
@@ -190,6 +235,10 @@ static inline float xcam_degree2radian(float degree)
 }
 
 #define PI 3.1415926f
-#define degree2radian(degree) xcam_degree2radian(degree)
+
+static inline float degree2radian(float degree)
+{
+    return xcam_degree2radian(degree);
+}
 
 #endif //XCAM_DEFS_H

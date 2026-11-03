@@ -71,7 +71,6 @@ typedef struct RKAsharp_Sharp_Fix_s {
     RKAsharp_Sharp_HW_Fix_t stSharpFixV1;
     RKAsharp_Sharp_HW_V2_Fix_t stSharpFixV2;
     RKAsharp_Sharp_HW_V3_Fix_t stSharpFixV3;
-
 } RKAsharp_Sharp_Fix_t;
 
 typedef struct RKAsharp_Edgefilter_Fix_s {

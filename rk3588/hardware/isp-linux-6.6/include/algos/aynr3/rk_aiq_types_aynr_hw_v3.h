@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 typedef struct RK_YNR_Fix_V3_s {
-
     // YNR_2700_GLOBAL_CTRL (0x0000)
     uint8_t ynr_rnr_en;
     uint8_t ynr_gate_dis;

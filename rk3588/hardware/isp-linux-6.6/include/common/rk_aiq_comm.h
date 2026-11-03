@@ -164,12 +164,14 @@ typedef enum _camAlgoResultType {
 
 static inline long ROUND_D(double x)
 {
-    return (long)(((double)x) + (((x) > 0) ? 0.5 : (-0.5)));
+    const double roundingHalf = 0.5;
+    return (long)(((double)x) + (((x) > 0) ? roundingHalf : (-roundingHalf)));
 }
 
 static inline int ROUND_F(float x)
 {
-    return (int)(((float)x) + (((x) > 0) ? 0.5 : (-0.5)));
+    const double roundingHalf = 0.5;
+    return (int)(((float)x) + (((x) > 0) ? roundingHalf : (-roundingHalf)));
 }
 
 static inline int FLOOR(double a)
@@ -195,12 +197,14 @@ static inline int ROUND_INT(int x, int shf_bit)
 
 static inline double LOG2(double x)
 {
-    return log(x) / log(2.0);
+    const double logBase = 2.0;
+    return log(x) / log(logBase);
 }
 
 static inline int32_t ROUND_I32(double a)
 {
-    return (int32_t)((a) > 0 ? ((double)(a) + 0.5) : ((double)(a) - 0.5));
+    const double roundingHalf = 0.5;
+    return (int32_t)((a) > 0 ? ((double)(a) + roundingHalf) : ((double)(a) - roundingHalf));
 }
 #ifndef RK_AIQ_FLT_EPSILON
 #define RK_AIQ_FLT_EPSILON 0.000000119209289550781250000000
@@ -615,46 +619,55 @@ typedef struct rk_aiq_uapi_sync_s {
     bool done;
 } rk_aiq_uapi_sync_t;
 
+#define RK_AIQ_ISP_HW_VERSION_20 20
+#define RK_AIQ_ISP_HW_VERSION_21 21
+#define RK_AIQ_ISP_HW_VERSION_30 30
+#define RK_AIQ_ISP_HW_VERSION_31 31
+#define RK_AIQ_ISP_HW_VERSION_32 32
+#define RK_AIQ_ISP_HW_VERSION_32_LITE 321
+#define RK_AIQ_ISP_HW_VERSION_33 33
+#define RK_AIQ_ISP_HW_VERSION_39 39
+
 extern int g_rkaiq_isp_hw_ver;
 
 static inline bool CHECK_ISP_HW_V20(void)
 {
-    return g_rkaiq_isp_hw_ver == 20;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_20;
 }
 
 static inline bool CHECK_ISP_HW_V21(void)
 {
-    return g_rkaiq_isp_hw_ver == 21;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_21;
 }
 
 static inline bool CHECK_ISP_HW_V30(void)
 {
-    return g_rkaiq_isp_hw_ver == 30;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_30;
 }
 
 static inline bool CHECK_ISP_HW_V32(void)
 {
-    return g_rkaiq_isp_hw_ver == 32;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_32;
 }
 
 static inline bool CHECK_ISP_HW_V32_LITE(void)
 {
-    return g_rkaiq_isp_hw_ver == 321;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_32_LITE;
 }
 
 static inline bool CHECK_ISP_HW_V39(void)
 {
-    return g_rkaiq_isp_hw_ver == 39;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_39;
 }
 
 static inline bool CHECK_ISP_HW_V33(void)
 {
-    return g_rkaiq_isp_hw_ver == 33;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_33;
 }
 
 static inline bool CHECK_ISP_HW_V3X(void)
 {
-    return g_rkaiq_isp_hw_ver == 30 || g_rkaiq_isp_hw_ver == 31;
+    return g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_30 || g_rkaiq_isp_hw_ver == RK_AIQ_ISP_HW_VERSION_31;
 }
 
 #ifndef AIQ_MAYBE_UNUSED

@@ -346,7 +346,6 @@ typedef struct CalibDb_Bayernr_V2_t {
 
     CalibDb_Bayernr_2DSetting_V2_t st2DParams;
     CalibDb_Bayernr_3DSetting_V2_t st3DParams;
-
 } CalibDb_Bayernr_V2_t;
 
 typedef struct Calibdb_Ynr_params_V2_s {

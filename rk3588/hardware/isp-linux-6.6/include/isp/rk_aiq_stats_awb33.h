@@ -559,7 +559,6 @@ typedef enum awbStats_wpFiltOut_mode_e {
 	reg: sw_rawawb_exc_wp_regionX_domain == 1
     */
     awbStats_xyWp_mode = 1
-
 } awb_wpSpace_mode_t;
 
 typedef struct awbStats_filtOutRegionVtx_s {

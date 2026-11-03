@@ -25,7 +25,7 @@
 
 /*
  * This file is used to define all the algos interfaces, eg. including ae, awb
- * af, anr and etc. . The typical call routine by user is as follow:
+ * af, noise reduction, etc. The typical call routine by user is as follows:
  * 1) create_context
  *    Should call this before any other interfaces, and should be called only
  *    once.

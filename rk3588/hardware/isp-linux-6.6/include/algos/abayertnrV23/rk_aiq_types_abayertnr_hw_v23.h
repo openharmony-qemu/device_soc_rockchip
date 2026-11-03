@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 typedef struct RK_Bayertnr_Fix_V23_s {
-
 /* BAY3D_CTRL */
     uint8_t soft_st;
     uint8_t soft_mode;

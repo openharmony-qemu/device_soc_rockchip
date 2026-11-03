@@ -469,7 +469,7 @@ typedef struct aeStats_coWkEntity03_s {
         M4_HIDE_EX(0),
         M4_RO(0),
         M4_ORDER(3),
-        M4_NOTES(TODO))  */
+        M4_NOTES(AE histogram configuration))  */
     //reg: WND0_BLK_SIZE,WND0_OFFSET
     aeStats_hist_t hist;
 } aeStats_coWkEntity03_t;

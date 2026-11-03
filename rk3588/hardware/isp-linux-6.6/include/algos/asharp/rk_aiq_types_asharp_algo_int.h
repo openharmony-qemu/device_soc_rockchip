@@ -354,7 +354,6 @@ typedef struct AsharpProcResult_s {
 } AsharpProcResult_t;
 
 typedef struct AsharpConfig_s {
-
     AsharpState_t eState;
     AsharpOPMode_t eMode;
 } AsharpConfig_t;

@@ -31,6 +31,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <math.h>
+#include <securec.h>
 #include "xcam_defs.h"
 
 #if defined(__linux__)
@@ -65,7 +66,15 @@ typedef enum {
 #define xcam_malloc0_type(TYPE) (TYPE *)(xcam_malloc0(sizeof(TYPE)))
 #define xcam_malloc0_type_array(TYPE, num) (TYPE *)(xcam_malloc0(sizeof(TYPE) * (num)))
 
-#define xcam_mem_clear(v_stack) memset(&(v_stack), 0, sizeof(v_stack))
+static inline void *xcam_mem_clear_buffer(void *ptr, size_t size)
+{
+    if (memset_s(ptr, size, 0, size) != EOK) {
+        return NULL;
+    }
+    return ptr;
+}
+
+#define xcam_mem_clear(v_stack) xcam_mem_clear_buffer(&(v_stack), sizeof(v_stack))
 
 void *xcam_malloc(size_t size);
 void *xcam_malloc0(size_t size);

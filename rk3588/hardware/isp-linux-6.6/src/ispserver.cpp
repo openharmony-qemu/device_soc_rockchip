@@ -184,12 +184,12 @@ static void DeinitEngine(struct rkaiq_media_info *mediaInfo)
 }
 
 // blocked func
-static int wait_stream_event(int fd, unsigned int eventType, int timeOutMs)
+static int WaitStreamEvent(int fd, unsigned int eventType, int timeOutMs)
 {
     int ret;
     struct v4l2_event event = {};
 
-    bool event_matched = false;
+    bool eventMatched = false;
 
     do {
         /*
@@ -203,8 +203,8 @@ static int wait_stream_event(int fd, unsigned int eventType, int timeOutMs)
             ERR("dequeue stream event failed: %s\n", strerror(errno));
             return ret;
         }
-        event_matched = (event.type == eventType);
-    } while (!event_matched);
+        eventMatched = (event.type == eventType);
+    } while (!eventMatched);
     return 0;
 }
 
@@ -286,20 +286,20 @@ void *EngineThread(void *arg)
     InitEngine(mediaInfo);
     SubscribleStreamEvent(mediaInfo, ispFd, true);
 
-    int stream_event_ret = 0;
-    while (stream_event_ret == 0) {
+    int streamEventRet = 0;
+    while (streamEventRet == 0) {
         DBG("%s: wait stream start event...\n", mediaInfo->mdevPath);
-        stream_event_ret = wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1);
-        if (stream_event_ret != 0) {
+        streamEventRet = WaitStreamEvent(ispFd, CIFISP_V4L2_EVENT_STREAM_START, -1);
+        if (streamEventRet != 0) {
             break;
         }
         DBG("%s: wait stream start event success ...\n", mediaInfo->mdevPath);
         StartEngine(mediaInfo);
 
         DBG("%s: wait stream stop event...\n", mediaInfo->mdevPath);
-        stream_event_ret = wait_stream_event(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
+        streamEventRet = WaitStreamEvent(ispFd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
         StopEngine(mediaInfo);
-        if (stream_event_ret != 0) {
+        if (streamEventRet != 0) {
             break;
         }
         DBG("%s: wait stream stop event success ...\n", mediaInfo->mdevPath);

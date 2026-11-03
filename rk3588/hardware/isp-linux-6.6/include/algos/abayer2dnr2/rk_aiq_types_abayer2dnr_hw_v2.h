@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 typedef struct RK_Bayer2dnr_Fix_V2_s {
-
 //ISP_BAYNR_3A00_CTRL
     uint8_t baynr_lg2_mode;
     uint8_t baynr_gauss_en;

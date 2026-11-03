@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 typedef struct RK_CNR_Fix_V31_s {
-
     /* CNR_CTRL */
     uint8_t cnr_en;
     uint8_t exgain_bypass;

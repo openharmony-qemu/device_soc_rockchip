@@ -604,7 +604,6 @@ typedef struct rk_aiq_nr_IQPara_s {
     CalibDb_MFNR_t stMfnrPara;
     CalibDb_UVNR_t stUvnrPara;
     CalibDb_YNR_t stYnrPara;
-
 } rk_aiq_nr_IQPara_t;
 
 typedef struct rk_aiq_nr_JsonPara_s {
