@@ -106,7 +106,6 @@ typedef struct RK_YNR_Fix_V22_s {
 
     /* YNR_NLM_NR_WEIGHT */
     uint16_t nlm_nr_weight;
-
 } RK_YNR_Fix_V22_t;
 
 #endif

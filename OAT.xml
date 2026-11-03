@@ -23,15 +23,6 @@
         <policylist>
             <policy name="projectPolicy" desc="">
                 <policyitem type="copyright" name="Rockchip Corp.  All rights reserved." path="rk3588/hardware/npu/.*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Original upstream copyright retained"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/atmo/rk_aiq_types_atmo_stat_v200\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/atmo/rk_aiq_types_atmo_algo_int\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/atmo/rk_aiq_types_atmo_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/argbir/rk_aiq_types_argbir_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/amerge/rk_aiq_types_amerge_algo_int\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/amerge/rk_aiq_types_amerge_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/adrc/rk_aiq_types_adrc_algo_int\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/adrc/rk_aiq_types_adrc_algo\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
-                <policyitem type="license" name="*" path="rk3588/hardware/isp-linux-6\.6/include/algos/adehaze/rk_aiq_types_adehaze_stat\.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="Vendor source retained without a replacement license; file-specific scan exception"/>
                 <!--policyitem type="compatibility" name="GPL-2.0+" path="abc/.*" desc="Process that runs independently, invoked by the X process."/-->
                 <policyitem type="copyright" name="Huawei Technologies Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Huawei Technologies"/>
                 <policyitem type="copyright" name="Huawei Device Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Huawei Device"/>
@@ -122,6 +113,8 @@
 		<!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="defaultPolicyFilter" desc="Filters for compatibility，license header policies">
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/amerge/rk_aiq_types_amerge_algo_int.h" desc="Original Rockchip license header retained (OAT.3 Fuzhou Rockchip Electronics License)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/adrc/rk_aiq_types_adrc_algo_int.h" desc="Original Rockchip license header retained (OAT.3 Fuzhou Rockchip Electronics License)"/>
 	    	<filteritem type="filepath" name="rk2206/hardware/build.py" desc=""/>
                 <filteritem type="filepath" name="rk2206/sdk_liteos/platform/main/BUILD.gn" desc=""/>
                 <filteritem type="filepath" name="rk2206/sdk_liteos/BUILD.gn" desc=""/>
@@ -256,7 +249,9 @@
                 <filteritem type="filepath" name="rk3588/hardware/display/lib/*" desc="display 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/display/lib64/*" desc="display 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/omx_il/lib/*" desc="omx 32bit libs file"/>
-                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/*" desc="omx 64bit libs file"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libOMX_Core.z.so" desc="Rockchip prebuilt OMX library installed by rk3588/hardware/omx_il/BUILD.gn; existing vendor binary retained" ref="rk3588/hardware/omx_il/BUILD.gn"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libRkOMX_Resourcemanager.z.so" desc="Rockchip prebuilt OMX library installed by rk3588/hardware/omx_il/BUILD.gn; existing vendor binary retained" ref="rk3588/hardware/omx_il/BUILD.gn"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libomxvpu_enc.z.so" desc="Rockchip prebuilt OMX library installed by rk3588/hardware/omx_il/BUILD.gn; existing vendor binary retained" ref="rk3588/hardware/omx_il/BUILD.gn"/>
                 <filteritem type="filepath" name="rk3588/hardware/gra/lib/*" desc="gra 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/gra/lib64/*" desc="gra 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/wifi/*" desc="wifi lib and bin files"/>

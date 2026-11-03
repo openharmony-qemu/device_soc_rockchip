@@ -98,7 +98,6 @@ typedef struct RK_Bayertnr_Fix_V23_s {
     uint8_t siggaus1;
     uint8_t siggaus2;
     uint8_t siggaus3;
-
 } RK_Bayertnr_Fix_V23_t;
 
 #endif

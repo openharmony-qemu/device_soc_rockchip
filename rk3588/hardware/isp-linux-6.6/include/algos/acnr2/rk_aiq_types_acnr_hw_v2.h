@@ -66,7 +66,6 @@ typedef struct RK_CNR_Fix_V2_s {
 
 //ISP_CNR_2800_SIGMA0-SIGMA3
     uint8_t cnr_sigma_y[13];
-
 } RK_CNR_Fix_V2_t;
 
 #endif

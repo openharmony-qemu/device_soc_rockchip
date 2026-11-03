@@ -77,7 +77,6 @@ typedef struct AblcExpInfo_V32_s {
     int isoLevelLow;
     // M4_NUMBER_DESC("isoLevelHig", "u8", M4_RANGE(0, 12), "0", M4_DIGIT(0))
     int isoLevelHig;
-
 } AblcExpInfo_V32_t;
 
 typedef struct rk_aiq_blc_info_v32_s {

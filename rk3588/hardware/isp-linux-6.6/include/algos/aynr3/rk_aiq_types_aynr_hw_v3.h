@@ -100,7 +100,6 @@ typedef struct RK_YNR_Fix_V3_s {
 
     // YNR_2700_RNR_STRENGTH03 (0x00d0- 0x00e0)
     uint16_t ynr_rnr_strength[17];
-
 } RK_YNR_Fix_V3_t;
 
 #endif

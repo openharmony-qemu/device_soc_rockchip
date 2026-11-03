@@ -94,7 +94,6 @@ typedef struct RKAsharp_Edgefilter_Fix_s {
     unsigned char clamp_pos[8];
     unsigned char clamp_neg[8];
     unsigned char detail_alpha[8];
-
 } RKAsharp_Edgefilter_Fix_t;
 
 RKAIQ_END_DECLARE

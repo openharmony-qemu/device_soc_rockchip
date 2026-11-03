@@ -1583,7 +1583,6 @@ typedef struct rk_aiq_awb_stat_cfg_effect_s {
     int IllIndxSetCurrent[AWBSTATS_WPDCT_LS_NUM];  //for time share
     char timeSign[64];
     float preWbgainSw[4];  //rggb
-
 } rk_aiq_awb_stat_cfg_effect_t;
 
 typedef struct awbStats_stats_priv_s {

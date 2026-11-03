@@ -614,7 +614,6 @@ typedef struct rk_aiq_nr_JsonPara_s {
     CalibDbV2_MFNR_t mfnr_v1;
     CalibDbV2_UVNR_t uvnr_v1;
     CalibDbV2_YnrV1_t ynr_v1;
-
 } rk_aiq_nr_JsonPara_t;
 
 RKAIQ_END_DECLARE

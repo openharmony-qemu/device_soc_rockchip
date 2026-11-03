@@ -77,7 +77,6 @@ typedef struct RK_CNR_Fix_V30_s {
     /* CNR_IIR_GLOBAL_GAIN */
     uint8_t iir_gain_alpha;
     uint8_t iir_global_gain;
-
 } RK_CNR_Fix_V30_t;
 
 #endif

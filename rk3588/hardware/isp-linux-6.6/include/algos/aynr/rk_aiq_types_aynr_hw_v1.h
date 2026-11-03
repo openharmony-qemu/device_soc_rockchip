@@ -48,7 +48,6 @@ typedef struct RK_YNR_Fix_V1_s {
     unsigned char ynr_lmaxgain_lv4;
     unsigned short ynr_hstv_y[17];
     unsigned short ynr_st_scale[3];
-
 } RK_YNR_Fix_V1_t;
 
 #endif

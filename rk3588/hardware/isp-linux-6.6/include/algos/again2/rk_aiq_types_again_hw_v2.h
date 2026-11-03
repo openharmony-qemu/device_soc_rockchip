@@ -22,7 +22,6 @@
 #include "common/rk_aiq_comm.h"
 
 typedef struct RK_GAIN_Fix_V2_s {
-
     unsigned char sw_gain2ddr_mode;
     unsigned char sw_gain2ddr_wr_en;
     unsigned char sw_3dlut_gain_en;

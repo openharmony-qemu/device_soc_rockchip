@@ -344,7 +344,6 @@ typedef struct _rknn_input_range {
     char name[RKNN_MAX_NAME_LEN];                                  /* the name of tensor. */
     uint32_t dyn_range[RKNN_MAX_DYNAMIC_SHAPE_NUM][RKNN_MAX_DIMS]; /* the dynamic input dimensions range. */
     uint32_t n_dims;                                               /* the number of dimensions. */
-
 } rknn_input_range;
 
 /*

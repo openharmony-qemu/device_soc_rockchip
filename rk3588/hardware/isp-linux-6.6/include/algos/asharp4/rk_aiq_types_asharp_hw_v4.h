@@ -62,7 +62,6 @@ typedef struct RK_SHARP_Fix_V4_s {
 
 // SHARP_SHARP_GAUS_COEF (0x00048 - 0x0004c)
     uint8_t sharp_gaus_coef[6];
-
 } RK_SHARP_Fix_V4_t;
 
 #endif

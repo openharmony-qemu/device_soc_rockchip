@@ -73,7 +73,6 @@ typedef struct RK_CNR_Fix_V31_s {
     uint16_t hiflt_vsigma_idx[8];
     /* GAUS_Y_SIGMAR */
     uint16_t hiflt_vsigma[8];
-
 } RK_CNR_Fix_V31_t;
 
 #endif

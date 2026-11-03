@@ -223,7 +223,6 @@ typedef struct CalibDbV2_MFNR_T_ISO_s {
     CalibDbV2_MFNR_UVgfdelta_t uv_gfdelta_para;
     // M4_ARRAY_TABLE_DESC("gfsigma_para", "array_table_ui", "none", M4_HIDE(1))
     CalibDbV2_MFNR_gfsigma_t gfsigma_para;
-
 } CalibDbV2_MFNR_T_ISO_t;
 
 typedef struct CalibDbV2_MFNR_T_Set_s {

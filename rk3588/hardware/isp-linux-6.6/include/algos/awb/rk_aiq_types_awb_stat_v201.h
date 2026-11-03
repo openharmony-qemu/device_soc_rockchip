@@ -144,7 +144,6 @@ typedef struct rk_aiq_awb_stat_cfg_v201_s {
     int IllIndxSetCurrent[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];  //not register,for time share
     char timeSign[64];                                       //not register,for time share
     rk_aiq_awb_stat_cfg_mode_e statCfgMode;                  //not register,for blc1 used case
-
 } rk_aiq_awb_stat_cfg_v201_t;
 
 //typedef struct stat3a_lightType_s

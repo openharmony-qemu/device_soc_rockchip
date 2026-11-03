@@ -382,7 +382,6 @@ typedef struct Calibdb_Ynr_params_V2_s {
     float ynr_direction_weight_V2[RK_YNR_V2_MAX_ISO_NUM][8];
     float ynr_hi_min_adj_V2[RK_YNR_V2_MAX_ISO_NUM];
     float ynr_hi_edge_thed_V2[RK_YNR_V2_MAX_ISO_NUM];
-
 } Calibdb_Ynr_params_V2_t;
 
 typedef struct Calibdb_Ynr_V2_s {

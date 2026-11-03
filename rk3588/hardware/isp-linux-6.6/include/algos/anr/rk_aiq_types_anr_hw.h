@@ -90,7 +90,6 @@ unsigned char uvnr_gain_1sigma;
 
 unsigned char uvnr_t2flt_wtp;
     unsigned char uvnr_t2flt_wt[3];
-
 } RKAnr_Uvnr_Fix_t;
 
 typedef struct RKAnr_Ynr_Fix_s {

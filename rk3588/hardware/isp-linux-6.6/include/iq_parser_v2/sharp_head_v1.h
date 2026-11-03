@@ -146,7 +146,6 @@ typedef struct CalibDbV2_SharpV1_Tuning_s {
     // M4_STRUCT_LIST_DESC("Setting", M4_SIZE_DYNAMIC, "double_index_list")
     CalibDbV2_SharpV1_T_Set_t *Setting;
     int Setting_len;
-
 } CalibDbV2_SharpV1_Tuning_t;
 
 typedef struct CalibDbV2_SharpV1_s {

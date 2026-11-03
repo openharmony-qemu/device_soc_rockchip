@@ -88,7 +88,6 @@ typedef struct rk_aiq_awb_stat_cfg_v200_s {
     int groupIllIndxCurrent;                                 //for time share
     int IllIndxSetCurrent[RK_AIQ_AWB_MAX_WHITEREGIONS_NUM];  //for time share
     char timeSign[64];
-
 } rk_aiq_awb_stat_cfg_v200_t;
 
 typedef struct rk_aiq_awb_stat_wp_res_v200_s {

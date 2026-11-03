@@ -42,7 +42,6 @@ typedef struct RK_YUVME_Fix_V1_s {
     uint16_t cur_weight_limit;
     /* YUVME_SIGMA */
     uint16_t nr_luma2sigma_val[16];
-
 } RK_YUVME_Fix_V1_t;
 
 #endif

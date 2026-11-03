@@ -242,13 +242,12 @@ void ParseArgs(int argc, char **argv)
 
     int optionIndex = 0;
     static struct option longOptions[] = {
-            {"silent",    no_argument,       nullptr, 's' },
-            {"help",      no_argument,       nullptr, 'h' },
-            {nullptr,     no_argument,       nullptr,  0  }
+        {"silent",    no_argument,       nullptr, 's' },
+        {"help",      no_argument,       nullptr, 'h' },
+        {nullptr,     no_argument,       nullptr,  0  }
     };
 
     while ((c = getopt_long(argc, argv, "sh", longOptions, &optionIndex)) != -1) {
-
         switch (c) {
         case 'w':
             g_width = atoi(optarg);

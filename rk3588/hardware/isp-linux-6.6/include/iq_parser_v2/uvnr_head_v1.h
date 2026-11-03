@@ -69,7 +69,6 @@ typedef struct CalibDbV2_UVNR_T_Set_s {
     // M4_STRUCT_LIST_DESC("Tuning_ISO", M4_SIZE_DYNAMIC, "double_index_list")
     CalibDbV2_UVNR_T_ISO_t *Tuning_ISO;
     int Tuning_ISO_len;
-
 } CalibDbV2_UVNR_T_Set_t;
 
 typedef struct CalibDbV2_UVNR_Kernel_s {

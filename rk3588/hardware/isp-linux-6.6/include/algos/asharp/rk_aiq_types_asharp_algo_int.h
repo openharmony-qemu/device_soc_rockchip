@@ -357,7 +357,6 @@ typedef struct AsharpConfig_s {
 
     AsharpState_t eState;
     AsharpOPMode_t eMode;
-
 } AsharpConfig_t;
 
 typedef struct rk_aiq_sharp_attrib_s {
