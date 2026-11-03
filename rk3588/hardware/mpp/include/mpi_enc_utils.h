@@ -134,9 +134,9 @@ MPP_RET mpi_enc_test_cmd_show_opt(MpiEncTestArgs* cmd);
 
 //int RKYuvToH264(unsigned char *buf, size_t *buf_size, int width,
 //    int height, MppFrameFormat format, MppCodingType type);
-int hal_mpp_encode(void *ctxs, int dma_fd, unsigned char *buf, size_t *buf_size);
+int hal_mpp_encode(void *ctxs, int dmaFd, unsigned char *buf, size_t *buf_size);
 void *hal_mpp_ctx_create(MpiEncTestArgs *args);
-void hal_mpp_ctx_delete(void *ctx);
+void HalMppCtxDelete(void *ctx);
 
 typedef struct {
     // base flow context

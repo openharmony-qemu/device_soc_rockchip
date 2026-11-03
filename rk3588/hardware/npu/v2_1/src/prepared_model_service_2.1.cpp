@@ -53,49 +53,49 @@ PreparedModelService::~PreparedModelService()
     }
 }
 
-static unsigned char* load_model(const char* filename, int* modelSize)
+static unsigned char* LoadModel(const char* filename, int* modelSize)
 {
     HDF_LOGI("%{public}s: enter", __func__);
     int ret = 0;
     FILE*          fp;
     unsigned char* data = nullptr;
-    HDF_LOGI("load_model %{public}s", filename);
+    HDF_LOGI("LoadModel %{public}s", filename);
 
     fp = fopen(filename, "rb");
-    if (nullptr == fp) {
-        HDF_LOGE("load_model: Open file %{public}s failed", filename);
+    if (fp == nullptr) {
+        HDF_LOGE("LoadModel: Open file %{public}s failed", filename);
         return nullptr;
     }
 
     if (fseek(fp, 0, SEEK_END) != 0) {
         fclose(fp);
-        HDF_LOGE("load_model: seek end failed");
+        HDF_LOGE("LoadModel: seek end failed");
         return nullptr;
     }
     long size = ftell(fp);
     if (size <= 0 || size > std::numeric_limits<int>::max()) {
         fclose(fp);
-        HDF_LOGE("load_model: invalid file size %ld", size);
+        HDF_LOGE("LoadModel: invalid file size %ld", size);
         return nullptr;
     }
-    HDF_LOGI("load_model: file size %ld", size);
+    HDF_LOGI("LoadModel: file size %ld", size);
 
     ret = fseek(fp, 0, SEEK_SET);
     if (ret != 0) {
         fclose(fp);
-        HDF_LOGE("load_model: blob seek failure");
+        HDF_LOGE("LoadModel: blob seek failure");
         return nullptr;
     }
     data = (unsigned char*)malloc(size);
     if (data == nullptr) {
         fclose(fp);
-        HDF_LOGE("load_model: buffer malloc failure");
+        HDF_LOGE("LoadModel: buffer malloc failure");
         return nullptr;
     }
     ret = fread(data, 1, size, fp);
 
     if (fclose(fp) != 0) {
-        HDF_LOGE("load_model: close file failed");
+        HDF_LOGE("LoadModel: close file failed");
     }
 
     *modelSize = static_cast<int>(size);
@@ -286,6 +286,61 @@ int32_t PreparedModelService::Run(const std::vector<IOTensor> &inputs, const std
     return HDF_SUCCESS;
 }
 
+static int WriteOutputsToAshmem(const std::vector<IOTensor> &outputs, rknn_output rknnOutputs[],
+                                uint32_t outputNum, bool &isOutputBufferEnough)
+{
+    isOutputBufferEnough = true;
+    for (size_t i = 0; i < outputNum; i++) {
+        auto &output = outputs[i];
+        auto dataSize = rknnOutputs[i].size;
+        if (dataSize > output.data.bufferSize) {
+            HDF_LOGI("Output buffer is not enough. actual size %u, buffer size %{public}u", dataSize,
+                     output.data.bufferSize);
+            isOutputBufferEnough = false;
+        }
+
+        if (isOutputBufferEnough) {
+            SharedBuffer buffer = output.data;
+            sptr<Ashmem> ashptr = new (std::nothrow) Ashmem(buffer.fd, buffer.bufferSize);
+            if (ashptr == nullptr) {
+                HDF_LOGE("UpdateOutput: Create shared memory failed.");
+                return HDF_ERR_INVALID_PARAM;
+            }
+            if (!ashptr->MapReadAndWriteAshmem()) {
+                HDF_LOGE("UpdateOutput: Map buffer fd to address failed.");
+                return HDF_ERR_INVALID_PARAM;
+            }
+            if (!ashptr->WriteToAshmem(rknnOutputs[i].buf, dataSize, 0)) {
+                HDF_LOGE("UpdateOutput: write ro ashmem failed.");
+                return HDF_ERR_INVALID_PARAM;
+            }
+        }
+    }
+    return HDF_SUCCESS;
+}
+
+static int CollectOutputDims(rknn_context ctx, uint32_t outputNum, std::vector<std::vector<int32_t>> &outputsDims)
+{
+    rknn_tensor_attr output_attrs[outputNum];
+    memset_s(output_attrs, sizeof(output_attrs), 0, sizeof(output_attrs));
+    for (size_t i = 0; i < outputNum; i++) {
+        output_attrs[i].index = i;
+        int ret = rknn_query(ctx, RKNN_QUERY_OUTPUT_ATTR, &(output_attrs[i]), sizeof(rknn_tensor_attr));
+        if (ret < 0) {
+            HDF_LOGE("UpdateOutput rknn query output attr error i=%zu, ret=%x", i, ret);
+            return ret;
+        }
+
+        dump_tensor_attr(&(output_attrs[i]));
+        std::vector<int32_t> dim;
+        for (uint32_t j = 0; j < output_attrs[i].n_dims; ++j) {
+            dim.push_back(output_attrs[i].dims[j]);
+        }
+        outputsDims.push_back(dim);
+    }
+    return HDF_SUCCESS;
+}
+
 int PreparedModelService::UpdateOutput(const std::vector<IOTensor> &outputs,
                                        std::vector<std::vector<int32_t>> &outputsDims, bool &isOutputBufferEnough)
 {
@@ -310,54 +365,13 @@ int PreparedModelService::UpdateOutput(const std::vector<IOTensor> &outputs,
     }
     rknn_outputs_get(m_ctx, m_io_num.n_output, rknn_outputs, NULL);
 
-    isOutputBufferEnough = true;
-    for (size_t i = 0; i < m_io_num.n_output; i++) {
-        auto &output = outputs[i];
-        auto dataSize = rknn_outputs[i].size;
-        if (dataSize > output.data.bufferSize) {
-            HDF_LOGI("Output buffer is not enough. actual size %u, buffer size %{public}u", dataSize,
-                     output.data.bufferSize);
-            isOutputBufferEnough = false;
-        }
-
-        if (isOutputBufferEnough) {
-            SharedBuffer buffer = output.data;
-            sptr<Ashmem> ashptr = new (std::nothrow) Ashmem(buffer.fd, buffer.bufferSize);
-            if (ashptr == nullptr) {
-                HDF_LOGE("UpdateOutput: Create shared memory failed.");
-                return HDF_ERR_INVALID_PARAM;
-            }
-            if (!ashptr->MapReadAndWriteAshmem()) {
-                HDF_LOGE("UpdateOutput: Map buffer fd to address failed.");
-                return HDF_ERR_INVALID_PARAM;
-            }
-            if (!ashptr->WriteToAshmem(rknn_outputs[i].buf, dataSize, 0)) {
-                HDF_LOGE("UpdateOutput: write ro ashmem failed.");
-                return HDF_ERR_INVALID_PARAM;
-            }
-        }
+    int ret = WriteOutputsToAshmem(outputs, rknn_outputs, m_io_num.n_output, isOutputBufferEnough);
+    if (ret != HDF_SUCCESS) {
+        return ret;
     }
     rknn_outputs_release(m_ctx, m_io_num.n_output, rknn_outputs);
 
-    rknn_tensor_attr output_attrs[m_io_num.n_output];
-    memset_s(output_attrs, sizeof(output_attrs), 0, sizeof(output_attrs));
-    for (size_t i = 0; i < m_io_num.n_output; i++) {
-        output_attrs[i].index = i;
-        int ret = rknn_query(m_ctx, RKNN_QUERY_OUTPUT_ATTR, &(output_attrs[i]), sizeof(rknn_tensor_attr));
-        if (ret < 0) {
-            HDF_LOGE("UpdateOutput rknn query output attr error i=%zu, ret=%x", i, ret);
-            return ret;
-        }
-
-        dump_tensor_attr(&(output_attrs[i]));
-        std::vector<int32_t> dim;
-        for (uint32_t j = 0; j < output_attrs[i].n_dims; ++j) {
-            dim.push_back(output_attrs[i].dims[j]);
-        }
-        outputsDims.push_back(dim);
-    }
-
-    return HDF_SUCCESS;
+    return CollectOutputDims(m_ctx, m_io_num.n_output, outputsDims);
 }
 
 int PreparedModelService::SetInputs(const std::vector<IOTensor> &inputs)
@@ -541,9 +555,9 @@ int PreparedModelService::init(const char *filename)
     HDF_LOGI("PreparedModelService::init enter");
 
     int model_data_size{0};
-    m_model_data = load_model(filename, &model_data_size);
+    m_model_data = LoadModel(filename, &model_data_size);
     if (m_model_data == nullptr) {
-        HDF_LOGE("init: load_model fail!");
+        HDF_LOGE("init: LoadModel fail!");
         return HDF_FAILURE;
     }
 

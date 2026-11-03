@@ -136,29 +136,39 @@ static calibdb_ctx_infos_t info_CamCalibDbContext_array[] = {
 };
 #pragma GCC diagnostic pop
 
-static inline void *calibdb_get_module_ptr(void *ctx, calibdb_ctx_infos_t *info_array, const char *module_name)
+static inline calibdb_ctx_infos_t *calibdb_find_ctx_info(calibdb_ctx_infos_t *info_array)
 {
-    calibdb_ctx_infos_t *ctx_info = NULL;
     int i;
     for (i = 0; info_array[i].offset_info != NULL; i++) {
         if (g_rkaiq_isp_hw_ver == info_array[i].ver) {
-            ctx_info = &info_array[i];
-            break;
+            return &info_array[i];
         }
     }
-    if (!ctx_info)
+    return NULL;
+}
+
+static inline calibdb_ctx_member_offset_info_t *calibdb_find_offset_info(
+    calibdb_ctx_member_offset_info_t *offset_infos, const char *module_name)
+{
+    while (offset_infos->module_name != NULL) {
+        if (strcmp(offset_infos->module_name, module_name) == 0)
+            break;
+        offset_infos++;
+    }
+    return offset_infos;
+}
+
+static inline void *calibdb_get_module_ptr(void *ctx, calibdb_ctx_infos_t *info_array, const char *module_name)
+{
+    calibdb_ctx_infos_t *ctx_info = calibdb_find_ctx_info(info_array);
+    if (ctx_info == NULL)
         return NULL;
 
-    calibdb_ctx_member_offset_info_t *ctx_offset_infos = ctx_info->offset_info;
-    while (ctx_offset_infos->module_name != NULL) {
-        if (strcmp(ctx_offset_infos->module_name, module_name) == 0)
-            break;
-        ctx_offset_infos++;
-    }
-    if (ctx_offset_infos->module_name != NULL)
-        return ((char *)(ctx) + ctx_offset_infos->offset);
+    calibdb_ctx_member_offset_info_t *offset_info = calibdb_find_offset_info(ctx_info->offset_info, module_name);
+    if (offset_info->module_name == NULL)
+        return NULL;
 
-    return NULL;
+    return ((char *)(ctx) + offset_info->offset);
 }
 
 #define CALIBDB_GET_MODULE_PTR(ctx, module) calibdb_get_module_ptr(ctx, info_CamCalibDbContext_array, #module)
