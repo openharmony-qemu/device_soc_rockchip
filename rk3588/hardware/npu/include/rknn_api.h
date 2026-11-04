@@ -193,7 +193,10 @@ typedef enum _rknn_tensor_type {
     RKNN_TENSOR_TYPE_MAX
 } rknn_tensor_type;
 
-static const char *get_type_string(rknn_tensor_type type)
+/* NOTE: keep 'inline static' - removing 'inline' makes the compiler report
+ * '-Werror,-Wunused-function' when this header is included but these helpers
+ * are not used. Do NOT change back to plain 'static'. */
+inline static const char *get_type_string(rknn_tensor_type type)
 {
     switch (type) {
         case RKNN_TENSOR_FLOAT32:
@@ -236,7 +239,9 @@ typedef enum _rknn_tensor_qnt_type {
     RKNN_TENSOR_QNT_MAX
 } rknn_tensor_qnt_type;
 
-static const char *get_qnt_type_string(rknn_tensor_qnt_type type)
+/* NOTE: keep 'inline static' - removing 'inline' causes -Wunused-function
+ * error (-Werror) when included but unused. Do NOT change. */
+inline static const char *get_qnt_type_string(rknn_tensor_qnt_type type)
 {
     switch (type) {
         case RKNN_TENSOR_QNT_NONE:
@@ -277,7 +282,9 @@ typedef enum _rknn_core_mask {
     RKNN_NPU_CORE_UNDEFINED,
 } rknn_core_mask;
 
-static const char *get_format_string(rknn_tensor_format fmt)
+/* NOTE: keep 'inline static' - removing 'inline' causes -Wunused-function
+ * error (-Werror) when included but unused. Do NOT change. */
+inline static const char *get_format_string(rknn_tensor_format fmt)
 {
     switch (fmt) {
         case RKNN_TENSOR_NCHW:
