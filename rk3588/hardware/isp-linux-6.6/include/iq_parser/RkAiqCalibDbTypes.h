@@ -13,6 +13,23 @@
 typedef void CamCalibDbContext_t;
 #endif
 
+/*
+ * The following macros are kept as macros by design and cannot be
+ * expressed as functions:
+ *  - TO_CALIBDBV1_ISP20/ISP21 are type-cast helpers: the cast target type
+ *    is fixed by the macro name, not a parameter a function could take.
+ *  - CALIB_MODULE_RELATIVE_OFFSET/CALIB_MODULE_PTR compute a compile-time
+ *    member offset (offsetof semantics) for an arbitrary struct type; a
+ *    function cannot receive a type as a parameter.
+ *  - CALIB_MODULE_RELATIVE_OFFSET_ISP20/ISP21 specialize the offset macro
+ *    for the two fixed context struct types.
+ *  - CALIB_FN_DEFINE_COMMON/CALIB_FN_DEFINE_SPEC are function-definition
+ *    templates: they generate a complete function body, so the `return`
+ *    statements belong to the generated function, not to a macro's own
+ *    control flow.
+ *  - CALIBDB_GET_MODULE_PTR stringifies its argument with #module, a
+ *    preprocessor-only feature; a function would receive a runtime string.
+ */
 #define TO_CALIBDBV1_ISP20(ctx) ((CamCalibDbContextIsp20_t *)ctx)
 
 #define TO_CALIBDBV1_ISP21(ctx) ((CamCalibDbContextIsp21_t *)ctx)

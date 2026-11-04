@@ -80,7 +80,6 @@
 #include "common/rk_aiq_comm.h"
 #include "rk_aiq_mems_sensor.h"
 
-
 typedef AgammaProcRes_t rk_aiq_isp_goc_v3x_t;
 
 typedef RkAiqAdrcProcResult_t rk_aiq_isp_drc_v3x_t;

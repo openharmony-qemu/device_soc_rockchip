@@ -246,7 +246,6 @@ typedef struct RKAsharp_EdgeFilter_Params_s {
 } RKAsharp_EdgeFilter_Params_t;
 
 typedef struct RKAsharp_EdgeFilter_Params_Select_s {
-
     short edge_thed;
     float dir_min;
     float smoth4;
