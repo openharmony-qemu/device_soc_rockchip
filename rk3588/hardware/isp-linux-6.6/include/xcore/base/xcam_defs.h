@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #if defined(__linux__)
 #include <sys/time.h>
@@ -34,22 +35,13 @@
 /*
  * Runtime assertion shared by the xcam inline helpers.
  *
- * The check is active in debug builds and becomes a no-op once NDEBUG is
- * defined, which keeps the same behavior as the C library assert() without
- * using it.
+ * Delegates to the C library assert(): the check stays active in debug
+ * builds and compiles to a no-op once NDEBUG is defined.
  */
-#ifdef NDEBUG
 static inline void xcam_assert(int condition)
 {
-    (void)condition;
+    assert(condition);
 }
-#else
-static inline void xcam_assert(int condition)
-{
-    if (!condition)
-        abort();
-}
-#endif
 
 #ifdef  __cplusplus
 #define XCAM_BEGIN_DECLARE  extern "C" {
@@ -78,9 +70,11 @@ static inline int xcam_double_equal(double a, double b, double tolerance)
     return (a >= (b - tolerance)) && (a <= (b + tolerance));
 }
 
+#define XCAM_DOUBLE_EQUAL_EPSILON 0.000001
+
 static inline int xcam_double_equal_around(double a, double b)
 {
-    return xcam_double_equal(a, b, 0.000001);
+    return xcam_double_equal(a, b, XCAM_DOUBLE_EQUAL_EPSILON);
 }
 
 #define XCAM_GAMMA_TABLE_SIZE 256
@@ -93,24 +87,28 @@ static inline int64_t xcam_timespec_2_nsec(struct timespec ts)
     return (int64_t)ts.tv_sec * 1000000000LL + ts.tv_nsec;
 }
 
+#define XCAM_NSEC_PER_USEC 1000
+
+#define XCAM_USEC_PER_SEC 1000000
+
 static inline int64_t xcam_timespec_2_usec(struct timespec ts)
 {
-    return (int64_t)ts.tv_sec * 1000000LL + ts.tv_nsec / 1000;
+    return (int64_t)ts.tv_sec * XCAM_USEC_PER_SEC + ts.tv_nsec / XCAM_NSEC_PER_USEC;
 }
 
 static inline int64_t xcam_timeval_2_usec(struct timeval tv)
 {
-    return (int64_t)tv.tv_sec * 1000000LL + tv.tv_usec;
+    return (int64_t)tv.tv_sec * XCAM_USEC_PER_SEC + tv.tv_usec;
 }
 
 static inline int64_t xcam_timestamp_2_seconds(int64_t t)
 {
-    return t / 1000000;
+    return t / XCAM_USEC_PER_SEC;
 }
 
 static inline int64_t xcam_seconds_2_timestamp(int64_t sec)
 {
-    return sec * 1000000;
+    return sec * XCAM_USEC_PER_SEC;
 }
 
 #define XCAM_TIMESTAMP_FORMAT "%02d:%02d:%02d.%03d"
@@ -126,9 +124,14 @@ static inline int64_t xcam_align_down(int64_t value, int64_t align)
     return value & ~(align - 1);
 }
 
+#define XCAM_ALIGN_HALF 2
+
 static inline int64_t xcam_align_around(int64_t value, int64_t align)
 {
-    return ((value + align / 2) / align) * align;
+    if (align == 0) {
+        return value;
+    }
+    return ((value + align / XCAM_ALIGN_HALF) / align) * align;
 }
 
 #ifdef _LP64

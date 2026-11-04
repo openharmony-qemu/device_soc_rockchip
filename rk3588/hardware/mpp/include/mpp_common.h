@@ -285,9 +285,14 @@ static inline RK_S32 mpp_sign(RK_S32 a)
     return (a < 0) ? -1 : 1;
 }
 
+#define MPP_DIV_HALF 2
+
 static inline RK_S32 mpp_div_sign(RK_S32 a, RK_S32 b)
 {
-    return (a + mpp_sign(a) * b / 2) / b;
+    if (b == 0) {
+        return a;
+    }
+    return (a + mpp_sign(a) * b / MPP_DIV_HALF) / b;
 }
 
 /* minimum fd for duplication: skip stdin / stdout / stderr */

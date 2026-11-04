@@ -18,9 +18,10 @@ typedef void CamCalibDbContext_t;
  * expressed as functions:
  *  - TO_CALIBDBV1_ISP20/ISP21 are type-cast helpers: the cast target type
  *    is fixed by the macro name, not a parameter a function could take.
- *  - CALIB_MODULE_RELATIVE_OFFSET/CALIB_MODULE_PTR compute a compile-time
- *    member offset (offsetof semantics) for an arbitrary struct type; a
- *    function cannot receive a type as a parameter.
+ *  - CALIB_MODULE_RELATIVE_OFFSET computes a compile-time member offset
+ *    (offsetof semantics) for an arbitrary struct type; a function cannot
+ *    receive a type as a parameter. The pointer arithmetic on that offset is
+ *    done by calib_module_ptr() below, which is a real function.
  *  - CALIB_MODULE_RELATIVE_OFFSET_ISP20/ISP21 specialize the offset macro
  *    for the two fixed context struct types.
  *  - CALIB_FN_DEFINE_COMMON/CALIB_FN_DEFINE_SPEC are function-definition
@@ -36,15 +37,18 @@ typedef void CamCalibDbContext_t;
 
 #define CALIB_MODULE_RELATIVE_OFFSET(type, x) (long)(&((type *)0)->x)
 
-#define CALIB_MODULE_PTR(ctx, type, mn) ((char *)(ctx) + CALIB_MODULE_RELATIVE_OFFSET(type, mn))
+static inline void *calib_module_ptr(void *ctx, long offset)
+{
+    return (char *)(ctx) + offset;
+}
 
 #define CALIB_FN_DEFINE_COMMON(module)                                                                                 \
     static inline void *calibdb_get_##module##_ptr(void *ctx)                                                          \
     {                                                                                                                  \
         if (CHECK_ISP_HW_V20())                                                                                        \
-            return CALIB_MODULE_PTR(ctx, CamCalibDbContextIsp20_t, module);                                            \
+            return calib_module_ptr(ctx, CALIB_MODULE_RELATIVE_OFFSET(CamCalibDbContextIsp20_t, module));              \
         else if (CHECK_ISP_HW_V21())                                                                                   \
-            return CALIB_MODULE_PTR(ctx, CamCalibDbContextIsp21_t, module);                                            \
+            return calib_module_ptr(ctx, CALIB_MODULE_RELATIVE_OFFSET(CamCalibDbContextIsp21_t, module));              \
         else                                                                                                           \
             return NULL;                                                                                               \
     }
@@ -53,7 +57,7 @@ typedef void CamCalibDbContext_t;
     static inline void *calibdb_get_##module##_ptr(void *ctx)                                                          \
     {                                                                                                                  \
         if (g_rkaiq_isp_hw_ver == ver)                                                                                 \
-            return CALIB_MODULE_PTR(ctx, CamCalibDbContextIsp##ver##_t, module);                                       \
+            return calib_module_ptr(ctx, CALIB_MODULE_RELATIVE_OFFSET(CamCalibDbContextIsp##ver##_t, module));          \
         else                                                                                                           \
             return NULL;                                                                                               \
     }

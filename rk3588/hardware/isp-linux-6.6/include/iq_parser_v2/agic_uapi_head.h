@@ -143,7 +143,7 @@ typedef struct rkaiq_gic_v1_api_attr_s {
     uint8_t edge_open;
     // M4_BOOL_DESC("noise_cut_en", "0")
     uint8_t noise_cut_en;
-    // M4_ENUM_DESC("op_mode", "rkaiq_gic_api_op_mode_t", "RKAIQ_GIC_API_OPMODE_AUTO");
+    // M4_ENUM_DESC("op_mode", "rkaiq_gic_api_op_mode_t", "RKAIQ_GIC_API_OPMODE_AUTO")
     rkaiq_gic_api_op_mode_t op_mode;
     // M4_NUMBER_DESC("iso count", "u32", M4_RANGE(1, 16), "16", M4_DIGIT(0))
     uint32_t iso_cnt;
@@ -157,7 +157,7 @@ typedef struct rkaiq_gic_v2_api_attr_s {
     rk_aiq_uapi_sync_t sync;
     // M4_BOOL_DESC("enable", "0")
     uint8_t gic_en;
-    // M4_ENUM_DESC("op_mode", "rkaiq_gic_api_op_mode_t", "RKAIQ_GIC_API_OPMODE_AUTO");
+    // M4_ENUM_DESC("op_mode", "rkaiq_gic_api_op_mode_t", "RKAIQ_GIC_API_OPMODE_AUTO")
     rkaiq_gic_api_op_mode_t op_mode;
     // M4_NUMBER_DESC("iso count", "u32", M4_RANGE(1, 16), "16", M4_DIGIT(0))
     uint32_t iso_cnt;
