@@ -198,34 +198,14 @@ typedef enum _rknn_tensor_type {
  * are not used. Do NOT change back to plain 'static'. */
 inline static const char *get_type_string(rknn_tensor_type type)
 {
-    switch (type) {
-        case RKNN_TENSOR_FLOAT32:
-            return "FP32";
-        case RKNN_TENSOR_FLOAT16:
-            return "FP16";
-        case RKNN_TENSOR_INT8:
-            return "INT8";
-        case RKNN_TENSOR_UINT8:
-            return "UINT8";
-        case RKNN_TENSOR_INT16:
-            return "INT16";
-        case RKNN_TENSOR_UINT16:
-            return "UINT16";
-        case RKNN_TENSOR_INT32:
-            return "INT32";
-        case RKNN_TENSOR_UINT32:
-            return "UINT32";
-        case RKNN_TENSOR_INT64:
-            return "INT64";
-        case RKNN_TENSOR_BOOL:
-            return "BOOL";
-        case RKNN_TENSOR_INT4:
-            return "INT4";
-        case RKNN_TENSOR_BFLOAT16:
-            return "BF16";
-        default:
-            return "UNKNOW";
-    }
+    static const char *const names[] = {
+        "FP32", "FP16", "INT8", "UINT8", "INT16", "UINT16",
+        "INT32", "UINT32", "INT64", "BOOL", "INT4", "BF16",
+    };
+
+    if (type >= 0 && type < (rknn_tensor_type)(sizeof(names) / sizeof(names[0])))
+        return names[type];
+    return "UNKNOW";
 }
 
 /*
@@ -243,16 +223,13 @@ typedef enum _rknn_tensor_qnt_type {
  * error (-Werror) when included but unused. Do NOT change. */
 inline static const char *get_qnt_type_string(rknn_tensor_qnt_type type)
 {
-    switch (type) {
-        case RKNN_TENSOR_QNT_NONE:
-            return "NONE";
-        case RKNN_TENSOR_QNT_DFP:
-            return "DFP";
-        case RKNN_TENSOR_QNT_AFFINE_ASYMMETRIC:
-            return "AFFINE";
-        default:
-            return "UNKNOW";
-    }
+    static const char *const names[] = {
+        "NONE", "DFP", "AFFINE",
+    };
+
+    if (type >= 0 && type < (rknn_tensor_qnt_type)(sizeof(names) / sizeof(names[0])))
+        return names[type];
+    return "UNKNOW";
 }
 
 /*
@@ -286,18 +263,13 @@ typedef enum _rknn_core_mask {
  * error (-Werror) when included but unused. Do NOT change. */
 inline static const char *get_format_string(rknn_tensor_format fmt)
 {
-    switch (fmt) {
-        case RKNN_TENSOR_NCHW:
-            return "NCHW";
-        case RKNN_TENSOR_NHWC:
-            return "NHWC";
-        case RKNN_TENSOR_NC1HWC2:
-            return "NC1HWC2";
-        case RKNN_TENSOR_UNDEFINED:
-            return "UNDEFINED";
-        default:
-            return "UNKNOW";
-    }
+    static const char *const names[] = {
+        "NCHW", "NHWC", "NC1HWC2", "UNDEFINED",
+    };
+
+    if (fmt >= 0 && fmt < (rknn_tensor_format)(sizeof(names) / sizeof(names[0])))
+        return names[fmt];
+    return "UNKNOW";
 }
 
 /*
