@@ -24,24 +24,12 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <assert.h>
 
 #if defined(__linux__)
 #include <sys/time.h>
 #include <time.h>
 #include "unistd.h"
 #endif
-
-/*
- * Runtime assertion shared by the xcam inline helpers.
- *
- * Delegates to the C library assert(): the check stays active in debug
- * builds and compiles to a no-op once NDEBUG is defined.
- */
-static inline void xcam_assert(int condition)
-{
-    assert(condition);
-}
 
 #ifdef  __cplusplus
 #define XCAM_BEGIN_DECLARE  extern "C" {

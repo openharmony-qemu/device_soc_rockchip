@@ -17,6 +17,7 @@
 #include <cmath>
 #include <cstdio>
 #include <limits>
+#include <string>
 #include <vector>
 #include "prepared_model_service_2.1.h"
 #include <message_parcel.h>
@@ -35,6 +36,7 @@ namespace V2_1 {
 
 constexpr uint32_t MIN_DIM = 1;
 constexpr uint32_t MAX_DIM = 100000;
+constexpr uint32_t DUMP_DIMS_NUM = 4;
 
 PreparedModelService::PreparedModelService()
 {
@@ -104,9 +106,16 @@ static unsigned char* LoadModel(const char* filename, int* modelSize)
 
 static void dump_tensor_attr(rknn_tensor_attr *attr)
 {
-    HDF_LOGI("dump_tensor_attr: index=%d, name=%{public}s, n_dims=%d, dims=[%d, %d, %d, %d],\
+    std::string dimsStr;
+    for (uint32_t i = 0; i < DUMP_DIMS_NUM; i++) {
+        if (i > 0) {
+            dimsStr += ", ";
+        }
+        dimsStr += std::to_string(attr->dims[i]);
+    }
+    HDF_LOGI("dump_tensor_attr: index=%d, name=%{public}s, n_dims=%d, dims=[%{public}s],\
         n_elems=%d, size=%d, fmt=%{public}s, type=%{public}s, qnt_type=%{public}s, zp=%d, scale=%f",
-             attr->index, attr->name, attr->n_dims, attr->dims[0], attr->dims[1], attr->dims[2], attr->dims[3],
+             attr->index, attr->name, attr->n_dims, dimsStr.c_str(),
              attr->n_elems, attr->size, get_format_string(attr->fmt), get_type_string(attr->type),
              get_qnt_type_string(attr->qnt_type), attr->zp, attr->scale);
 }

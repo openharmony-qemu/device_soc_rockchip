@@ -56,6 +56,11 @@ typedef enum MppSingletonId_e {
     MPP_SGLN_ENC_RC_API,
 } MppSingletonId;
 
+/*
+ * Forwarders to the MPP_SGLN_DEF/MPP_MODULE_DEF definition-template macros in
+ * mpp_sgln_base.h (G.PRE.02 exempt: they expand to function definitions, which
+ * cannot be replaced by an inline function).
+ */
 #define MPP_SINGLETON(id, name, init, deinit) \
     MPP_SGLN_DEF(mpp_singleton_add, id, name, init, deinit)
 
