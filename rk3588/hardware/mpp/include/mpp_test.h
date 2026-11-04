@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "securec.h"
 #include "mpp_log.h"
 #include "mpp_common.h"
 
@@ -52,7 +53,7 @@ static inline void mpp_test_fail(const char *msg, const char *func,
 static inline void mpp_test_vformat(char *buf, rk_u32 size, const char *fmt,
                                     va_list ap)
 {
-    if (vsnprintf(buf, size, fmt, ap) < 0)
+    if (vsnprintf_s(buf, size, size, fmt, ap) < 0)
         buf[0] = '\0';
 }
 
