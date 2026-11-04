@@ -16,7 +16,7 @@ import("//build/ohos/ndk/ndk.gni")
 
 ohos_prebuilt_shared_library("librga") {
   source = "lib64/librga.z.so"
-
+  innerapi_tags = [ "passthrough_indirect" ]
   install_images = [ chipset_base_dir ]
   subsystem_name = "soc_rk3588"
   part_name = "soc_rk3588"
