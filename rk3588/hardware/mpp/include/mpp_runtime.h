@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_RUNTIME__
-#define __MPP_RUNTIME__
+#ifndef MPP_RUNTIME_H
+#define MPP_RUNTIME_H
 
 #include "mpp_buffer.h"
 
@@ -27,11 +16,19 @@ extern "C" {
  * Runtime function detection is to support different binary on different
  * runtime environment. This is usefull on product environemnt.
  */
-RK_U32 mpp_rt_allcator_is_valid(MppBufferType type);
+rk_u32 mpp_rt_allcator_is_valid(MppBufferType type);
+const char *mpp_rt_get_rw_path(void);
+
+/*
+ * Check a kmpp kernel capability by reading /proc/kmpp/<module>/<kind> and
+ * matching the leading name before the colon. Generic helper — kmpp modules
+ * call this to probe their own feat/cmds/fix entries and cache locally.
+ * Returns rk_ok if supported, rk_nok otherwise.
+ */
+rk_s32 mpp_rt_kmpp_cap_check(const char *module, const char *kind, const char *name);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_RUNTIME__*/
-
+#endif /* MPP_RUNTIME_H */

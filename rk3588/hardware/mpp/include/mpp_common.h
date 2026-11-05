@@ -1,44 +1,36 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_COMMON_H__
-#define __MPP_COMMON_H__
+#ifndef MPP_COMMON_H
+#define MPP_COMMON_H
 
 #include "rk_type.h"
+#include "mpp_err.h"
 
 #define MPP_TAG_SIZE            32
 
-#define MPP_ABS(x)              ((x) < (0) ? -(x) : (x))
-
-#define MPP_MAX(a, b)           ((a) > (b) ? (a) : (b))
-#define MPP_MAX3(a, b, c)       MPP_MAX(MPP_MAX(a,b),c)
-#define MPP_MAX4(a, b, c, d)    MPP_MAX((a), MPP_MAX3((b), (c), (d)))
-
-#define MPP_MIN(a,b)            ((a) > (b) ? (b) : (a))
-#define MPP_MIN3(a,b,c)         MPP_MIN(MPP_MIN(a,b),c)
-#define MPP_MIN4(a, b, c, d)    MPP_MIN((a), MPP_MIN3((b), (c), (d)))
-
-#define MPP_DIV(a, b)           ((b) ? (a) / (b) : (a))
-
-#define MPP_CLIP3(l, h, v)      ((v) < (l) ? (l) : ((v) > (h) ? (h) : (v)))
-#define MPP_SIGN(a)             ((a) < (0) ? (-1) : (1))
-#define MPP_DIV_SIGN(a, b)      (((a) + (MPP_SIGN(a) * (b)) / 2) / (b))
-
+/*
+ * G.PRE.02: the arithmetic helper macros (MPP_ABS/MPP_MIN/MPP_MAX and
+ * derivatives) were converted to static inline functions below; all call
+ * sites are runtime contexts, so no constant-expression usage is lost.
+ * MPP_SWAP must remain a macro: it is a statement macro with a type
+ * parameter, which an inline function cannot express.
+ *
+ * G.PRE.02: MPP_ARRAY_ELEMS_U/S, MPP_ALIGN_DOWN, MPP_ALIGN_GEN, MPP_ROUNDUP,
+ * MPP_DIVUP and MPP_GENMASK were converted to static inline functions too.
+ * MPP_ARRAY_ELEMS keeps its macro form: sizeof() needs the array type, which
+ * an inline function cannot recover from a decayed pointer argument.
+ * MPP_ALIGN keeps its macro form for the same reason as MPP_SWAP (generic
+ * integer width) and because 90 call sites rely on it in init expressions.
+ */
 #define MPP_SWAP(type, a, b)    do {type SWAP_tmp = b; b = a; a = SWAP_tmp;} while(0)
 #define MPP_ARRAY_ELEMS(a)      (sizeof(a) / sizeof((a)[0]))
+/* Thin forwarders keep the MPP_ARRAY_ELEMS_U(arr) call form; the
+ * computation itself now lives in the inline functions below. */
+#define MPP_ARRAY_ELEMS_U(a)    mpp_array_elems_u(sizeof(a), sizeof((a)[0]))
+#define MPP_ARRAY_ELEMS_S(a)    mpp_array_elems_s(sizeof(a), sizeof((a)[0]))
 #define MPP_ALIGN(x, a)         (((x)+(a)-1)&~((a)-1))
 #define MPP_VSWAP(a, b)         { a ^= b; b ^= a; a ^= b; }
 
@@ -127,6 +119,16 @@
         ((RK_U8*)(p))[2] = (d)>>16; } while(0)
 
 #include <stdio.h>
+#if defined(__MINGW32CE__)
+#define fseeko                  fseeko64
+#else
+#include <unistd.h>
+#include <stddef.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#define mkdir(x)                mkdir(x, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
+#endif
 
 #define container_of(ptr, type, member) \
     ((type *)((char *)(ptr) - offsetof(type, member)))
@@ -159,6 +161,8 @@
 #define SZ_80M                  (SZ_1M*80)
 #define SZ_128M                 (SZ_1M*128)
 
+#define BPP_RGB_16BIT_FORMATS 2  /* For RGB444/555/565 formats */
+#define BPP_DEFAULT_FORMATS   4  /* For other formats */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -168,7 +172,7 @@ RK_S32 mpp_log2_16bit(RK_U32 v);
 
 static __inline RK_S32 mpp_ceil_log2(RK_S32 x)
 {
-    return mpp_log2((x - 1) << 1);
+    return mpp_log2(((RK_U32)x - 1U) << 1);
 }
 
 static __inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
@@ -178,18 +182,163 @@ static __inline RK_S32 mpp_clip(RK_S32 a, RK_S32 amin, RK_S32 amax)
     else               return a;
 }
 
-static __inline RK_U32 mpp_is_32bit()
+static inline rk_u32 mpp_array_elems_u(const size_t bytes, const size_t elem_size)
 {
-    return ((sizeof(void *) == 4) ? (1) : (0));
+    if (elem_size == 0)
+        return 0;
+
+    return (rk_u32)(bytes / elem_size);
+}
+
+static inline rk_s32 mpp_array_elems_s(const size_t bytes, const size_t elem_size)
+{
+    if (elem_size == 0)
+        return 0;
+
+    return (rk_s32)(bytes / elem_size);
+}
+
+static inline RK_U32 mpp_align_down(RK_U32 x, RK_U32 a)
+{
+    if (a == 0)
+        return x;
+
+    return x & ~(a - 1);
+}
+
+static inline RK_U32 mpp_align_gen(RK_U32 x, RK_U32 a)
+{
+    if (a == 0)
+        return x;
+
+    return (x + a - 1) / a * a;
+}
+
+static inline RK_U32 mpp_roundup(RK_U32 n, RK_U32 m)
+{
+    if (n == 0)
+        return 0;
+
+    return mpp_align_gen(m, n);
+}
+
+static inline RK_U32 mpp_divup(RK_U32 n, RK_U32 m)
+{
+    if (n == 0)
+        return 0;
+
+    return mpp_roundup(n, m) / n;
+}
+
+static inline RK_U64 mpp_genmask(RK_U32 h, RK_U32 l)
+{
+    return ((1ULL << (h + 1)) - 1) & ~((1ULL << l) - 1);
+}
+
+static inline RK_S32 mpp_abs(RK_S32 x)
+{
+    return (x < 0) ? -x : x;
+}
+
+static inline RK_S32 mpp_min(RK_S32 a, RK_S32 b)
+{
+    return (a > b) ? b : a;
+}
+
+static inline RK_S32 mpp_min3(RK_S32 a, RK_S32 b, RK_S32 c)
+{
+    return mpp_min(mpp_min(a, b), c);
+}
+
+static inline RK_S32 mpp_min4(RK_S32 a, RK_S32 b, RK_S32 c, RK_S32 d)
+{
+    return mpp_min(a, mpp_min3(b, c, d));
+}
+
+static inline RK_S32 mpp_max(RK_S32 a, RK_S32 b)
+{
+    return (a > b) ? a : b;
+}
+
+static inline RK_S32 mpp_max3(RK_S32 a, RK_S32 b, RK_S32 c)
+{
+    return mpp_max(mpp_max(a, b), c);
+}
+
+static inline RK_S32 mpp_max4(RK_S32 a, RK_S32 b, RK_S32 c, RK_S32 d)
+{
+    return mpp_max(a, mpp_max3(b, c, d));
+}
+
+static inline RK_S32 mpp_div(RK_S32 a, RK_S32 b)
+{
+    return (b != 0) ? a / b : a;
+}
+
+static inline RK_S32 mpp_clip3(RK_S32 l, RK_S32 h, RK_S32 v)
+{
+    return (v < l) ? l : ((v > h) ? h : v);
+}
+
+static inline RK_S32 mpp_sign(RK_S32 a)
+{
+    return (a < 0) ? -1 : 1;
+}
+
+#define MPP_DIV_HALF 2
+
+static inline RK_S32 mpp_div_sign(RK_S32 a, RK_S32 b)
+{
+    if (b == 0) {
+        return a;
+    }
+    return (a + mpp_sign(a) * b / MPP_DIV_HALF) / b;
+}
+
+/* minimum fd for duplication: skip stdin / stdout / stderr */
+#define MPP_FD_MIN              3
+
+static __inline RK_S32 mpp_dup(RK_S32 fd)
+{
+#ifdef F_DUPFD_CLOEXEC
+    return fcntl(fd, F_DUPFD_CLOEXEC, MPP_FD_MIN);
+#else
+    RK_S32 new_fd = -1;
+
+    new_fd = fcntl(fd, F_DUPFD, MPP_FD_MIN);
+    if (new_fd == -1)
+        return -1;
+
+    if (fcntl(new_fd, F_SETFD, FD_CLOEXEC) == -1)
+        return -1;
+
+    return new_fd;
+#endif
 }
 
 RK_S32 axb_div_c(RK_S32 a, RK_S32 b, RK_S32 c);
+RK_U32 mpp_align_8(RK_U32 val);
 RK_U32 mpp_align_16(RK_U32 val);
 RK_U32 mpp_align_64(RK_U32 val);
+RK_U32 mpp_align_128(RK_U32 val);
+RK_U32 mpp_align_256_odd(RK_U32 val);
+RK_U32 mpp_align_128_odd_plus_64(RK_U32 val);
+RK_U32 mpp_align_wxh2yuv420(RK_U32 val);
+RK_U32 mpp_align_wxh2yuv422(RK_U32 val);
+RK_U32 mpp_align_wxh2yuv444(RK_U32 val);
+
+/* Clip a signed integer to the range [0, 2^n - 1] */
+RK_U32 mpp_clip_uint_pow2(RK_S32 val, RK_S32 n);
+/* Divide an unsigned integer x by 2^n and round to nearest integer */
+RK_U64 mpp_round_pow2(RK_U64 x, RK_U16 n);
+/* Divide a signed integer x by 2^n and round to nearest integer */
+RK_S64 mpp_round_pow2_signed(RK_S64 x, RK_U16 n);
+
+MPP_RET mpp_mkdir_p(const char *path);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_COMMON_H__*/
+#endif /* MPP_COMMON_H */
 

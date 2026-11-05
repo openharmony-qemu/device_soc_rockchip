@@ -16,41 +16,33 @@ AP6XXX_ETC_DIR = "//device/soc/rockchip/rk3588/hardware/wifi/ap6xxx"
 DNS_CONFIG_DIR = "//device/soc/rockchip/rk3588/hardware/wifi"
 
 ohos_prebuilt_etc("clm_bcm43752a2_ag.blob") {
-  source = "$AP6XXX_ETC_DIR/clm_bcm43752a2_ag.blob"
+  source = "$AP6XXX_ETC_DIR/clm_bcm43752a2_pcie_ag.blob"
   install_images = [ chipset_base_dir ]
   relative_install_dir = "firmware"
-  part_name = "device_rk3588"
-  install_enable = true
-}
-
-ohos_prebuilt_etc("fw_bcm43752a2_ag_apsta.bin") {
-  source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_ag_apsta.bin"
-  install_images = [ chipset_base_dir ]
-  relative_install_dir = "firmware"
-  part_name = "device_rk3588"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
 ohos_prebuilt_etc("fw_bcm43752a2_ag.bin") {
-  source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_ag.bin"
+  source = "$AP6XXX_ETC_DIR/fw_bcm43752a2_pcie_ag.bin"
   install_images = [ chipset_base_dir ]
   relative_install_dir = "firmware"
-  part_name = "device_rk3588"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
-ohos_prebuilt_etc("nvram_ap6275s.txt") {
-  source = "$AP6XXX_ETC_DIR/nvram_ap6275s.txt"
+ohos_prebuilt_etc("nvram_ap6275p.txt") {
+  source = "$AP6XXX_ETC_DIR/nvram_ap6275p.txt"
   install_images = [ chipset_base_dir ]
   relative_install_dir = "firmware"
-  part_name = "device_rk3588"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
 ohos_prebuilt_etc("resolv.conf") {
   source = "$DNS_CONFIG_DIR/etc/resolv.conf"
   install_images = [ "system" ]
-  part_name = "device_rk3588"
+  part_name = "soc_rk3588"
   install_enable = true
 }
 
@@ -58,8 +50,7 @@ group("ap6xxx") {
   deps = [
     ":clm_bcm43752a2_ag.blob",
     ":fw_bcm43752a2_ag.bin",
-    ":fw_bcm43752a2_ag_apsta.bin",
-    ":nvram_ap6275s.txt",
+    ":nvram_ap6275p.txt",
     ":resolv.conf",
   ]
 }

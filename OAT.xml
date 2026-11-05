@@ -22,6 +22,7 @@
         <licensefile>LICENSE</licensefile>
         <policylist>
             <policy name="projectPolicy" desc="">
+                <policyitem type="copyright" name="Rockchip Corp.  All rights reserved." path="rk3588/hardware/npu/.*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Original upstream copyright retained"/>
                 <!--policyitem type="compatibility" name="GPL-2.0+" path="abc/.*" desc="Process that runs independently, invoked by the X process."/-->
                 <policyitem type="copyright" name="Huawei Technologies Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Huawei Technologies"/>
                 <policyitem type="copyright" name="Huawei Device Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Huawei Device"/>
@@ -49,6 +50,12 @@
                 <policyitem type="copyright" name="Lockzhiner Electronics Co., Ltd." path=".*" desc=""/>
 		<policyitem type="copyright" name="Shenzhen Kaihong Digital Industry Development Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By Kaihong"/>
 		<policyitem type="license" name="EndUserLicenseAgreement" path=".*" desc="EULA file"/>
+                <policyitem type="copyright" name="Rockchip Corporation" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By Rockchip"/>
+                <policyitem type="copyright" name="Rockchip Eletronics Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By Rockchip"/>
+                <policyitem type="copyright" name="Rockchip Corp." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By Rockchip"/>
+                <policyitem type="copyright" name="Fuzhou Rockchip Electronics Co.Ltd . All rights reserved." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By Rockchip"/>
+                <policyitem type="copyright" name="Fuzhou Rockchip Electronics Co., Ltd" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed By Rockchip"/>
+                <policyitem type="copyright" name="Ideas on board SPRL" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Ideas on board SPRL"/>
 	        </policy>
         </policylist>
         <filefilterlist>
@@ -106,6 +113,8 @@
 		<!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="defaultPolicyFilter" desc="Filters for compatibility，license header policies">
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/amerge/rk_aiq_types_amerge_algo_int.h" desc="Original Rockchip license header retained (OAT.3 Fuzhou Rockchip Electronics License)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/adrc/rk_aiq_types_adrc_algo_int.h" desc="Original Rockchip license header retained (OAT.3 Fuzhou Rockchip Electronics License)"/>
 	    	<filteritem type="filepath" name="rk2206/hardware/build.py" desc=""/>
                 <filteritem type="filepath" name="rk2206/sdk_liteos/platform/main/BUILD.gn" desc=""/>
                 <filteritem type="filepath" name="rk2206/sdk_liteos/BUILD.gn" desc=""/>
@@ -133,6 +142,36 @@
                 <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/adebayer/rk_aiq_types_adebayer_hw.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/ae/rk_aiq_types_ae_hw.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/af/rk_aiq_af_hw_v200.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/af/rk_aiq_types_af_algo.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/af/rk_aiq_types_af_algo_v20_v30.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/afec/rk_aiq_types_afec_algo.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/aldch/rk_aiq_types_aldch_algo.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/amd/rk_aiq_types_amd_algo.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filename" name="rkpostisp.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/aorb/rk_aiq_types_orb_algo.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/asd/rk_aiq_types_asd_algo.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/common/list.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/common/rk_aiq_offline_raw.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypes.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp20.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20Aec.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20NoiseGamma.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20SensorAwb.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20ToneColor.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp21.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_aeStats25.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_awb33.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_awb39.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/src/ispserver.cpp" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/uAPI2/rk_aiq_user_api_common.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/npu/include/rknn_api.h" desc="file has no license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/atmo/rk_aiq_types_atmo_algo_int.h" desc="file has proprietary Fuzhou Rockchip license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/atmo/rk_aiq_types_atmo_stat_v200.h" desc="file has proprietary Fuzhou Rockchip license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/amerge/rk_aiq_types_amerge_algo.h" desc="file has proprietary Fuzhou Rockchip license header (OAT.3 NoLicenseHeader)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/argbir/rk_aiq_types_argbir_algo.h" desc="file has proprietary Fuzhou Rockchip license header (OAT.3 NoLicenseHeader)"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="Filters for copyright header policies">
 	    	<filteritem type="filepath" name="rk2206/hardware/build.py" desc=""/>
@@ -162,6 +201,36 @@
                 <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/adebayer/rk_aiq_types_adebayer_hw.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/ae/rk_aiq_types_ae_hw.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/af/rk_aiq_af_hw_v200.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/af/rk_aiq_types_af_algo.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/af/rk_aiq_types_af_algo_v20_v30.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/afec/rk_aiq_types_afec_algo.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/aldch/rk_aiq_types_aldch_algo.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/amd/rk_aiq_types_amd_algo.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filename" name="rkpostisp.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/aorb/rk_aiq_types_orb_algo.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/asd/rk_aiq_types_asd_algo.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/common/list.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/common/rk_aiq_offline_raw.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypes.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp20.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20Aec.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20NoiseGamma.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20SensorAwb.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbIsp20ToneColor.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/iq_parser/RkAiqCalibDbTypesIsp21.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_aeStats25.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_awb33.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/isp/rk_aiq_stats_awb39.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/src/ispserver.cpp" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/uAPI2/rk_aiq_user_api_common.h" desc="file has no copyright header (OAT.4 NULL)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/atmo/rk_aiq_types_atmo_algo_int.h" desc="copyright line not in whitelist (OAT.4 InvalidCopyright)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/atmo/rk_aiq_types_atmo_stat_v200.h" desc="copyright line not in whitelist (OAT.4 InvalidCopyright)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/amerge/rk_aiq_types_amerge_algo.h" desc="copyright line not in whitelist (OAT.4 InvalidCopyright)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/include/algos/argbir/rk_aiq_types_argbir_algo.h" desc="copyright line not in whitelist (OAT.4 InvalidCopyright)"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/src/BUILD.gn" desc="copyright line contains no company name (OAT.4 InvalidCopyright)"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="Filters for LICENSE file policies">
                 <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
@@ -178,6 +247,11 @@
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/lib64/librkaiq.so" desc="Rockchip prebuilt ISP library"/>
+                <filteritem type="filepath" name="rk3588/hardware/isp-linux-6.6/bin64/ispserver" desc="Existing Rockchip prebuilt ISP server"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libOMX_Pluginhw.z.so" desc="Rockchip prebuilt OMX plugin library"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libomxvpu_dec.z.so" desc="Rockchip prebuilt OMX video decoder library"/>
+                <filteritem type="filepath" name="rk3588/hardware/npu/lib64/librknnrt_v2.4.1b0_ohos_arm64.so" desc="Rockchip prebuilt NPU runtime"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/firmware/mali_csffw.bin" desc="gpu firmware"/>
                 <filteritem type="filepath" name="rk3588/hardware/gpu/lib64/*" desc="gpb 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/isp/*" desc="isp lib and bin files"/>
@@ -185,7 +259,9 @@
                 <filteritem type="filepath" name="rk3588/hardware/display/lib/*" desc="display 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/display/lib64/*" desc="display 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/omx_il/lib/*" desc="omx 32bit libs file"/>
-                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/*" desc="omx 64bit libs file"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libOMX_Core.z.so" desc="Rockchip prebuilt OMX library installed by rk3588/hardware/omx_il/BUILD.gn; existing vendor binary retained" ref="rk3588/hardware/omx_il/BUILD.gn"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libRkOMX_Resourcemanager.z.so" desc="Rockchip prebuilt OMX library installed by rk3588/hardware/omx_il/BUILD.gn; existing vendor binary retained" ref="rk3588/hardware/omx_il/BUILD.gn"/>
+                <filteritem type="filepath" name="rk3588/hardware/omx_il/lib64/libomxvpu_enc.z.so" desc="Rockchip prebuilt OMX library installed by rk3588/hardware/omx_il/BUILD.gn; existing vendor binary retained" ref="rk3588/hardware/omx_il/BUILD.gn"/>
                 <filteritem type="filepath" name="rk3588/hardware/gra/lib/*" desc="gra 32bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/gra/lib64/*" desc="gra 64bit libs file"/>
                 <filteritem type="filepath" name="rk3588/hardware/wifi/*" desc="wifi lib and bin files"/>
@@ -234,6 +310,14 @@
                     uvwxyz license textB xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 				 " desc=""/>
             </licensematcher-->
+            <licensematcher name="Fuzhou Rockchip Electronics License" desc="Custom license header in rk_aiq_types_* files (flagged InvalidLicense)">
+                <licensetext name="
+                    No part of this work may be reproduced, modified, distributed, transmitted,
+                    transcribed, or translated into any language or computer format, in any form
+                    or by any means without written permission of:
+                    Fuzhou Rockchip Electronics Co.Ltd .
+                 " desc=""/>
+            </licensematcher>
         </licensematcherlist>
     </oatconfig>
 </configuration>

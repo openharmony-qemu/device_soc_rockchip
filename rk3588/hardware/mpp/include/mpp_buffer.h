@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_BUFFER_H__
-#define __MPP_BUFFER_H__
+#ifndef MPP_BUFFER_H
+#define MPP_BUFFER_H
 
 #include "rk_type.h"
 #include "mpp_err.h"
@@ -120,6 +109,10 @@ typedef enum {
  * ion      : use ion device under Android/Linux, MppBuffer will encapsulte ion file handle
  * ext_dma  : the DMABUF(DMA buffers) come from the application
  * drm      : use the drm device interface for memory management
+ *
+ * MPP default allocator select priority for kernel above 5.10:
+ * MPP_BUFFER_TYPE_DMA_HEAP > MPP_BUFFER_TYPE_DRM > MPP_BUFFER_TYPE_ION
+ * MPP_BUFFER_TYPE_EXT_DMA is only used for general external dma_buf fd import.
  */
 typedef enum {
     MPP_BUFFER_TYPE_NORMAL,
@@ -137,19 +130,26 @@ typedef enum {
  * 16 high bits of MppBufferType are used in flags
  *
  * eg:
- * DRM CMA buffer : MPP_BUFFER_TYPE_DRM | MPP_BUFFER_FLAGS_CONTIG
- *                  = 0x00010003
- * DRM SECURE buffer: MPP_BUFFER_TYPE_DRM | MPP_BUFFER_FLAGS_SECURE
- *                  = 0x00080003
+ * DMA_HEAP CMA buffer  : MPP_BUFFER_TYPE_DMA_HEAP | MPP_BUFFER_FLAGS_CONTIG
+ *                      = 0x00010004
+ * DRM SECURE buffer    : MPP_BUFFER_TYPE_DRM | MPP_BUFFER_FLAGS_SECURE
+ *                      = 0x00080003
+ *
+ * The dma buffer source can also be set by format: flags | type.
+ * dma buffer source flags:
+ * MPP_BUFFER_FLAGS_CONTIG means cma
+ * MPP_BUFFER_FLAGS_CACHABLE means cachable
+ * MPP_BUFFER_FLAGS_DMA32 means dma32
  *
  * flags originate from drm_rockchip_gem_mem_type
  */
-
-#define MPP_BUFFER_FLAGS_MASK           0x000f0000      //ROCKCHIP_BO_MASK << 16
+#define MPP_BUFFER_FLAGS_MASK           0x003f0000      //ROCKCHIP_BO_MASK << 16
 #define MPP_BUFFER_FLAGS_CONTIG         0x00010000      //ROCKCHIP_BO_CONTIG << 16
 #define MPP_BUFFER_FLAGS_CACHABLE       0x00020000      //ROCKCHIP_BO_CACHABLE << 16
 #define MPP_BUFFER_FLAGS_WC             0x00040000      //ROCKCHIP_BO_WC << 16
 #define MPP_BUFFER_FLAGS_SECURE         0x00080000      //ROCKCHIP_BO_SECURE << 16
+#define MPP_BUFFER_FLAGS_ALLOC_KMAP     0x00100000      //ROCKCHIP_BO_ALLOC_KMAP << 16
+#define MPP_BUFFER_FLAGS_DMA32          0x00200000      //ROCKCHIP_BO_DMA32 << 16
 
 /*
  * MppBufferInfo variable's meaning is different in different MppBufferType
@@ -259,10 +259,10 @@ typedef struct MppBufferInfo_t {
         mpp_buffer_set_offset_with_caller(buffer, offset, __FUNCTION__)
 
 #define mpp_buffer_group_get_internal(group, type, ...) \
-        mpp_buffer_group_get(group, type, MPP_BUFFER_INTERNAL, MODULE_TAG, __FUNCTION__)
+        mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_INTERNAL, MODULE_TAG, __FUNCTION__)
 
 #define mpp_buffer_group_get_external(group, type, ...) \
-        mpp_buffer_group_get(group, type, MPP_BUFFER_EXTERNAL, MODULE_TAG, __FUNCTION__)
+        mpp_buffer_group_get(group, (MppBufferType)(type), MPP_BUFFER_EXTERNAL, MODULE_TAG, __FUNCTION__)
 
 #ifdef __cplusplus
 extern "C" {
@@ -283,6 +283,18 @@ MPP_RET mpp_buffer_get_with_tag(MppBufferGroup group, MppBuffer *buffer, size_t 
                                 const char *tag, const char *caller);
 MPP_RET mpp_buffer_put_with_caller(MppBuffer buffer, const char *caller);
 MPP_RET mpp_buffer_inc_ref_with_caller(MppBuffer buffer, const char *caller);
+MPP_RET mpp_buffer_discard_with_caller(MppBuffer buffer, const char *caller);
+
+/*
+ * mpp_buffer_set_discard was previously a function-like macro. It is now an
+ * inline function so the shared library keeps the same public interface while
+ * the header no longer hides control flow (and no longer relies on __FUNCTION__
+ * inside a macro, which reports the caller name only by expansion accident).
+ */
+static inline MPP_RET mpp_buffer_set_discard(MppBuffer buffer)
+{
+    return mpp_buffer_discard_with_caller(buffer, __FUNCTION__);
+}
 
 MPP_RET mpp_buffer_info_get_with_caller(MppBuffer buffer, MppBufferInfo *info, const char *caller);
 MPP_RET mpp_buffer_read_with_caller(MppBuffer buffer, size_t offset, void *data, size_t size, const char *caller);
@@ -294,6 +306,65 @@ int     mpp_buffer_get_index_with_caller(MppBuffer buffer, const char *caller);
 MPP_RET mpp_buffer_set_index_with_caller(MppBuffer buffer, int index, const char *caller);
 size_t  mpp_buffer_get_offset_with_caller(MppBuffer buffer, const char *caller);
 MPP_RET mpp_buffer_set_offset_with_caller(MppBuffer buffer, size_t offset, const char *caller);
+
+/**
+ * @brief MppBuffer cache operation function
+ * @param buffer The MppBuffer to run the cache operation
+ * @param ro for readonly option
+ * @param offset partial sync data start offset
+ * @param length partial sync data length
+ */
+MPP_RET mpp_buffer_sync_begin_f(MppBuffer buffer, RK_S32 ro, const char* caller);
+MPP_RET mpp_buffer_sync_end_f(MppBuffer buffer, RK_S32 ro, const char* caller);
+MPP_RET mpp_buffer_sync_partial_begin_f(MppBuffer buffer, RK_S32 ro, RK_U32 offset, RK_U32 length, const char* caller);
+MPP_RET mpp_buffer_sync_partial_end_f(MppBuffer buffer, RK_S32 ro, RK_U32 offset, RK_U32 length, const char* caller);
+
+/*
+ * The cache sync helpers below were previously function-like macros wrapping
+ * the mpp_buffer_sync_*_f() entry points. They are now inline functions so
+ * that the shared library keeps the same public interface while the header
+ * no longer hides control flow (and no longer relies on __FUNCTION__ inside a
+ * macro, which reports the caller name only by expansion accident).
+ */
+static inline MPP_RET mpp_buffer_sync_begin(MppBuffer buffer)
+{
+    return mpp_buffer_sync_begin_f(buffer, 0, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_end(MppBuffer buffer)
+{
+    return mpp_buffer_sync_end_f(buffer, 0, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_partial_begin(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_begin_f(buffer, 0, offset, length, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_partial_end(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_end_f(buffer, 0, offset, length, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_begin(MppBuffer buffer)
+{
+    return mpp_buffer_sync_begin_f(buffer, 1, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_end(MppBuffer buffer)
+{
+    return mpp_buffer_sync_end_f(buffer, 1, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_partial_begin(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_begin_f(buffer, 1, offset, length, __FUNCTION__);
+}
+
+static inline MPP_RET mpp_buffer_sync_ro_partial_end(MppBuffer buffer, RK_U32 offset, RK_U32 length)
+{
+    return mpp_buffer_sync_partial_end_f(buffer, 1, offset, length, __FUNCTION__);
+}
 
 MPP_RET mpp_buffer_group_get(MppBufferGroup *group, MppBufferType type, MppBufferMode mode,
                              const char *tag, const char *caller);
@@ -310,11 +381,11 @@ MppBufferType mpp_buffer_group_type(MppBufferGroup group);
  */
 MPP_RET mpp_buffer_group_limit_config(MppBufferGroup group, size_t size, RK_S32 count);
 
-RK_U32 mpp_buffer_total_now();
-RK_U32 mpp_buffer_total_max();
+RK_U32 mpp_buffer_total_now(void);
+RK_U32 mpp_buffer_total_max(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_BUFFER_H__*/
+#endif /* MPP_BUFFER_H */

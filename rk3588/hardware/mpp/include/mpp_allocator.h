@@ -1,32 +1,24 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_ALLOCATOR_H__
-#define __MPP_ALLOCATOR_H__
+#ifndef MPP_ALLOCATOR_H
+#define MPP_ALLOCATOR_H
 
-#include "rk_type.h"
+#include "mpp_bit.h"
 #include "mpp_buffer.h"
 
-typedef void *MppAllocator;
+typedef enum MppAllocFlagType_e {
+    MPP_ALLOC_FLAG_NONE         = 0U,
+    MPP_ALLOC_FLAG_DMA32        = MPP_BIT(0),
+    MPP_ALLOC_FLAG_CACHABLE     = MPP_BIT(1),
+    MPP_ALLOC_FLAG_CMA          = MPP_BIT(2),
+    MPP_ALLOC_FLAG_TYPE_MASK    = MPP_FLAG_OR(MPP_ALLOC_FLAG_CMA, MPP_ALLOC_FLAG_CACHABLE, MPP_ALLOC_FLAG_DMA32),
+    MPP_ALLOC_FLAG_TYPE_NB,
+} MppAllocFlagType;
 
-typedef struct MppAllocatorCfg_t {
-    // input
-    size_t          alignment;
-    RK_U32          flags;
-} MppAllocatorCfg;
+typedef void *MppAllocator;
 
 typedef struct MppAllocatorApi_t {
     RK_U32  size;
@@ -43,13 +35,14 @@ typedef struct MppAllocatorApi_t {
 extern "C" {
 #endif
 
-MPP_RET mpp_allocator_get(MppAllocator *allocator,
-                          MppAllocatorApi **api, MppBufferType type);
+/* NOTE: flag may be updated by allocator */
+MPP_RET mpp_allocator_get(MppAllocator *allocator, MppAllocatorApi **api,
+                          MppBufferType type, MppAllocFlagType flag);
 MPP_RET mpp_allocator_put(MppAllocator *allocator);
+MppAllocFlagType mpp_allocator_get_flags(const MppAllocator allocator);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_ALLOCATOR_H__*/
-
+#endif /* MPP_ALLOCATOR_H */

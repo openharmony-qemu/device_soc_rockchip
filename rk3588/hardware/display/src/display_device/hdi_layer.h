@@ -156,6 +156,7 @@ public:
     }
     virtual ~HdiLayer()
     {
+        DISPLAY_LOGD();
         mIdSets.erase(mId);
     }
 

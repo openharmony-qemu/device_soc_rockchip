@@ -15,11 +15,16 @@ import("//build/ohos.gni")
 
 group("hardware_group") {
   deps = [
-    "//device/soc/rockchip/rk3588/hardware/gpu:firmware",
-    "//device/soc/rockchip/rk3588/hardware/gpu:mali-g610-ohos",
-    "//device/soc/rockchip/rk3588/hardware/isp:isp",
+    "//device/soc/rockchip/rk3588/hardware/gpu:gpu",
     "//device/soc/rockchip/rk3588/hardware/mpp:mpp",
     "//device/soc/rockchip/rk3588/hardware/rga:rga",
     "//device/soc/rockchip/rk3588/hardware/wifi:ap6xxx",
+    "//device/soc/rockchip/rk3588/hardware/display:display_buffer_model",
+    "//device/soc/rockchip/rk3588/hardware/display:display_composer_model",
+    "//device/soc/rockchip/rk3588/hardware/codec:codec_oem_interface",
+    "//device/soc/rockchip/rk3588/hardware/omx_il:lib_omx",
+    "//device/soc/rockchip/rk3588/hardware/nnrt:nnrt_entry",
+    "//device/soc/rockchip/rk3588/hardware/npu:npu",
+    "//device/soc/rockchip/rk3588/hardware/isp-linux-6.6:isp",
   ]
 }

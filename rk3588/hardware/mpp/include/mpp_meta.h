@@ -1,26 +1,15 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_META_H__
-#define __MPP_META_H__
+#ifndef MPP_META_H
+#define MPP_META_H
 
 #include <stdint.h>
 #include "rk_type.h"
 
-#define FOURCC_META(a, b, c, d) ((RK_U32)(a) << 24  | \
+#define FOURCC_META(a, b, c, d) (((RK_U32)(a) << 24) | \
                                 ((RK_U32)(b) << 16) | \
                                 ((RK_U32)(c) << 8)  | \
                                 ((RK_U32)(d) << 0))
@@ -42,21 +31,6 @@
  * 2. Flow control metadata
  *
  */
-typedef enum MppMetaDataType_e {
-    /*
-     * mpp meta data of data flow
-     * reference counter will be used for these meta data type
-     */
-    TYPE_FRAME                  = FOURCC_META('m', 'f', 'r', 'm'),
-    TYPE_PACKET                 = FOURCC_META('m', 'p', 'k', 't'),
-    TYPE_BUFFER                 = FOURCC_META('m', 'b', 'u', 'f'),
-
-    /* mpp meta data of normal data type */
-    TYPE_S32                    = FOURCC_META('s', '3', '2', ' '),
-    TYPE_S64                    = FOURCC_META('s', '6', '4', ' '),
-    TYPE_PTR                    = FOURCC_META('p', 't', 'r', ' '),
-} MppMetaType;
-
 typedef enum MppMetaKey_e {
     /* data flow key */
     KEY_INPUT_FRAME             = FOURCC_META('i', 'f', 'r', 'm'),
@@ -66,6 +40,8 @@ typedef enum MppMetaKey_e {
     /* output motion information for motion detection */
     KEY_MOTION_INFO             = FOURCC_META('m', 'v', 'i', 'f'),
     KEY_HDR_INFO                = FOURCC_META('h', 'd', 'r', ' '),
+    KEY_HDR_META_OFFSET         = FOURCC_META('h', 'd', 'r', 'o'),
+    KEY_HDR_META_SIZE           = FOURCC_META('h', 'd', 'r', 'l'),
 
     /* flow control key */
     KEY_INPUT_BLOCK             = FOURCC_META('i', 'b', 'l', 'k'),
@@ -77,11 +53,36 @@ typedef enum MppMetaKey_e {
     KEY_TEMPORAL_ID             = FOURCC_META('t', 'l', 'i', 'd'),
     KEY_LONG_REF_IDX            = FOURCC_META('l', 't', 'i', 'd'),
     KEY_ENC_AVERAGE_QP          = FOURCC_META('a', 'v', 'g', 'q'),
+    KEY_ENC_START_QP            = FOURCC_META('s', 't', 'r', 'q'),
+    KEY_ENC_BPS_RT              = FOURCC_META('r', 't', 'b', 'r'),   /* realtime bps */
     KEY_ROI_DATA                = FOURCC_META('r', 'o', 'i', ' '),
+    KEY_JPEG_ROI_DATA           = FOURCC_META('j', 'r', 'o', 'i'),
     KEY_OSD_DATA                = FOURCC_META('o', 's', 'd', ' '),
     KEY_OSD_DATA2               = FOURCC_META('o', 's', 'd', '2'),
+    KEY_OSD_DATA3               = FOURCC_META('o', 's', 'd', '3'),
     KEY_USER_DATA               = FOURCC_META('u', 's', 'r', 'd'),
     KEY_USER_DATAS              = FOURCC_META('u', 'r', 'd', 's'),
+
+    /* num of inter different size predicted block */
+    KEY_LVL64_INTER_NUM         = FOURCC_META('l', '6', '4', 'p'),
+    KEY_LVL32_INTER_NUM         = FOURCC_META('l', '3', '2', 'p'),
+    KEY_LVL16_INTER_NUM         = FOURCC_META('l', '1', '6', 'p'),
+    KEY_LVL8_INTER_NUM          = FOURCC_META('l', '8', 'p', ' '),
+    /* num of intra different size predicted block */
+    KEY_LVL32_INTRA_NUM         = FOURCC_META('l', '3', '2', 'i'),
+    KEY_LVL16_INTRA_NUM         = FOURCC_META('l', '1', '6', 'i'),
+    KEY_LVL8_INTRA_NUM          = FOURCC_META('l', '8', 'i', ' '),
+    KEY_LVL4_INTRA_NUM          = FOURCC_META('l', '4', 'i', ' '),
+    /* output P skip frame indicator */
+    KEY_OUTPUT_PSKIP            = FOURCC_META('o', 'p', 's', 'p'),
+    /*
+     * Input P-skip frame request
+     * KEY_INPUT_PSKIP: The skip frame will be referenced in the next frame.
+     * KEY_INPUT_PSKIP_NON_REF: The skip frame will not be referenced as a frame.
+     */
+    KEY_INPUT_PSKIP             = FOURCC_META('i', 'p', 's', 'p'),
+    KEY_INPUT_PSKIP_NON_REF     = FOURCC_META('i', 'p', 'n', 'r'),
+    KEY_ENC_SSE                 = FOURCC_META('e', 's', 's', 'e'),
 
     /*
      * For vepu580 roi buffer config mode
@@ -119,8 +120,21 @@ typedef enum MppMetaKey_e {
      */
     KEY_QPMAP0                  = FOURCC_META('e', 'q', 'm', '0'),
 
-    /* input motion list for smart p rate control */
-    KEY_MV_LIST                 = FOURCC_META('m', 'v', 'l', 't'),
+    /*
+     * shared memory buffer for object dectection flag from NPU, for rv1126b
+     * Picture width is aligned to 16, each 16x16 block is 8bit data.
+     * H.264: 16x16 block is arranged in raster order.
+     * H.265: 16x16 block is reordered to ctu order then ctu raster order
+     */
+    KEY_NPU_SOBJ_FLAG           = FOURCC_META('n', 'p', 'u', 's'),
+    /* userspace object dectection flag from NPU, for rk3588 and rk3576 */
+    KEY_NPU_UOBJ_FLAG           = FOURCC_META('n', 'p', 'u', 'u'),
+
+    /*
+     * smart v4 encoder input key
+     */
+    KEY_BUFFER_UPSCALE          = FOURCC_META('u', 'b', 'u', 'f'),
+    KEY_BUFFER_DOWNSCALE        = FOURCC_META('d', 'b', 'u', 'f'),
 
     /* frame long-term reference frame operation */
     KEY_ENC_MARK_LTR            = FOURCC_META('m', 'l', 't', 'r'),
@@ -129,6 +143,23 @@ typedef enum MppMetaKey_e {
     /* MLVEC specified encoder feature  */
     KEY_ENC_FRAME_QP            = FOURCC_META('f', 'r', 'm', 'q'),
     KEY_ENC_BASE_LAYER_PID      = FOURCC_META('b', 'p', 'i', 'd'),
+
+    /* Thumbnail info for decoder output frame */
+    KEY_DEC_TBN_EN              = FOURCC_META('t', 'b', 'e', 'n'),
+    KEY_DEC_TBN_Y_OFFSET        = FOURCC_META('t', 'b', 'y', 'o'),
+    KEY_DEC_TBN_UV_OFFSET       = FOURCC_META('t', 'b', 'c', 'o'),
+
+    /* combo frame */
+    KEY_COMBO_FRAME             = FOURCC_META('c', 'f', 'r', 'm'),
+    KEY_CHANNEL_ID              = FOURCC_META('c', 'h', 'a', 'n'),
+
+    /* Preprocess (pp) operation metat data */
+    /* Motion Detection output buffer */
+    KEY_PP_MD_BUF               = FOURCC_META('m', 'd', 'b', 'f'),
+    /* Occlusion Detection output buffer */
+    KEY_PP_OD_BUF               = FOURCC_META('o', 'd', 'b', 'f'),
+    /* pp output data */
+    KEY_PP_OUT                  = FOURCC_META('o', 'p', 'p', ' '),
 } MppMetaKey;
 
 #define mpp_meta_get(meta) mpp_meta_get_with_tag(meta, MODULE_TAG, __FUNCTION__)
@@ -143,6 +174,7 @@ extern "C" {
 MPP_RET mpp_meta_get_with_tag(MppMeta *meta, const char *tag, const char *caller);
 MPP_RET mpp_meta_put(MppMeta meta);
 RK_S32  mpp_meta_size(MppMeta meta);
+MppMeta mpp_meta_dup(MppMeta meta);
 
 MPP_RET mpp_meta_set_s32(MppMeta meta, MppMetaKey key, RK_S32 val);
 MPP_RET mpp_meta_set_s64(MppMeta meta, MppMetaKey key, RK_S64 val);
@@ -169,4 +201,4 @@ MPP_RET mpp_meta_get_buffer_d(MppMeta meta, MppMetaKey key, MppBuffer *buffer, M
 }
 #endif
 
-#endif /*__MPP_META_H__*/
+#endif /* MPP_META_H */

@@ -37,13 +37,17 @@ public:
     template<typename... Args>
     int32_t CallDisplayFunction(uint32_t devId, int32_t (HdiDisplay::*member)(Args...), Args... args)
     {
-        DISPLAY_LOGD("device Id : %{public}d", devId);
+        DISPLAY_LOGD("CallDisplayFunction device Id : %{public}d", devId);
         DISPLAY_CHK_RETURN((devId == INVALIDE_DISPLAY_ID), DISPLAY_FAILURE, DISPLAY_LOGE("invalide device id"));
         std::lock_guard<std::mutex> lock(mMutex);
         auto iter = mHdiDisplays.find(devId);
         DISPLAY_CHK_RETURN((iter == mHdiDisplays.end()), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find display %{public}d", devId));
         auto display = iter->second.get();
+        if (display == nullptr) {
+            DISPLAY_LOGD("CallDisplayFunction display is null");
+            return DISPLAY_FAILURE;
+        }
         return (display->*member)(std::forward<Args>(args)...);
     }
 
@@ -57,6 +61,10 @@ public:
         DISPLAY_CHK_RETURN((iter == mHdiDisplays.end()), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find display %{public}d", devId));
         auto display = iter->second.get();
+        if (display == nullptr) {
+            DISPLAY_LOGD("CallLayerFunction display is null");
+            return DISPLAY_FAILURE;
+        }
         auto layer = display->GetHdiLayer(layerId);
         DISPLAY_CHK_RETURN((layer == nullptr), DISPLAY_FAILURE,
             DISPLAY_LOGE("can not find the layer %{public}d", layerId));

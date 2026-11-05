@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2016 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2016 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_RC_API_H__
-#define __MPP_RC_API_H__
+#ifndef MPP_RC_API_H
+#define MPP_RC_API_H
 
 #include "mpp_err.h"
 #include "rk_venc_rc.h"
@@ -50,9 +39,10 @@ typedef enum RcMode_e {
     RC_CBR,
     RC_FIXQP,
     RC_AVBR,
+    RC_SMT,
     RC_CVBR,
     RC_QVBR,
-    RC_LEARNING,
+    RC_SE,          // super encode mode
     RC_MODE_BUTT,
 } RcMode;
 
@@ -71,8 +61,8 @@ typedef enum GopMode_e {
  * fps_in_num
  * input frame rate numerator, if 0 then default 30
  *
- * fps_in_denorm
- * input frame rate denorminator, if 0 then default 1
+ * fps_in_denom
+ * input frame rate denominator, if 0 then default 1
  *
  * fps_out_flex
  * 0 - fix output frame rate
@@ -81,16 +71,16 @@ typedef enum GopMode_e {
  * fps_out_num
  * output frame rate numerator, if 0 then default 30
  *
- * fps_out_denorm
- * output frame rate denorminator, if 0 then default 1
+ * fps_out_denom
+ * output frame rate denominator, if 0 then default 1
  */
 typedef struct RcFpsCfg_t {
     RK_S32      fps_in_flex;
     RK_S32      fps_in_num;
-    RK_S32      fps_in_denorm;
+    RK_S32      fps_in_denom;
     RK_S32      fps_out_flex;
     RK_S32      fps_out_num;
-    RK_S32      fps_out_denorm;
+    RK_S32      fps_out_denom;
 } RcFpsCfg;
 
 typedef struct RcSuperframeCfg_t {
@@ -153,6 +143,10 @@ typedef struct RcCfg_s {
     RK_S32      min_i_quality;
     RK_S32      i_quality_delta;
     RK_S32      vi_quality_delta;
+    RK_S32      fqp_min_i;
+    RK_S32      fqp_min_p;
+    RK_S32      fqp_max_i;
+    RK_S32      fqp_max_p;
     /* layer quality proportion */
     RK_S32      layer_quality_delta[4];
 
@@ -179,6 +173,11 @@ typedef struct RcCfg_s {
     RcSuperframeCfg super_cfg;
     RcDebreathCfg   debreath_cfg;
     RcHierQPCfg     hier_qp_cfg;
+    RK_U32          refresh_len;
+    RK_S32          scene_mode;
+    RK_U32          fps_chg_prop;
+
+    RK_S32          rc_container;
 } RcCfg;
 
 /*
@@ -253,4 +252,4 @@ MPP_RET rc_brief_get_by_type(RcApiQueryType *query);
 }
 #endif
 
-#endif /* __MPP_RC_API_H__ */
+#endif /* MPP_RC_API_H */

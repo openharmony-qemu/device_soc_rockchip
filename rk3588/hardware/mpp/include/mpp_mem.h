@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2015 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2015 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_MEM_H__
-#define __MPP_MEM_H__
+#ifndef MPP_MEM_H
+#define MPP_MEM_H
 
 #include <stdlib.h>
 
@@ -31,11 +20,11 @@
 #define mpp_malloc_size(type, size)  \
     (type*)mpp_osal_malloc(__FUNCTION__, size)
 
-#define mpp_calloc_size(type, size)  \
-    (type*)mpp_osal_calloc(__FUNCTION__, size)
-
 #define mpp_calloc(type, count)  \
     (type*)mpp_osal_calloc(__FUNCTION__, sizeof(type) * (count))
+
+#define mpp_calloc_size(type, size)  \
+    (type*)mpp_osal_calloc(__FUNCTION__, size)
 
 #define mpp_realloc(ptr, type, count) \
     (type*)mpp_osal_realloc(__FUNCTION__, ptr, sizeof(type) * (count))
@@ -55,28 +44,25 @@ void *mpp_osal_calloc(const char *caller, size_t size);
 void *mpp_osal_realloc(const char *caller, void *ptr, size_t size);
 void mpp_osal_free(const char *caller, void *ptr);
 
-void mpp_show_mem_status();
-RK_U32 mpp_mem_total_now();
-RK_U32 mpp_mem_total_max();
-
 /*
- * mpp memory usage snapshot tool
- *
- * usage:
- * call mpp_mem_get_snapshot on context init get one snapshot
- * call mpp_mem_get_snapshot on context deinit get another snapshot
- * call mpp_mem_diff_snapshot to show the difference between these two snapshot
- * call mpp_mem_put_snapshot twice to release these two snapshot
+ * mpp_realloc_size was previously a function-like macro. It is now an inline
+ * function so the shared library keeps the same public interface while the
+ * header no longer hides control flow (and no longer relies on __FUNCTION__
+ * inside a macro). The macro's leading (type*) cast is dropped: callers cast
+ * the returned void* themselves.
  */
-typedef void* MppMemSnapshot;
+static inline void *mpp_realloc_size(void *ptr, size_t size)
+{
+    return mpp_osal_realloc(__FUNCTION__, ptr, size);
+}
 
-MPP_RET mpp_mem_get_snapshot(MppMemSnapshot *hnd);
-MPP_RET mpp_mem_put_snapshot(MppMemSnapshot *hnd);
-MPP_RET mpp_mem_squash_snapshot(MppMemSnapshot hnd0, MppMemSnapshot hnd1);
+void mpp_show_mem_status(void);
+rk_u32 mpp_mem_total_now(void);
+rk_u32 mpp_mem_total_max(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_MEM_H__*/
+#endif /* MPP_MEM_H */
 

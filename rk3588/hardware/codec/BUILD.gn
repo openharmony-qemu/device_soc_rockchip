@@ -22,14 +22,13 @@ ohos_shared_library("libcodec_oem_interface") {
     "//device/soc/rockchip/rk3588/hardware/rga/include",
   ]
   sources = [
-    "src/hdi_mpp.c",
+    "src/hdi_mpp.cpp",
     "src/hdi_mpp_component_manager.cpp",
-    "src/hdi_mpp_config.c",
-    "src/hdi_mpp_mpi.c",
+    "src/hdi_mpp_config.cpp",
+    "src/hdi_mpp_mpi.cpp",
   ]
 
   deps = [
-    "$hdf_uhdf_path/utils:libhdf_utils",
     "//device/soc/rockchip/rk3588/hardware/rga:librga",
   ]
 
@@ -50,14 +49,15 @@ ohos_shared_library("libcodec_oem_interface") {
       "graphic_surface:buffer_handle",
       "hilog:libhilog",
       "ipc:ipc_single",
+      "hdf_core:libhdf_utils",
     ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
 
   install_images = [ chipset_base_dir ]
-  subsystem_name = "hdf"
-  part_name = "device_rk3588"
+  subsystem_name = "soc_rk3588"
+  part_name = "soc_rk3588"
 }
 
 group("codec_oem_interface") {

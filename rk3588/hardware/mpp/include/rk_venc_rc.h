@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef __RK_VENC_RC_H__
-#define __RK_VENC_RC_H__
+#ifndef RK_VENC_RC_H
+#define RK_VENC_RC_H
 
 #include "rk_type.h"
 
@@ -28,8 +28,19 @@ typedef enum MppEncRcMode_e {
     MPP_ENC_RC_MODE_CBR,
     MPP_ENC_RC_MODE_FIXQP,
     MPP_ENC_RC_MODE_AVBR,
+    MPP_ENC_RC_MODE_SMTRC,
+    MPP_ENC_RC_MODE_SE,
     MPP_ENC_RC_MODE_BUTT
 } MppEncRcMode;
+
+typedef enum MppEncSeMode_e {
+    MPP_ENC_SE_DISABLE = 0,         // disable super encoder
+    MPP_ENC_SE_MODE_BAL,            // balance mode
+    MPP_ENC_SE_MODE_QF,             // quality first mode
+    MPP_ENC_SE_MODE_BF,             // bitrate first mode
+    MPP_ENC_SE_MODE_EXTERNAL,       // external se mode
+    MPP_ENC_SE_MODE_BUTT
+} MppEncSeMode;
 
 typedef enum MppEncRcPriority_e {
     MPP_ENC_RC_BY_BITRATE_FIRST,
@@ -57,4 +68,10 @@ typedef enum MppEncRcGopMode_e {
     MPP_ENC_RC_GOP_MODE_BUTT,
 } MppEncRcGopMode;
 
-#endif /*__RK_VENC_RC_H__*/
+typedef enum MppEncRcIntraRefreshMode_e {
+    MPP_ENC_RC_INTRA_REFRESH_ROW = 0,
+    MPP_ENC_RC_INTRA_REFRESH_COL,
+    MPP_ENC_RC_INTRA_REFRESH_BUTT
+} MppEncRcRefreshMode;
+
+#endif /* RK_VENC_RC_H */

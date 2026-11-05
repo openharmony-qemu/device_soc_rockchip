@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef __VPU_API_H__
-#define __VPU_API_H__
+#ifndef VPU_API_H
+#define VPU_API_H
 
 #include "rk_type.h"
 #include "mpp_err.h"
@@ -46,14 +46,15 @@
 #define VPU_OUTPUT_FORMAT_BIT_12                    (0x00020000)
 #define VPU_OUTPUT_FORMAT_BIT_14                    (0x00030000)
 #define VPU_OUTPUT_FORMAT_BIT_16                    (0x00040000)
-#define VPU_OUTPUT_FORMAT_COLORSPACE_MASK           (0x00f00000)
-#define VPU_OUTPUT_FORMAT_COLORSPACE_BT709          (0x00100000)
-#define VPU_OUTPUT_FORMAT_COLORSPACE_BT2020         (0x00200000)
+#define VPU_OUTPUT_FORMAT_FBC_MASK                  (0x00f00000)
+#define VPU_OUTPUT_FORMAT_FBC_AFBC_V1               (0x00100000)
+#define VPU_OUTPUT_FORMAT_FBC_AFBC_V2               (0x00200000)
+#define VPU_OUTPUT_FORMAT_FBC_RKFBC                 (0x00400000)
 #define VPU_OUTPUT_FORMAT_DYNCRANGE_MASK            (0x0f000000)
 #define VPU_OUTPUT_FORMAT_DYNCRANGE_SDR             (0x00000000)
 #define VPU_OUTPUT_FORMAT_DYNCRANGE_HDR10           (0x01000000)
 #define VPU_OUTPUT_FORMAT_DYNCRANGE_HDR_HLG         (0x02000000)
-#define VPU_OUTPUT_FORMAT_DYNCRANGE_HDR_DOLBY       (0x03000000)
+#define VPU_OUTPUT_FORMAT_DYNCRANGE_HDR_DLBY        (0x03000000)
 
 /**
  * @brief input picture type
@@ -72,7 +73,8 @@ typedef enum {
     ENC_INPUT_RGB888 = 10,                    /**< 24-bit RGB           */
     ENC_INPUT_BGR888 = 11,                    /**< 24-bit RGB           */
     ENC_INPUT_RGB101010 = 12,                 /**< 30-bit RGB           */
-    ENC_INPUT_BGR101010 = 13                  /**< 30-bit RGB           */
+    ENC_INPUT_BGR101010 = 13,                 /**< 30-bit RGB           */
+    ENC_INPUT_YUV420_SEMIPLANAR_VU = 0X100    /**< YYYY... VUVUVUVU...  */
 } EncInputPictureType;
 
 typedef enum VPU_API_CMD {
@@ -93,18 +95,37 @@ typedef enum VPU_API_CMD {
     VPU_API_SET_OUTPUT_BLOCK,
     VPU_API_GET_EOS_STATUS,
     VPU_API_SET_OUTPUT_MODE,
+    VPU_API_SET_FRAME_INFO,
+
+    VPU_API_DEC_GET_DPB_SIZE = 0X100,
 
     /* get sps/pps header */
     VPU_API_GET_EXTRA_INFO = 0x200,
 
     VPU_API_SET_IMMEDIATE_OUT = 0x1000,
     VPU_API_SET_PARSER_SPLIT_MODE,          /* NOTE: should control before init */
+    VPU_API_DEC_OUT_FRM_STRUCT_TYPE,
+    VPU_API_DEC_EN_THUMBNAIL,
+    VPU_API_DEC_EN_HDR_META,
+    VPU_API_DEC_EN_MVC,
+    VPU_API_DEC_EN_FBC_HDR_256_ODD,
+    VPU_API_SET_INPUT_BLOCK,
+    VPU_API_SET_DISABLE_ERROR,
+    VPU_API_SET_DIS_ERR_CLR_MARK,
+
+    /* set pkt/frm ready callback */
+    VPU_API_SET_PKT_RDY_CB = 0x1100,
+    VPU_API_SET_FRM_RDY_CB,
 
     VPU_API_ENC_VEPU22_START = 0x2000,
     VPU_API_ENC_SET_VEPU22_CFG,
     VPU_API_ENC_GET_VEPU22_CFG,
     VPU_API_ENC_SET_VEPU22_CTU_QP,
     VPU_API_ENC_SET_VEPU22_ROI,
+
+    VPU_API_ENC_MPP        = 0x3000,
+    VPU_API_ENC_MPP_SETCFG,
+    VPU_API_ENC_MPP_GETCFG,
 
     /* mlvec dynamic configure */
     VPU_API_ENC_MLVEC_CFG = 0x4000,
@@ -171,6 +192,26 @@ typedef struct tVPU_FRAME {
     };
 } VPU_FRAME;
 
+typedef struct FrameThumbInfo {
+    RK_U32      enable;
+    RK_U32      yOffset;
+    RK_U32      uvOffset;
+} FrameThumbInfo_t;
+
+typedef struct FrameHdrInfo {
+    RK_U32      isHdr;
+    RK_U32      offset;
+    RK_U32      size;
+} FrameHdrInfo_t;
+
+typedef struct VideoFrame {
+    VPU_FRAME        vpuFrame;
+    FrameThumbInfo_t thumbInfo;
+    FrameHdrInfo_t   hdrInfo;
+    RK_U32           viewId;
+    RK_U32           reserved[16];
+} VideoFrame_t;
+
 typedef struct VideoPacket {
     RK_S64 pts;                /* with unit of us*/
     RK_S64 dts;                /* with unit of us*/
@@ -212,6 +253,13 @@ typedef struct EncoderOut {
 
 } EncoderOut_t;
 
+typedef RK_S32 (*VpuFrmRdyCbFunc)(void *cb_ctx);
+
+typedef struct {
+    VpuFrmRdyCbFunc cb;
+    void           *cbCtx;
+} FrameRdyCB;
+
 /*
  * @brief Enumeration used to define the possible video compression codings.
  * @note  This essentially refers to file extensions. If the coding is
@@ -240,7 +288,10 @@ typedef enum OMX_RK_VIDEO_CODINGTYPE {
     OMX_RK_VIDEO_CodingDIVX3,                           /**< DIVX3 */
     OMX_RK_VIDEO_CodingVP6,
     OMX_RK_VIDEO_CodingHEVC,                            /**< H.265/HEVC */
-    OMX_RK_VIDEO_CodingAVS,                             /**< AVS+ */
+    OMX_RK_VIDEO_CodingAVSPLUS,                         /**< AVS+ profile 0x48 */
+    OMX_RK_VIDEO_CodingAVS,                             /**< AVS  profile 0x20 */
+    OMX_RK_VIDEO_CodingAVS2,                            /**< AVS2 */
+    OMX_RK_VIDEO_CodingAV1,                             /**< av1 */
     OMX_RK_VIDEO_CodingKhronosExtensions = 0x6F000000,  /**< Reserved region for introducing Khronos Standard Extensions */
     OMX_RK_VIDEO_CodingVendorStartUnused = 0x7F000000,  /**< Reserved region for introducing Vendor Extensions */
     OMX_RK_VIDEO_CodingMax = 0x7FFFFFFF
@@ -469,4 +520,4 @@ void release_vpu_memory_pool_allocator(vpu_display_mem_pool *ipool);
 }
 #endif
 
-#endif /*__VPU_API_H__*/
+#endif /* VPU_API_H */

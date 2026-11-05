@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef __RK_VENC_REF_H__
-#define __RK_VENC_REF_H__
+#ifndef RK_VENC_REF_H
+#define RK_VENC_REF_H
 
-#include "rk_type.h"
-#include "mpp_err.h"
+#include "rk_mpp_cfg.h"
 
 /*
  * MPP reference management system follows the model of H.264/H.265 reference
@@ -64,8 +63,10 @@
 
 /* max 4 temporal layer */
 #define MPP_ENC_MAX_TEMPORAL_LAYER_NUM      4
-/* max 4 long-term reference frame */
+/* max 16 long-term reference frame */
 #define MPP_ENC_MAX_LT_REF_NUM              16
+/* max 16 ref cfg entries (DPB size limit from H.264/H.265) */
+#define MPP_ENC_MAX_REF_CFG_NUM             16
 
 /*
  * Group Of Picture (GOP) config is separated into three parts:
@@ -155,7 +156,7 @@ typedef enum MppEncRefMode_e {
     /* max 32 mode in 32-bit */
     /* for default ref global config */
     REF_MODE_GLOBAL,
-    REF_TO_PREV_REF_FRM                 = REF_MODE_GLOBAL,
+    REF_MODE_TO_PREV_REF_FRM                 = REF_MODE_GLOBAL,
     REF_TO_PREV_ST_REF,
     REF_TO_PREV_LT_REF,
     REF_TO_PREV_INTRA,
@@ -213,6 +214,30 @@ typedef struct MppEncRefPreset_t {
 
 typedef void* MppEncRefCfg;
 
+/* for kmpp enc ref cfg */
+typedef enum MppEncRefCfgMode_e {
+    REF_IPPP,
+    REF_TSVC1,
+    REF_TSVC2,
+    REF_TSVC3,
+    REF_VI,
+    REF_HIR_SKIP,
+    REF_BUTT,
+} MppEncRefCfgMode;
+
+typedef struct MppEncRefParam_t {
+    MppEncRefCfgMode    cfg_mode;
+
+    RK_S32              gop_len;
+    /*used for smartp ref*/
+    RK_S32              vi_len;
+
+    /*used for skip reg*/
+    RK_U32              base_N;
+    RK_U32              enh_M;
+    RK_U32              pre_en;
+} MppEncRefParam;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -233,10 +258,14 @@ MPP_RET mpp_enc_ref_cfg_check(MppEncRefCfg ref);
  */
 MPP_RET mpp_enc_ref_cfg_set_keep_cpb(MppEncRefCfg ref, RK_S32 keep);
 MPP_RET mpp_enc_ref_cfg_get_preset(MppEncRefPreset *preset);
-MPP_RET mpp_enc_ref_cfg_show(MppEncRefCfg ref);
+void mpp_enc_ref_cfg_show(void);
+
+/* JSON config apply / extract */
+MPP_RET mpp_enc_ref_cfg_apply(MppEncRefCfg ref, MppCfgStrFmt fmt, char *buf);
+MPP_RET mpp_enc_ref_cfg_extract(MppEncRefCfg ref, MppCfgStrFmt fmt, char **buf);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__RK_VENC_REF_H__*/
+#endif /* RK_VENC_REF_H */

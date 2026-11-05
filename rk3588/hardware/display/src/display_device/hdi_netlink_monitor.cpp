@@ -19,6 +19,7 @@
 #include <sys/socket.h>
 #include <linux/netlink.h>
 #include "hdi_session.h"
+#include "drm_device.h"
 
 namespace OHOS {
 namespace HDI {
@@ -45,11 +46,11 @@ HdiNetLinkMonitor::~HdiNetLinkMonitor()
     }
 }
 
-static int ThreadInit()
+int HdiNetLinkMonitor::ThreadInit()
 {
     int ret;
     int fd = -1;
-    const int32_t bufferSize = 1024;
+    const int32_t bufferSize = netlinkBufferSize;
     struct sockaddr_nl snl;
 
     bzero(&snl, sizeof(struct sockaddr_nl));
@@ -73,18 +74,48 @@ static int ThreadInit()
     return fd;
 }
 
-static void ParseUeventMessage(const char *buf, uint32_t len)
+void HdiNetLinkMonitor::CheckStatusByDrm()
+{
+    int drmFd = DrmDevice::GetDrmFd();
+    drmModeResPtr res = drmModeGetResources(drmFd);
+    if (res == nullptr) {
+        DISPLAY_LOGE("drmModeGetResources fail");
+        return;
+    }
+    for (int i = 0; i < res->count_connectors; i++) {
+        drmModeConnectorPtr connector = drmModeGetConnector(drmFd, res->connectors[i]);
+        if (connector == nullptr) {
+            continue;
+        }
+        if (connector->connector_type == DRM_MODE_CONNECTOR_HDMIA ||
+            connector->connector_type == DRM_MODE_CONNECTOR_HDMIB) {
+            if (connector->connection == DRM_MODE_CONNECTED) {
+                hdmiConnected = true;
+            } else if (connector->connection == DRM_MODE_DISCONNECTED) {
+                hdmiConnected = false;
+            }
+        }
+        drmModeFreeConnector(connector);
+        connector = nullptr;
+    }
+    drmModeFreeResources(res);
+}
+
+void HdiNetLinkMonitor::ParseUeventMessage(const char *buf, uint32_t len)
 {
     uint32_t num;
-
     for (num = 0; num < len;) {
         const char *event = buf + num;
-        if (strcmp(event, "STATE=HDMI=0") == 0) {
-            HdiSession::GetInstance().HandleHotplug(false);
-            break;
-        } else if (strcmp(event, "STATE=HDMI=1") == 0) {
-            HdiSession::GetInstance().HandleHotplug(true);
-            break;
+        if (strstr(event, "/drm/") != nullptr ||
+            strstr(event, "SUBSYSTEM=drm") != nullptr) {
+            CheckStatusByDrm();
+            if (hdmiConnected) {
+                HdiSession::GetInstance().HandleHotplug(true);
+                break;
+            } else {
+                HdiSession::GetInstance().HandleHotplug(false);
+                break;
+            }
         }
         num += strlen(event) + 1;
     }
@@ -103,7 +134,7 @@ void HdiNetLinkMonitor::MonitorThread()
         char buf[BUFFER_SIZE] = { 0 };
         len = read(fd, &buf, sizeof(buf));
         if (len < 0) {
-            DISPLAY_LOGE("read uevent message fail");
+            DISPLAY_LOGE("read uevent message fail, (%{public}s)", strerror(errno));
             break;
         }
         ParseUeventMessage(buf, len);

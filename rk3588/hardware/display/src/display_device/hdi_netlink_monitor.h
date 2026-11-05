@@ -29,9 +29,14 @@ public:
 
 private:
     void MonitorThread();
+    void CheckStatusByDrm();
+    void ParseUeventMessage(const char *buf, uint32_t len);
+    int ThreadInit();
     volatile bool mRunning = false;
     int mScoketFd = -1;
     std::unique_ptr<std::thread> mThread;
+    bool hdmiConnected = false;
+    static const int32_t netlinkBufferSize = 1024 * 64;  // 64KB
 };
 } // namespace OHOS
 } // namespace HDI

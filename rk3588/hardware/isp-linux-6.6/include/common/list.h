@@ -1,0 +1,285 @@
+// This list structure implementation is adapted from the list implementation
+// on the Linux kernel.
+
+// Original source:
+// http://git.kernel.org/?p=linux/kernel/git/stable/linux-2.6.25.y.git;a=blob_plain;f=include/linux/list.h;hb=HEAD
+
+#ifndef _LINUX_LIST_H
+#define _LINUX_LIST_H
+
+/*
+ * Simple doubly linked list implementation.
+ *
+ * Some of the internal functions ("__xxx") are useful when
+ * manipulating whole lists rather than single entries, as
+ * sometimes we already know the next/prev entries and we can
+ * generate better code by using them directly rather than
+ * using the generic single-entry routines.
+ */
+
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "common/rk_aiq_comm.h"
+
+struct list_head {
+    struct list_head *next, *prev;
+};
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+    list->next = list;
+    list->prev = list;
+}
+
+/*
+ * Insert a new entry between two known consecutive entries.
+ *
+ * This is only for internal list manipulation where we know
+ * the prev/next entries already!
+ */
+static inline void list_add_impl(struct list_head *n, struct list_head *prev, struct list_head *next)
+{
+    next->prev = n;
+    n->next = next;
+    n->prev = prev;
+    prev->next = n;
+}
+
+/**
+ * list_add - add a new entry
+ * @new: new entry to be added
+ * @head: list head to add it after
+ *
+ * Insert a new entry after the specified head.
+ * This is good for implementing stacks.
+ */
+static inline void list_add(struct list_head *n, struct list_head *head)
+{
+    list_add_impl(n, head, head->next);
+}
+
+/**
+ * list_add_tail - add a new entry
+ * @new: new entry to be added
+ * @head: list head to add it before
+ *
+ * Insert a new entry before the specified head.
+ * This is useful for implementing queues.
+ */
+static inline void list_add_tail(struct list_head *n, struct list_head *head)
+{
+    list_add_impl(n, head->prev, head);
+}
+
+/*
+ * Delete a list entry by making the prev/next entries
+ * point to each other.
+ *
+ * This is only for internal list manipulation where we know
+ * the prev/next entries already!
+ */
+static inline void list_del_impl(struct list_head *prev, struct list_head *next)
+{
+    next->prev = prev;
+    prev->next = next;
+}
+
+/**
+ * list_del - deletes entry from list.
+ * @entry: the element to delete from the list.
+ * Note: list_empty() on entry does not return true after this, the entry is
+ * in an undefined state.
+ */
+static inline void list_del(struct list_head *entry)
+{
+    list_del_impl(entry->prev, entry->next);
+    entry->next = NULL;
+    entry->prev = NULL;
+}
+
+/**
+ * list_replace - replace old entry by new one
+ * @old : the element to be replaced
+ * @new : the new element to insert
+ *
+ * If @old was empty, it will be overwritten.
+ */
+static inline void list_replace(struct list_head *old, struct list_head *n)
+{
+    n->next = old->next;
+    n->next->prev = n;
+    n->prev = old->prev;
+    n->prev->next = n;
+}
+
+static inline void list_replace_init(struct list_head *old, struct list_head *n)
+{
+    list_replace(old, n);
+    INIT_LIST_HEAD(old);
+}
+
+/**
+ * list_del_init - deletes entry from list and reinitialize it.
+ * @entry: the element to delete from the list.
+ */
+static inline void list_del_init(struct list_head *entry)
+{
+    list_del_impl(entry->prev, entry->next);
+    INIT_LIST_HEAD(entry);
+}
+
+/**
+ * list_move - delete from one list and add as another's head
+ * @list: the entry to move
+ * @head: the head that will precede our entry
+ */
+static inline void list_move(struct list_head *list, struct list_head *head)
+{
+    list_del_impl(list->prev, list->next);
+    list_add(list, head);
+}
+
+/**
+ * list_move_tail - delete from one list and add as another's tail
+ * @list: the entry to move
+ * @head: the head that will follow our entry
+ */
+static inline void list_move_tail(struct list_head *list, struct list_head *head)
+{
+    list_del_impl(list->prev, list->next);
+    list_add_tail(list, head);
+}
+
+/**
+ * list_is_last - tests whether @list is the last entry in list @head
+ * @list: the entry to test
+ * @head: the head of the list
+ */
+static inline int list_is_last(const struct list_head *list, const struct list_head *head)
+{
+    return list->next == head;
+}
+
+/**
+ * list_empty - tests whether a list is empty
+ * @head: the list to test.
+ */
+static inline int list_empty(const struct list_head *head)
+{
+    return head->next == head;
+}
+
+/**
+ * list_empty_careful - tests whether a list is empty and not being modified
+ * @head: the list to test
+ *
+ * Description:
+ * tests whether a list is empty _and_ checks that no other CPU might be
+ * in the process of modifying either member (next or prev)
+ *
+ * NOTE: using list_empty_careful() without synchronization
+ * can only be safe if the only operation that can happen
+ * to the list entry is list_del_init(). Eg. it cannot be used
+ * if another CPU could re-list_add() it.
+ */
+static inline int list_empty_careful(const struct list_head *head)
+{
+    struct list_head *next = head->next;
+    return (next == head) && (next == head->prev);
+}
+
+static inline void list_splice_impl(struct list_head *list, struct list_head *head)
+{
+    struct list_head *first = list->next;
+    struct list_head *last = list->prev;
+    struct list_head *at = head->next;
+
+    first->prev = head;
+    head->next = first;
+
+    last->next = at;
+    at->prev = last;
+}
+
+/**
+ * list_splice - join two lists
+ * @list: the new list to add.
+ * @head: the place to add it in the first list.
+ */
+static inline void list_splice(struct list_head *list, struct list_head *head)
+{
+    if (!list_empty(list))
+        list_splice_impl(list, head);
+}
+
+/**
+ * list_prepare_item -prepares a list item so that it can be added to a list.
+ * param:   p_item  The list item to be initialized.
+ */
+static inline void list_prepare_item(void *p_item)
+{
+    ((struct list_head *)p_item)->next = NULL;
+    ((struct list_head *)p_item)->prev = NULL;
+}
+
+/**
+ * print_list -print list.
+ * param:   head  The list item to be printed.
+ */
+AIQ_MAYBE_UNUSED static int get_list_num(const struct list_head *head)
+{
+    int num = 0;
+    for (struct list_head *p = head->next; p != head; p = p->next) {
+        num++;
+    }
+    return (num);
+}
+
+/**
+ * print_list -print list.
+ * param:   head  The list item to be printed.
+ */
+AIQ_MAYBE_UNUSED static void print_list(struct list_head *head)
+{
+    for (struct list_head *p = head->next; p != head; p = p->next) {
+        printf("%p ", p);
+    }
+    printf("\n");
+}
+
+/**
+ * list_prepare_item -clear list ,the head of list is reserved.
+ * param:   l  The list item to be cleared.
+ */
+AIQ_MAYBE_UNUSED static void clear_list(struct list_head *l)
+{
+    struct list_head *p;
+    if (l == NULL) {
+        return;
+    }
+    p = (l)->next;
+    while (p != (l)) {
+        p = p->next;
+        free(p->prev);
+    }
+    INIT_LIST_HEAD(l);
+}
+
+/**
+ * list_splice_init - join two lists and reinitialise the emptied list.
+ * @list: the new list to add.
+ * @head: the place to add it in the first list.
+ *
+ * The list at @list is reinitialised
+ */
+static inline void list_splice_init(struct list_head *list, struct list_head *head)
+{
+    if (!list_empty(list)) {
+        list_splice_impl(list, head);
+        INIT_LIST_HEAD(list);
+    }
+}
+
+#endif

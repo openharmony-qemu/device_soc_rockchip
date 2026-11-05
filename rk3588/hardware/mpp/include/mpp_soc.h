@@ -1,23 +1,24 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2020 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_SOC_H__
-#define __MPP_SOC_H__
+#ifndef MPP_SOC_H
+#define MPP_SOC_H
 
 #include "mpp_dev_defs.h"
+#include "mpp_frame.h"
+
+#define SOC_CAP_FBC_NONE       0
+#define SOC_CAP_AFBC_V1        (1 << 0)
+#define SOC_CAP_AFBC_V2        (1 << 1)
+#define SOC_CAP_RKFBC          (1 << 2)
+
+#define SOC_CAP_RASTER         (1U << MPP_FMT_RASTER)
+#define SOC_CAP_AFBC16X16      (1U << MPP_FMT_AFBC16X16)
+#define SOC_CAP_AFBC32X8       (1U << MPP_FMT_AFBC32X8)
+#define SOC_CAP_RKFBC64X4      (1U << MPP_FMT_RKFBC64X4)
+#define SOC_CAP_TILE4X4        (1U << MPP_FMT_TILE4X4)
 
 /* Do NOT use this outside MPP it may be changed in new version */
 typedef enum RockchipSocType_e {
@@ -41,46 +42,58 @@ typedef enum RockchipSocType_e {
     ROCKCHIP_SOC_PX30,
     ROCKCHIP_SOC_RK1808,
     ROCKCHIP_SOC_RK3566,
+    ROCKCHIP_SOC_RK3567,
     ROCKCHIP_SOC_RK3568,
     ROCKCHIP_SOC_RK3588,
+    ROCKCHIP_SOC_RK3528,
+    ROCKCHIP_SOC_RK3562,
+    ROCKCHIP_SOC_RK3576,
+    ROCKCHIP_SOC_RV1126B,
+    ROCKCHIP_SOC_RK3538,
+    ROCKCHIP_SOC_RK3572,
+    ROCKCHIP_SOC_RK3539,
     ROCKCHIP_SOC_BUTT,
 } RockchipSocType;
 
 typedef struct MppDecHwCap_t {
-    RK_U32          cap_coding;
+    rk_u32          cap_coding;
 
-    MppClientType   type            : 8;
+    MppClientType   type                : 8;
 
-    RK_U32          cap_fbc         : 4;
-    RK_U32          cap_4k          : 1;
-    RK_U32          cap_8k          : 1;
-    RK_U32          cap_colmv_buf   : 1;
-    RK_U32          cap_hw_h265_rps : 1;
-    RK_U32          cap_hw_vp9_prob : 1;
-    RK_U32          cap_jpg_pp_out  : 1;
-    RK_U32          cap_10bit       : 1;
-    RK_U32          reserved        : 13;
+    rk_u32          cap_fbc             : 4;
+    rk_u32          cap_4k              : 1;
+    rk_u32          cap_8k              : 1;
+    rk_u32          cap_colmv_compress  : 1;
+    rk_u32          cap_hw_h265_rps     : 1;
+    rk_u32          cap_jpg_pp_out      : 1;
+    rk_u32          cap_10bit           : 1;
+    rk_u32          cap_down_scale      : 1;
+    rk_u32          cap_lmt_linebuf     : 1;
+    rk_u32          cap_core_num        : 3;
+    rk_u32          cap_hw_jpg_fix      : 1;
+    rk_u32          cap_data_layout     : 8;
 } MppDecHwCap;
 
 typedef struct MppEncHwCap_t {
-    RK_U32          cap_coding;
+    rk_u32          cap_coding;
 
     MppClientType   type            : 8;
 
-    RK_U32          cap_fbc         : 4;
-    RK_U32          cap_4k          : 1;
-    RK_U32          cap_8k          : 1;
-    RK_U32          cap_hw_osd      : 1;
-    RK_U32          cap_hw_roi      : 1;
-    RK_U32          reserved        : 16;
+    rk_u32          cap_fbc         : 4;
+    rk_u32          cap_4k          : 1;
+    rk_u32          cap_8k          : 1;
+    rk_u32          cap_hw_osd      : 1;
+    rk_u32          cap_hw_roi      : 1;
+    rk_u32          cap_data_layout : 8;
+    rk_u32          reserved        : 8;
 } MppEncHwCap;
 
 typedef struct {
     const char              *compatible;
     const RockchipSocType   soc_type;
-    const RK_U32            vcodec_type;
+    const rk_u32            vcodec_type;
 
-    /* Max 4 decoder cap */
+    /* Max 6 decoder cap */
     const MppDecHwCap       *dec_caps[6];
     /* Max 4 encoder cap */
     const MppEncHwCap       *enc_caps[4];
@@ -90,14 +103,17 @@ typedef struct {
 extern "C" {
 #endif
 
+RK_S32 mpp_coding_to_index(MppCodingType coding);
+
 const char *mpp_get_soc_name(void);
 RockchipSocType mpp_get_soc_type(void);
 
 const MppSocInfo *mpp_get_soc_info(void);
-RK_U32 mpp_check_soc_cap(MppCtxType type, MppCodingType coding);
+rk_u32 mpp_check_soc_cap(MppCtxType type, MppCodingType coding);
+const MppDecHwCap* mpp_get_dec_hw_info_by_client_type(MppClientType client_type);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_SOC_H__*/
+#endif /* MPP_SOC_H */

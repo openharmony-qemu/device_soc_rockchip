@@ -1,0 +1,64 @@
+{
+  "name": "@ohos/soc_rk3588",
+  "description": "device rockchip for rk3588 component",
+  "version": "3.1",
+  "license": "Apache 2.0",
+  "publishAs": "code-segment",
+  "segment": {
+    "destPath": "device/soc/rockchip/rk3588"
+  },
+  "dirs": {},
+  "scripts": {},
+  "component": {
+    "name": "soc_rk3588",
+    "subsystem": "soc_rk3588",
+    "syscap": [],
+    "features": [],
+    "adapted_system_type": [
+      "standard"
+    ],
+    "rom": "",
+    "ram": "",
+    "hisysevent_config": [],
+    "deps": {
+      "components": [
+        "bounds_checking_function",
+        "hilog",
+        "init",
+        "c_utils",
+        "hitrace",
+        "drivers_peripheral_display",
+        "drivers_interface_nnrt",
+        "hdf_core",
+        "ipc",
+        "graphic_surface",
+        "drivers_interface_display"
+      ],
+      "third_party": [
+        "libdrm"
+      ]
+    },
+    "build": {
+      "sub_component": [
+        "//device/soc/rockchip/rk3588/hardware:hardware_group"
+      ],
+      "inner_kits":[
+        {
+          "name": "//device/soc/rockchip/rk3588/hardware/mpp:libmpp",
+          "header": {
+            "header_base": [],
+            "header_files": []
+          }
+        },
+        {
+          "name": "//device/soc/rockchip/rk3588/hardware/rga:librga",
+          "header": {
+            "header_base": [],
+            "header_files": []
+          }
+        }
+      ],
+      "test": []
+    }
+  }
+}

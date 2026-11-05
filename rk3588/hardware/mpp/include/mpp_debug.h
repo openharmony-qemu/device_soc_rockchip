@@ -1,21 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0 OR MIT */
 /*
- * Copyright 2022 Rockchip Electronics Co. LTD
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2022 Rockchip Electronics Co., Ltd.
  */
 
-#ifndef __MPP_DEBUG_H__
-#define __MPP_DEBUG_H__
+#ifndef MPP_DEBUG_H
+#define MPP_DEBUG_H
 
 #include <stdlib.h>
 
@@ -33,15 +22,15 @@
 #define MPP_DBG_DUMP_OUT                (0x00000400)
 #define MPP_DBG_DUMP_CFG                (0x00000800)
 
-#define _mpp_dbg(debug, flag, fmt, ...)     mpp_log_c((debug) & (flag), fmt, ## __VA_ARGS__)
-#define _mpp_dbg_f(debug, flag, fmt, ...)   mpp_log_cf((debug) & (flag), fmt, ## __VA_ARGS__)
+#define mpp_dbg(debug, flag, fmt, ...)     mpp_log_c((debug) & (flag), fmt, ## __VA_ARGS__)
+#define mpp_dbg_f(debug, flag, fmt, ...)   mpp_log_cf((debug) & (flag), fmt, ## __VA_ARGS__)
 
-#define mpp_dbg(flag, fmt, ...)         _mpp_dbg(mpp_debug, flag, fmt, ## __VA_ARGS__)
-#define mpp_dbg_f(flag, fmt, ...)       _mpp_dbg_f(mpp_debug, flag, fmt, ## __VA_ARGS__)
+#define sys_dbg(flag, fmt, ...)         mpp_dbg(mpp_debug, flag, fmt, ## __VA_ARGS__)
+#define sys_dbg_f(flag, fmt, ...)       mpp_dbg_f(mpp_debug, flag, fmt, ## __VA_ARGS__)
 
-#define mpp_dbg_pts(fmt, ...)           mpp_dbg(MPP_DBG_PTS, fmt, ## __VA_ARGS__)
-#define mpp_dbg_info(fmt, ...)          mpp_dbg(MPP_DBG_INFO, fmt, ## __VA_ARGS__)
-#define mpp_dbg_platform(fmt, ...)      mpp_dbg(MPP_DBG_PLATFORM, fmt, ## __VA_ARGS__)
+#define sys_dbg_pts(fmt, ...)           sys_dbg(MPP_DBG_PTS, fmt, ## __VA_ARGS__)
+#define sys_dbg_info(fmt, ...)          sys_dbg(MPP_DBG_INFO, fmt, ## __VA_ARGS__)
+#define sys_dbg_platform(fmt, ...)      sys_dbg(MPP_DBG_PLATFORM, fmt, ## __VA_ARGS__)
 
 #define MPP_ABORT                       (0x10000000)
 
@@ -93,15 +82,31 @@
     }                                                                   \
 } while (0)
 
+/* llog for long log */
+
+#define mpp_llogf(fmt, ...)     mpp_llog(MPP_LOG_FATAL,   MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+#define mpp_lloge(fmt, ...)     mpp_llog(MPP_LOG_ERROR,   MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+#define mpp_llogw(fmt, ...)     mpp_llog(MPP_LOG_WARN,    MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+#define mpp_llogi(fmt, ...)     mpp_llog(MPP_LOG_INFO,    MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+#define mpp_llogd(fmt, ...)     mpp_llog(MPP_LOG_DEBUG,   MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+#define mpp_llogv(fmt, ...)     mpp_llog(MPP_LOG_VERBOSE, MODULE_TAG, fmt, NULL, ## __VA_ARGS__)
+
+#define mpp_llogf_f(fmt, ...)   mpp_llog(MPP_LOG_FATAL,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_lloge_f(fmt, ...)   mpp_llog(MPP_LOG_ERROR,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_llogw_f(fmt, ...)   mpp_llog(MPP_LOG_WARN,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_llogi_f(fmt, ...)   mpp_llog(MPP_LOG_INFO,    MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_llogd_f(fmt, ...)   mpp_llog(MPP_LOG_DEBUG,   MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
+#define mpp_llogv_f(fmt, ...)   mpp_llog(MPP_LOG_VERBOSE, MODULE_TAG, fmt, __FUNCTION__, ## __VA_ARGS__)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 extern RK_U32 mpp_debug;
+void mpp_llog(int level, const char *tag, const char *fmt, const char *func, ...);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__MPP_DEBUG_H__*/
+#endif /* MPP_DEBUG_H */
